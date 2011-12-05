@@ -81,6 +81,8 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
+# used this component:
+# https://github.com/martinrusev/django-redis-sessions
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS_HOST = '10.0.0.10'
 SESSION_REDIS_PORT = 6379
