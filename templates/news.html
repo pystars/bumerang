@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for item in object_list %}
+        <div class="news-item">
+            <h3><a href="{% url SingleNewsView item.slug %}">{{ item.title }}</a></h3>
+            <p class="date">{{ item.creation_date }}</p>
+            {{ item.text|truncatewords_html:20|safe }}
+        </div>
+    {% endfor %}
+{% endblock %}

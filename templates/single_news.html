@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load sitetree %}
+
+{% block content %}
+    <div class="single-news">
+        <h3>{{ object.title }}</h3>
+        <p class="date">{{ object.creation_date }}</p>
+        {{ object.text|safe }}
+    </div>
+{% endblock %}

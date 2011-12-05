@@ -1,0 +1,17 @@
+{% extends "inside.html" %}
+{% load flatpages %}
+
+{% block title %}{{ flatpage.title }}{% endblock %}
+
+{% block left_col %}
+	{{ flatpage.content }}
+{% endblock %}
+
+{% block right_col %}
+{% get_flatpages '/about/' as flatpages %}
+<ul>
+    {% for page in flatpages %}
+        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
