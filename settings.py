@@ -83,11 +83,11 @@ MIDDLEWARE_CLASSES = (
 
 # used this component:
 # https://github.com/martinrusev/django-redis-sessions
-SESSION_ENGINE = 'redis_sessions.session'
-SESSION_REDIS_HOST = '10.0.0.10'
-SESSION_REDIS_PORT = 6379
-SESSION_REDIS_DB = 0
-SESSION_REDIS_PASSWORD = 'fr6kdrWqDlRu8kktHv4FzhlH4CgW3JPC'
+#SESSION_ENGINE = 'redis_sessions.session'
+#SESSION_REDIS_HOST = '10.0.0.10'
+#SESSION_REDIS_PORT = 6379
+#SESSION_REDIS_DB = 0
+#SESSION_REDIS_PASSWORD = 'fr6kdrWqDlRu8kktHv4FzhlH4CgW3JPC'
 
 ROOT_URLCONF = 'urls'
 
