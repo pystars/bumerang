@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-#sys.path.insert(0, os.path.join(PROJECT_ROOT, ''))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -17,12 +15,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bumerang',
-        'USER': 'postgres',
-        'PASSWORD': 'hellraiser',
-        'HOST': '10.0.0.10',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'bumerang.db',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
