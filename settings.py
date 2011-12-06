@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+#sys.path.insert(0, os.path.join(PROJECT_ROOT, ''))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -89,7 +91,7 @@ SESSION_REDIS_PORT = 6379
 SESSION_REDIS_DB = 0
 SESSION_REDIS_PASSWORD = 'fr6kdrWqDlRu8kktHv4FzhlH4CgW3JPC'
 
-ROOT_URLCONF = 'bumerang.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),

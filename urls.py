@@ -2,9 +2,10 @@
 
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
+from filebrowser.sites import site
 
 import settings
-from filebrowser.sites import site
+
 
 admin.autodiscover()
 
@@ -14,8 +15,8 @@ urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
 
-    url(r'^$', include('bumerang.apps.bumerang_site.urls')),
-    url(r'^news/', include('bumerang.apps.news.urls'))
+    url(r'^$', include('apps.bumerang_site.urls')),
+    url(r'^news/', include('apps.news.urls'))
 )
 
 if settings.DEBUG:
