@@ -3,8 +3,7 @@
 from django.views.generic import DetailView, ListView
 from django.conf.urls.defaults import patterns, url
 
-from bumerang.apps.news.views import *
-from bumerang.apps.news.models import NewsItem
+from apps.news.models import NewsItem
 
 urlpatterns = patterns('',
     url(r'^$', ListView.as_view(

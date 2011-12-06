@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from bumerang.apps.news.models import *
+from apps.news.models import *
 
 class NewsItemAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}

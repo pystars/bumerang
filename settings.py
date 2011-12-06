@@ -110,13 +110,13 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 
     # internal
-    'bumerang.apps.bumerang_site',
-    'bumerang.apps.news',
+    'apps.bumerang_site',
+    'apps.news',
 
     # external
     'south',
-    'autoslug',
-    'tinymce',
+    #'tinymce',
+    'gunicorn',
 )
 
 FILEBROWSER_DIRECTORY = 'uploads/'
