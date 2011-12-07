@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+
 class Advice(MPTTModel):
     name = models.CharField(max_length=50, unique=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
@@ -15,11 +16,7 @@ class Advice(MPTTModel):
     # Url hash
     url = models.CharField(max_length=1024, editable=False)
     
-    #@models.permalink
     def get_absolute_url(self):
-        #print reverse('AdvicesUrlView', url=self.url)
-        #return reverse('AdvicesUrlView', url=self.url)
-        #return ('rubrics', (), {'url': self.url},)
         return '/advices/%s/' % self.url
 
     def __unicode__(self):
@@ -30,11 +27,11 @@ class Advice(MPTTModel):
 
 @receiver(pre_save, sender=Advice)
 def photo_pre_save(sender, **kwargs):
-    advice = kwargs.get('instance', None)
+    advice = kwargs['instance']
 
     url = u''
     for ancestor in advice.get_ancestors(ascending=False):
-        url = url + ancestor.slug + u'/'
+        url += ancestor.slug + u'/'
     url += advice.slug
 
     advice.url = url
