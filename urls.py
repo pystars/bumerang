@@ -16,7 +16,8 @@ urlpatterns = patterns('',
     url(r'^tinymce/', include('tinymce.urls')),
 
     url(r'^$', include('apps.bumerang_site.urls')),
-    url(r'^news/', include('apps.news.urls'))
+    url(r'^news/', include('apps.news.urls')),
+    url(r'^advices/', include('apps.advices.urls')),
 )
 
 if settings.DEBUG:

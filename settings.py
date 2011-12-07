@@ -112,11 +112,13 @@ INSTALLED_APPS = (
     # internal
     'apps.bumerang_site',
     'apps.news',
+    'apps.advices',
 
     # external
     'south',
+    'mptt',
     #'tinymce',
-    'gunicorn',
+    #'gunicorn',
 )
 
 FILEBROWSER_DIRECTORY = 'uploads/'

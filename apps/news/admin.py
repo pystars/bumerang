@@ -12,5 +12,7 @@ class NewsItemAdmin(admin.ModelAdmin):
             'grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
             'j/tinymce_setup.js',
         ]
-    
+
+
+admin.site.register(NewsCategory)
 admin.site.register(NewsItem, NewsItemAdmin)

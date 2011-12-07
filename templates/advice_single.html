@@ -1,0 +1,34 @@
+{% extends "inside.html" %}
+{% load mptt_tags %}
+
+{% block braadcrumbs %}
+    <nav>
+        {% for node in current_node.get_ancestors %}
+                <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node.name }}</a>
+                <span class="b-crumbs__sep">/</span>
+        {% endfor %}
+        <span>{{ current_node.name }}</span>
+    </nav>
+{% endblock %}
+
+{% block left_col %}
+<!--
+<ul>
+    {% drilldown_tree_for_node current_node as drilldown %}
+
+    {% for node,structure in drilldown|tree_info %}
+        {% spaceless %}
+        {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+            {% ifequal node current_node %}
+                <strong>{{ node.name }}</strong>
+            {% else %}
+                <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+            {% endifequal %}
+        {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+        {% endspaceless %}
+    {% endfor %}
+
+</ul>
+-->
+{% endblock %}
+

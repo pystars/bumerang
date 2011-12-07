@@ -1,11 +1,20 @@
-{% extends "base.html" %}
+{% extends "inside.html" %}
 
-{% block content %}
-    {% for item in object_list %}
-        <div class="news-item">
+{% block left_col %}
+    <h1>Новости</h1>
+    {% for item in object_list reversed %}
+        <article class="b-article">
+            <p class="date">{{ item.creation_date|date:'d E Y' }}</p>
             <h3><a href="{% url SingleNewsView item.slug %}">{{ item.title }}</a></h3>
-            <p class="date">{{ item.creation_date }}</p>
-            {{ item.text|truncatewords_html:20|safe }}
-        </div>
+            <p class="b-intro">{{ item.preview_text|safe }}</p>
+        </article>
     {% endfor %}
+{% endblock %}
+
+{% block right_col %}
+<ul>
+    {% for category in news_categories %}
+        <li><a href="#" title="{{ category.title }}">{{ category.title }}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}

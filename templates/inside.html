@@ -3,9 +3,13 @@
 {% block content %}
 <div class="l-cols l-cols_article"><div class="l-cols__i cleared">
     <section class="l-cols__section"><div class="l-cols__section__i">
+
         <header class="b-page-head">
-            {% sitetree_breadcrumbs from "main_menu" template "sitetree/breadcrumbs.html" %}
+            {% block braadcrumbs %}
+                {% sitetree_breadcrumbs from "main_menu" template "sitetree/breadcrumbs.html" %}
+            {% endblock %}
         </header>
+
         <article class="b-article">
             {% block left_col %}
 
@@ -14,6 +18,9 @@
     </div></section>
     <aside class="l-cols__side"><div class="l-cols__side__i">
         {% block right_col %}
+
+        {% endblock %}
+        {% block right_banner %}
         <section class="b-adv b-adv2">
             <header>
                 <div class="b-adv__title">Реклама</div>
