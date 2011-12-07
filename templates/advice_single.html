@@ -1,6 +1,8 @@
 {% extends "inside.html" %}
 {% load mptt_tags %}
 
+{% block title %}{{ current_node.name }}{% endblock %}
+
 {% block breadcrumbs %}
     <nav>
         <a href="{% url AdvicesIndexView %}" title="Советы профессионалов">Советы профессионалов</a>

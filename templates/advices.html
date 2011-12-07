@@ -1,5 +1,8 @@
 {% extends "inside.html" %}
+{% load sitetree %}
 {% load mptt_tags %}
+
+{% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
 
 {% block left_col %}
 <h1>Советы профессионалов</h1>

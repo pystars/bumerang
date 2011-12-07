@@ -1,4 +1,7 @@
 {% extends "inside.html" %}
+{% load sitetree %}
+
+{% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
 
 {% block left_col %}
     <h1>Новости</h1>
