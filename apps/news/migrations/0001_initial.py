@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
             ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50, db_index=True)),
             ('preview_text', self.gf('django.db.models.fields.TextField')()),
             ('text', self.gf('django.db.models.fields.TextField')()),
-            ('creation_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2011, 12, 6, 20, 44, 34, 887385))),
+            ('creation_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2011, 12, 7, 19, 28, 0, 191443))),
         ))
         db.send_create_signal('news', ['NewsItem'])
 
@@ -46,7 +46,7 @@ class Migration(SchemaMigration):
         'news.newsitem': {
             'Meta': {'object_name': 'NewsItem'},
             'category': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'category'", 'to': "orm['news.NewsCategory']"}),
-            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2011, 12, 6, 20, 44, 34, 887385)'}),
+            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2011, 12, 7, 19, 28, 0, 191443)'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'preview_text': ('django.db.models.fields.TextField', [], {}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
