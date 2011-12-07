@@ -16,7 +16,11 @@
 {% block left_col %}
     <h1>{{ current_node.name }}</h1>
     {% for node in current_node.get_children %}
-        <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+        {% if not node.get_children %}
+            <h3>{{ node.name }}</h3>
+        {% else %}
+            <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+        {% endif %}
         <p class="b-intro">{{ node.description|safe }}</p>
     {% endfor %}
 
