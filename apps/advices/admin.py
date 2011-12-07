@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 
 from apps.advices.models import *
 
-class AdviceAdmin(admin.ModelAdmin):
+class AdviceAdmin(MPTTModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 

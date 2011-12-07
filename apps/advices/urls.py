@@ -6,5 +6,5 @@ from apps.advices.views import *
 
 urlpatterns = patterns('',
     url(r'^$', show_advices, name='AdvicesIndexView'),
-    url(r'^(?P<url>[-//\w]+)$', show_advices_from_url, name='AdvicesUrlView'),
+    url(r'^(?P<url>[-//\w]+)/$', show_advices_from_url, name='AdvicesUrlView'),
 )
