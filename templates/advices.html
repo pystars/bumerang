@@ -2,16 +2,14 @@
 {% load mptt_tags %}
 
 {% block left_col %}
-<ul>
-    {% recursetree advices %}
-        <li>
-            <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node.name }}</a>
-            {% if not node.is_leaf_node %}
-                <ul class="children">
-                    {{ children }}
-                </ul>
-            {% endif %}
-        </li>
-    {% endrecursetree %}
-</ul>
+<h1>Советы профессионалов</h1>
+
+{% for node in advices %}
+    {% if node.level == 0 %}
+        <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+        <p class="b-intro">{{ node.description|safe }}</p>
+    {% endif %}
+{% endfor %}
+
+
 {% endblock %}

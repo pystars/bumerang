@@ -3,6 +3,8 @@
 
 {% block breadcrumbs %}
     <nav>
+        <a href="{% url AdvicesIndexView %}" title="Советы профессионалов">Советы профессионалов</a>
+        <span class="b-crumbs__sep">/</span>
         {% for node in current_node.get_ancestors %}
                 <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node.name }}</a>
                 <span class="b-crumbs__sep">/</span>
@@ -12,6 +14,11 @@
 {% endblock %}
 
 {% block left_col %}
+    <h1>{{ current_node.name }}</h1>
+    {% for node in current_node.get_children %}
+        <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+        <p class="b-intro">{{ node.description|safe }}</p>
+    {% endfor %}
 
 {% endblock %}
 
