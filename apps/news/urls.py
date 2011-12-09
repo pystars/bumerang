@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^$', NewsRootView.as_view(
         template_name = "news.html"
     ), name='NewsIndexView'),
+    url(r'^(?P<slug>[-\w]+)/', CategoryView.as_view(), name='CategoryView'),
     url(r'^(?P<category_slug>[-\w]+)/(?P<news_slug>[-\w]+)/$', SingleNewsItemView.as_view(), name='SingleNewsView'),
 )

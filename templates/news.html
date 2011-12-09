@@ -37,7 +37,7 @@
 {% block right_col %}
 <ul>
     {% for category in news_categories %}
-        <li><a href="#" title="{{ category.title }}">{{ category.title }}</a></li>
+        <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}

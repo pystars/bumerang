@@ -21,6 +21,22 @@ class NewsRootView(ListView):
         return self.render_to_response(context)
 
 
+class CategoryView(ListView):
+    template_name = "news_category.html"
+
+    def get(self, request, slug):
+        try:
+            self.category = NewsCategory.objects.get(slug=slug)
+            self.object_list = self.category.news.all().order_by('-creation_date')
+        except ObjectDoesNotExist:
+            raise Http404
+
+        context = self.get_context_data(
+            object_list=self.object_list,
+            category=self.category,
+        )
+        return self.render_to_response(context)
+
 class SingleNewsItemView(DetailView):
     template_name = "single_news.html"
 
@@ -32,4 +48,3 @@ class SingleNewsItemView(DetailView):
 
         context = self.get_context_data()
         return self.render_to_response(context)
-        
