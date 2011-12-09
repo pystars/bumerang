@@ -7,7 +7,7 @@
 {% block left_col %}
 <h1>Советы профессионалов</h1>
 
-{% for node in advices %}
+{% for node in object_list %}
     {% if node.level == 0 %}
         <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
         <p class="b-intro">{{ node.description|safe }}</p>

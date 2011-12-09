@@ -1,24 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render_to_response, RequestContext
+from django.views.generic import ListView, DetailView
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 
 from apps.advices.models import Advice
 
-def show_advices(request):
-    return render_to_response("advices.html",
-    {
-        'advices': Advice.objects.all()
-        },
-    context_instance=RequestContext(request))
 
+class AdvicesIndexView(ListView):
+    template_name = "advices.html"
+    model = Advice
 
-def show_advices_from_url(request, url):
-    # Strip all trailing slashes
-    while (url[-1:] == "/"):
-        url = url[0:-1]
+class SingleAdviceView(DetailView):
+    template_name = "advice_single.html"
 
-    node = Advice.objects.get(url=url)
+    def get(self, request, url):
+        # Strip all trailing slashes
+        while (url[-1:] == "/"):
+            url = url[0:-1]
+        try:
+            self.object = Advice.objects.get(url=url)
+        except ObjectDoesNotExist:
+            raise Http404
 
-    return render_to_response("advice_single.html", {
-        'current_node': node,
-    },context_instance=RequestContext(request))
+        context = self.get_context_data()
+        return self.render_to_response(context)

@@ -28,10 +28,6 @@ class Advice(MPTTModel):
 @receiver(pre_save, sender=Advice)
 def photo_pre_save(sender, **kwargs):
     advice = kwargs['instance']
-
-    url = u''
-    for ancestor in advice.get_ancestors(ascending=False):
-        url += ancestor.slug + u'/'
-    url += advice.slug
-
+    # Building advice URL from parents
+    url = ''.join([ancestor.slug + u'/' for ancestor in advice.get_ancestors(ascending=False)] + [advice.slug])
     advice.url = url
