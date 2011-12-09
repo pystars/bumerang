@@ -42,9 +42,13 @@ class SingleNewsItemView(DetailView):
 
     def get(self, request, category_slug, news_slug):
         try:
-            self.object = NewsCategory.objects.get(slug=category_slug).news.get(slug=news_slug)
+            self.category = NewsCategory.objects.get(slug=category_slug)
+            self.object = self.category.news.get(slug=news_slug)
         except ObjectDoesNotExist:
             raise Http404
 
-        context = self.get_context_data()
+        context = self.get_context_data(
+            object=self.object,
+            category=self.category,
+        )
         return self.render_to_response(context)

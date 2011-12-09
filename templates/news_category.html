@@ -6,7 +6,7 @@
 {% block left_col %}
     {% for item in object_list %}
         <article class="b-article">
-            <h3><a href="{% url SingleNewsView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+            <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
             <p class="b-intro">{{ item.preview_text|safe }}</p>
         </article>
     {% endfor %}
