@@ -4,6 +4,10 @@ from django.contrib import admin
 
 from apps.news.models import *
 
+class NewsCategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("title",)}
+
+
 class NewsItemAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
@@ -14,5 +18,5 @@ class NewsItemAdmin(admin.ModelAdmin):
         ]
 
 
-admin.site.register(NewsCategory)
+admin.site.register(NewsCategory, NewsCategoryAdmin)
 admin.site.register(NewsItem, NewsItemAdmin)
