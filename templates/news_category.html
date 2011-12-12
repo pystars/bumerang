@@ -4,10 +4,32 @@
 {% block title %}{{ category.title }}{% endblock %}
 
 {% block left_col %}
+    <h1>{{ category.title }}</h1>
+
     {% for item in object_list %}
         <article class="b-article">
+            <p class="date">{{ item.creation_date|date:'d E Y' }}</p>
             <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
             <p class="b-intro">{{ item.preview_text|safe }}</p>
         </article>
     {% endfor %}
+
+    {% if is_paginated %}
+        <div class="pagination" style="margin-top: 40px;">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
 {% endblock %}

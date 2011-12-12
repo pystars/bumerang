@@ -3,6 +3,7 @@
 from django.views.generic import ListView, DetailView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from apps.news.models import *
 
@@ -31,8 +32,25 @@ class CategoryView(ListView):
         except ObjectDoesNotExist:
             raise Http404
 
+        # Setting up paginator
+        paginator = Paginator(self.object_list, 1)
+
+        try:
+            page = int(request.GET.get('page', '1'))
+        except ValueError:
+            page = 1
+
+        # If page request (9999) is out of range, deliver last page of results.
+        try:
+            self.news_page = paginator.page(page)
+        except (EmptyPage, InvalidPage):
+            self.news_page = paginator.page(paginator.num_pages)
+
         context = self.get_context_data(
-            object_list=self.object_list,
+            object_list=self.news_page.object_list,
+            paginator=paginator,
+            page_obj=self.news_page,
+            is_paginated=True,
             category=self.category,
         )
         return self.render_to_response(context)
