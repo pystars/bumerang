@@ -8,11 +8,11 @@ from apps.advices.models import Advice
 
 
 class AdvicesIndexView(ListView):
-    template_name = "advices.html"
+    template_name = "advices/advices.html"
     model = Advice
 
 class SingleAdviceView(DetailView):
-    template_name = "advice_single.html"
+    template_name = "advices/single_advice.html"
 
     def get(self, request, url):
         # Strip all trailing slashes

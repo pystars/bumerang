@@ -8,7 +8,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from apps.news.models import *
 
 class NewsRootView(ListView):
-    template_name = "news.html"
+    template_name = "news/news.html"
     object_list = NewsItem.objects.all().order_by('-creation_date')
     categories = NewsCategory.objects.all()
 
@@ -23,7 +23,7 @@ class NewsRootView(ListView):
 
 
 class CategoryView(ListView):
-    template_name = "news_category.html"
+    template_name = "news/news_category.html"
 
     def get(self, request, slug):
         try:
@@ -56,7 +56,7 @@ class CategoryView(ListView):
         return self.render_to_response(context)
 
 class SingleNewsItemView(DetailView):
-    template_name = "single_news.html"
+    template_name = "news/single_news.html"
 
     def get(self, request, category_slug, news_slug):
         try:
