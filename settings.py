@@ -125,7 +125,9 @@ FILEBROWSER_DIRECTORY = 'uploads/'
 
 GRAPPELLI_ADMIN_TITLE = u'Bumerang'
 
-FIXTURE_DIRS = PROJECT_ROOT + 'fixtures'
+FIXTURE_DIRS = (
+    PROJECT_ROOT + os.path.join(PROJECT_ROOT, 'fixtures'),
+)
 
 if DEBUG:
     INSTALLED_APPS += ('debug_toolbar',)
