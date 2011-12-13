@@ -28,6 +28,5 @@ class NewsItem(models.Model):
         return self.title
 
     class Meta:
-        #app_label = u'Новости'
         verbose_name = u'Новость'
         verbose_name_plural = u'Новости'

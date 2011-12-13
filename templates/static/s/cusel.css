@@ -2,7 +2,6 @@
 /*
 	styles for select
 */
-.cusel,
 .cuselFrameRight,
 .jScrollPaneDrag,
 .jScrollArrowUp,
@@ -11,16 +10,32 @@
 }
 
 .cusel { /* общий вид селекта включая стрелку справа */
-	height:26px;
+	height:23px;
 	background-position:left top;
-	display:inline-block;
+	display:-moz-inline-box;display:inline-block;//display:inline;zoom:1;
 	vertical-align:middle;
 	position:relative;
 	cursor:pointer;
 	font-size:14px;
-	z-index:1;
-	margin-left:-1px;
 	outline:0;
+	padding:0 0 0 0;
+	top:1px;
+	z-index:1;
+	background:#eeedec;
+	background:-moz-linear-gradient(top, #eeedec, #d3d2ce 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#eeedec), to(#d3d2ce));   
+	background:-o-linear-gradient(rgb(238,237,236),rgb(211,210,206));
+	-moz-box-shadow:0 1px 3px rgba(81,76,54,.75);
+	-webkit-box-shadow:0 1px 3px rgba(81,76,54,.75);
+	box-shadow:0 1px 3px rgba(81,76,54,.75);
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	behavior:url(j/PIE.htc);
+}
+
+*+html .cusel {
+	background:#d3d2ce url(../i/select-gd.png) repeat-x;
 }
 
 .cuselFrameRight { /* левая чсть селект. обыно скругление и левая граница */
@@ -29,19 +44,17 @@
 	top:0;
 	right:0;
 	height:100%;
-	width:40px;
-	background-position:right top;
+	width:20px;
+	background-position:100% 50%;
 }
 
 .cuselText { /* контейнер для отображенного текста селект */
-	height:18px;
-	padding:4px 0 0 10px; /* подбираем отступы и высоту для видимого текста в селекте */
+	padding:3px 0 0 7px; /* подбираем отступы и высоту для видимого текста в селекте */
 	cursor:pointer;
 	overflow:hidden;
 	position:relative;
 	z-index:1;
 	font:14px 'PT Sans' Arial, sans-serif; /* шрифты */
-	position:absolute;
 	top:0;
 	left:0;
 }
@@ -50,23 +63,30 @@
 	display:block;
 	cursor:pointer;
 	white-space:nowrap;
-	padding:2px 14px 4px 7px; /* паддинг справа - это отступ текста от ползунка */
+	padding:3px 13px 5px 13px; /* паддинг справа - это отступ текста от ползунка */
 	line-height:1;
 	zoom:1;
+	color:#005a8c;
+	text-decoration:underline;
 }
 .cusel span:hover,
 .cusel .cuselOptHover { /* реакция оптиона на наведение */
-	background:#e1ce00;
-	color:#000;
+	/*background:#e1ce00;
+	color:#000;*/
+	color:#b55900;
 }
 .cusel .cuselActive { /* оформление активного оптиона в списке */
+	/*
 	background:#e1ce00;
 	background:-moz-linear-gradient(top, #e1ce00, #de9600 100%);
 	background:-webkit-gradient(linear, left top, left bottom, from(#e1ce00), to(#de9600));   
 	background:-o-linear-gradient(rgb(225,206,0),rgb(222,150,0));
 	-pie-background:linear-gradient(#e1ce00, #de9600 100%);
 	color:#000;
-	cursor: default;
+	cursor:default;
+	behavior:url(j/PIE.htc);
+	-pie-watch-ancestors:1;
+	*/
 }
 
 /*
@@ -78,7 +98,7 @@
 .cusel:focus .cuselFrameRight,
 .cuselFocus,
 .cuselFocus .cuselFrameRight {
-	background-image:url(../i/selects-2.png);
+	/*background-image:url(../i/selects-2.png);*/
 }
 
 .cuselOpen {
@@ -87,9 +107,11 @@
 
 .cuselOpen,
 .cuselOpen .cuselFrameRight {
-	background-image:url(../i/selects-2-open.png) !important;
+	background:none !important;
 }
 
+.cuselOpen .cuselText {
+	z-index:1000;
 }
 
 /*
@@ -113,29 +135,26 @@
 	display:block;
 	visibility:hidden;
 	position:absolute;
-	left:1px;
-	top:100%;
-	background:#fff; /* фон выпадающего списка */
-	right:1px;
+	left:-6px;
+	right:-4px;
 	width:auto;
+	top:-2px;
 }
 .cusel .jScrollPaneContainer {
 	position:relative;
 	overflow:hidden;
 	z-index:5;
-	-webkit-border-bottom-left-radius:4px;
-	-khtml-border-bottom-left-radius:4px;
-	-moz-border-radius-bottomleft:4px;
-	border-bottom-left-radius:4px;
-	-webkit-border-bottom-right-radius:4px;
-	-khtml-border-bottom-right-radius:4px;
-	-moz-border-radius-bottomright:4px;
-	border-bottom-right-radius:4px;
-	-moz-box-shadow:0 1px 1px rgba(0,0,0,.39);
-	-webkit-box-shadow:0 1px 1px rgba(0,0,0,.39);
-	box-shadow:0 1px 1px rgba(0,0,0,.39);
-	padding-top:4px;
-	padding-bottom:4px;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	-moz-box-shadow:0 1px 5px rgba(46,43,31,.49);
+	-webkit-box-shadow:0 1px 5px rgba(46,43,31,.49);
+	box-shadow:0 1px 5px rgba(46,43,31,.49);
+	padding-top:26px;
+	padding-bottom:8px;
+	background:#fff;
+	behavior:url(j/PIE.htc);
+	margin:0 0 0 0;
 }
 
 *+html .cusel .jScrollPaneContainer {

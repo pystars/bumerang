@@ -3,16 +3,23 @@
 
 {% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
 
-{% block left_col %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block page_title %}
     <h1>Новости</h1>
+{% endblock %}
+
+{% block left_col %}
+    <section class="b-announs b-announs_news">
     {% for item in object_list %}
-        <article class="b-article">
-            <p class="date">{{ item.creation_date|date:'d E Y' }}</p>
-            <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
-            <p class="b-intro">{{ item.preview_text|safe }}</p>
+        <article class="announ-item">
+            <header class="ai-head">
+                <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
+                <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                {{ item.preview_text|safe }}
+            </header>
         </article>
     {% endfor %}
-
     {% if is_paginated %}
         <div class="pagination" style="margin-top: 40px;">
             <span class="step-links">
@@ -30,14 +37,20 @@
             </span>
         </div>
     {% endif %}
-
+    </section>
 
 {% endblock %}
 
 {% block right_col %}
-<ul>
-    {% for category in news_categories %}
-        <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
-    {% endfor %}
-</ul>
+    <nav class="b-side-nav d-indent">
+        <ul>
+            {% for category in news_categories %}
+                <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
 {% endblock %}
