@@ -23,6 +23,7 @@ class NewsRootView(ListView):
 class CategoryView(ListView):
     def get(self, request, slug):
         try:
+            categories = NewsCategory.objects.all()
             news_category = NewsCategory.objects.get(slug=slug)
             news_list = news_category.news.all().order_by('-creation_date')
         except ObjectDoesNotExist:
@@ -33,7 +34,8 @@ class CategoryView(ListView):
                            template_name="news/news_category.html",
                            paginate_by=10,
                            extra_context={
-                               'category': news_category,
+                               'current_category': news_category,
+                               'categories': categories,
                            })
 
 

@@ -22,3 +22,21 @@
     {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
     </section>
 {% endblock %}
+
+{% block right_col %}
+    <nav class="b-side-nav d-indent">
+        <ul>
+            {% for category in categories %}
+                {% if category.id == current_category.id %}
+                <li class="selected"><strong>{{ category.title }}</strong></li>
+                {% else %}
+                <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}
