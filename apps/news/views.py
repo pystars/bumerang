@@ -8,15 +8,15 @@ from django.views.generic.list_detail import object_list
 from apps.news.models import *
 
 class NewsRootView(ListView):
-    categories = NewsCategory.objects.all()
     def get(self, request, *args, **kwargs):
+        categories = NewsCategory.objects.all()
         news_list = NewsItem.objects.all().order_by('-creation_date')
 
         return object_list(request,
                            queryset=news_list,
                            paginate_by=10,
                            extra_context={
-                               'news_categories': self.categories,
+                               'news_categories': categories,
                            })
 
 

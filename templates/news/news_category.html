@@ -3,17 +3,22 @@
 
 {% block title %}{{ category.title }}{% endblock %}
 
-{% block left_col %}
-    <h1>{{ category.title }}</h1>
+{% block page_title %}
+<h1>{{ category.title }}</h1>
+{% endblock %}
 
+{% block left_col %}
+    <section class="b-announs b-announs_news">
     {% for item in object_list %}
-        <article class="b-article">
-            <p class="date">{{ item.creation_date|date:'d E Y' }}</p>
-            <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
-            <p class="b-intro">{{ item.preview_text|safe }}</p>
+        <article class="announ-item">
+            <header class="ai-head">
+                <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
+                <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                {{ item.preview_text|safe }}
+            </header>
         </article>
     {% endfor %}
 
     {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
-
+    </section>
 {% endblock %}
