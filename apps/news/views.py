@@ -3,57 +3,40 @@
 from django.views.generic import ListView, DetailView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.views.generic.list_detail import object_list
 
 from apps.news.models import *
 
 class NewsRootView(ListView):
-    template_name = "news/news.html"
-    object_list = NewsItem.objects.all().order_by('-creation_date')
     categories = NewsCategory.objects.all()
-
-    paginate_by = 10
-
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data(
-            object_list=self.object_list,
-            news_categories=self.categories,
-        )
-        return self.render_to_response(context)
+        news_list = NewsItem.objects.all().order_by('-creation_date')
+
+        return object_list(request,
+                           queryset=news_list,
+                           paginate_by=10,
+                           extra_context={
+                               'news_categories': self.categories,
+                           })
 
 
 class CategoryView(ListView):
-    template_name = "news/news_category.html"
-
     def get(self, request, slug):
         try:
-            self.category = NewsCategory.objects.get(slug=slug)
-            self.object_list = self.category.news.all().order_by('-creation_date')
+            news_category = NewsCategory.objects.get(slug=slug)
+            news_list = news_category.news.all().order_by('-creation_date')
         except ObjectDoesNotExist:
             raise Http404
 
-        # Setting up paginator
-        paginator = Paginator(self.object_list, 1)
+        return object_list(request,
+                           queryset=news_list,
+                           template_name="news/news_category.html",
+                           paginate_by=10,
+                           extra_context={
+                               'category': news_category,
+                           })
 
-        try:
-            page = int(request.GET.get('page', '1'))
-        except ValueError:
-            page = 1
 
-        # If page request (9999) is out of range, deliver last page of results.
-        try:
-            self.news_page = paginator.page(page)
-        except (EmptyPage, InvalidPage):
-            self.news_page = paginator.page(paginator.num_pages)
-
-        context = self.get_context_data(
-            object_list=self.news_page.object_list,
-            paginator=paginator,
-            page_obj=self.news_page,
-            is_paginated=True,
-            category=self.category,
-        )
-        return self.render_to_response(context)
 
 class SingleNewsItemView(DetailView):
     template_name = "news/single_news.html"
