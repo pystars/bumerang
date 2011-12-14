@@ -15,8 +15,11 @@
     </nav>
 {% endblock %}
 
+{% block page_title %}
+<h1>{{ advice.name }}</h1>
+{% endblock %}
+
 {% block left_col %}
-    <h1>{{ advice.name }}</h1>
     {% for node in advice.get_children %}
         {% if not node.get_children %}
             <h3>{{ node.name }}</h3>

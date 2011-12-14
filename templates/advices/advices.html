@@ -4,15 +4,15 @@
 
 {% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
 
-{% block left_col %}
+{% block page_title %}
 <h1>Советы профессионалов</h1>
+{% endblock %}
 
-{% for node in object_list %}
-    {% if node.level == 0 %}
-        <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
-        <p class="b-intro">{{ node.description|safe }}</p>
-    {% endif %}
-{% endfor %}
-
-
+{% block left_col %}
+    {% for node in object_list %}
+        {% if node.level == 0 %}
+            <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+            <p class="b-intro">{{ node.description|safe }}</p>
+        {% endif %}
+    {% endfor %}
 {% endblock %}
