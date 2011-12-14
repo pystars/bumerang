@@ -1,4 +1,5 @@
 {% extends "inside.html" %}
+{% load sitetree %}
 {% load flatpages %}
 
 {% block title %}{{ flatpage.title }}{% endblock %}
@@ -8,10 +9,11 @@
 {% endblock %}
 
 {% block right_col %}
-{% get_flatpages '/about/' as flatpages %}
-<ul>
-    {% for page in flatpages %}
-        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-    {% endfor %}
-</ul>
+    <nav class="b-side-nav d-indent">
+        {% sitetree_menu from "main_menu" include "about" template "sitetree/topmenu.html" %}
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
 {% endblock %}
