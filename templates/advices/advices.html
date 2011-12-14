@@ -9,10 +9,16 @@
 {% endblock %}
 
 {% block left_col %}
+    <section class="b-announs b-announs_news">
     {% for node in object_list %}
         {% if node.level == 0 %}
-            <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
-            <p class="b-intro">{{ node.description|safe }}</p>
+        <article class="announ-item">
+            <header class="ai-head">
+                <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+                {{ node.description|safe }}
+            </header>
+        </article>
         {% endif %}
     {% endfor %}
+    </section>
 {% endblock %}

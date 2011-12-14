@@ -20,14 +20,24 @@
 {% endblock %}
 
 {% block left_col %}
+    <section class="b-announs b-announs_news">
     {% for node in advice.get_children %}
         {% if not node.get_children %}
-            <h3>{{ node.name }}</h3>
+            <article class="announ-item">
+                <header class="ai-head">
+                    <h3>{{ node.name }}</h3>
+                    {{ node.description|safe }}
+                </header>
+            </article>
         {% else %}
-            <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+            <article class="announ-item">
+                <header class="ai-head">
+                    <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+                    {{ node.description|safe }}
+                </header>
+            </article>
         {% endif %}
-        <p class="b-intro">{{ node.description|safe }}</p>
     {% endfor %}
-
+    </section>
 {% endblock %}
 
