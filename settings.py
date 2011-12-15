@@ -113,6 +113,7 @@ INSTALLED_APPS = (
     'apps.bumerang_site',
     'apps.news',
     'apps.advices',
+    'apps.video',
 
     # external
     'south',
@@ -128,6 +129,8 @@ GRAPPELLI_ADMIN_TITLE = u'Bumerang'
 FIXTURE_DIRS = (
     PROJECT_ROOT + os.path.join(PROJECT_ROOT, 'fixtures'),
 )
+
+VIDEO_UPLOAD_PATH = os.path.join(PROJECT_ROOT, 'media/originals/')
 
 if DEBUG:
     INSTALLED_APPS += ('debug_toolbar',)
