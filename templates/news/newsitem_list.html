@@ -30,6 +30,7 @@
 {% block right_col %}
     <nav class="b-side-nav d-indent">
         <ul>
+            <li class="selected"><strong>Все новости</strong></li>
             {% for category in news_categories %}
                 <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
             {% endfor %}

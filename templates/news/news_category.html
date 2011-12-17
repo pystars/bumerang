@@ -26,6 +26,7 @@
 {% block right_col %}
     <nav class="b-side-nav d-indent">
         <ul>
+            <li><a href="{% url NewsIndexView %}">Все новости</a></li>
             {% for category in categories %}
                 {% if category.id == current_category.id %}
                 <li class="selected"><strong>{{ category.title }}</strong></li>

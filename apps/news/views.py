@@ -53,5 +53,6 @@ class SingleNewsItemView(DetailView):
         context = self.get_context_data(
             object=self.object,
             category=self.category,
+            categories=NewsCategory.objects.all(),
         )
         return self.render_to_response(context)
