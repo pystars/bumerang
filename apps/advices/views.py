@@ -9,7 +9,7 @@ from apps.advices.models import Advice
 
 class AdvicesIndexView(ListView):
     template_name = "advices/advices.html"
-    model = Advice
+    queryset = Advice.objects.all().order_by('sort_order', 'id')
 
 class SingleAdviceView(DetailView):
     template_name = "advices/single_advice.html"

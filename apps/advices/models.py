@@ -15,6 +15,7 @@ class Advice(MPTTModel):
     slug = models.SlugField()
     # Url hash
     url = models.CharField(max_length=1024, editable=False)
+    sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
     
     def get_absolute_url(self):
         return '/advices/%s/' % self.url
@@ -25,8 +26,13 @@ class Advice(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
+    class Meta:
+        verbose_name = u'Совет'
+        verbose_name_plural = u'Советы'
+        ordering = ('sort_order', 'id')
+
 @receiver(pre_save, sender=Advice)
-def photo_pre_save(sender, **kwargs):
+def advice_pre_save(sender, **kwargs):
     advice = kwargs['instance']
     # Building advice URL from parents
     url = ''.join([ancestor.slug + u'/' for ancestor in advice.get_ancestors(ascending=False)] + [advice.slug])

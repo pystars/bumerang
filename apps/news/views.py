@@ -23,8 +23,8 @@ class NewsRootView(ListView):
 class CategoryView(ListView):
     def get(self, request, slug):
         try:
-            categories = NewsCategory.objects.all()
-            news_category = NewsCategory.objects.get(slug=slug)
+            categories = NewsCategory.objects.all().order_by('sort_order', 'id')
+            news_category = categories.get(slug=slug)
             news_list = news_category.news.all().order_by('-creation_date')
         except ObjectDoesNotExist:
             raise Http404
