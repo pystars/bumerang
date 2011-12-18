@@ -76,6 +76,10 @@
 	color:#b55900;
 }
 .cusel .cuselActive { /* оформление активного оптиона в списке */
+	font-weight:bold;
+	color:#000 !important;
+	text-decoration:none;
+	cursor:text;
 	/*
 	background:#e1ce00;
 	background:-moz-linear-gradient(top, #e1ce00, #de9600 100%);
@@ -110,10 +114,6 @@
 	background:none !important;
 }
 
-.cuselOpen .cuselText {
-	z-index:1000;
-}
-
 /*
 	styles for disabled select
 */
@@ -144,17 +144,17 @@
 	position:relative;
 	overflow:hidden;
 	z-index:5;
+	padding-top:2px;
+	padding-bottom:8px;
+	background:#fff;
 	-webkit-border-radius:5px;
 	-moz-border-radius:5px;
 	border-radius:5px;
 	-moz-box-shadow:0 1px 5px rgba(46,43,31,.49);
 	-webkit-box-shadow:0 1px 5px rgba(46,43,31,.49);
 	box-shadow:0 1px 5px rgba(46,43,31,.49);
-	padding-top:26px;
-	padding-bottom:8px;
-	background:#fff;
 	behavior:url(j/PIE.htc);
-	margin:0 0 0 0;
+	margin:0;
 }
 
 *+html .cusel .jScrollPaneContainer {
