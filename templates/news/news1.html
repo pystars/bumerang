@@ -1,0 +1,59 @@
+{% extends "inside.html" %}
+{% load sitetree %}
+
+{% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block page_title %}
+    <h1>Новости</h1>
+{% endblock %}
+
+{% block left_col %}
+    <section class="b-announs b-announs_news">
+    {% for item in object_list %}
+        <article class="announ-item">
+            <header class="ai-head">
+                <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
+                <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                {{ item.preview_text|safe }}
+            </header>
+        </article>
+    {% endfor %}
+    {% if is_paginated %}
+        <div class="pagination" style="margin-top: 40px;">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+    {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}
+
+    </section>
+
+{% endblock %}
+
+{% block right_col %}
+    <nav class="b-side-nav d-indent">
+        <ul>
+            {% for category in news_categories %}
+                <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}
