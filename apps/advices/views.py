@@ -9,7 +9,7 @@ from apps.advices.models import Advice
 
 class AdvicesIndexView(ListView):
     template_name = "advices/advices.html"
-    queryset = Advice.objects.all().order_by('sort_order', 'id')
+    queryset = Advice.objects.filter(level=0).order_by('sort_order', 'id')
 
 class SingleAdviceView(DetailView):
     template_name = "advices/single_advice.html"
@@ -20,8 +20,11 @@ class SingleAdviceView(DetailView):
             url = url[0:-1]
         try:
             self.object = Advice.objects.get(url=url)
+            children = self.object.get_children().order_by('level','sort_order', 'id')
         except ObjectDoesNotExist:
             raise Http404
 
-        context = self.get_context_data()
+        context = self.get_context_data(
+            children=children,
+        )
         return self.render_to_response(context)

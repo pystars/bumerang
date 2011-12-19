@@ -21,7 +21,7 @@
 
 {% block left_col %}
     <section class="b-announs b-announs_news">
-    {% for node in advice.get_children %}
+    {% for node in children %}
         {% if not node.get_children %}
             <article class="announ-item">
                 <header class="ai-head">
