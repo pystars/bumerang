@@ -3,42 +3,45 @@
 from django.views.generic import ListView, DetailView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.views.generic.list_detail import object_list
 
 from apps.news.models import *
 
 class NewsRootView(ListView):
-    template_name = "news.html"
-    object_list = NewsItem.objects.all().order_by('-creation_date')
-    categories = NewsCategory.objects.all()
-
-    paginate_by = 10
-
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data(
-            object_list=self.object_list,
-            news_categories=self.categories,
-        )
-        return self.render_to_response(context)
+        categories = NewsCategory.objects.all()
+        news_list = NewsItem.objects.all().order_by('-creation_date')
+
+        return object_list(request,
+                           queryset=news_list,
+                           paginate_by=10,
+                           extra_context={
+                               'news_categories': categories,
+                           })
 
 
 class CategoryView(ListView):
-    template_name = "news_category.html"
-
     def get(self, request, slug):
         try:
-            self.category = NewsCategory.objects.get(slug=slug)
-            self.object_list = self.category.news.all().order_by('-creation_date')
+            categories = NewsCategory.objects.all().order_by('sort_order', 'id')
+            news_category = categories.get(slug=slug)
+            news_list = news_category.news.all().order_by('-creation_date')
         except ObjectDoesNotExist:
             raise Http404
 
-        context = self.get_context_data(
-            object_list=self.object_list,
-            category=self.category,
-        )
-        return self.render_to_response(context)
+        return object_list(request,
+                           queryset=news_list,
+                           template_name="news/news_category.html",
+                           paginate_by=10,
+                           extra_context={
+                               'current_category': news_category,
+                               'categories': categories,
+                           })
+
+
 
 class SingleNewsItemView(DetailView):
-    template_name = "single_news.html"
+    template_name = "news/single_news.html"
 
     def get(self, request, category_slug, news_slug):
         try:
@@ -50,5 +53,6 @@ class SingleNewsItemView(DetailView):
         context = self.get_context_data(
             object=self.object,
             category=self.category,
+            categories=NewsCategory.objects.all(),
         )
         return self.render_to_response(context)

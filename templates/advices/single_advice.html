@@ -15,16 +15,29 @@
     </nav>
 {% endblock %}
 
-{% block left_col %}
-    <h1>{{ advice.name }}</h1>
-    {% for node in advice.get_children %}
-        {% if not node.get_children %}
-            <h3>{{ node.name }}</h3>
-        {% else %}
-            <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
-        {% endif %}
-        <p class="b-intro">{{ node.description|safe }}</p>
-    {% endfor %}
+{% block page_title %}
+<h2>{{ advice.name }}</h2>
+{% endblock %}
 
+{% block left_col %}
+    <section class="b-announs b-announs_news">
+    {% for node in children %}
+        {% if not node.get_children %}
+            <article class="announ-item">
+                <header class="ai-head">
+                    <h3>{{ node.name }}</h3>
+                    {{ node.description|safe }}
+                </header>
+            </article>
+        {% else %}
+            <article class="announ-item">
+                <header class="ai-head">
+                    <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+                    {{ node.description|safe }}
+                </header>
+            </article>
+        {% endif %}
+    {% endfor %}
+    </section>
 {% endblock %}
 

@@ -1,0 +1,32 @@
+[
+    {
+        "pk": 3, 
+        "model": "flatpages.flatpage", 
+        "fields": {
+            "registration_required": false, 
+            "title": "\u041e \u043d\u0430\u0441", 
+            "url": "/about/", 
+            "template_name": "flatpages/about.html", 
+            "sites": [
+                1
+            ], 
+            "content": "<h2>\u041e \u043d\u0430\u0441</h2>\r\n<p>lorem ipsum</p>", 
+            "enable_comments": false
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "flatpages.flatpage", 
+        "fields": {
+            "registration_required": false, 
+            "title": "Ipsum", 
+            "url": "/about/lorem/", 
+            "template_name": "flatpages/about.html", 
+            "sites": [
+                1
+            ], 
+            "content": "Dolor sit amet", 
+            "enable_comments": false
+        }
+    }
+]

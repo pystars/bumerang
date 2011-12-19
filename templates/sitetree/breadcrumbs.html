@@ -1,7 +1,7 @@
 {% load sitetree %}
 {% if sitetree_items|length_is:"1" %}
 {% else %}
-<nav>
+<nav class="b-crumbs">
 	{% for item in sitetree_items %}
 		{% if not forloop.last %}
 			<a href="{% sitetree_url for item %}" {% if item.hint %}title="{{ item.hint }}"{% endif %}>{{ item.title_resolved }}</a>

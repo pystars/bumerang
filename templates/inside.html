@@ -6,15 +6,15 @@
 
         <header class="b-page-head">
             {% block breadcrumbs %}
-                {% sitetree_breadcrumbs from "main_menu" template "sitetree/breadcrumbs.html" %}
+            {% sitetree_breadcrumbs from "main_menu" template "sitetree/breadcrumbs.html" %}
             {% endblock %}
+
+            {% block page_title %}{% endblock %}
         </header>
 
-        <article class="b-article">
-            {% block left_col %}
+        {% block left_col %}
 
-            {% endblock %}
-        </article><!--b-article-->
+        {% endblock %}
     </div></section>
     <aside class="l-cols__side"><div class="l-cols__side__i">
         {% block right_col %}
@@ -27,7 +27,7 @@
             </header>
             <p>
                 <a href="">
-                    <img src="{{ STATIC_URL }}i/fake/ban3.jpg" alt="" width="200" height="340" />
+                    <img src="{{ STATIC_URL }}i/fake/ban3.jpg" alt="" width="200" height="340" alt="" />
                 </a>
             </p>
         </section>

@@ -1,0 +1,35 @@
+<nav class="b-pages">
+    <div class="b-pages__title">
+        {% if has_previous %}
+        <span class="larr">
+            <a href="?page={{ previous }}">&larr;</a>
+        </span>
+        {% endif %}
+        <strong>Страницы</strong>
+        {% if has_next %}
+        <span class="rarr"> ctrl <a href="?page={{ next }}">&rarr;</a></span>
+        {% endif %}
+    </div>
+
+    {% if show_first %}
+    <a href="?page=1">1 ...</a>
+    {% endif %}
+
+    {% for linkpage in page_numbers %}
+        {% ifequal linkpage page %}
+            <strong class="selected d-indent2">
+                {{ page }}
+                <i class="d-indent2__tl"></i>
+                <i class="d-indent2__tr"></i>
+                <i class="d-indent2__br"></i>
+                <i class="d-indent2__bl"></i>
+            </strong>
+        {% else %}
+            <a href="?page={{ linkpage }}">{{ linkpage }}</a>
+        {% endifequal %}
+    {% endfor %}
+
+    {% if show_last %}
+        <a href="?page=last">... {{ pages }}</a>
+    {% endif %}
+</nav>

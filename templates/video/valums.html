@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="{{ STATIC_URL}}valums/fileuploader.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/reset.css" />
+	<link rel="stylesheet" href="{{ STATIC_URL }}s/style.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/jqueryui/jquery-ui-1.8.16.custom.css" />
+    <style>    	
+		body {font-size:13px; font-family:arial, sans-serif; width:700px; margin:100px auto;}
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    <script src="{{ STATIC_URL }}valums/fileuploader1.js" type="text/javascript"></script>
+
+</head>
+<body>		
+
+	<div id="file-uploader-demo1">		
+		<noscript>			
+			<p>Please enable JavaScript to use file uploader.</p>
+		</noscript>         
+	</div>
+    <p id="status"></p>
+    <div id="progressbar" style="display: none;"></div>
+
+    <div id="form-tpl" style="display: none;">
+        <div class="qq-uploader">
+        <div class="qq-upload-drop-area"><span>Перетащите файл сюда для загрузки</span></div>
+        <div class="qq-upload-button b-button b-button_yellow b-button_add d-rounded d-rounded_r10">Загрузить видео</div>
+        <ul class="qq-upload-list"></ul>
+        </div>
+    </div>
+
+    <div id="file-tpl" style="display: none;">
+        <li>
+        <span class="qq-upload-file"></span>
+        <span class="qq-upload-spinner"></span>
+        <span class="qq-upload-size"></span>
+        <a class="qq-upload-cancel" href="#">Отменить</a>
+        <span class="qq-upload-failed-text">Не завершено</span>
+        </li>
+    </div>
+
+    <script>
+        function createUploader(){
+            var uploader = new qq.FileUploader({
+                element: document.getElementById('file-uploader-demo1'),
+                action: '{% url VideoView %}',
+                template: $("#form-tpl").html(),
+                //fileTemplate: $("#file-tpl").html(),
+                debug: true,
+                params: {
+                  'csrf_token': '{{ csrf_token }}',
+                  'csrf_name': 'csrfmiddlewaretoken',
+                  'csrf_xname': 'X-CSRFToken'
+                },
+                onSubmit: function(id, fileName){
+                    $("#progressbar").show();
+                },
+                onProgress: function(id, fileName, loaded, total){
+                    $("#progressbar").progressbar({
+                        "value": parseInt(loaded / total * 100, 10)
+                    });
+                },
+                onComplete: function(id, fileName, responseJSON){
+                    $("#status").text("Файл " + fileName + "загружен")
+                }
+            });
+        }
+
+        $(function() {
+            $("#progressbar").progressbar({
+                value: 0
+            });
+
+            window.onload = createUploader;
+        })
+    </script>    
+</body>
+</html>
