@@ -118,9 +118,31 @@ INSTALLED_APPS = (
     # external
     'south',
     'mptt',
-    #'tinymce',
+    'tinymce',
     #'gunicorn',
 )
+TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
+TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
+
+TINYMCE_PLUGINS = [
+    'safari',
+    'table',
+    'advlink',
+    'advimage',
+    'iespell',
+    'inlinepopups',
+    'media',
+    'searchreplace',
+    'contextmenu',
+    'paste',
+    'wordcount'
+]
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,paste,searchreplace",
+    'theme': "advanced",
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+    }
 
 FILEBROWSER_DIRECTORY = 'uploads/'
 
@@ -134,6 +156,7 @@ VIDEO_UPLOAD_PATH = os.path.join(PROJECT_ROOT, 'media/originals/')
 
 if DEBUG:
     INSTALLED_APPS += ('debug_toolbar',)
+    INSTALLED_APPS += ('django_extensions',)
 
     DEBUG_TOOLBAR_PANELS = (
         'debug_toolbar.panels.version.VersionDebugPanel',

@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
-
-
-from cStringIO import StringIO
-
-from datetime import datetime
-
-from io import FileIO, BufferedWriter
-
 import json
 
 from django.shortcuts import render, HttpResponse
 from django.http import Http404
+from django.views.generic import ListView, DetailView
+from django.db.models import Q
 
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
+
+
+class VideoListView(ListView):
+    queryset = Video.objects.filter(
+        Q(hq_file__isnull=False) |
+        Q(mq_file__isnull=False) |
+        Q(lq_file__isnull=False)
+    )
+    paginate_by = 2
+
+class VideoDetailView(DetailView):
+    model = Video
+
 
 def save_upload( uploaded, filename, raw_data ):
     '''
@@ -46,10 +53,10 @@ def save_upload( uploaded, filename, raw_data ):
 
 def upload_view(request):
 
-    if (request.method == 'GET'):
+    if request.method == 'GET':
         return render(request, 'video/upload.html')
 
-    if (request.method == 'POST'):
+    if request.method == 'POST':
 
         if request.is_ajax():
             upload = request

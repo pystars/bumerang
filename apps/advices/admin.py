@@ -5,6 +5,7 @@ from mptt.admin import MPTTModelAdmin
 
 from apps.advices.models import *
 
+
 class AdviceAdmin(MPTTModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
@@ -13,5 +14,6 @@ class AdviceAdmin(MPTTModelAdmin):
             'grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
             'j/tinymce_setup.js',
         ]
+
 
 admin.site.register(Advice, AdviceAdmin)

@@ -65,7 +65,7 @@ tinyMCE.init({
     // content_css : "css/example.css",
     
     // Plugins
-    plugins: 'advimage,advlink,fullscreen,paste,media,searchreplace,grappelli,grappelli_contextmenu,template',
+    plugins: 'table,save,advimage,advlink,fullscreen,paste,media,searchreplace,grappelli,grappelli_contextmenu,template',
     
     // Theme Advanced
     theme_advanced_toolbar_location: 'top',

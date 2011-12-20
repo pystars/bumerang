@@ -1,6 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.core.management import execute_manager
 import imp
+
+
 try:
     imp.find_module('settings') # Assumed to be in the same directory.
 except ImportError:

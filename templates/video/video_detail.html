@@ -1,0 +1,159 @@
+{% extends "inside.html" %}
+{% load sitetree %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block breadcrumbs %}
+<header class="b-page-head">
+    <nav class="b-crumbs">
+        <a href="">Участники</a>
+        <span class="b-crumbs__sep">/</span>
+        <a href="">Константин Константинопольский</a>
+    </nav>
+
+</header>
+{% endblock %}
+
+{% block left_col %}
+    <div class="b-main-box d-rounded d-rounded_r10 d-sh cleared">
+        <section class="b-movie js-toggle2-container">
+            <video class="video" id="movie" width="100%" height="380" preload controls style="background:url(i/fake/video.jpg) repeat-x;">
+                <source src="{{ MEDIA_URL }}{{ object.best_quality_file }}"  width="100%" height="380" poster="{{ MEDIA_URL }}{{ object.preview }}" />
+{#                <img src="{{ object.preview }}" width="100%" height="380" alt="" />#}
+            </video>
+            <div class="b-movie__panel cleared">
+                <div class="b-vote">
+                    <a href="" class="b-vote__like"><i class="b-ico b-ico_heart"><i></i></i><span>нравится</span></a>
+                    <span class="b-vote__rating"><span>67</span></span>
+                    <a href="" class="b-vote__notlike" title="не нравится"><i class="b-ico b-ico_heart2"><i></i></i></a>
+                </div>
+                <div class="viewed">
+                    <i class="b-ico b-ico_eye2"><i></i></i>
+                    5 765 просмотров
+                </div>
+            </div>
+            <article class="js-toggle2-block" style="">
+                <p>
+                    {{ object.description|linebreaksbr }}
+                </p>
+                <ul class="b-opts">
+                    {% if object.genre %}
+                    <li>
+                        <strong>Жанр:</strong>
+                        <span>{{ object.genre.title }}</span>
+                    </li>
+                    {% endif %}
+                    {% if object.city %}
+                    <li>
+                        <strong>Город:</strong>
+                        <span>{{ object.city }}</span>
+                    </li>
+                    {% endif %}
+                    {% if object.country %}
+                    <li>
+                        <strong>Страна:</strong>
+                        <span>{{ object.country }}</span>
+                    </li>
+                    {% endif %}
+                    {% if object.agency %}
+                    <li>
+                        <strong>Учреждение:</strong>
+                        <span>{{ object.agency }}</span>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <strong>Длительность (сек):</strong>
+                        <span>{{ object.duration }}</span>
+                    </li>
+                    {% if object.authors %}
+                        <li>
+                            <strong>Авторы:</strong>
+                            <span>{{ object.authors }}</span>
+                        </li>
+                    {% endif %}
+                    {% if object.year %}
+                        <li>
+                            <strong>Год:</strong>
+                            <span>{{ object.year }}</span>
+                        </li>
+                    {% endif %}
+                    {% if object.festivals %}
+                        <li>
+                            <strong>Участие в фестивалях:</strong>
+                            <span>{{ object.festivals }}</span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </article>
+            <footer class="b-movie__foot">
+                <div class="b-close-lnk">
+                    <i class="b-ico b-ico_x"><i></i></i>
+                    <span class="b-pseudolink js-toggle2-lnk"><span><span class="js-toggle2-text">Скрыть</span> описание ролика</span></span>
+                </div>
+            </footer>
+        </section><!--b-movie-->
+    </div>
+    <section class="b-comments l-comments">
+        <header class="b-comments__head">
+            <h3>Комментарии пользователей</h3>
+        </header>
+        <section class="b-form b-form_comment">
+            <form>
+                <div class="b-form__fields">
+                    <div class="b-form__field">
+                        <label>
+										<span class="b-ava b-ava_small">
+											<img src="i/fake/ava1.jpg" width="100" height="100" alt="" />
+										</span>
+										<span class="f-textarea">
+											<textarea rows="5" cols="20" class="wide"></textarea>
+										</span>
+                        </label>
+                    </div>
+                </div>
+                <footer class="b-form__footer">
+                    <a href="" class="b-button b-button_yellow">Добавить</a>
+                </footer>
+            </form>
+        </section>
+        <div class="b-comments__i">
+            <section class="b-comment">
+                <header class="b-comment__head">
+                    <div class="b-ava b-ava_small">
+                        <img src="i/fake/ava1.jpg" width="100" height="100" alt="" />
+                    </div>
+                    <h4><a href="">Вася Васечкин</a></h4>
+                    <time>12:56, 28.09.2011</time>
+                    <p>
+                        05 июня в городе Реджио Эмилия на площади Пьяцио Коммунале состоялась
+                        церемония Открытия 10-й всемирной встречи и чемпионата мира по
+                        парашютному спорту среди ветеранов. В церемонии Открытия приняли
+                        участие команды из 16 стран мира. Флаг российской сборной нес Петр
+                        Сергеевич Лучшев из Ульяновска.
+                    </p>
+                </header>
+            </section>
+            <section class="b-comment">
+                <header class="b-comment__head">
+                    <div class="b-ava b-ava_small">
+                        <img src="i/fake/ava1.jpg" width="100" height="100" alt="" />
+                    </div>
+                    <h4><a href="">Джон (JOSH)</a></h4>
+                    <time>12:56, 28.09.2011</time>
+                    <p>
+                        Конечная морена прекращает излом, где на поверхность выведены кристаллические структуры фундамента.
+                    </p>
+                </header>
+            </section>
+        </div>
+    </section>
+{% endblock %}
+
+{% block right_col %}
+    <nav class="b-side-nav d-indent">
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}
