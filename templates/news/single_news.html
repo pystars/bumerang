@@ -5,6 +5,7 @@
 
 {% block left_col %}
     <article class="b-article">
+        {% autoescape off %} 
         <header class="b-article__head">
             <h1>{{ newsitem.title }}</h1>
             <time class="date">{{ newsitem.creation_date|date:'d E Y' }}</time>
@@ -13,9 +14,6 @@
             {{ newsitem.preview_text|safe }}
         </p>
         <div class="h-ugc">
-            <p>
-            Команда школьной студии вернулась домой. Наши впечатления и пожелания.
-            </p>
             <figure class="b-quote">
                 <blockquote>
                     {{ newsitem.text|safe }}
@@ -23,6 +21,7 @@
             </figure>
             <a href="{% url NewsIndexView %}">Вернуться к списку новостей</a>
         </div>
+        {% endautoescape %}
     </article><!--b-article-->
 {% endblock %}
 
