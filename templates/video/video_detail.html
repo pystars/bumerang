@@ -21,11 +21,7 @@
 {% block left_col %}
     <div class="b-main-box d-rounded d-rounded_r10 d-sh cleared">
         <section class="b-movie js-toggle2-container">
-            <a id="player" href="{{ MEDIA_URL }}{{ object.best_quality_file }}">
-                <!--
-                <img src="{{ MEDIA_URL }}{{ object.preview }}" alt="{{ object.title }}" style="width: 720px;"/>
-                -->
-            </a>
+            <a id="player" href="{{ MEDIA_URL }}{{ object.best_quality_file }}" style="width: 720px;"></a>
             <div class="b-movie__panel cleared">
                 <div class="b-vote">
                     <a href="" class="b-vote__like"><i class="b-ico b-ico_heart"><i></i></i><span>нравится</span></a>
