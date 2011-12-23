@@ -38,6 +38,9 @@ class Video(models.Model):
         (5, 'Only for me'),
     )
 
+    published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве', default=False)
+    blocked = models.BooleanField(u'Заблокированно', default=False)
+
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.FileField(u"Оригинальное видео", upload_to='videos/originals', **nullable)
