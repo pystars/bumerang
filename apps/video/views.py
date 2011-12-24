@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
+from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render, HttpResponse
 from django.http import Http404
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
+from django.views.generic.edit import CreateView
 
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
@@ -19,6 +21,10 @@ class VideoListView(ListView):
     paginate_by = 2
 
 class VideoDetailView(DetailView):
+    model = Video
+
+
+class VideoCreateView(CreateView):
     model = Video
 
 
