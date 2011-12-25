@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'apps.news',
     'apps.advices',
     'apps.video',
+    'apps.accounts',
 
     # external
     'south',

@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('apps.accounts.urls')),
     url(r'^advices/', include('apps.advices.urls')),
     url(r'^video/', include('apps.video.urls')),
+    url(r'^accounts/', include('apps.accounts.urls')),
 )
 
 if settings.DEBUG:

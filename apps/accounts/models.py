@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-
-from uuid import uuid4
-
 from django.contrib.auth.models import User, UserManager
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
+
 
 nullable = dict(null=True, blank=True)
+
 
 class Profile(User):
     ACCOUNT_TYPES = (
@@ -18,7 +15,7 @@ class Profile(User):
 
     type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
-    e_mail = models.EmailField(u'E-mail', max_length=75, unique=True)
+    e_mail = models.EmailField(u'E-mail', unique=True)
     place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
@@ -42,14 +39,3 @@ class Profile(User):
     team = models.ForeignKey(User, verbose_name=u'Команда', related_name='team', **nullable)
 
     objects = UserManager()
-
-@receiver(pre_save, sender=Profile)
-def profile_pre_save_handler(sender, **kwargs):
-    user = kwargs['instance']
-    user.username = uuid4().get_hex()[:30]
-    from django.contrib.auth.models import get_hexdigest
-    import random
-    algo = 'sha1'
-    salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
-    hsh = get_hexdigest(algo, salt, user.password)
-    user.password = '%s$%s$%s' % (algo, salt, hsh)
