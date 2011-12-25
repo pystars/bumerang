@@ -7,6 +7,7 @@
 
 from django import template
 
+
 register = template.Library()
 
 def paginator(context, adjacent_pages=2):
@@ -23,7 +24,7 @@ def paginator(context, adjacent_pages=2):
     endPage = context['page'] + adjacent_pages + 1
     if endPage >= context['pages'] - 1: endPage = context['pages'] + 1
     page_numbers = [n for n in range(startPage, endPage) \
-            if n > 0 and n <= context['pages']]
+            if 0 < n <= context['pages']]
     page_obj = context['page_obj']
     paginator = context['paginator']
 
@@ -43,4 +44,4 @@ def paginator(context, adjacent_pages=2):
         'show_last': context['pages'] not in page_numbers,
     }
 
-register.inclusion_tag('news/paginator.html', takes_context=True)(paginator)
+register.inclusion_tag('paginator/paginator.html', takes_context=True)(paginator)

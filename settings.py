@@ -95,6 +95,8 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
 )
 
+AUTHENTICATION_BACKENDS = ('apps.accounts.backends.EmailAuthBackend',)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 
     url(r'^$', include('apps.bumerang_site.urls')),
     url(r'^news/', include('apps.news.urls')),
+    url(r'^accounts/', include('apps.accounts.urls')),
     url(r'^advices/', include('apps.advices.urls')),
     url(r'^video/', include('apps.video.urls')),
 )

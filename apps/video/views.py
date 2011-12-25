@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render, HttpResponse
 from django.http import Http404
@@ -26,6 +25,7 @@ class VideoDetailView(DetailView):
 
 class VideoCreateView(CreateView):
     model = Video
+
 
 
 def save_upload( uploaded, filename, raw_data ):
