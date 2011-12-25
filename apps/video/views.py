@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
+from django.core.urlresolvers import reverse
 
 from django.shortcuts import render, HttpResponse
 from django.http import Http404
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, ModelFormMixin
 
+from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
+from apps.video.models import VideoAlbum
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
 
@@ -17,15 +20,49 @@ class VideoListView(ListView):
         Q(mq_file__isnull=False) |
         Q(lq_file__isnull=False)
     )
-    paginate_by = 2
+    paginate_by = 25
+
 
 class VideoDetailView(DetailView):
     model = Video
 
 
+class VideoAlbumDetailView(DetailView):
+    model = VideoAlbum
+
+
 class VideoCreateView(CreateView):
     model = Video
+    form_class = VideoCreateForm
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.album_id = self.kwargs['video_album_id']
+        self.object.owner = self.request.user
+        self.object.save()
+        return super(ModelFormMixin, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(VideoCreateView, self).get_context_data(**kwargs)
+        ctx.update({
+            'video_album': VideoAlbum.objects.get(
+                                    pk=self.kwargs['video_album_id'])
+        })
+        return ctx
+
+
+class VideoAlbumCreateView(CreateView):
+    model = VideoAlbum
+    form_class = VideoAlbumForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super(ModelFormMixin, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('video-add', kwargs={'video_album_id': self.object.id})
 
 
 def save_upload( uploaded, filename, raw_data ):

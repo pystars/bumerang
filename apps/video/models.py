@@ -1,9 +1,24 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 
 
 nullable = dict(null=True, blank=True)
+
+
+class VideoAlbum(models.Model):
+    user = models.ForeignKey(User)
+    title = models.CharField(u'Название', max_length=100)
+    description = models.TextField(u'Описание')
+
+    class Meta:
+        verbose_name = u'Видеоальбом'
+        verbose_name_plural = u'Видеоальбомы'
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
+
 
 class VideoCategory(models.Model):
     title = models.CharField(max_length=255, verbose_name=u"Имя")
@@ -49,13 +64,13 @@ class Video(models.Model):
     lq_file = models.FileField(u'Видео низкого качества', upload_to='videos/low', **nullable)
     preview = models.FileField(u'Превью', upload_to='videos/previews', **nullable)
     duration = models.IntegerField(u'Длительность', default=0, editable=False)
-    owner = models.ForeignKey(User, related_name="videos", verbose_name=u"Владелец")
+    owner = models.ForeignKey(User, verbose_name=u"Владелец")
     broadcast_lists = models.CharField(u'Списки вещания', max_length=255, **nullable)
-    album = models.CharField(u'Альбом', max_length=255, **nullable)
-    category = models.ForeignKey(VideoCategory, verbose_name=u'Категория', related_name="videos", **nullable)
+    album = models.ForeignKey(VideoAlbum, verbose_name=u'Альбом')
+    category = models.ForeignKey(VideoCategory, verbose_name=u'Категория', **nullable)
     description = models.TextField(u'Описание', **nullable)
     year = models.IntegerField(u'Год', default=2011, **nullable)
-    genre = models.ForeignKey(VideoGenre, related_name="videos", verbose_name=u'Жанр', **nullable)
+    genre = models.ForeignKey(VideoGenre, verbose_name=u'Жанр', **nullable)
     country = models.CharField(u'Страна', max_length=255, **nullable)
     city = models.CharField(u'Город', max_length=255, **nullable)
     authors = models.CharField(u'Авторы', max_length=255, **nullable)
@@ -77,3 +92,6 @@ class Video(models.Model):
 
     def best_quality_file(self):
         return self.hq_file or self.mq_file or self.lq_file or None
+
+    def get_absolute_url(self):
+        return reverse('video-detail', kwargs={'pk': self.pk})

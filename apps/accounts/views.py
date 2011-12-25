@@ -20,10 +20,6 @@ class RegistrationFormView(CreateView):
         return HttpResponseRedirect('/')
 
 
-class ProfileView(DetailView):
-    model = Profile
-
-
 class PasswordRecoveryView(FormView):
     form_class = PasswordRecoveryForm
     template_name = "accounts/password_recovery.html"
@@ -37,3 +33,22 @@ class PasswordRecoveryView(FormView):
         send_mail()
 
         return HttpResponseRedirect(self.get_success_url())
+
+
+class ProfileView(DetailView):
+    model = Profile
+
+    def get_object(self, queryset=None):
+        if 'pk' not in self.kwargs:
+            return self.request.user.profile
+        return super(ProfileView, self).get_object(queryset=queryset)
+
+
+class ProfileVideoView(DetailView):
+    model = Profile
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProfileVideoView, self).get_context_data(**kwargs)
+        ctx.update({'video_albums': self.object.videoalbum_set.all()})
+        ctx.update({'videos': self.object.video_set.all()})
+        return ctx

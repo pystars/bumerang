@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+import random
 
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.contrib.auth.models import get_hexdigest
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from apps.accounts.models import Profile
+from apps.video.models import VideoAlbum, Video
 
 
 class RegistrationForm(forms.ModelForm):
@@ -32,18 +34,14 @@ class RegistrationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        #user = super(UserCreationForm, self).save(commit=False)
-        #user.set_password(self.cleaned_data["password1"])
-
         profile = super(RegistrationForm, self).save(commit=False)
 
-        from django.contrib.auth.models import get_hexdigest
-        import random
         algo = 'sha1'
         salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
         hsh = get_hexdigest(algo, salt, profile.password)
         profile.password = '%s$%s$%s' % (algo, salt, hsh)
         profile.username = uuid4().get_hex()[:30]
+        profile.email = profile.e_mail
         if commit:
             profile.save()
         return profile
@@ -52,15 +50,12 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('e_mail', 'type')
-        #        exclude = ('username',)
         widgets = {
-            #'e_mail': StyledTextInput(),
             'type': forms.RadioSelect()
         }
 
 
 #TODO: Перенести email пользователя в модель User из профиля
-
 class PasswordRecoveryForm(forms.Form):
     email = forms.EmailField()
 
@@ -70,3 +65,24 @@ class PasswordRecoveryForm(forms.Form):
             profile = Profile.objects.get(e_mail=email)
         except ObjectDoesNotExist:
             raise ValidationError(u'Пользователь с таким адресом не существует')
+
+
+class VideoAlbumForm(forms.ModelForm):
+    class Meta:
+        model = VideoAlbum
+        fields = ('title', 'description')
+
+
+class VideoCreateForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ('title', 'original_file', 'category', 'description')
+
+
+class VideoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ('title', 'original_file', 'description', 'album')
+
+    def __init__(self, *args, **kwargs):
+        super(VideoUpdateForm, self).__init__(*args, **kwargs)
