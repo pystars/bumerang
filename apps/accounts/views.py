@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.signals import user_logged_in
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.dispatch.dispatcher import receiver
+import random
+
+from django.contrib.auth.models import get_hexdigest
+from django.core.mail import send_mail
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
+from django_extensions.utils.uuid import uuid4
 
 from apps.accounts.forms import RegistrationForm, PasswordRecoveryForm
 from apps.accounts.models import Profile
@@ -27,10 +29,11 @@ class PasswordRecoveryView(FormView):
     template_name = "accounts/password_recovery.html"
 
     def form_valid(self, form):
-        try:
-            profile = Profile.objects.get(e_mail=form.fields['email'])
-        except ObjectDoesNotExist:
-            form.fields['email'].error_messages['invalid'] = u'Пользователь с таким адресом не существует'
-            self.form_invalid(form)
+        new_password = uuid4().get_hex()[:8]
+
+        salt = get_hexdigest('sha1', str(random.random()), str(random.random()))[:5]
+        hash = get_hexdigest('sha1', salt, new_password)
+
+        send_mail()
 
         return HttpResponseRedirect(self.get_success_url())

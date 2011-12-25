@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -64,4 +65,8 @@ class PasswordRecoveryForm(forms.Form):
     email = forms.EmailField()
 
     def clean_email(self):
-        data = self.clean_email()
+        email = self.cleaned_data.get('email', None)
+        try:
+            profile = Profile.objects.get(e_mail=email)
+        except ObjectDoesNotExist:
+            raise ValidationError(u'Пользователь с таким адресом не существует')
