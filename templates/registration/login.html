@@ -1,9 +1,50 @@
-{% extends 'base.html' %}
+{% extends "inside.html" %}
+{% load sitetree %}
 
-{% block content %}
-    <form method="post" action="">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Авторизоваться</button>
+{% block title %}{{ profile.title }}{% endblock %}
+
+{% block left_col %}
+    <section class="b-form">
+        <form action="" method="POST">
+        {% csrf_token %}
+        <header class="b-form__header">
+            <h1>
+                Вход
+            </h1>
+        </header>
+        <div class="b-form__fields">
+            <div class="b-form__field">
+                <label>
+                    <span class="f-title"><span>Почта</span></span>
+								<span class="f-input">
+									<span class="b-input">{{ form.username }}</span>
+								</span>
+                </label>
+                {% if form.username.errors %}<div class="f-err"><span>{{ form.username.errors }}</span></div>{% endif %}
+            </div>
+            <div class="b-form__field">
+                <label>
+                    <span class="f-title"><span>Пароль</span></span>
+								<span class="f-input">
+                                    {{ form.password }}
+								</span>
+                </label>
+                <span class="f-forgot"><a href="#">забыл пароль</a></span>
+            </div>
+            <div class="b-form__field">
+                <div class="f-checkbox">
+                    <input type="checkbox" name="" value="" id="checkbox-01" />
+                    <label for="checkbox-01">
+                        запомнить меня
+                    </label>
+                </div>
+            </div>
+        </div>
+        <footer class="b-form__footer">
+            <!--<div class="wrap"><a href="" class="b-button b-button_yellow">Войти</a></div>-->
+            <input type="submit" value="Войти">
+            <span class="or">или <a href="#">зарегистрироваться</a></span>
+        </footer>
     </form>
+    </section><!--b-form-->
 {% endblock %}

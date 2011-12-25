@@ -17,7 +17,11 @@
                         <header class="b-profile__head cleared">
                             <div class="b-profile__pic">
                                 <div class="b-ava b-ava_big">
-                                    <img src="i/noava-b.jpg" width="175" height="175" alt="" />
+                                    {% if not object.avatar %}
+                                    <img src="{{ STATIC_URL }}i/noava-b.jpg" width="175" height="175" alt="" />
+                                    {% else %}
+                                    <img src="{{ object.avatar }}" width="175" height="175" alt="" />
+                                    {% endif %}
                                     <i class="b-ava__sh"></i>
                                 </div>
                                 <ul class="b-opts b-opts_prof2">
@@ -27,7 +31,7 @@
                             </div>
                             <div class="b-profile__txt">
                                 <ul class="b-service-buttons">
-                                    <li class="edit"><i></i><a href="">Редактировать профиль</a></li>
+                                    <li class="edit"><i></i><a href="#">Редактировать профиль</a></li>
                                 </ul>
                                 <h2>
                                     {% if object.type != 1 %}
