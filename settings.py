@@ -79,7 +79,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'apps.accounts.middleware.KeepLoggedInMiddleware',
 )
+
+# Keep me logged settings
+KEEP_LOGGED_KEY = 'keep_me_logged'
+KEEP_LOGGED_DURATION = 30 # in days
+
 
 # used this component:
 # https://github.com/martinrusev/django-redis-sessions

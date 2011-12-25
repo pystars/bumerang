@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch.dispatcher import receiver
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
 
