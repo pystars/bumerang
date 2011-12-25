@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
+from django.contrib.auth.models import User
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -55,3 +56,12 @@ class RegistrationForm(forms.ModelForm):
             #'e_mail': StyledTextInput(),
             'type': forms.RadioSelect()
         }
+
+
+#TODO: Перенести email пользователя в модель User из профиля
+
+class PasswordRecoveryForm(forms.Form):
+    email = forms.EmailField()
+
+    def clean_email(self):
+        data = self.clean_email()

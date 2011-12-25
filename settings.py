@@ -84,7 +84,7 @@ MIDDLEWARE_CLASSES = (
 
 # Keep me logged settings
 KEEP_LOGGED_KEY = 'keep_me_logged'
-KEEP_LOGGED_DURATION = 30 # in days
+KEEP_LOGGED_DURATION = 30  # in days
 
 
 # used this component:
@@ -181,7 +181,7 @@ if DEBUG:
 
     INTERNAL_IPS = ('127.0.0.1',)
     DEBUG_TOOLBAR_CONFIG = dict(
-        INTERCEPT_REDIRECTS = False
+        INTERCEPT_REDIRECTS=False
     )
 
     STATICFILES_DIRS += (os.path.join(PROJECT_ROOT, 'media'),)
