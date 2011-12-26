@@ -89,7 +89,7 @@ class VideoUpdateForm(forms.ModelForm):
 
 
 
-class ProfileEditForm(forms.ModelForm):
+class ProfileInfoEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
@@ -99,4 +99,11 @@ class ProfileEditForm(forms.ModelForm):
             'birthday',
             'gender',
             'description',
+        )
+
+class ProfileAvatarEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = (
+            'avatar',
         )

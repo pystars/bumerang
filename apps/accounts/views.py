@@ -72,7 +72,7 @@ class UsersListView(ListView):
     paginate_by = 25
 
 
-class ProfileEditView(UpdateView):
+class ProfileInfoEditView(UpdateView):
     model = Profile
     form_class = ProfileEditForm
 
@@ -83,3 +83,7 @@ class ProfileEditView(UpdateView):
 
     def get_success_url(self):
         return reverse("profile-edit")
+
+
+class ProfileAvatarEditView(UpdateView):
+    pass
