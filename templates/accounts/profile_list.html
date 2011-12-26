@@ -1,0 +1,50 @@
+{% extends "inside.html" %}
+{% load sitetree %}
+
+{% block title %}Участники{% endblock %}
+
+{% block left_col %}
+<section class="l-cols__section"><div class="l-cols__section__i">
+    <header class="b-page-head">
+        <h1>Участники</h1>
+    </header>
+    <section class="b-participants">
+        {% for profile in object_list %}
+            {% if profile.is_active %}
+            <div class="b-tag d-rounded d-rounded_r10 d-sh">
+                <div class="b-tag__i">
+                    <section class="b-participants__item cleared">
+                        <div class="b-ava">
+									<span>
+										<img src="{{ STATIC_URL }}i/noava.jpg" width="100" height="100" alt="" />
+									</span>
+                            <i class="b-ava__sh"></i>
+                            {% if profile.type == 1 %}
+                                <div class="b-ava__caption b-ava__caption_participant">Участник</div>
+                            {% endif %}{% if profile.type == 2 %}
+                                <div class="b-ava__caption b-ava__caption_school">Школа</div>
+                            {% endif %}{% if profile.type == 3 %}
+                                <div class="b-ava__caption b-ava__caption_studio">Студия</div>
+                            {% endif %}
+                        </div>
+                        <header class="pi-head">
+                            <h3><a href="{% url profile-detail profile.id %}">{{ profile.title }}</a></h3>
+                            <div>{{ profile.video_list.count }}</div>
+                            <div>Зарегистрировался {{ profile.date_joined|date:'d E Y' }}</div>
+                        </header>
+                        <footer class="pi-foot">
+                            <ul class="b-stat">
+                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                            </ul>
+                        </footer>
+                    </section>
+                </div>
+                <i class="b-tag__hole"></i>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </section>
+    {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
+</div></section>
+{% endblock %}

@@ -86,3 +86,17 @@ class VideoUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(VideoUpdateForm, self).__init__(*args, **kwargs)
+
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'nickname',
+            'place',
+            'birthday',
+            'gender',
+            'description',
+        )

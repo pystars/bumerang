@@ -1,7 +1,14 @@
 {% extends "inside.html" %}
 {% load sitetree %}
 
-{% block title %}{{ profile.title }}{% endblock %}
+{% block title %}
+    {% if object.type != 1 %}
+        {{ object.get_type_display }} {{ object.title }}
+    {% else %}
+        {{ object.title }}
+    {% endif %}
+{% endblock %}
+
 
 {% block left_col %}
         <div class="b-tabs d-sh">
@@ -29,9 +36,7 @@
                                 </ul>
                             </div>
                             <div class="b-profile__txt">
-                                <ul class="b-service-buttons">
-                                    <li class="edit"><i></i><a href="#">Редактировать профиль</a></li>
-                                </ul>
+                                {% include "accounts/service_buttons.html" %}
                                 <h2>
                                     {% if object.type != 1 %}
                                         {{ object.get_type_display }} {{ object.title }}
@@ -46,8 +51,8 @@
                                     {% if object.birthday %}
                                     <li><strong>День рождения</strong> <span>{{ object.birthday }}</span></li>
                                     {% endif %}
-                                    {% if object.username %}
-                                    <li><strong>Никнейм</strong> <span>{{ object.username }}</span></li>
+                                    {% if object.nickname %}
+                                    <li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
                                     {% endif %}
                                 </ul>
                                 <p class="smaller">
@@ -58,8 +63,9 @@
                     </section>
                 </div></dd>
                 <dt>
-                    <span>Видео</span>
-                    <small>0</small>
+                    <!--<span>Видео</span>-->
+                    <a href="{% url profile_video object.id %}">Видео</a>
+                    <small>{{ object.video_set.all.count }}</small>
                     <i class="l"></i>
                     <i class="r"></i>
                 </dt>

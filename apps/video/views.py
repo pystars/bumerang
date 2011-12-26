@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.views.generic.edit import CreateView, ModelFormMixin
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
+from apps.accounts.models import Profile
 from apps.video.models import VideoAlbum
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
@@ -30,6 +31,12 @@ class VideoDetailView(DetailView):
 class VideoAlbumDetailView(DetailView):
     model = VideoAlbum
 
+    def get_context_data(self, **kwargs):
+        ctx = super(VideoAlbumDetailView, self).get_context_data(**kwargs)
+        ctx.update({
+            'profile': Profile.objects.get(pk=kwargs['object'].user.id),
+        })
+        return ctx
 
 class VideoCreateView(CreateView):
     model = Video

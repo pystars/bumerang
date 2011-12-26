@@ -3,12 +3,14 @@ import random
 
 from django.contrib.auth.models import get_hexdigest
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.list import ListView
 from django_extensions.utils.uuid import uuid4
 
-from apps.accounts.forms import RegistrationForm, PasswordRecoveryForm
+from apps.accounts.forms import RegistrationForm, PasswordRecoveryForm, ProfileEditForm
 from apps.accounts.models import Profile
 
 
@@ -25,12 +27,23 @@ class PasswordRecoveryView(FormView):
     template_name = "accounts/password_recovery.html"
 
     def form_valid(self, form):
+        receiver_email = form.data['email']
         new_password = uuid4().get_hex()[:8]
 
         salt = get_hexdigest('sha1', str(random.random()), str(random.random()))[:5]
-        hash = get_hexdigest('sha1', salt, new_password)
+        hsh = get_hexdigest('sha1', salt, new_password)
+        new_password_hash = '%s$%s$%s' % ('sha1', salt, hsh)
 
-        send_mail()
+        profile = Profile.objects.get(e_mail=receiver_email)
+        profile.password = new_password_hash
+        profile.save()
+        #TODO: Сделать отправку почты через шаблоны и класс работы с почтой
+        send_mail(
+            u'Восстановление пароля от сервиса БумерангПРО',
+            u'Ваш новый пароль: %s' % new_password,
+            u'alexilorenz@gmail.com',
+            [receiver_email],
+        )
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -52,3 +65,21 @@ class ProfileVideoView(DetailView):
         ctx.update({'video_albums': self.object.videoalbum_set.all()})
         ctx.update({'videos': self.object.video_set.all()})
         return ctx
+
+
+class UsersListView(ListView):
+    model = Profile
+    paginate_by = 25
+
+
+class ProfileEditView(UpdateView):
+    model = Profile
+    form_class = ProfileEditForm
+
+    def get_object(self, queryset=None):
+        if 'pk' not in self.kwargs:
+            return self.request.user.profile
+        return super(ProfileView, self).get_object(queryset=queryset)
+
+    def get_success_url(self):
+        return reverse("profile-edit")

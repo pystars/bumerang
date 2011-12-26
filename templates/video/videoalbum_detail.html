@@ -1,0 +1,97 @@
+{% extends "inside.html" %}
+{% load sitetree %}
+{% load rupluralize %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block left_col %}
+    <div class="b-tabs d-sh">
+        <dl>
+            <dt class="first">
+                <span>Профиль</span>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd><div class="b-tabs__tab-content">
+            </div></dd>
+            <dt class="selected">
+                <span>Видео</span>
+                <small>{{ object.video_set.all.count }}</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd class="selected"><div class="b-tabs__tab-content">
+                <section class="b-profile">
+                    <header class="b-profile__head b-profile__head_small cleared">
+                        <div class="b-profile__pic">
+                            <div class="b-ava b-ava_small">
+                                <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
+                                <i class="b-ava__sh"></i>
+                            </div>
+                        </div>
+                        <div class="b-profile__txt">
+                            <ul class="b-service-buttons">
+                                <li class="edit"><i></i><a href="">Редактировать профиль</a></li>
+                            </ul>
+                            <h4>{{ object.user.profile.title }}</h4>
+                            <p>{{ object.user.profile.place }}</p>
+                        </div>
+                    </header>
+                </section>
+                <div class="b-hr"><hr /></div>
+                <header class="b-head cleared">
+                    <ul class="b-service-buttons">
+                        <li class="addphoto"><i></i><a href="">Добавить фото</a></li>
+                        <li class="edit"><i></i><a href="">Редактировать альбом</a></li>
+                    </ul>
+                    <a href="" class="b-button-prev"><span>Все альбомы</span></a>
+                    <h3>
+                        {{ object.title }}
+                    </h3>
+                    <div class="b-head__descr d-rounded d-rounded_r5">
+                        {{ object.description }}
+                    </div>
+                </header>
+                <section class="b-announs b-announs_movie b-announs_movie_cols">
+                    <header class="announs-head cleared">
+                        <p class="smaller">Всего {{ object.video_set.count }} видео</p>
+                    </header>
+                    <div class="announs-items">
+                        {% for video in object.video_set.all %}
+                        <article class="announ-item">
+                            <div class="ai-img d-sh">
+                                <a href="">
+											<span>
+												<img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
+												<span class="time">{{ video.duration }}</span>
+											</span>
+                                    <i class="b-ico b-ico_play"><i></i></i>
+                                </a>
+                            </div>
+                            <header class="ai-head">
+                                <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
+                            </header>
+                            <footer class="ai-foot">
+                                <time class="date">{{ video.created }}</time>
+                                <ul class="b-stat">
+                                    <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                    <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                                </ul>
+                            </footer>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div></dd>
+            <dt>
+                <span>Фото</span>
+                <small>0</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd><div class="b-tabs__tab-content">
+            </div></dd>
+        </dl>
+    </div>
+    </div></section>
+{% endblock %}
