@@ -29,7 +29,7 @@
                                     {{ form.password }}
 								</span>
                 </label>
-                <span class="f-forgot"><a href="#">забыл пароль</a></span>
+                <span class="f-forgot"><a href="{% url password-recover %}">забыл пароль</a></span>
             </div>
             <div class="b-form__field">
                 <div class="f-checkbox">
@@ -43,7 +43,7 @@
         <footer class="b-form__footer">
             <!--<div class="wrap"><a href="" class="b-button b-button_yellow">Войти</a></div>-->
             <input type="submit" value="Войти">
-            <span class="or">или <a href="#">зарегистрироваться</a></span>
+            <span class="or">или <a href="{% url registration %}">зарегистрироваться</a></span>
         </footer>
     </form>
     </section><!--b-form-->

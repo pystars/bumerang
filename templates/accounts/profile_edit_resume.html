@@ -1,0 +1,112 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+
+{% block title %}Редактирование резюме{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/cusel.css"/>
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/cusel-min-2.4.1.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.custominput.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+    <section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_resume">
+        <form name="resume_form" action="" method="POST">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <h3 class="title">Работа и карьера</h3>
+
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Род деятельности</span></span>
+												<span class="f-textarea">
+													{{ form.work }}
+												</span>
+                    </label>
+                </div>
+                <!--
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Компания</span></span>
+												<span class="f-textarea">
+													<textarea rows="5" cols="45" class="wide wide_resume"></textarea>
+												</span>
+                    </label>
+                </div>
+                -->
+                <h3 class="title">Образование</h3>
+
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Учебные заведения, специальность</span></span>
+												<span class="f-textarea">
+													{{ form.education }}
+												</span>
+                    </label>
+                </div>
+                <!--
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Учебные курсы, сертификаты</span></span>
+												<span class="f-textarea">
+													<textarea rows="5" cols="45" class="wide wide_resume"></textarea>
+												</span>
+                    </label>
+                </div>
+                -->
+                <h3 class="title">Интересы</h3>
+
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Увлечения и хобби</span></span>
+												<span class="f-textarea">
+													{{ form.interests }}
+												</span>
+                    </label>
+                </div>
+                <!--
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Любимые фильмы и телепередачи</span></span>
+												<span class="f-textarea">
+													<textarea rows="5" cols="45" class="wide wide_resume"></textarea>
+												</span>
+                    </label>
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Любимая музыка</span></span>
+												<span class="f-textarea">
+													<textarea rows="5" cols="45" class="wide wide_resume"></textarea>
+												</span>
+                    </label>
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Любимые книги</span></span>
+												<span class="f-textarea">
+													<textarea rows="5" cols="45" class="wide wide_resume"></textarea>
+												</span>
+                    </label>
+                </div>
+                -->
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="" class="b-button b-button_yellow" onclick="document.resume_form.submit();">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+    </section>
+{% endblock %}
+
+{% block edit_side_nav %}
+    <ul>
+        <li><a href="{% url profile-edit %}">Общая информация</a></li>
+        <li><a href="{% url profile-edit-avatar %}">Фотография профиля</a></li>
+        <li class="selected"><strong>Резюме</strong></li>
+        <li><a href="">Настройка аккаунта</a></li>
+    </ul>
+{% endblock %}

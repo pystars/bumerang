@@ -6,11 +6,12 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django_extensions.utils.uuid import uuid4
 
-from apps.accounts.forms import RegistrationForm, PasswordRecoveryForm, ProfileEditForm
+from apps.accounts.forms import *
 from apps.accounts.models import Profile
 
 
@@ -74,16 +75,32 @@ class UsersListView(ListView):
 
 class ProfileInfoEditView(UpdateView):
     model = Profile
-    form_class = ProfileEditForm
+    form_class = ProfileInfoEditForm
 
     def get_object(self, queryset=None):
-        if 'pk' not in self.kwargs:
-            return self.request.user.profile
-        return super(ProfileView, self).get_object(queryset=queryset)
+        return self.request.user.profile
 
     def get_success_url(self):
         return reverse("profile-edit")
 
 
 class ProfileAvatarEditView(UpdateView):
-    pass
+    model = Profile
+    form_class = ProfileAvatarEditForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse('profile-edit-avatar')
+
+
+class ProfileResumeEditView(UpdateView):
+    model = Profile
+    form_class = ProfileResumeEditForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse('profile-edit-resume')

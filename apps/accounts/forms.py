@@ -107,3 +107,13 @@ class ProfileAvatarEditForm(forms.ModelForm):
         fields = (
             'avatar',
         )
+
+
+class ProfileResumeEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = (
+            'work',
+            'education',
+            'interests',
+        )

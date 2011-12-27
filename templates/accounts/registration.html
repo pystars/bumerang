@@ -6,7 +6,7 @@
 {% block left_col %}
     <section class="l-cols__section"><div class="l-cols__section__i">
         <section class="b-form b-form_register">
-            <form action="{% url registration_form %}" method="POST">
+            <form action="{% url registration %}" method="POST">
             {% csrf_token %}
             <header class="b-form__header">
                 <h1>

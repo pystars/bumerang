@@ -1,0 +1,47 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+{% load rupluralize %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+        <dl>
+            <dt class="first selected">
+                <span>Профиль</span>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd class="selected">
+                <div class="l-cols l-cols_tab"><div class="l-cols__bg-section"><div></div></div><div class="l-cols__i cleared">
+                    <section class="l-cols__section"><div class="l-cols__section__i">
+                        {% block edit_form %}
+
+                        {% endblock %}
+                    </div></section>
+                    <aside class="l-cols__side"><div class="l-cols__side__i">
+                        <nav class="b-tab-sidenav">
+                            {% block edit_side_nav %}
+
+                            {% endblock %}
+                        </nav>
+                    </div></aside>
+                </div></div>
+            </dd>
+            <dt>
+                <span>Видео</span>
+                <small>{{ form.instance.video_set.all.count }}</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd><div class="b-tabs__tab-content">
+            </div></dd>
+            <dt>
+                <span>Фото</span>
+                <small>0</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd><div class="b-tabs__tab-content">
+            </div></dd>
+        </dl>
+    </div>
+{% endblock %}
