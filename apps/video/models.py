@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
@@ -95,3 +97,26 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
+
+
+class PlayList(models.Model):
+    name = models.CharField(u'Название', max_length=120)
+    start_date = models.DateTimeField(u'Время старта плейлиста',
+        default=datetime.now)
+    end_date = models.DateTimeField(u'Время окончания плейлиста')
+    videos = models.ManyToManyField(Video, through='PlayListItem')
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+
+class PlayListItem(models.Model):
+    playlist = models.ForeignKey(PlayList)
+    video = models.ForeignKey(Video)
+    start_date = models.DateTimeField(u'Время старта видео')
+    end_date = models.DateTimeField(u'Время окончания видео')
+    sort_order = models.IntegerField(u'Порядок сортировки')
+
+    def __unicode__(self):
+        return u'{0}-{1}:{2}'.format(
+            self.start_date, self.end_date, self.video.title)
