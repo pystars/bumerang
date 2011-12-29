@@ -1,0 +1,56 @@
+{% extends "news/news_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
+
+{% block left_column %}
+    <article class="b-article">
+        {% autoescape off %} 
+            <header class="b-article__head">
+                <h1>{{ newsitem.title }}</h1>
+                <time class="date">{{ newsitem.creation_date|date:'d E Y' }}</time>
+            </header>
+            <p class="b-intro">
+                {{ newsitem.preview_text|safe }}
+            </p>
+            <div class="h-ugc">
+                <figure class="b-quote">
+                    <blockquote>
+                        {{ newsitem.text|safe }}
+                    </blockquote>
+                </figure>
+                <a href="{% url NewsIndexView %}">Вернуться к списку новостей</a>
+            </div>
+        {% endautoescape %}
+    </article>
+    <header class="b-page-head">
+        <h1>Новости</h1>
+    </header>
+    <section class="b-announs b-announs_news">
+        {% for item in object_list %}
+            <article class="announ-item">
+                <header class="ai-head">
+                    <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
+                    <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                    {{ item.preview_text|safe }}
+                </header>
+            </article>
+        {% endfor %}
+        {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
+    </section>
+{% endblock %}
+
+{% block right_menu %}
+    <nav class="b-side-nav d-indent">
+        <ul>
+            <li class="selected"><strong>Все новости</strong></li>
+            {% for category in news_categories %}
+                <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}

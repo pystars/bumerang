@@ -17,14 +17,14 @@
                 <div class="ai-img d-sh">
                     <a href="{% url video-detail item.slug %}">
                         <span>
-                            <img src="i/fake/mov1b.jpg" width="190" height="123" alt="" />
-                            <span class="time">1:54</span>
+                            <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
+                            <span class="time">{{ item.duration }}</span>
                         </span>
                         <i class="b-ico b-ico_play"><i></i></i>
                     </a>
                 </div>
                 <header class="ai-head">
-                    <h3><a href="{% url video-detail item.slug %}">{{ item.title }}</a></h3>
+                    <h3><a href="{% url video-detail item.id %}">{{ item.title }}</a></h3>
                     <p>
                         {{ item.description|linebreaksbr }}
                     </p>

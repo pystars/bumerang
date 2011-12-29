@@ -104,3 +104,21 @@ class ProfileResumeEditView(UpdateView):
 
     def get_success_url(self):
         return reverse('profile-edit-resume')
+
+
+class ProfileSettingsEditView(UpdateView):
+    model = Profile
+    form_class = ProfilePasswordEditForm
+
+#    def get_context_data(self, **kwargs):
+#        ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
+#        ctx.update({
+#            'pwd_form': ProfilePasswordEditForm(prefix="ororo"),
+#        })
+#        return ctx
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse('profile-edit-settings')

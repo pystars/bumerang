@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
 import random
+from django.contrib.auth.forms import PasswordChangeForm
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import get_hexdigest
@@ -117,3 +118,16 @@ class ProfileResumeEditForm(forms.ModelForm):
             'education',
             'interests',
         )
+
+
+class ProfileSettingsEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = (
+            'email',
+        )
+
+
+class ProfilePasswordEditForm(PasswordRecoveryForm):
+    class Meta:
+        model = Profile

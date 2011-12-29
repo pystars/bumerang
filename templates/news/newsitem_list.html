@@ -1,15 +1,12 @@
-{% extends "inside.html" %}
+{% extends "news/news_wrapper.html" %}
 {% load sitetree %}
 
 {% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
 
-{% block breadcrumbs %}{% endblock %}
-
-{% block page_title %}
-    <h1>Новости</h1>
-{% endblock %}
-
-{% block left_col %}
+{% block left_column %}
+    <header class="b-page-head">
+        <h1>Новости</h1>
+    </header>
     <section class="b-announs b-announs_news">
     {% for item in object_list %}
         <article class="announ-item">
@@ -20,14 +17,11 @@
             </header>
         </article>
     {% endfor %}
-
     {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
-
     </section>
-
 {% endblock %}
 
-{% block right_col %}
+{% block right_menu %}
     <nav class="b-side-nav d-indent">
         <ul>
             <li class="selected"><strong>Все новости</strong></li>

@@ -7,6 +7,7 @@ from django.views.generic.list_detail import object_list
 
 from apps.news.models import *
 
+
 class NewsRootView(ListView):
     def get(self, request, *args, **kwargs):
         categories = NewsCategory.objects.all()

@@ -23,8 +23,8 @@ def paginator(context, adjacent_pages=2):
     if startPage <= 3: startPage = 1
     endPage = context['page'] + adjacent_pages + 1
     if endPage >= context['pages'] - 1: endPage = context['pages'] + 1
-    page_numbers = [n for n in range(startPage, endPage) \
-            if 0 < n <= context['pages']]
+    page_numbers = [n for n in range(startPage, endPage)\
+                    if n > 0 and n <= context['pages']]
     page_obj = context['page_obj']
     paginator = context['paginator']
 

@@ -32,3 +32,4 @@ class NewsItem(models.Model):
     class Meta:
         verbose_name = u'Новость'
         verbose_name_plural = u'Новости'
+        ordering = ('-creation_date',)
