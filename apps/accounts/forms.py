@@ -14,7 +14,8 @@ from apps.video.models import VideoAlbum, Video
 
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
-    password2 = forms.CharField(label=_("Password confirmation"), widget=forms.PasswordInput,
+    password2 = forms.CharField(label=_("Password confirmation"),
+        widget=forms.PasswordInput,
         help_text = _("Enter the same password as above, for verification."))
 
     def __init__(self, *args, **kwargs):
@@ -25,7 +26,7 @@ class RegistrationForm(forms.ModelForm):
                 if field.widget.attrs.has_key('class'):
                     field.widget.attrs['class'] += ' medium'
                 else:
-                    field.widget.attrs.update({'class':'medium'})
+                    field.widget.attrs.update({'class': 'medium'})
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1", "")
@@ -51,7 +52,6 @@ class RegistrationForm(forms.ModelForm):
 
     def save(self, commit=True):
         profile = super(RegistrationForm, self).save(commit=False)
-
         algo = 'sha1'
         salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
         hsh = get_hexdigest(algo, salt, self.cleaned_data['password1'])
@@ -60,7 +60,6 @@ class RegistrationForm(forms.ModelForm):
         if commit:
             profile.save()
         return profile
-
 
     class Meta:
         model = Profile
@@ -103,7 +102,6 @@ class VideoUpdateForm(forms.ModelForm):
         super(VideoUpdateForm, self).__init__(*args, **kwargs)
 
 
-
 class ProfileInfoEditForm(forms.ModelForm):
     class Meta:
         model = Profile
@@ -115,6 +113,7 @@ class ProfileInfoEditForm(forms.ModelForm):
             'gender',
             'description',
         )
+
 
 class ProfileAvatarEditForm(forms.ModelForm):
     class Meta:

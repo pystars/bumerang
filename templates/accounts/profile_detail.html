@@ -3,10 +3,15 @@
 {% load rupluralize %}
 
 {% block title %}
-    {% if object.type != 1 %}
-        {{ object.get_type_display }} {{ object.title }}
+    {% if object.user.id == user.id %}
+        Ваш профиль
     {% else %}
-        {{ object.title }}
+{#  TODO: Избежать отображения None #}
+        {% if object.type != 1 %}
+            {{ object.get_type_display }} {{ object.title }}
+        {% else %}
+            {{ object.title }}
+        {% endif %}
     {% endif %}
 {% endblock %}
 
