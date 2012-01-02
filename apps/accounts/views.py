@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import random
+from django.contrib.auth.forms import PasswordChangeForm
 
 from django.contrib.auth.models import get_hexdigest
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.shortcuts import render_to_response
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
@@ -20,7 +22,7 @@ class RegistrationFormView(CreateView):
     template_name = "accounts/registration.html"
 
     def get_success_url(self):
-        return HttpResponseRedirect('/')
+        return reverse('BumerangIndexView')
 
 
 class PasswordRecoveryView(FormView):
@@ -110,15 +112,22 @@ class ProfileSettingsEditView(UpdateView):
     model = Profile
     form_class = ProfilePasswordEditForm
 
-#    def get_context_data(self, **kwargs):
-#        ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
-#        ctx.update({
-#            'pwd_form': ProfilePasswordEditForm(prefix="ororo"),
-#        })
-#        return ctx
-
     def get_object(self, queryset=None):
         return self.request.user.profile
 
     def get_success_url(self):
         return reverse('profile-edit-settings')
+
+
+class ProfilePasswordChangeView(UpdateView):
+    model = Profile
+    form_class = PasswordChangeForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_form(self, form_class):
+        return form_class(self.get_object())
+
+    def get_success_url(self):
+        return reverse('profile-edit-password')

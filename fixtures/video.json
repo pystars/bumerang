@@ -1,1 +1,0 @@
-[{"pk": 1, "model": "video.videocategory", "fields": {"slug": "testovaya-kategoriya", "title": "\u0422\u0435\u0441\u0442\u043e\u0432\u0430\u044f \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f"}}, {"pk": 1, "model": "video.videogenre", "fields": {"slug": "arthaus", "title": "\u0410\u0440\u0442\u0445\u0430\u0443\u0441"}}]

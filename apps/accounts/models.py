@@ -24,7 +24,7 @@ class Profile(User):
     type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
     avatar = models.ImageField(u'Фотография профиля', upload_to='avatars', **nullable)
-    e_mail = models.EmailField(u'E-mail', unique=True)
+    #e_mail = models.EmailField(u'E-mail', unique=True)
     place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
@@ -35,9 +35,9 @@ class Profile(User):
     Специфические для разных типов пользователей поля
     '''
     # Независимый участник
-    work = models.CharField(u'Работа и карьера', max_length=255, **nullable)
-    education = models.CharField(u'Образование', max_length=255, **nullable)
-    interests = models.CharField(u'Образование', max_length=255, **nullable)
+    work = models.TextField(u'Работа и карьера', **nullable)
+    education = models.TextField(u'Образование', **nullable)
+    interests = models.TextField(u'Образование', **nullable)
     nickname = models.CharField(u'Никнейм', max_length=100, **nullable)
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 

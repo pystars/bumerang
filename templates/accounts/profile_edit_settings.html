@@ -9,57 +9,13 @@
         <div class="b-form__fields">
             <form action="" method="POST">
                 {% csrf_token %}
-                {{ form.errors }}
-                {{ form }}
+                {% for error in pwd_form.errors %}
+                    {{ error }}
+                {% endfor %}
+                {{ pwd_form }}
                 <input type="submit">
             </form>
-            <div class="b-form__field b-form__field_login">
-                <label>
-                    <span class="f-title"><span>Логин-почта</span></span>
-												<span class="f-txt">
-													<strong>helloimderek@gmail.com</strong>
-												</span>
-                </label>
-            </div>
-            <div class="b-form__field">
-                <label>
-                    <span class="f-title"><span>Новая почта</span></span>
-												<span class="f-input">
-													<input type="text" value="" class="" />
-												</span>
-                </label>
-            </div>
         </div>
-        <footer class="b-form__footer">
-            <div class="wrap">
-                <a href="" class="b-button b-button_yellow">Изменить</a>
-            </div>
-        </footer>
-    </section><!--b-form-->
-    <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
-        <div class="b-form__fields">
-            <div class="b-form__field">
-                <label>
-                    <span class="f-title"><span>Новая пароль</span></span>
-												<span class="f-input">
-													<input type="password" value="" class="" />
-												</span>
-                </label>
-            </div>
-            <div class="b-form__field">
-                <label>
-                    <span class="f-title"><span>Повторите</span></span>
-												<span class="f-input">
-													<input type="password" value="" />
-												</span>
-                </label>
-            </div>
-        </div>
-        <footer class="b-form__footer">
-            <div class="wrap">
-                <a href="" class="b-button b-button_yellow">Изменить</a>
-            </div>
-        </footer>
-    </section><!--b-form-->
-</div></section>
+    </section>
+</section>
 {% endblock %}

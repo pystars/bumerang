@@ -20,7 +20,7 @@ class RegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            if field.widget.__class__ == forms.widgets.TextInput\
+            if field.widget.__class__ == forms.widgets.TextInput \
             or field.widget.__class__ == forms.widgets.PasswordInput:
                 if field.widget.attrs.has_key('class'):
                     field.widget.attrs['class'] += ' medium'
@@ -34,15 +34,29 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError(_("The two password fields didn't match."))
         return password2
 
+    def clean_email(self):
+        '''
+        Мы не можем изменить модель пользователя для указания
+        уникальности поля email, а стороннее вмешательство в БД
+        это не Ъ. Поэтому просто проводим
+        выборку по указанному адресу. Процедура регистрации
+        вызывается редко и не должна стать причиной излишней нагрузки
+       '''
+        email = self.cleaned_data.get('email', '')
+        try:
+            Profile.objects.get(email=email)
+            raise forms.ValidationError('Пользователь с таким адресом уже существует.')
+        except ObjectDoesNotExist:
+            return email
+
     def save(self, commit=True):
         profile = super(RegistrationForm, self).save(commit=False)
 
         algo = 'sha1'
         salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
-        hsh = get_hexdigest(algo, salt, profile.password)
+        hsh = get_hexdigest(algo, salt, self.cleaned_data['password1'])
         profile.password = '%s$%s$%s' % (algo, salt, hsh)
         profile.username = uuid4().get_hex()[:30]
-        profile.email = profile.e_mail
         if commit:
             profile.save()
         return profile
@@ -50,7 +64,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('e_mail', 'type')
+        fields = ('email', 'type')
         widgets = {
             'type': forms.RadioSelect()
         }
