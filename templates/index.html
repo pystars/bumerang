@@ -43,18 +43,18 @@
                     <div class="b-head-user cleared">
                         <div class="right">
                             <div class="b-head-user__help"><a href="" class="b-head-user__link b-head-user__link">Помощь</a></div>
-                            <div class="b-head-user__exit"><a href="" class="b-head-user__link b-head-user__link_exit">Выйти</a></div>
+                            <div class="b-head-user__exit"><a href="{% url logout %}" class="b-head-user__link b-head-user__link_exit">Выйти</a></div>
                         </div>
                         <div class="b-dropdown2 cleared" id="dropdown2">
                             <div class="b-ava b-ava_small">
-                                <a href="http://konst/" class="js-double-hover">
+                                <a href="{% url profile-detail user.id %}" class="js-double-hover" title="{{ user.profile.title }}">
                                     <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
                                 </a>
                                 <i class="b-ava__sh"></i>
                             </div>
                             <ul class="b-dropdown2__list">
                                 <li class="b-dropdown2__item b-dropdown2__item_name b-dropdown2__visible">
-                                    <a href="http://konst/" class="b-dropdown2__name">Константин Константинопольский</a>
+                                    <a href="{% url profile-detail user.id %}" class="b-dropdown2__name" title="{{ user.profile.title }}">{{ user.profile.title }}</a>
                                     <div class="b-dropdown2__button"><div class="arr"></div></div>
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
