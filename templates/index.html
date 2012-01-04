@@ -33,10 +33,54 @@
 				<a href="#" class="b-button b-button_yellow b-button_add">Добавить видео</a>
 			</li>
 			<li>
-				<div class="enter-lnk">
-					<i class="b-ico b-ico_key"><i></i></i>
-					<span class="b-pseudolink popup-handle" rel="popup-login"><span>Вход с паролем</span></span>
-				</div>
+                {% if not user.id %}
+                    <div class="enter-lnk">
+                        <i class="b-ico b-ico_key"><i></i></i>
+                        <span class="b-pseudolink popup-handle" rel="popup-login"><span>Вход с паролем</span></span>
+                    </div>
+                {% else %}
+                    <div class="b-head-user cleared">
+                        <div class="right">
+                            <div class="b-head-user__help"><a href="" class="b-head-user__link b-head-user__link">Помощь</a></div>
+                            <div class="b-head-user__exit"><a href="" class="b-head-user__link b-head-user__link_exit">Выйти</a></div>
+                        </div>
+                        <div class="b-dropdown2 cleared" id="dropdown2">
+                            <div class="b-ava b-ava_small">
+                                <a href="http://konst/" class="js-double-hover">
+                                    <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
+                                </a>
+                                <i class="b-ava__sh"></i>
+                            </div>
+                            <ul class="b-dropdown2__list">
+                                <li class="b-dropdown2__item b-dropdown2__item_name b-dropdown2__visible">
+                                    <a href="http://konst/" class="b-dropdown2__name">{{ user.profile.title }}</a>
+                                    <div class="b-dropdown2__button"><div class="arr"></div></div>
+                                </li>
+                                <li class="b-dropdown2__item b-dropdown2__visible">
+                                    <a href="" class="b-dropdown2__link">Сообщения</a>
+                                    <small class="b-dropdown2__count">1678</small>
+                                </li>
+                                <li class="b-dropdown2__item b-dropdown2__visible">
+                                    <a href="" class="b-dropdown2__link">Друзья</a>
+                                    <small class="b-dropdown2__count">2</small>
+                                </li>
+                                <li class="b-dropdown2__item">
+                                    <a href="" class="b-dropdown2__link">Видеосюжеты</a>
+                                </li>
+                                <li class="b-dropdown2__item">
+                                    <a href="" class="b-dropdown2__link">Фотографии</a>
+                                </li>
+                                <li class="b-dropdown2__item">
+                                    <a href="" class="b-dropdown2__link">Комментарии</a>
+                                    <small class="b-dropdown2__count">26</small>
+                                </li>
+                                <li class="b-dropdown2__item">
+                                    <a href="" class="b-dropdown2__link">Избранное видео</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
 			</li>
 		</ul>
 	</header>
@@ -363,5 +407,57 @@
 		<p class="intex">Проектирование — компания &laquo;<a href="">Интех-М</a>&raquo;</p>
 	</aside>
 </div></footer><!--l-foot-->
+<div class="l-tint" id="tint"></div>
+<section class="b-popup" id="popup-login" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <form name="login_form" action="{% url login %}" method="post">
+            {% csrf_token %}
+        <header class="b-form__header">
+            <h3>
+                Вход
+            </h3>
+        </header>
+        <div class="b-form__fields">
+            <div class="b-form__field">
+                <label>
+                    <span class="f-title"><span>Почта</span></span>
+					<span class="f-input">
+						{{ auth_form.username }}
+					</span>
+                </label>
+            </div>
+            <div class="b-form__field">
+                <label>
+                    <span class="f-title"><span>Пароль</span></span>
+					<span class="f-input">
+						{{ auth_form.password }}
+					</span>
+                </label>
+                <span class="f-forgot"><a href="{% url password-recover %}">забыл пароль</a></span>
+            </div>
+            <div class="b-form__field b-form__field_remember">
+                <div class="f-checkbox">
+                    <input type="checkbox" name="" value="" id="checkbox-01" />
+                    <label for="checkbox-01">
+                        запомнить меня
+                    </label>
+                </div>
+            </div>
+        </div>
+        <footer class="b-form__footer">
+            <div class="wrap">
+                <a href="" class="b-button b-button_yellow" onclick="document.login_form.submit();">Войти</a>
+            </div>
+            <span class="or">или <a href="{% url registration %}">зарегистрироваться</a></span>
+            <div class="clear"></div>
+        </footer>
+        </form>
+    </section><!--b-form-->
+    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
 </body>
 </html>

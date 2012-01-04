@@ -24,7 +24,6 @@ class Profile(User):
     type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
     avatar = models.ImageField(u'Фотография профиля', upload_to='avatars', **nullable)
-    #e_mail = models.EmailField(u'E-mail', unique=True)
     place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)

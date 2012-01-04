@@ -70,6 +70,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
+
+    'apps.accounts.context_processors.global_login_form',
 )
 
 MIDDLEWARE_CLASSES = (
