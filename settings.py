@@ -70,6 +70,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
 
     'apps.accounts.context_processors.global_login_form',
 )
@@ -84,6 +85,8 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'apps.accounts.middleware.KeepLoggedInMiddleware',
 )
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 # Keep me logged settings
 KEEP_LOGGED_KEY = 'keep_me_logged'

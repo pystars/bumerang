@@ -2,11 +2,22 @@
 
 {% block title %}Редактироване профиля{% endblock %}
 
+{% block notifications %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert-message {{ message.tags }}">
+            <a class="close msg-close" href="#">×</a>
+            <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
 
 {% block edit_form %}
 <section class="b-form b-form_smaller b-form_edit">
     <form name="info_form" action="" method="POST">
         {% csrf_token %}
+
         <div class="b-form__fields">
             <h3 class="title">Редактирование профиля</h3>
             <fieldset>
@@ -27,6 +38,9 @@
                                                             {{ form.title }}
                                                         </span>
                     </label>
+                    {% if form.title.errors %}
+                        <div class="f-err"><span>{{ form.title.errors }}</span></div>
+                    {% endif %}
                 </div>
                 {% if form.instance.type == 1 %}
                     <div class="b-form__field">
@@ -37,6 +51,9 @@
                                                         </span>
                         </label>
                     </div>
+                    {% if form.nickname.errors %}
+                        <div class="f-err"><span>{{ form.nickname.errors }}</span></div>
+                    {% endif %}
                     <div class="b-form__field">
                         <label>
                             <span class="f-title"><span>День рождения</span></span>
@@ -44,6 +61,9 @@
                                                             {{ form.birthday }}
                                                         </span>
                         </label>
+                        {% if form.birthday.errors %}
+                        <div class="f-err"><span>{{ form.birthday.errors }}</span></div>
+                        {% endif %}
                     </div>
                     <div class="b-form__field b-form__field_select last">
                         <span class="f-title"><span>Пол</span></span>
@@ -62,6 +82,9 @@
                                                             {{ form.place }}
                                                         </span>
                     </label>
+                    {% if form.place.errors %}
+                        <div class="f-err"><span>{{ form.place.errors }}</span></div>
+                    {% endif %}
                 </div>
             </fieldset>
             <div class="b-form__field">
@@ -79,6 +102,9 @@
                                                         {{ form.description }}
                                                     </span>
                 </label>
+                {% if form.description.errors %}
+                    <div class="f-err"><span>{{ form.description.errors }}</span></div>
+                {% endif %}
             </div>
         </div>
         <footer class="b-form__footer">

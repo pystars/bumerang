@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
-import random
-from django.contrib.auth.forms import PasswordChangeForm
-
-from django.contrib.auth.models import get_hexdigest
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
-from django_extensions.utils.uuid import uuid4
+from django.contrib import messages
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile
@@ -84,6 +78,15 @@ class ProfileInfoEditView(UpdateView):
 
     def get_success_url(self):
         return reverse("profile-edit")
+
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.add_message(self.request, messages.SUCCESS, u'Профиль успешно обновлен')
+        return super(ProfileInfoEditView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, u'Ошибка при обновлении профиля')
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class ProfileAvatarEditView(UpdateView):

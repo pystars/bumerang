@@ -22,7 +22,6 @@
 </head>
 <body>
 <div class="l-page"><div class="l-page__i">
-    {% block notifications %}{% endblock %}
     <header class="l-head">
         <div class="l-head__space"></div>
         <div class="logo">
@@ -80,56 +79,5 @@
         <p class="intex">Проектирование — компания &laquo;<a href="">Интех-М</a>&raquo;</p>
     </aside>
 </div></footer><!--l-foot-->
-<div class="l-tint" id="tint"></div>
-<section class="b-popup" id="popup-login" style="left:50%; top:100px;">
-    <section class="b-form b-form_smaller b-form_popup">
-        <header class="b-form__header">
-            <h3>
-                Вход
-            </h3>
-        </header>
-        <div class="b-form__fields">
-            <div class="b-form__field">
-                <label>
-                    <span class="f-title"><span>Почта</span></span>
-					<span class="f-input">
-						<input type="text" value="" class="medium" />
-					</span>
-                </label>
-                <div class="f-err"><span>Ошибка в адресе электронной почты</span></div>
-            </div>
-            <div class="b-form__field">
-                <label>
-                    <span class="f-title"><span>Пароль</span></span>
-					<span class="f-input">
-						<input type="password" value="" class="medium" />
-					</span>
-                </label>
-                <span class="f-forgot"><a href="">забыл пароль</a></span>
-            </div>
-            <div class="b-form__field b-form__field_remember">
-                <div class="f-checkbox">
-                    <input type="checkbox" name="" value="" id="checkbox-01" />
-                    <label for="checkbox-01">
-                        запомнить меня
-                    </label>
-                </div>
-            </div>
-        </div>
-        <footer class="b-form__footer">
-            <div class="wrap">
-                <div class="hint"><small>Осталось заполнить почту и пароль</small></div>
-                <a href="" class="b-button b-button_yellow disabled">Войти</a>
-            </div>
-            <span class="or">или <a href="">зарегистрироваться</a></span>
-            <div class="clear"></div>
-        </footer>
-    </section><!--b-form-->
-    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
-    <div class="b-popup__tl"></div>
-    <div class="b-popup__tr"></div>
-    <div class="b-popup__br"></div>
-    <div class="b-popup__bl"></div>
-</section><!--b-popup-->
 </body>
 </html>
