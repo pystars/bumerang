@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.forms import UserChangeForm
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
+from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
@@ -111,26 +113,33 @@ class ProfileResumeEditView(UpdateView):
         return reverse('profile-edit-resume')
 
 
-class ProfileSettingsEditView(UpdateView):
-    model = Profile
-    form_class = ProfilePasswordEditForm
+class ProfileSettingsEditView(TemplateView):
+    template_name = "accounts/profile_edit_settings.html"
 
-    def get_object(self, queryset=None):
-        return self.request.user.profile
+    def get_context_data(self, **kwargs):
+        ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
+        ctx.update({
+            'email_form': ProfileEmailEditForm(),
+            'pwd_form': PasswordChangeForm(self.request.user),
+        })
+        ctx.update(kwargs)
+        return ctx
 
-    def get_success_url(self):
-        return reverse('profile-edit-settings')
+    def post(self, request):
+        if 'old_password' in request.POST:
+            pwd_form = PasswordChangeForm(self.request.user, request.POST)
+            if pwd_form.is_valid():
+                messages.add_message(self.request, messages.SUCCESS, u'Пароль успешно изменен')
+                return self.render_to_response(self.get_context_data())
+            else:
+                messages.add_message(self.request, messages.ERROR, u'Ошибка при изменении пароля')
+                return self.render_to_response(self.get_context_data(pwd_form=pwd_form))
 
-
-class ProfilePasswordChangeView(UpdateView):
-    model = Profile
-    form_class = PasswordChangeForm
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-    def get_form(self, form_class):
-        return form_class(self.get_object())
-
-    def get_success_url(self):
-        return reverse('profile-edit-password')
+        if 'email' in request.POST:
+            email_form = ProfileEmailEditForm(request.POST)
+            if email_form.is_valid():
+                messages.add_message(self.request, messages.SUCCESS, u'Почтовый адрес успешно изменен')
+                return self.render_to_response(self.get_context_data())
+            else:
+                messages.add_message(self.request, messages.ERROR, u'Ошибка при изменении почтового адреса')
+                return self.render_to_response(self.get_context_data(email_form=email_form))

@@ -133,14 +133,12 @@ class ProfileResumeEditForm(forms.ModelForm):
         )
 
 
-class ProfileSettingsEditForm(forms.ModelForm):
+class ProfileEmailEditForm(forms.ModelForm):
+    email = forms.EmailField(required=True)
     class Meta:
         model = Profile
-        fields = (
-            'email',
-        )
+        fields = ('email',)
 
-
-class ProfilePasswordEditForm(PasswordRecoveryForm):
-    class Meta:
-        model = Profile
+#class ProfilePasswordEditForm(PasswordRecoveryForm):
+#    class Meta:
+#        model = Profile

@@ -2,17 +2,6 @@
 
 {% block title %}Редактироване профиля{% endblock %}
 
-{% block notifications %}
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert-message {{ message.tags }}">
-            <a class="close msg-close" href="#">×</a>
-            <p>{{ message }}</p>
-        </div>
-        {% endfor %}
-    {% endif %}
-{% endblock %}
-
 {% block edit_form %}
 <section class="b-form b-form_smaller b-form_edit">
     <form name="info_form" action="" method="POST">

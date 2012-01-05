@@ -86,7 +86,7 @@ MIDDLEWARE_CLASSES = (
     'apps.accounts.middleware.KeepLoggedInMiddleware',
 )
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Keep me logged settings
 KEEP_LOGGED_KEY = 'keep_me_logged'

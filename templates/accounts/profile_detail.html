@@ -67,6 +67,44 @@
 						</div>
 					</header>
 				</section>
+                <div class="tab-container js-toggle2-container js-toggle2-container_resume">
+                    <div class="b-hr"><hr /></div>
+                    <div class="tab-block js-toggle2-block">
+                        <section class="b-resume">
+                            {% if object.work %}
+                            <h2>Работа и карьера</h2>
+                            <dl>
+                                <dt>Род деятельности</dt>
+                                <dd>
+                                    {{ object.work }}
+                                </dd>
+                            </dl>
+                            {% endif %}
+                            {% if object.education %}
+                            <h2>Образование</h2>
+                            <dl>
+                                <dt>Учебные заведения, специальность</dt>
+                                <dd>
+                                    {{ object.education }}
+                                </dd>
+                            </dl>
+                            {% endif %}
+                            {% if object.interests %}
+                            <h2>Интересы</h2>
+                            <dl>
+                                <dt>Увлечения и хобби</dt>
+                                <dd>
+                                    {{ object.interests }}
+                                </dd>
+                            </dl>
+                            {% endif %}
+                        </section>
+                    </div>
+                    <div class="tab-button">
+                        <div class="b-hr"><hr /></div>
+                        <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
+                    </div>
+                </div>
 			</div></dd>
 			<dt>
 				<span>Видео</span>

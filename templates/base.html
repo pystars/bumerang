@@ -22,6 +22,16 @@
 </head>
 <body>
 <div class="l-page"><div class="l-page__i">
+    {% block notifications %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-message {{ message.tags }}">
+                    <a class="close msg-close" href="#">×</a>
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
     <header class="l-head">
         <div class="l-head__space"></div>
         <div class="logo">
