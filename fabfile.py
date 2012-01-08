@@ -13,6 +13,7 @@ def update(branch):
 	 Makes git pull
 	'''
 	with cd('/web/bumerang'):
+		run('git reset --hard HEAD')
 		run('git pull origin {0}'.format(branch))
 
 def sync():
