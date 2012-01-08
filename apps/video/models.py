@@ -4,7 +4,10 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch.dispatcher import receiver
+from django.db.models.signals import post_save
 
+from mediainfo import get_metadata
 
 nullable = dict(null=True, blank=True)
 
@@ -120,3 +123,21 @@ class PlayListItem(models.Model):
     def __unicode__(self):
         return u'{0}-{1}:{2}'.format(
             self.start_date, self.end_date, self.video.title)
+
+@receiver(post_save, sender=Video)
+def video_post_save(sender, **kwargs):
+    video = kwargs['instance']
+    if not video.duration:
+        floatint = lambda x: int(float(x))
+        query = {
+            'General' : {'VideoCount' : bool},
+            'Video' : {
+                'FrameRate' : floatint,
+                'Width' : int, 'Height' : int,
+                'Duration' : int, 'BitRate' : floatint,
+                'FrameCount' : int
+            }
+        }
+        minfo = get_metadata(video.original_file.path, **query)
+        video.duration = minfo['Video']['Duration']
+        video.save()
