@@ -4,8 +4,6 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
-from django.dispatch.dispatcher import receiver
-from django.db.models.signals import post_save
 
 from mediainfo import get_metadata
 
@@ -88,6 +86,23 @@ class Video(models.Model):
 
     #TODO: ratings
 
+    def save(self, force_insert=False, force_update=False, using=None):
+        super(Video, self).save(force_insert, force_update, using)
+        if not self.duration:
+            floatint = lambda x: int(float(x))
+            query = {
+                'General' : {'VideoCount' : bool},
+                'Video' : {
+                    'FrameRate' : floatint,
+                    'Width' : int, 'Height' : int,
+                    'Duration' : int, 'BitRate' : floatint,
+                    'FrameCount' : int
+                }
+            }
+            minfo = get_metadata(self.original_file.path, **query)
+            self.duration = minfo['Video']['Duration']
+            self.save()
+
     def __unicode__(self):
         return u'{0}'.format(self.title)
 
@@ -123,21 +138,3 @@ class PlayListItem(models.Model):
     def __unicode__(self):
         return u'{0}-{1}:{2}'.format(
             self.start_date, self.end_date, self.video.title)
-
-@receiver(post_save, sender=Video)
-def video_post_save(sender, **kwargs):
-    video = kwargs['instance']
-    if not video.duration:
-        floatint = lambda x: int(float(x))
-        query = {
-            'General' : {'VideoCount' : bool},
-            'Video' : {
-                'FrameRate' : floatint,
-                'Width' : int, 'Height' : int,
-                'Duration' : int, 'BitRate' : floatint,
-                'FrameCount' : int
-            }
-        }
-        minfo = get_metadata(video.original_file.path, **query)
-        video.duration = minfo['Video']['Duration']
-        video.save()
