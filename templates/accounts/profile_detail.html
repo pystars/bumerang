@@ -43,13 +43,20 @@
 						</div>
 						<div class="b-profile__txt">
 							{% include "accounts/service_buttons.html" %}
-							<h2>
+
+                            {% if object.title %}
 								{% if object.type != 1 %}
-									{{ object.get_type_display }} {{ object.title }}
+                                    <h2>{{ object.get_type_display }} &laquo;{{ object.title }}&raquo;</h2>
 								{% else %}
-									{{ object.title }}
+									<h2>{{ object.title }}</h2>
 								{% endif %}
-							</h2>
+                            {% endif %}
+
+                            {% if not object.title %}
+                                Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
+                                Заполните его в разделе &laquo;<a href="{% url profile-edit %}">редактирования</a>&raquo;
+                            {% endif %}
+
 							<ul class="b-opts b-opts_prof1">
 								{% if object.place %}
 								<li><strong>Откуда</strong><span>{{ object.place }}</span></li>
@@ -61,12 +68,16 @@
 								<li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
 								{% endif %}
 							</ul>
+                            {% if object.description %}
 							<p class="smaller">
 								{{ object.description }}
 							</p>
+                            {% endif %}
 						</div>
 					</header>
 				</section>
+
+                {% if object.work or object.education or object.interests or object.services or object.team %}
                 <div class="tab-container js-toggle2-container js-toggle2-container_resume">
                     <div class="b-hr"><hr /></div>
                     <div class="tab-block js-toggle2-block">
@@ -98,6 +109,22 @@
                                 </dd>
                             </dl>
                             {% endif %}
+                            {% if object.team %}
+                                <h2>Команда</h2>
+                                <dl>
+                                    <dd>
+                                        {{ object.team }}
+                                    </dd>
+                                </dl>
+                            {% endif %}
+                            {% if object.services %}
+                            <h2>Услуги</h2>
+                            <dl>
+                                <dd>
+                                    {{ object.services }}
+                                </dd>
+                            </dl>
+                            {% endif %}
                         </section>
                     </div>
                     <div class="tab-button">
@@ -105,6 +132,7 @@
                         <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
                     </div>
                 </div>
+                {% endif %}
 			</div></dd>
 			<dt>
 				<span>Видео</span>

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.forms import UserChangeForm
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
@@ -73,10 +72,20 @@ class UsersListView(ListView):
 
 class ProfileInfoEditView(UpdateView):
     model = Profile
-    form_class = ProfileInfoEditForm
+    #form_class = ProfileInfoEditForm
 
     def get_object(self, queryset=None):
         return self.request.user.profile
+
+    def get_form_class(self):
+        # Выбираем тип формы
+        # в зависимости от типа профиля
+        if self.request.user.profile.type == 1:
+            return UserProfileInfoForm
+        if self.request.user.profile.type == 2:
+            return SchoolProfileInfoForm
+        if self.request.user.profile.type == 3:
+            return StudioProfileInfoForm
 
     def get_success_url(self):
         return reverse("profile-edit")
@@ -91,6 +100,50 @@ class ProfileInfoEditView(UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
+class ProfileFacultiesEditView(UpdateView):
+    model = Profile
+    form_class = SchoolProfileFacultiesForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse("profile-edit-faculties")
+
+
+class ProfileTeachersEditView(UpdateView):
+    model = Profile
+    form_class = SchoolProfileTeachersForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse("profile-edit-teachers")
+
+
+class ProfileServicesEditView(UpdateView):
+    model = Profile
+    form_class = StudioProfileServicesForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse("profile-edit-services")
+
+
+class ProfileTeamEditView(UpdateView):
+    model = Profile
+    form_class = StudioProfileTeamForm
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse("profile-edit-team")
+
+
 class ProfileAvatarEditView(UpdateView):
     model = Profile
     form_class = ProfileAvatarEditForm
@@ -100,6 +153,12 @@ class ProfileAvatarEditView(UpdateView):
 
     def get_success_url(self):
         return reverse('profile-edit-avatar')
+
+    def form_valid(self, form):
+        import json
+        coords = json.loads(form.cleaned_data['coords'])
+        messages.add_message(self.request, messages.ERROR, u'Фотография профиля успешно обновлена')
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class ProfileResumeEditView(UpdateView):
@@ -124,6 +183,9 @@ class ProfileSettingsEditView(TemplateView):
         })
         ctx.update(kwargs)
         return ctx
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
 
     def post(self, request):
         if 'old_password' in request.POST:

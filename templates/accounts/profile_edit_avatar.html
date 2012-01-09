@@ -4,16 +4,18 @@
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/cusel.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/jquery.Jcrop.css" />
 {% endblock %}
 
 {% block head_js %}
     <script type="text/javascript" src="{{ STATIC_URL }}j/cusel-min-2.4.1.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.custominput.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.Jcrop.min.js"></script>
 {% endblock %}
 
 {% block edit_form %}
 <section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_photo">
-    <form name="avatar_form" action="" method="POST">
+    <form name="avatar_form" action="{% url profile-edit-avatar %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="b-form__fields">
             <h3 class="title">Редактирование Фотографии</h3>
@@ -25,20 +27,13 @@
             <div class="b-form__field">
                 <label>
                     <span class="f-input">
-                        {{ form.avatar }}
+                        {{ form }}
                     </span>
                 </label>
             </div>
-            <div class="b-form__photo" style="background:url({{ STATIC_URL }}i/fake/photo.jpg) no-repeat; width:500px; height:275px;">
-                <div class="selected-area"
-                     style="left:100px; top:110px; width:100px; height:100px; background:url({{ STATIC_URL }}i/fake/photo.jpg) -100px -110px no-repeat;">
-                    <div class="selected-area__border"></div>
-                    <i class="selected-area__handle tl"></i>
-                    <i class="selected-area__handle tr"></i>
-                    <i class="selected-area__handle br"></i>
-                    <i class="selected-area__handle bl"></i>
-                </div>
-                <div class="paranja"></div>
+            {% if user.profile.avatar %}
+                <img src="{{ MEDIA_URL }}{{ user.profile.avatar }}" id="current_avatar"/>
+            {% endif %}
             </div>
         </div>
         <footer class="b-form__footer">

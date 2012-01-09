@@ -1,4 +1,5 @@
 {% extends "accounts/profile_edit_wrapper.html" %}
+{% load sitetree %}
 
 {% block title %}Редактироване профиля{% endblock %}
 
@@ -6,7 +7,6 @@
 <section class="b-form b-form_smaller b-form_edit">
     <form name="info_form" action="" method="POST">
         {% csrf_token %}
-
         <div class="b-form__fields">
             <h3 class="title">Редактирование профиля</h3>
             <fieldset>
@@ -112,4 +112,7 @@
         <li><a href="{% url profile-edit-resume %}">Резюме</a></li>
         <li><a href="{% url profile-edit-settings %}">Настройка аккаунта</a></li>
     </ul>
+    {% if user.profile.type == 1 %}
+        {% sitetree_menu from "profiles_menu" include "users_tree,this-siblings" template "accounts/left_menu.html" %}
+    {% endif %}
 {% endblock %}

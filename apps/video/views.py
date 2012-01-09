@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 
 from django.shortcuts import render, HttpResponse
@@ -48,6 +49,10 @@ class VideoCreateView(CreateView):
         self.object.owner = self.request.user
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, u'Ошибка при загрузке видео')
+        return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
         ctx = super(VideoCreateView, self).get_context_data(**kwargs)

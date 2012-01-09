@@ -2,7 +2,6 @@
 from django.contrib.auth.models import User, UserManager
 from django.db import models
 
-
 nullable = dict(null=True, blank=True)
 
 def get_avatar_path(instance, filename):
@@ -42,10 +41,16 @@ class Profile(User):
 
     # Школа
     faculties = models.CharField(u'Образование', max_length=255, **nullable)
-    teachers = models.ForeignKey(User, verbose_name=u'Преподаватели', related_name='teachers', **nullable)
+    teachers = models.ForeignKey('self', verbose_name=u'Преподаватели', related_name='teachers_set', **nullable)
 
     #Студия
     services = models.CharField(u'Услуги', max_length=255, **nullable)
-    team = models.ForeignKey(User, verbose_name=u'Команда', related_name='team', **nullable)
+    team = models.ForeignKey('self', verbose_name=u'Команда', **nullable)
 
     objects = UserManager()
+
+    def __unicode__(self):
+        if self.title:
+            return self.title
+        else:
+            return self.email

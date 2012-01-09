@@ -116,6 +116,7 @@ class ProfileInfoEditForm(forms.ModelForm):
 
 
 class ProfileAvatarEditForm(forms.ModelForm):
+    coords = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Profile
         fields = (
@@ -142,3 +143,93 @@ class ProfileEmailEditForm(forms.ModelForm):
 #class ProfilePasswordEditForm(PasswordRecoveryForm):
 #    class Meta:
 #        model = Profile
+
+
+class UserProfileInfoForm(forms.ModelForm):
+    '''
+    Форма редактирования профиля пользователя
+    '''
+    title = forms.CharField(max_length=255, label=u'Имя, фамилия')
+    description = forms.CharField(label=u'О себе', widget=forms.Textarea)
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'nickname',
+            'place',
+            'birthday',
+            'gender',
+            'description',
+            )
+
+class SchoolProfileInfoForm(forms.ModelForm):
+    '''
+    Форма редактирования профиля школы
+    '''
+    title = forms.CharField(max_length=255, label=u'Название')
+    description = forms.CharField(label=u'О себе', widget=forms.Textarea)
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'place',
+            'description',
+            )
+
+class SchoolProfileFacultiesForm(forms.ModelForm):
+    '''
+    Форма редактирования факультетов школы
+    '''
+    class Meta:
+        model = Profile
+        fields = (
+            'faculties',
+            )
+
+
+class SchoolProfileTeachersForm(forms.ModelForm):
+    '''
+    Форма редактирования преподавателей школы
+    '''
+    class Meta:
+        model = Profile
+        fields = (
+            'teachers',
+            )
+
+
+class StudioProfileInfoForm(forms.ModelForm):
+    '''
+    Форма редактирования профиля студии
+    '''
+    title = forms.CharField(max_length=255, label=u'Название')
+    description = forms.CharField(widget=forms.Textarea, label=u'Описание')
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'place',
+            'description',
+            )
+
+
+class StudioProfileServicesForm(forms.ModelForm):
+    '''
+    Форма редактирования услуг студии
+    '''
+    class Meta:
+        model = Profile
+        fields = (
+            'services',
+            )
+
+
+class StudioProfileTeamForm(forms.ModelForm):
+    '''
+    Форма редактирования команды студии
+    '''
+    class Meta:
+        model = Profile
+        fields = (
+            'team',
+            )

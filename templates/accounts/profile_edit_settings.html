@@ -3,18 +3,19 @@
 {% block title %}Редактирование резюме{% endblock %}
 
 {% block edit_form %}
-    <section class="l-cols__section"><div class="l-cols__section__i">
-        <h3 class="title">Настройки</h3>
-        <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
-            <form name="email_form" action="" method="post">
+    <h3 class="title">Настройки</h3>
+    <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
+    <form name="email_form" action="" method="post">
             {% csrf_token %}
             <div class="b-form__fields">
                 <div class="b-form__field b-form__field_login">
                     <label>
-                        <span class="f-title"><span>Логин-почта</span></span>
-												<span class="f-txt">
-													<strong>{{ user.email }}</strong>
-												</span>
+                        <span class="f-title">
+                            <span>Логин-почта</span>
+                        </span>
+                        <span class="f-txt">
+                            <strong>{{ user.email }}</strong>
+                        </span>
                     </label>
                 </div>
                 <div class="b-form__field">
@@ -34,10 +35,10 @@
                     <a href="" class="b-button b-button_yellow" onclick="document.email_form.submit();">Изменить</a>
                 </div>
             </footer>
-            </form>
-        </section><!--b-form-->
-        <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
-            <form name="password_form" action="" method="post">
+        </form>
+    </section><!--b-form-->
+    <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
+        <form name="password_form" action="" method="post">
             {% csrf_token %}
             <div class="b-form__fields">
                 <div class="b-form__field">
@@ -79,7 +80,6 @@
                     <a href="" class="b-button b-button_yellow" onclick="document.password_form.submit();">Изменить</a>
                 </div>
             </footer>
-            </form>
-        </section><!--b-form-->
-    </div></section>
+        </form>
+    </section><!--b-form-->
 {% endblock %}

@@ -1,9 +1,106 @@
-{% extends 'base.html' %}
+{% extends "video/video_wrapper.html" %}
+{% load sitetree %}
+{% load rupluralize %}
 
-{% block content %}
-<form method="post" action="{% url video-add video_album.id %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button>Добавить</button>
-</form>
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/alerts.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/site.js"></script>
+{% endblock %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+        <dl>
+            <dt class="first">
+                <span>Профиль</span>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+
+            <dd class="selected"><div class="b-tabs__tab-content">
+                <section class="b-profile">
+                    <header class="b-profile__head b-profile__head_small cleared">
+                        <div class="b-profile__pic">
+                            <div class="b-ava b-ava_small">
+                                <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
+                                <i class="b-ava__sh"></i>
+                            </div>
+                        </div>
+                        <div class="b-profile__txt">
+                            {% include "accounts/service_buttons.html" %}
+                            <h4>
+                                {% if user.profile.title %}
+                                    {% if user.profile.title %}
+                                        {% if user.profile.type != 1 %}
+                                            {{ user.profile.get_type_display }} &laquo;{{ user.profile.title }}&raquo;
+                                        {% else %}
+                                            {{ user.profile.title }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    Заполните имя профиля
+                                {% endif %}
+                            </h4>
+                            <p>{{ user.profile.place }}</p>
+                        </div>
+                    </header>
+                </section>
+                <div class="b-hr"><hr /></div>
+                <header class="b-head cleared">
+                    <a href="{% url video-album-detail video_album.id %}" class="b-button-prev"><span>Назад</span></a>
+                    <h3>
+                        Добавить видео в альбом &laquo;{{ video_album.title }}&raquo;
+                    </h3>
+                </header>
+                <section class="b-form b-form_album b-form_smaller">
+                    <form name="editform" action="{% url video-add video_album.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="b-form__fields">
+                            {% for item in form %}
+                                <fieldset>
+                                    <div class="b-form__field">
+                                        <label>
+                                <span class="f-title">
+                                    <span>{{ item.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ item }}
+                                </span>
+                                        </label>
+                                        {% if item.errors %}
+                                            <div class="f-err"><span>{{ item.errors }}</span></div>
+                                        {% endif %}
+                                    </div>
+                                </fieldset>
+                            {% endfor %}
+                        </div>
+                        <footer class="b-form__footer">
+                            <div class="wrap">
+                                <a href="" class="b-button b-button_yellow" onclick="document.editform.submit();">Создать</a>
+                            </div>
+                        </footer>
+                    </form>
+                </section><!--b-form-->
+            </div></dd>
+
+            <dt class="selected">
+                <span>Видео</span>
+                <small>{{ user.video_set.all.count }}</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd><div class="b-tabs__tab-content">
+            </div></dd>
+            <dt>
+                <span>Фото</span>
+                <small>0</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd><div class="b-tabs__tab-content">
+            </div></dd>
+        </dl>
+    </div>
 {% endblock %}

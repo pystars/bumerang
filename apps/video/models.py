@@ -91,12 +91,8 @@ class Video(models.Model):
         if not self.duration:
             floatint = lambda x: int(float(x))
             query = {
-                'General' : {'VideoCount' : bool},
                 'Video' : {
-                    'FrameRate' : floatint,
-                    'Width' : int, 'Height' : int,
-                    'Duration' : int, 'BitRate' : floatint,
-                    'FrameCount' : int
+                    'Duration' : int,
                 }
             }
             minfo = get_metadata(self.original_file.path, **query)
