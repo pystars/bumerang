@@ -8,3 +8,4 @@ django-mptt==0.5.2
 django-sitetree==0.6
 django-tinymce==1.5.1b2
 wsgiref==0.1.2
+django-extensions

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta, datetime
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.aggregates import Max
 
 
 nullable = dict(null=True, blank=True)
@@ -40,6 +43,7 @@ class Video(models.Model):
 
     published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве', default=False)
     blocked = models.BooleanField(u'Заблокированно', default=False)
+    is_in_broadcast_lists = models.BooleanField(u'Списки вещания', default=False)
 
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
@@ -48,9 +52,8 @@ class Video(models.Model):
     mq_file = models.FileField(u'Видео среднего качества', upload_to='videos/medium', **nullable)
     lq_file = models.FileField(u'Видео низкого качества', upload_to='videos/low', **nullable)
     preview = models.FileField(u'Превью', upload_to='videos/previews', **nullable)
-    duration = models.IntegerField(u'Длительность', default=0, editable=False)
+    duration = models.IntegerField(u'Длительность', default=0)#, editable=False)
     owner = models.ForeignKey(User, related_name="videos", verbose_name=u"Владелец")
-    broadcast_lists = models.CharField(u'Списки вещания', max_length=255, **nullable)
     album = models.CharField(u'Альбом', max_length=255, **nullable)
     category = models.ForeignKey(VideoCategory, verbose_name=u'Категория', related_name="videos", **nullable)
     description = models.TextField(u'Описание', **nullable)
@@ -63,8 +66,9 @@ class Video(models.Model):
     teachers = models.CharField(u'Педагоги', max_length=255, **nullable)
     manager = models.CharField(u'Руководитель', max_length=255, **nullable)
     festivals = models.TextField(u'Фестивали', **nullable)
-    access = models.IntegerField(u'Кому доступно видео', choices=ACCESS_FLAGS, default=1, **nullable)
-    created = models.DateTimeField(u'Дата добавления', auto_now_add=True)
+    access = models.IntegerField(u'Кому доступно видео', choices=ACCESS_FLAGS,
+        default=1, **nullable)
+    created = models.DateTimeField(u'Дата добавления', default=datetime.now)
 
     #TODO: ratings
 
@@ -77,3 +81,59 @@ class Video(models.Model):
 
     def best_quality_file(self):
         return self.hq_file or self.mq_file or self.lq_file or None
+
+
+class Channel(models.Model):
+    name = models.CharField(u'Канал вещания', max_length=255,
+        help_text=u'Например "главная страница"')
+    slug = models.SlugField(max_length=255)
+
+    class Meta:
+        verbose_name = u'Канал вещания'
+        verbose_name = u'Каналы вещания'
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+
+class PlayListItem(models.Model):
+    video = models.ForeignKey(Video,
+        limit_choices_to={'is_in_broadcast_lists': True})
+    playlist = models.ForeignKey('PlayList')
+    offset = models.IntegerField(
+        u'Отсрочка со времени начала воспроизведения плейлиста', null=True)
+    sort_order = models.IntegerField(u'порядок сортировки', **nullable)
+
+    class Meta:
+        ordering = ['sort_order', 'id']
+
+    def play_from(self):
+        return self.playlist.rotate_from + timedelta(seconds=self.offset)
+
+    def play_till(self):
+        return self.play_from() + timedelta(seconds=self.video.duration)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.video.title)
+
+
+class PlayList(models.Model):
+    channel = models.ForeignKey(Channel)
+    videos = models.ManyToManyField(Video, verbose_name=u'Видео',
+        through=PlayListItem)
+    rotate_from = models.DateTimeField(u'Время начала ротации')
+    created = models.DateTimeField(u'Дата создания',
+        default=datetime.now, editable=False)
+
+    class Meta:
+        verbose_name = u'Список воспроизведения'
+        verbose_name = u'Списки воспроизведения'
+
+    def __unicode__(self):
+        return u'{0}:{1}-{2}'.format(
+            self.channel.name, self.rotate_from, self.rotate_till())
+
+    def rotate_till(self):
+        duration = timedelta(seconds=self.playlistitem_set.aggregate(
+                            duration=Max('video__duration'))['duration'] or 0)
+        return self.rotate_from + duration
