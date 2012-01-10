@@ -32,7 +32,7 @@
 								{% if not object.avatar %}
 								<img src="{{ STATIC_URL }}i/noava-b.jpg" width="175" height="175" alt="" />
 								{% else %}
-								<img src="{{ object.avatar }}" width="175" height="175" alt="" />
+								<img src="{{ object.min_avatar.url }}" width="175" height="175" alt="" />
 								{% endif %}
 								<i class="b-ava__sh"></i>
 							</div>

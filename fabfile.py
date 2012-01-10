@@ -29,3 +29,6 @@ def fullsync(branch):
 	reload()
 	
 
+# def getvideo():
+# 	with cd('/web/bumerang'):
+# 		get('/web/videoconverting-tester/media/converted/1-B64-w720-ZHigh_Profile-b900-r25.mp4', './')

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
 import random
-from django.contrib.auth.forms import PasswordChangeForm
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import get_hexdigest
@@ -116,11 +115,12 @@ class ProfileInfoEditForm(forms.ModelForm):
 
 
 class ProfileAvatarEditForm(forms.ModelForm):
-    coords = forms.CharField(widget=forms.HiddenInput(), required=False)
+    avatar_coords = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Profile
         fields = (
             'avatar',
+            'avatar_coords',
         )
 
 

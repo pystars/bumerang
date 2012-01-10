@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
+
+import json
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    import StringIO
+
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
@@ -155,11 +166,60 @@ class ProfileAvatarEditView(UpdateView):
         return reverse('profile-edit-avatar')
 
     def form_valid(self, form):
-        import json
-        coords = json.loads(form.cleaned_data['coords'])
-        messages.add_message(self.request, messages.ERROR, u'Фотография профиля успешно обновлена')
-        return self.render_to_response(self.get_context_data(form=form))
+        if form.cleaned_data.get('avatar_coords', ''):
+            coords = json.loads(form.cleaned_data['avatar_coords'])
+        else:
+            coords = {
+                'x': 0,
+                'y': 0,
+                'x2': 150,
+                'y2': 150,
+            }
+        """
+        Эта константа зависит от шаблона страницы
+        и означает максимальную ширину изображения
+        так как будучи большим, оно может выйти за
+        рамки шаблона. Фактически, константа должна
+        быть тождественна свойству max-width картинки
+        с Crop'ом. Если исходное изображение шире этой
+        константы, оно будет ужато для обеспечения совместимости
+        координат, переданных Crop'ом
+        """
+        MAX_WIDTH = 710
 
+        '''
+        Загружен ли уже аватар и мы только должны
+        его обрезать?
+        '''
+        img = Image.open(self.request.FILES.get('avatar', self.object.avatar))
+        # Если изображение слишком широкое, ужимаем
+        if img.size[0] > MAX_WIDTH:
+            aspect = img.size[0] / img.size[1]
+            new_height = int(round(img.size[1] * aspect))
+            # Вот с этим изображением мы и будем работать
+            img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
+        # Иначе просто обрезаем
+        cropped_image = img.crop((coords['x'],
+                                  coords['y'],
+                                  coords['x2'],
+                                  coords['y2']))
+        cropped_image.thumbnail((180, 180), Image.ANTIALIAS)
+
+
+        temp_handle = StringIO()
+        cropped_image.save(temp_handle, 'jpeg')
+        temp_handle.seek(0)
+
+        suf = SimpleUploadedFile('min.jpg',
+            temp_handle.read(), content_type='image/jpg')
+
+        self.object.min_avatar.save('min.jpg', suf, save=False)
+
+#        cropped_image.save('/home/alexey/projects/bumerang/media/avatars/min.jpg')
+
+        form.save()
+        messages.add_message(self.request, messages.ERROR, u'Фотография профиля успешно обновлена')
+        return HttpResponseRedirect(self.get_success_url())
 
 class ProfileResumeEditView(UpdateView):
     model = Profile
