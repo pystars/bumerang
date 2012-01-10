@@ -19,7 +19,6 @@ class VideoCategoryAdmin(admin.ModelAdmin):
 class PlayListItemAdmin(admin.TabularInline):
     model = PlayListItem
     readonly_fields = ['play_from', 'play_till', 'offset']
-#    exclude = ['offset']
     ordering = ['sort_order', 'id']
     extra = 1
 

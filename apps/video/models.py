@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta, datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Max
 
 from mediainfo import get_metadata
+
 
 nullable = dict(null=True, blank=True)
 
@@ -54,21 +57,29 @@ class Video(models.Model):
         (5, 'Only for me'),
     )
 
-    published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве', default=False)
+    published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве',
+        default=False)
     blocked = models.BooleanField(u'Заблокированно', default=False)
-    is_in_broadcast_lists = models.BooleanField(u'Списки вещания', default=False)
+    is_in_broadcast_lists = models.BooleanField(u'Списки вещания',
+        default=False)
 
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
-    original_file = models.FileField(u"Оригинальное видео", upload_to='videos/originals', **nullable)
-    hq_file = models.FileField(u'Видео высокого качества', upload_to='videos/high', **nullable)
-    mq_file = models.FileField(u'Видео среднего качества', upload_to='videos/medium', **nullable)
-    lq_file = models.FileField(u'Видео низкого качества', upload_to='videos/low', **nullable)
-    preview = models.FileField(u'Превью', upload_to='videos/previews', **nullable)
+    original_file = models.FileField(u"Оригинальное видео",
+        upload_to='videos/originals', **nullable)
+    hq_file = models.FileField(u'Видео высокого качества',
+        upload_to='videos/high', **nullable)
+    mq_file = models.FileField(u'Видео среднего качества',
+        upload_to='videos/medium', **nullable)
+    lq_file = models.FileField(u'Видео низкого качества',
+        upload_to='videos/low', **nullable)
+    preview = models.FileField(u'Превью',
+        upload_to='videos/previews', **nullable)
     duration = models.IntegerField(u'Длительность', editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
     album = models.CharField(u'Альбом', max_length=255, **nullable)
-    category = models.ForeignKey(VideoCategory, verbose_name=u'Категория', **nullable)
+    category = models.ForeignKey(VideoCategory, verbose_name=u'Категория',
+        **nullable)
     description = models.TextField(u'Описание', **nullable)
     year = models.IntegerField(u'Год', default=2011, **nullable)
     genre = models.ForeignKey(VideoGenre, verbose_name=u'Жанр', **nullable)
