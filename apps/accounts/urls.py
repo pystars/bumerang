@@ -45,8 +45,7 @@ urlpatterns = patterns('',
         name='profile-edit-resume'
     ),
     url(r'^edit-settings/$',
-        login_required(ProfileUpdateView.as_view(
-            form_class=ProfileResumeEditForm)),
+        login_required(ProfileSettingsEditView.as_view()),
         name='profile-edit-settings'
     ),
     url(r'^edit-faculties/$',
