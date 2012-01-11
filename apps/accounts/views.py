@@ -214,12 +214,14 @@ class ProfileAvatarEditView(UpdateView):
             temp_handle.read(), content_type='image/jpg')
 
         self.object.min_avatar.save('min.jpg', suf, save=False)
-
-#        cropped_image.save('/home/alexey/projects/bumerang/media/avatars/min.jpg')
-
         form.save()
-        messages.add_message(self.request, messages.ERROR, u'Фотография профиля успешно обновлена')
+        messages.add_message(self.request, messages.SUCCESS, u'Фотография профиля успешно обновлена')
         return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, u'Ошибка при обновлении фотографии профиля')
+        return self.render_to_response(self.get_context_data(form=form))
+
 
 class ProfileResumeEditView(UpdateView):
     model = Profile

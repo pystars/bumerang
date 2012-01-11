@@ -10,6 +10,7 @@
 	<![endif]-->
     <link rel="stylesheet" href="{{ STATIC_URL }}s/reset.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}s/style.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/alerts.css" />
     <!--[if lte IE 9]>
 		<link rel="stylesheet" href="{{ STATIC_URL }}s/style-ie.css" />
 	<![endif]-->
@@ -99,7 +100,7 @@
                                 </li>
                                 <li class="b-dropdown2__item">
                                     <a href="" class="b-dropdown2__link">Видеосюжеты</a>
-                                    <small class="b-dropdown2__count">{{ user.profile.video_set.count }}</small>
+                                    <small class="b-dropdown2__count">{{ user.profile.video_set.count|default:'0' }}</small>
                                 </li>
                                 <li class="b-dropdown2__item">
                                     <a href="" class="b-dropdown2__link">Фотографии</a>
