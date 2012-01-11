@@ -3,7 +3,8 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from apps.video.views import (VideoListView, VideoDetailView, upload_view,
-    VideoCreateView, VideoAlbumCreateView, VideoAlbumDetailView)
+    VideoCreateView, VideoAlbumCreateView, VideoAlbumDetailView,
+    VideoDeleteView)
 
 
 urlpatterns = patterns('',
@@ -22,6 +23,10 @@ urlpatterns = patterns('',
     url(r'^archive/$',
         VideoListView.as_view(),
         name='video-list'
+    ),
+    url(r'^delete/(?P<pk>\w+)/$',
+        login_required(VideoDeleteView.as_view()),
+        name='video-delete'
     ),
     url(r'^(?P<pk>\w+)/$',
         VideoDetailView.as_view(),

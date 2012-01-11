@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-
 from django.shortcuts import render, HttpResponse
 from django.http import Http404
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from django.views.generic.edit import CreateView, ModelFormMixin
+from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView, UpdateView
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
 from apps.accounts.models import Profile
@@ -16,28 +16,19 @@ from settings import VIDEO_UPLOAD_PATH
 from models import Video
 
 
-class VideoListView(ListView):
-    queryset = Video.objects.filter(
-        Q(hq_file__isnull=False) |
-        Q(mq_file__isnull=False) |
-        Q(lq_file__isnull=False)
-    )
-    paginate_by = 25
-
-
 class VideoDetailView(DetailView):
     model = Video
 
 
-class VideoAlbumDetailView(DetailView):
-    model = VideoAlbum
+class VideoDeleteView(DeleteView):
+    model = Video
 
-    def get_context_data(self, **kwargs):
-        ctx = super(VideoAlbumDetailView, self).get_context_data(**kwargs)
-        ctx.update({
-            'profile': Profile.objects.get(pk=kwargs['object'].user.id),
-        })
-        return ctx
+    def get_queryset(self):
+        return Video.objects.filter(owner=self.request.user)
+
+    def get_success_url(self):
+        return self.request
+
 
 class VideoCreateView(CreateView):
     model = Video
@@ -51,14 +42,40 @@ class VideoCreateView(CreateView):
         return super(ModelFormMixin, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR, u'Ошибка при загрузке видео')
-        return self.render_to_response(self.get_context_data(form=form))
+        messages.add_message(
+            self.request, messages.ERROR, u'Ошибка при загрузке видео')
+        return super(VideoCreateView, self).form_invalid(form)
 
     def get_context_data(self, **kwargs):
         ctx = super(VideoCreateView, self).get_context_data(**kwargs)
         ctx.update({
             'video_album': VideoAlbum.objects.get(
-                                    pk=self.kwargs['video_album_id'])
+                pk=self.kwargs['video_album_id'])
+        })
+        return ctx
+
+
+class VideoUpdateView(UpdateView):
+    model = Video
+
+
+
+class VideoListView(ListView):
+    queryset = Video.objects.filter(
+        Q(hq_file__isnull=False) |
+        Q(mq_file__isnull=False) |
+        Q(lq_file__isnull=False)
+    )
+    paginate_by = 25
+
+
+class VideoAlbumDetailView(DetailView):
+    model = VideoAlbum
+
+    def get_context_data(self, **kwargs):
+        ctx = super(VideoAlbumDetailView, self).get_context_data(**kwargs)
+        ctx.update({
+            'profile': Profile.objects.get(pk=kwargs['object'].user.id),
         })
         return ctx
 

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-
-import json
-from PIL import Image
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.forms import PasswordChangeForm
 
 try:
     from cStringIO import StringIO
 except ImportError:
     import StringIO
 
+import json
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
@@ -111,48 +111,14 @@ class ProfileInfoEditView(UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class ProfileFacultiesEditView(UpdateView):
+class ProfileUpdateView(UpdateView):
     model = Profile
-    form_class = SchoolProfileFacultiesForm
 
     def get_object(self, queryset=None):
         return self.request.user.profile
 
     def get_success_url(self):
-        return reverse("profile-edit-faculties")
-
-
-class ProfileTeachersEditView(UpdateView):
-    model = Profile
-    form_class = SchoolProfileTeachersForm
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-    def get_success_url(self):
-        return reverse("profile-edit-teachers")
-
-
-class ProfileServicesEditView(UpdateView):
-    model = Profile
-    form_class = StudioProfileServicesForm
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-    def get_success_url(self):
-        return reverse("profile-edit-services")
-
-
-class ProfileTeamEditView(UpdateView):
-    model = Profile
-    form_class = StudioProfileTeamForm
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-    def get_success_url(self):
-        return reverse("profile-edit-team")
+        return self.request.path
 
 
 class ProfileAvatarEditView(UpdateView):
@@ -221,17 +187,6 @@ class ProfileAvatarEditView(UpdateView):
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR, u'Ошибка при обновлении фотографии профиля')
         return self.render_to_response(self.get_context_data(form=form))
-
-
-class ProfileResumeEditView(UpdateView):
-    model = Profile
-    form_class = ProfileResumeEditForm
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-    def get_success_url(self):
-        return reverse('profile-edit-resume')
 
 
 class ProfileSettingsEditView(TemplateView):

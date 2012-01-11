@@ -5,7 +5,7 @@
 {% block edit_form %}
     <h3 class="title">Настройки</h3>
     <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
-    <form name="email_form" action="" method="post">
+        <form name="email_form" action="" method="post">
             {% csrf_token %}
             <div class="b-form__fields">
                 <div class="b-form__field b-form__field_login">
@@ -21,9 +21,9 @@
                 <div class="b-form__field">
                     <label>
                         <span class="f-title"><span>Новая почта</span></span>
-												<span class="f-input">
-													{{ email_form.email }}
-												</span>
+                        <span class="f-input">
+                            {{ email_form.email }}
+                        </span>
                     </label>
                     {% if email_form.email.errors %}
                         <div class="f-err"><span>{{ email_form.email.errors }}</span></div>
@@ -44,9 +44,9 @@
                 <div class="b-form__field">
                     <label>
                         <span class="f-title"><span>Старый пароль</span></span>
-												<span class="f-input">
-													{{ pwd_form.old_password }}
-												</span>
+                        <span class="f-input">
+                            {{ pwd_form.old_password }}
+                        </span>
                     </label>
                     {% if pwd_form.old_password.errors %}
                         <div class="f-err"><span>{{ pwd_form.old_password.errors }}</span></div>
@@ -55,9 +55,9 @@
                 <div class="b-form__field">
                     <label>
                         <span class="f-title"><span>Новый пароль</span></span>
-												<span class="f-input">
-													{{ pwd_form.new_password1 }}
-												</span>
+                        <span class="f-input">
+                            {{ pwd_form.new_password1 }}
+                        </span>
                     </label>
                     {% if pwd_form.new_password1.errors %}
                         <div class="f-err"><span>{{ pwd_form.new_password1.errors }}</span></div>
@@ -66,9 +66,9 @@
                 <div class="b-form__field">
                     <label>
                         <span class="f-title"><span>Повторите</span></span>
-												<span class="f-input">
-													{{ pwd_form.new_password2 }}
-												</span>
+                        <span class="f-input">
+                            {{ pwd_form.new_password2 }}
+                        </span>
                     </label>
                     {% if pwd_form.new_password2.errors %}
                         <div class="f-err"><span>{{ pwd_form.new_password2.errors }}</span></div>

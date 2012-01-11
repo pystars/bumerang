@@ -118,20 +118,13 @@ class ProfileAvatarEditForm(forms.ModelForm):
     avatar_coords = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Profile
-        fields = (
-            'avatar',
-            'avatar_coords',
-        )
+        fields = ('avatar', 'avatar_coords',)
 
 
 class ProfileResumeEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = (
-            'work',
-            'education',
-            'interests',
-        )
+        fields = ('work', 'education', 'interests',)
 
 
 class ProfileEmailEditForm(forms.ModelForm):
@@ -170,11 +163,8 @@ class SchoolProfileInfoForm(forms.ModelForm):
     description = forms.CharField(label=u'О себе', widget=forms.Textarea)
     class Meta:
         model = Profile
-        fields = (
-            'title',
-            'place',
-            'description',
-            )
+        fields = ('title', 'place', 'description',)
+
 
 class SchoolProfileFacultiesForm(forms.ModelForm):
     '''
@@ -182,9 +172,7 @@ class SchoolProfileFacultiesForm(forms.ModelForm):
     '''
     class Meta:
         model = Profile
-        fields = (
-            'faculties',
-            )
+        fields = ('faculties',)
 
 
 class SchoolProfileTeachersForm(forms.ModelForm):
@@ -193,9 +181,7 @@ class SchoolProfileTeachersForm(forms.ModelForm):
     '''
     class Meta:
         model = Profile
-        fields = (
-            'teachers',
-            )
+        fields = ('teachers',)
 
 
 class StudioProfileInfoForm(forms.ModelForm):
@@ -206,11 +192,7 @@ class StudioProfileInfoForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea, label=u'Описание')
     class Meta:
         model = Profile
-        fields = (
-            'title',
-            'place',
-            'description',
-            )
+        fields = ('title', 'place', 'description', )
 
 
 class StudioProfileServicesForm(forms.ModelForm):
@@ -219,9 +201,7 @@ class StudioProfileServicesForm(forms.ModelForm):
     '''
     class Meta:
         model = Profile
-        fields = (
-            'services',
-            )
+        fields = ('services',)
 
 
 class StudioProfileTeamForm(forms.ModelForm):
@@ -230,6 +210,4 @@ class StudioProfileTeamForm(forms.ModelForm):
     '''
     class Meta:
         model = Profile
-        fields = (
-            'team',
-            )
+        fields = ('team',)

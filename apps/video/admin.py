@@ -23,7 +23,9 @@ class PlayListItemAdmin(admin.TabularInline):
     extra = 1
 
 class PlayListAdmin(admin.ModelAdmin):
+
     inlines = [PlayListItemAdmin,]
+
     def save_formset(self, request, form, formset, change):
         formset.save()
         offset = 0
