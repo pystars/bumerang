@@ -1,10 +1,9 @@
-{% extends "inside.html" %}
+{% extends "accounts/accounts_wrapper.html" %}
 {% load sitetree %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}Регистрация{% endblock %}
 
-{% block left_col %}
-    <section class="l-cols__section"><div class="l-cols__section__i">
+{% block left_column %}
         <section class="b-form b-form_register">
             <form name="registration_form" action="{% url registration %}" method="POST">
             {% csrf_token %}
@@ -75,5 +74,7 @@
             </footer>
             </form>
         </section><!--b-form-->
-    </div></section>
+{% endblock %}
+
+{% block right_column %}
 {% endblock %}

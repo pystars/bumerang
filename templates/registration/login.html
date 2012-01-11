@@ -1,11 +1,11 @@
-{% extends "inside.html" %}
+{% extends "accounts/accounts_wrapper.html" %}
 {% load sitetree %}
 
-{% block title %}{{ profile.title }}{% endblock %}
+{% block title %}Вход{% endblock %}
 
-{% block left_col %}
+{% block left_column %}
     <section class="b-form">
-        <form action="" method="POST">
+        <form name="loginform" action="" method="POST">
         {% csrf_token %}
         <header class="b-form__header">
             <h1>
@@ -41,10 +41,12 @@
             </div>
         </div>
         <footer class="b-form__footer">
-            <!--<div class="wrap"><a href="" class="b-button b-button_yellow">Войти</a></div>-->
-            <input type="submit" value="Войти">
+            <div class="wrap"><a href="" class="b-button b-button_yellow" onclick="document.loginform.submit();">Войти</a></div>
             <span class="or">или <a href="{% url registration %}">зарегистрироваться</a></span>
         </footer>
     </form>
     </section><!--b-form-->
+{% endblock %}
+
+{% block right_column %}
 {% endblock %}

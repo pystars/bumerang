@@ -20,6 +20,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.interface.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.custominput.js"></script>
     {% block head_js %}{% endblock %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.Jcrop.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/site.js"></script>
 </head>
 <body>
@@ -154,5 +155,57 @@
         <p class="intex">Проектирование — компания &laquo;<a href="">Интех-М</a>&raquo;</p>
     </aside>
 </div></footer><!--l-foot-->
+<div class="l-tint" id="tint"></div>
+<section class="b-popup" id="popup-login" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <form name="login_form" action="{% url login %}" method="post">
+            {% csrf_token %}
+            <header class="b-form__header">
+                <h3>
+                    Вход
+                </h3>
+            </header>
+            <div class="b-form__fields">
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Почта</span></span>
+					<span class="f-input">
+						{{ auth_form.username }}
+					</span>
+                    </label>
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Пароль</span></span>
+					<span class="f-input">
+						{{ auth_form.password }}
+					</span>
+                    </label>
+                    <span class="f-forgot"><a href="{% url password-recover %}">забыл пароль</a></span>
+                </div>
+                <div class="b-form__field b-form__field_remember">
+                    <div class="f-checkbox">
+                        <input type="checkbox" name="" value="" id="checkbox-01" />
+                        <label for="checkbox-01">
+                            запомнить меня
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="" class="b-button b-button_yellow" onclick="document.login_form.submit();">Войти</a>
+                </div>
+                <span class="or">или <a href="{% url registration %}">зарегистрироваться</a></span>
+                <div class="clear"></div>
+            </footer>
+        </form>
+    </section><!--b-form-->
+    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
 </body>
 </html>
