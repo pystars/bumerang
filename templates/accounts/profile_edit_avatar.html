@@ -24,52 +24,28 @@
                 <br/>
                 Или загрузите новый файл.
             </p>
-            <div class="b-form__field">
-                <label>
-                    <span class="f-input">
-{#                        {{ form }}#}
-                        <tr>
-                            <th>
-                                <label for="id_avatar">Фотография профиля:</label>
-                            </th>
-                            <td>
-                                {% for i,e in form.avatar.errors %}
-                                    {{ i }}
-                                    {{ e }}
-                                {% endfor %}
-                                {% if form.avatar.errors %}
-                                    <div class="f-err"><span>{{ form.avatar.errors }}</span></div>
-                                {% endif %}
-{#                                <input type="checkbox" name="avatar-clear" id="avatar-clear_id" />#}
-{#                                <label for="avatar-clear_id">Очистить</label>#}
-                                <br />Изменить.:
+
+            <fieldset>
+                <div class="b-form__field">
+                    <label>
+                            <span class="f-title">
+                                Фотография профиля:
+                            </span>
+                            <span class="f-input">
                                 <input type="file" name="avatar" id="id_avatar" />
                                 <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value }}" id="id_avatar_coords" />
-                            </td>
-                        </tr>
-                    </span>
-                </label>
-            </div>
-{#            <fieldset>#}
-{#                <div class="b-form__field">#}
-{#                    <label>#}
-{#                            <span class="f-title">#}
-{#                                <span>{{ item.label }}</span>#}
-{#                            </span>#}
-{#                            <span class="f-input">#}
-{#                                {{ item }}#}
-{#                            </span>#}
-{#                    </label>#}
-{#                    {% if item.errors %}#}
-{#                        <div class="f-err"><span>{{ item.errors }}</span></div>#}
-{#                    {% endif %}#}
-{#                </div>#}
-{#            </fieldset>#}
+                            </span>
+                    </label>
+                    {% if form.avatar.errors %}
+                        <div class="f-err"><span>{{ form.avatar.errors }}</span></div>
+                    {% endif %}
+                </div>
+            </fieldset>
+
             {% if user.profile.avatar %}
                 <img src="{{ user.profile.avatar.url }}" id="current_avatar" style="max-width: 710px"/>
             {% endif %}
             </div>
-        </div>
         <footer class="b-form__footer">
             <div class="wrap">
                 <a href="" class="b-button b-button_yellow" onclick="document.avatar_form.submit();">Сохранить</a>
@@ -77,13 +53,4 @@
         </footer>
     </form>
 </section>
-{% endblock %}
-
-{% block edit_side_nav %}
-    <ul>
-        <li><a href="{% url profile-edit %}">Общая информация</a></li>
-        <li class="selected"><strong>Фотография профиля</strong></li>
-        <li><a href="{% url profile-edit-resume %}">Резюме</a></li>
-        <li><a href="">Настройка аккаунта</a></li>
-    </ul>
 {% endblock %}
