@@ -1,19 +1,43 @@
-{% extends "inside.html" %}
+{% extends "base.html" %}
 {% load sitetree %}
 {% load flatpages %}
 
 {% block title %}{{ flatpage.title }}{% endblock %}
 
-{% block left_col %}
-	{{ flatpage.content }}
-{% endblock %}
+{% block content %}
+    <div class="l-cols l-cols_article"><div class="l-cols__i cleared">
+        <section class="l-cols__section"><div class="l-cols__section__i">
 
-{% block right_col %}
-    <nav class="b-side-nav d-indent">
-        {% sitetree_menu from "main_menu" include "about" template "sitetree/topmenu.html" %}
-        <i class="d-indent__tl"></i>
-        <i class="d-indent__tr"></i>
-        <i class="d-indent__br"></i>
-        <i class="d-indent__bl"></i>
-    </nav>
+            <header class="b-page-head">
+                {% block breadcrumbs %}
+                    {% sitetree_breadcrumbs from "main_menu" template "sitetree/breadcrumbs.html" %}
+                {% endblock %}
+
+                {% block page_title %}{% endblock %}
+            </header>
+
+            {{ flatpage.content }}
+        </div></section>
+        <aside class="l-cols__side"><div class="l-cols__side__i">
+            <nav class="b-side-nav d-indent">
+                {% sitetree_menu from "main_menu" include "about" template "sitetree/topmenu.html" %}
+                <i class="d-indent__tl"></i>
+                <i class="d-indent__tr"></i>
+                <i class="d-indent__br"></i>
+                <i class="d-indent__bl"></i>
+            </nav>
+            {% block right_banner %}
+                <section class="b-adv b-adv2">
+                    <header>
+                        <div class="b-adv__title">Реклама</div>
+                    </header>
+                    <p>
+                        <a href="">
+                            <img src="{{ STATIC_URL }}i/fake/ban3.jpg" alt="" width="200" height="340" alt="" />
+                        </a>
+                    </p>
+                </section>
+            {% endblock %}
+        </div></aside>
+    </div></div><!--l-cols-->
 {% endblock %}
