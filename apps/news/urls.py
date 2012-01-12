@@ -5,15 +5,15 @@ from apps.news.views import *
 
 urlpatterns = patterns('',
     url(r'^$',
-        NewsRootView.as_view(),
-        name='NewsIndexView'
+        NewsListView.as_view(),
+        name='news-list'
     ),
-    url(r'^(?P<slug>[-\w]+)/$',
-        CategoryView.as_view(),
-        name='CategoryView'
+    url(r'^(?P<category>[-\w]+)/$',
+        NewsListView.as_view(),
+        name='news-list-category'
     ),
-    url(r'^(?P<category_slug>[-\w]+)/(?P<news_slug>[-\w]+)/$',
-        SingleNewsItemView.as_view(),
-        name='SingleNewsItemView'
+    url(r'^(?P<category>[-\w]+)/(?P<slug>[-\w]+)/$',
+        NewsItemDetailView.as_view(),
+        name='news-detail'
     ),
 )

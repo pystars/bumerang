@@ -12,26 +12,12 @@
         <article class="announ-item">
             <header class="ai-head">
                 <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
-                <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                <h3><a href="{% url news-detail item.category.slug item.slug %}">{{ item.title }}</a></h3>
                 {{ item.preview_text|safe }}
             </header>
         </article>
     {% endfor %}
-    {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
+    {% include 'paginator/paginator.html' %}
+{#    {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}#}
     </section>
-{% endblock %}
-
-{% block right_menu %}
-    <nav class="b-side-nav d-indent">
-        <ul>
-            <li class="selected"><strong>Все новости</strong></li>
-            {% for category in news_categories %}
-                <li><a href="{% url CategoryView category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
-            {% endfor %}
-        </ul>
-        <i class="d-indent__tl"></i>
-        <i class="d-indent__tr"></i>
-        <i class="d-indent__br"></i>
-        <i class="d-indent__bl"></i>
-    </nav>
 {% endblock %}
