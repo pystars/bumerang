@@ -2,6 +2,8 @@
 
 {% block title %}Бумеранг PRO{% endblock %}
 
+{% load videotags %}
+
 {% block content %}
 		<div class="b-main-box d-rounded d-rounded_r10 d-sh">
 			<section class="b-tv">
@@ -29,8 +31,8 @@
 								<header class="tp-head">
 									<nav class="b-calend">
 										<h2 class="cal-head">
-											<span class="ch-day">30</span>
-											<span class="ch-month">ноября</span>
+											<span class="ch-day">{% now "d" %}</span>
+											<span class="ch-month">{% now "E" %}</span>
 										</h2>
 										<a href="" class="cal-day cal-day1">10</a>
 										<a href="" class="cal-day cal-day2">11</a>
@@ -39,30 +41,35 @@
 										<a href="" class="cal-day">14</a>
 										<a href="" class="cal-day">15</a>
 									</nav>
-									<h3 class="tp-day">Четверг</h3>
+									<h3 class="tp-day">{% now "l" %}</h3>
 									<ul class="tp-ctrls">
 										<li class="tp-ctrl">
 											<span class="b-pseudolink"><span>Сейчас</span></span>
-											<time>6:07</time>
+											<time>{% now "G:i" %}</time>
 										</li>
 										<li class="tp-ctrl selected"><span class="selected">Весь день</span></li>
 									</ul> 
 								</header>
 								<div class="tp-items">
-									<p class="tp-item tp-item_past tp-item_odd"><time>0:00</time> Наименование сюжета</p>
-									<p class="tp-item tp-item_past"><time>0:45</time> Сюжет, сюжет, сюжетище</p>
-									<p class="tp-item tp-item_past tp-item_odd"><time>1:30</time> <em>Мега видео ПРО участников бумеранга</em></p>
-									<p class="tp-item tp-item_past"><time>3:50</time> Всегда вместе и рядом</p>
-									<p class="tp-item tp-item_past tp-item_odd"><time>4:00</time> Самый быстрый способ сделать монтаж дома</p>
-									<p class="tp-item tp-item_past"><time>5:00</time> ПРО бумеранг</p>
-									<p class="tp-item tp-item_past tp-item_odd"><time>5:15</time> Конец эфира</p>
-									<p class="tp-item tp-item_past"><time>5:55</time> Наименование сюжета</p>
-									<p class="tp-item tp-item_now tp-item_odd"><time>6:03</time> <strong>Самый быстрый способ сделать монтаж дома</strong></p>
-									<p class="tp-item tp-item_future"><time>6:25</time> <em>Мега видео ПРО участников бумеранга</em></p>
-									<p class="tp-item tp-item_future tp-item_odd"><time>7:00</time> Всегда вместе и рядом</p>
-									<p class="tp-item tp-item_future"><time>10:00</time> С/ж</p>
-									<p class="tp-item tp-item_future tp-item_odd"><time>11:12</time> Про бумеранг</p>
-									<p class="tp-item tp-item_future"><time>13:46</time> Конец эфира</p>
+                                    {% if not playlist %}
+                                        <p>
+                                            Трансляции ещё не запланированы
+                                        </p>
+                                    {% endif %}
+                                    {% for item in playlist.videos.all %}
+                                        {% with item.playlistitem_set.all.0 as item %}
+                                            <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
+                                                <time>{{ item|to_hm }}</time>
+                                                {{ item.video.title }}
+                                            </p>
+                                            {% if forloop.last %}
+                                                <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
+                                                    <time>{{ item|to_hm:'True' }}</time>
+                                                    Конец эфира
+                                                </p>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endfor %}
 								</div>
 							</article>
 						</div></section>

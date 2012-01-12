@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-
-from django.views.generic import DetailView, ListView
 from django.conf.urls.defaults import patterns, url
 
-from apps.news.models import NewsItem
 from apps.news.views import *
 
 urlpatterns = patterns('',

@@ -1,4 +1,4 @@
-{% extends "inside.html" %}
+{% extends "news/news_wrapper.html" %}
 {% load sitetree %}
 
 {% block title %}{{ category.title }}{% endblock %}
@@ -7,7 +7,7 @@
 <h1>{{ category.title }}</h1>
 {% endblock %}
 
-{% block left_col %}
+{% block left_column %}
     <section class="b-announs b-announs_news">
     {% for item in object_list %}
         <article class="announ-item">
@@ -23,7 +23,7 @@
     </section>
 {% endblock %}
 
-{% block right_col %}
+{% block right_menu %}
     <nav class="b-side-nav d-indent">
         <ul>
             <li><a href="{% url NewsIndexView %}">Все новости</a></li>
