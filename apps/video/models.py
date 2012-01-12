@@ -78,7 +78,7 @@ class Video(models.Model):
         upload_to='videos/previews', **nullable)
     duration = models.IntegerField(u'Длительность', editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
-    album = models.CharField(VideoAlbum, verbose_name=u'Альбом',
+    album = models.ForeignKey(VideoAlbum, verbose_name=u'Альбом',
         max_length=255, **nullable)
     category = models.ForeignKey(VideoCategory, verbose_name=u'Категория',
         **nullable)
