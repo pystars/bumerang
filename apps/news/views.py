@@ -6,17 +6,15 @@ from apps.news.models import NewsItem, NewsCategory
 
 
 class NewsContextMixin(object):
+    model = NewsItem
+
     def get_context_data(self, **kwargs):
         ctx = super(NewsContextMixin, self).get_context_data(**kwargs)
         ctx.update({'news_categories': NewsCategory.objects.all(),})
-        if 'category' in self.kwargs:
-            ctx.update({'current_category': get_object_or_404(
-            NewsCategory, slug=self.kwargs['category'])})
         return ctx
 
 
 class NewsListView(NewsContextMixin, ListView):
-    model = NewsItem
     paginate_by = 10
 
     def get_queryset(self):
@@ -25,6 +23,13 @@ class NewsListView(NewsContextMixin, ListView):
             qs = qs.filter(category__slug=self.kwargs['category'])
         return qs
 
+    def get_context_data(self, **kwargs):
+        ctx = super(NewsListView, self).get_context_data(**kwargs)
+        if 'category' in self.kwargs:
+            ctx.update({'current_category': get_object_or_404(
+                    NewsCategory, slug=self.kwargs['category'])})
+        return ctx
+
 
 class NewsItemDetailView(NewsContextMixin, DetailView):
-    model = NewsItem
+    pass
