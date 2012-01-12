@@ -1,30 +1,22 @@
 # -*- coding: utf-8 -*-
-
 from django.views.generic import ListView, DetailView
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
 
 from apps.advices.models import Advice
 
 
-class AdvicesIndexView(ListView):
-    template_name = "advices/advices.html"
-    queryset = Advice.objects.filter(level=0).order_by('sort_order', 'id')
+class AdvicesListView(ListView):
+    model = Advice
+    paginate_by = 10
 
-class SingleAdviceView(DetailView):
-    template_name = "advices/single_advice.html"
+    def get_queryset(self):
+        return super(AdvicesListView, self).get_queryset().filter(level=0)
 
-    def get(self, request, url):
-        # Strip all trailing slashes
-        while (url[-1:] == "/"):
-            url = url[0:-1]
-        try:
-            self.object = Advice.objects.get(url=url)
-            children = self.object.get_children().order_by('level','sort_order', 'id')
-        except ObjectDoesNotExist:
-            raise Http404
 
-        context = self.get_context_data(
-            children=children,
-        )
-        return self.render_to_response(context)
+class AdviceDetailView(DetailView):
+    model = Advice
+    slug_field = 'url'
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AdviceDetailView, self).get_context_data(**kwargs)
+        ctx.update(children=self.object.get_children())
+        return ctx

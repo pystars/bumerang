@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
-
 from django.conf.urls.defaults import patterns, url
 
-from apps.advices.views import *
+from apps.advices.views import AdvicesListView, AdviceDetailView
+
 
 urlpatterns = patterns('',
-    url(r'^$', AdvicesIndexView.as_view(), name='AdvicesIndexView'),
-    url(r'^(?P<url>[-//\w]+)/$', SingleAdviceView.as_view(), name='AdvicesUrlView'),
+    url(r'^$',
+        AdvicesListView.as_view(),
+        name='advice-list'
+    ),
+    url(r'^(?P<slug>[-//\w]+)/$',
+        AdviceDetailView.as_view(),
+        name='advice-detail'
+    ),
 )

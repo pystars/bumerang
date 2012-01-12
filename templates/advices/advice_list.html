@@ -19,6 +19,6 @@
                 </article>
             {% endif %}
         {% endfor %}
-        {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
+        {% include 'paginator/paginator.html' %}
     </section>
 {% endblock %}

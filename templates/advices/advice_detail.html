@@ -6,7 +6,7 @@
 {% block left_column %}
     <header class="b-page-head">
         <nav>
-            <a href="{% url AdvicesIndexView %}" title="Советы профессионалов">Советы профессионалов</a>
+            <a href="{% url advice-list %}" title="Советы профессионалов">Советы профессионалов</a>
             <span class="b-crumbs__sep">/</span>
             {% for node in advice.get_ancestors %}
                 <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node.name }}</a>

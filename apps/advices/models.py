@@ -25,11 +25,12 @@ class Advice(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+        ordering = ['level', 'sort_order', 'id']
 
     class Meta:
         verbose_name = u'Совет'
         verbose_name_plural = u'Советы'
-        ordering = ('sort_order', 'id')
+        ordering = ['level', 'sort_order', 'id']
 
 @receiver(pre_save, sender=Advice)
 def advice_pre_save(sender, **kwargs):
