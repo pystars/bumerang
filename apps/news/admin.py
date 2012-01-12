@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from django.contrib import admin
 
-from apps.news.models import *
+from apps.news.models import NewsCategory, NewsItem
+
 
 class NewsCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}

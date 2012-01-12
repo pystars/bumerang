@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 
-from apps.news.views import *
+from apps.news.views import NewsListView, NewsItemDetailView
+
 
 urlpatterns = patterns('',
     url(r'^$',
