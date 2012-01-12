@@ -4,6 +4,7 @@ from datetime import timedelta, datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Max
+from django.core.urlresolvers import reverse
 
 from mediainfo import get_metadata
 
@@ -148,10 +149,10 @@ class PlayListItem(models.Model):
         ordering = ['sort_order', 'id']
 
     def play_from(self):
-        return self.playlist.rotate_from + timedelta(seconds=self.offset)
+        return self.playlist.rotate_from + timedelta(milliseconds=self.offset)
 
     def play_till(self):
-        return self.play_from() + timedelta(seconds=self.video.duration)
+        return self.play_from() + timedelta(milliseconds=self.video.duration)
 
     def __unicode__(self):
         return u'{0}'.format(self.video.title)
@@ -159,8 +160,8 @@ class PlayListItem(models.Model):
 
 class PlayList(models.Model):
     channel = models.ForeignKey(Channel)
-    videos = models.ManyToManyField(Video, verbose_name=u'Видео',
-        through=PlayListItem)
+#    videos = models.ManyToManyField(Video, verbose_name=u'Видео',
+#        through=PlayListItem)
     rotate_from = models.DateTimeField(u'Время начала ротации')
     created = models.DateTimeField(u'Дата создания',
         default=datetime.now, editable=False)

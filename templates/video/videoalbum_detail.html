@@ -1,10 +1,10 @@
-{% extends "inside.html" %}
+{% extends "video/video_wrapper.html" %}
 {% load sitetree %}
 {% load rupluralize %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
-{% block left_col %}
+{% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
             <dt class="first">
@@ -16,7 +16,8 @@
             </div></dd>
             <dt class="selected">
                 <span>Видео</span>
-                <small>{{ object.video_set.all.count }}</small>
+                <small>{{ object.video_set.all.count }}
+                {{ object.user }}</small>
                 <i class="l"></i>
                 <i class="r"></i>
             </dt>
@@ -93,5 +94,4 @@
             </div></dd>
         </dl>
     </div>
-    </div></section>
 {% endblock %}

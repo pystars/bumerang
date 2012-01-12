@@ -13,9 +13,6 @@ class BumerangIndexView(TemplateView):
         main_channel = Channel.objects.get(slug='main')
         playlist = PlayList.objects.get(channel=main_channel)
 
-        for item in playlist.videos.all():
-            print item.playlistitem_set.all()[0]
-
         ctx.update({
             'playlist': playlist,
         })

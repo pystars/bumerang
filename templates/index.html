@@ -56,19 +56,19 @@
                                             Трансляции ещё не запланированы
                                         </p>
                                     {% endif %}
-                                    {% for item in playlist.videos.all %}
-                                        {% with item.playlistitem_set.all.0 as item %}
+                                    {% for item in playlist.playlistitem_set.all %}
+{#                                        {% with item.playlistitem_set.all.0 as item %}#}
                                             <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
                                                 <time>{{ item|to_hm }}</time>
                                                 {{ item.video.title }}
                                             </p>
                                             {% if forloop.last %}
-                                                <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
+                                                <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %}">
                                                     <time>{{ item|to_hm:'True' }}</time>
                                                     Конец эфира
                                                 </p>
                                             {% endif %}
-                                        {% endwith %}
+{#                                        {% endwith %}#}
                                     {% endfor %}
 								</div>
 							</article>

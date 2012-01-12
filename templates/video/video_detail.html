@@ -1,4 +1,4 @@
-{% extends "inside.html" %}
+{% extends "video/video_wrapper.html" %}
 {% load sitetree %}
 
 {% block title %}{{ object.title }}{% endblock %}
@@ -18,7 +18,7 @@
 </header>
 {% endblock %}
 
-{% block left_col %}
+{% block left_column %}
     <div class="b-main-box d-rounded d-rounded_r10 d-sh cleared">
         <section class="b-movie js-toggle2-container">
             <a id="player" href="{{ MEDIA_URL }}{{ object.best_quality_file }}" style="width: 720px;"></a>
@@ -180,13 +180,4 @@
             })
         })
     </script>
-{% endblock %}
-
-{% block right_col %}
-    <nav class="b-side-nav d-indent">
-        <i class="d-indent__tl"></i>
-        <i class="d-indent__tr"></i>
-        <i class="d-indent__br"></i>
-        <i class="d-indent__bl"></i>
-    </nav>
 {% endblock %}
