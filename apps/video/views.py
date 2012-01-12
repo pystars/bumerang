@@ -16,10 +16,6 @@ from settings import VIDEO_UPLOAD_PATH
 from models import Video
 
 
-class VideoDetailView(DetailView):
-    model = Video
-
-
 class VideoDeleteView(DeleteView):
     model = Video
 
@@ -27,7 +23,7 @@ class VideoDeleteView(DeleteView):
         return Video.objects.filter(owner=self.request.user)
 
     def get_success_url(self):
-        return self.request
+        return self.request.path
 
 
 class VideoCreateView(CreateView):

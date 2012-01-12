@@ -161,22 +161,16 @@ class PlayListItem(models.Model):
 
 class PlayList(models.Model):
     channel = models.ForeignKey(Channel)
-#    videos = models.ManyToManyField(Video, verbose_name=u'Видео',
-#        through=PlayListItem)
     rotate_from = models.DateTimeField(u'Время начала ротации')
+    rotate_till = models.DateTimeField(u'Время окончания ротации')
     created = models.DateTimeField(u'Дата создания',
         default=datetime.now, editable=False)
 
     class Meta:
         verbose_name = u'Список воспроизведения'
         verbose_name = u'Списки воспроизведения'
+        ordering = ['rotate_till', 'id']
 
     def __unicode__(self):
         return u'{0}:{1}-{2}'.format(
-            self.channel.name, self.rotate_from, self.rotate_till())
-
-    def rotate_till(self):
-        duration = timedelta(seconds=self.playlistitem_set.aggregate(
-            duration=Max('video__duration'))['duration'] or 0)
-        return self.rotate_from + duration
-    
+            self.channel.name, self.rotate_from, self.rotate_till)

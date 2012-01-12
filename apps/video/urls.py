@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
+from django.views.generic.detail import DetailView
 
-from apps.video.views import (VideoListView, VideoDetailView, upload_view,
+from apps.video.models import Video
+from apps.video.views import (VideoListView, upload_view,
     VideoCreateView, VideoAlbumCreateView, VideoAlbumDetailView,
     VideoDeleteView)
 
@@ -29,7 +31,7 @@ urlpatterns = patterns('',
         name='video-delete'
     ),
     url(r'^(?P<pk>\w+)/$',
-        VideoDetailView.as_view(),
+        DetailView.as_view(model=Video),
         name='video-detail'
     ),
     url(r'^$',

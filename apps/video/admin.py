@@ -33,6 +33,9 @@ class PlayListAdmin(admin.ModelAdmin):
             item.offset = offset
             item.save()
             offset += item.video.duration
+        form.instance.rotate_till = form.instance.rotate_from + timedelta(
+            milliseconds=offset)
+        form.instance.save()
 
 
 admin.site.register(Video, VideoAdmin)
