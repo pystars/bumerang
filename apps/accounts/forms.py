@@ -133,10 +133,6 @@ class ProfileEmailEditForm(forms.ModelForm):
         model = Profile
         fields = ('email',)
 
-#class ProfilePasswordEditForm(PasswordRecoveryForm):
-#    class Meta:
-#        model = Profile
-
 
 class UserProfileInfoForm(forms.ModelForm):
     '''
@@ -154,6 +150,7 @@ class UserProfileInfoForm(forms.ModelForm):
             'gender',
             'description',
             )
+
 
 class SchoolProfileInfoForm(forms.ModelForm):
     '''
