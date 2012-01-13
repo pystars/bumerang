@@ -18,7 +18,7 @@
                                         {% if profile.min_avatar %}
                                             <img src="{{ profile.min_avatar.url }}" width="100" height="100" alt="" />
                                         {% else %}
-										<img src="{{ STATIC_URL }}i/noava.jpg" width="100" height="100" alt="" />
+										    <img src="{{ STATIC_URL }}i/noava.jpg" width="100" height="100" alt="" />
                                         {% endif %}
 									</span>
                             <i class="b-ava__sh"></i>
@@ -48,5 +48,5 @@
             {% endif %}
         {% endfor %}
     </section>
-    {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
+    {% include 'paginator/paginator.html' %}
 {% endblock %}
