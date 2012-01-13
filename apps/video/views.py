@@ -14,6 +14,7 @@ from django.views.generic.list import MultipleObjectTemplateResponseMixin
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
 from apps.accounts.models import Profile
+from apps.video.forms import VideoForm
 from apps.video.models import VideoAlbum, Video
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
@@ -76,8 +77,13 @@ class VideoCreateView(CreateView):
 
 class VideoUpdateView(UpdateView):
     model = Video
+    form_class = VideoForm
 
+    def get_object(self, queryset=None):
+        return Video.objects.get(id=self.kwargs['pk'], owner=self.request.user)
 
+    def get_success_url(self):
+        return reverse('video-edit', kwargs={'pk': self.kwargs['pk']})
 
 class VideoListView(ListView):
     queryset = Video.objects.filter(

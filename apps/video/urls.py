@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from apps.video.models import Video
 from apps.video.views import (VideoListView, upload_view,
     VideoCreateView, VideoAlbumCreateView, VideoAlbumDetailView,
-    VideoDeleteView, VideosDeleteView)
+    VideoDeleteView, VideosDeleteView, VideoUpdateView)
 
 
 urlpatterns = patterns('',
@@ -21,6 +21,10 @@ urlpatterns = patterns('',
     url(r'^album(?P<pk>[\d]+)/$',
         VideoAlbumDetailView.as_view(),
         name='video-album-detail'
+    ),
+    url(r'^(?P<pk>[\d]+)/edit/$',
+        VideoUpdateView.as_view(template_name_suffix='_edit_form'),
+        name='video-edit'
     ),
     url(r'^archive/$',
         VideoListView.as_view(),
