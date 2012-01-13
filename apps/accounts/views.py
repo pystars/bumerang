@@ -29,6 +29,14 @@ class RegistrationFormView(CreateView):
     def get_success_url(self):
         return reverse('BumerangIndexView')
 
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.add_message(self.request, messages.SUCCESS, u'Регистрация прошла успешно. Теперь вы можете залогиниться.')
+        return super(RegistrationFormView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, u'Ошибка при регистрации')
+        return self.render_to_response(self.get_context_data(form=form))
 
 class PasswordRecoveryView(FormView):
     form_class = PasswordRecoveryForm
