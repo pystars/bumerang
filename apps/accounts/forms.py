@@ -87,7 +87,7 @@ class VideoAlbumForm(forms.ModelForm):
 class VideoCreateForm(forms.ModelForm):
     class Meta:
         model = Video
-        fields = ('title', 'original_file', 'category', 'description')
+        fields = ('title', 'original_file', 'hq_file', 'lq_file', 'mq_file', 'category', 'description')
 
 
 class VideoUpdateForm(forms.ModelForm):
