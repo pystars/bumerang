@@ -33,7 +33,7 @@
                             </span>
                             <span class="f-input">
                                 <input type="file" name="avatar" id="id_avatar" />
-                                <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value }}" id="id_avatar_coords" />
+                                <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value|default:'' }}" id="id_avatar_coords" />
                             </span>
                     </label>
                     {% if form.avatar.errors %}
