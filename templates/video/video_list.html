@@ -1,6 +1,6 @@
-{% extends "inside.html" %}
+{% extends "video/video_wrapper.html" %}
 {% load sitetree %}
-{#{% sitetree_page_title from "main_menu" %}#}
+
 {% block title %}Видеоархив{% endblock %}
 
 {% block breadcrumbs %}{% endblock %}
@@ -9,13 +9,13 @@
     <h1>Видеоархив</h1>
 {% endblock %}
 
-{% block left_col %}
+{% block left_column %}
     <section class="b-announs b-announs_movie">
         <div class="announs-items">
             {% for item in object_list %}
             <article class="announ-item">
                 <div class="ai-img d-sh">
-                    <a href="{% url video-detail item.slug %}">
+                    <a href="{% url video-detail item.id %}">
                         <span>
                             <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
                             <span class="time">{{ item.duration }}</span>
