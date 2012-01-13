@@ -56,8 +56,7 @@
             </span>
             </div>
         {% endif %}
-        {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}
-
+        {% include 'paginator/paginator.html' %}
     </section>
 
 {% endblock %}

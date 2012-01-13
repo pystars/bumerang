@@ -140,7 +140,7 @@ $(function(){
     });
 
     // Submit forms
-    $('.b-button').click(function(){
+    $('.button-submit').click(function(){
         $(this).parents('form').submit();
         return false;
     });

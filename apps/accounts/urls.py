@@ -2,7 +2,13 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from apps.accounts.views import *
+from apps.accounts.forms import (ProfileResumeEditForm,
+     SchoolProfileFacultiesForm, SchoolProfileTeachersForm,
+     StudioProfileTeamForm, StudioProfileServicesForm)
+from apps.accounts.views import (UsersListView, RegistrationFormView,
+     PasswordRecoveryView, ProfileView, ProfileInfoEditView,
+     ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
+     ProfileVideoView)
 
 
 urlpatterns = patterns('',

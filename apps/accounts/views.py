@@ -90,7 +90,6 @@ class UsersListView(ListView):
 
 class ProfileInfoEditView(UpdateView):
     model = Profile
-    #form_class = ProfileInfoEditForm
 
     def get_object(self, queryset=None):
         return self.request.user.profile
@@ -139,9 +138,9 @@ class ProfileAvatarEditView(UpdateView):
         return reverse('profile-edit-avatar')
 
     def form_valid(self, form):
-        if form.cleaned_data.get('avatar_coords', ''):
+        try:
             coords = json.loads(form.cleaned_data['avatar_coords'])
-        else:
+        except ValueError:
             coords = {
                 'x': 0,
                 'y': 0,
