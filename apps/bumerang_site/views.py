@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-#from django.views.generic import ListView
+from django.core.exceptions import ObjectDoesNotExist
+
 from django.views.generic.base import TemplateView
 from apps.video.models import PlayList, Channel
 
@@ -17,4 +18,14 @@ class BumerangIndexView(TemplateView):
                 channel=main_channel, rotate_till__gte=datetime.now()).get()})
         except PlayList.DoesNotExist:
             pass #no playlist
+
+        try:
+            main_channel = Channel.objects.get(slug='main')
+            playlist = PlayList.objects.get(channel=main_channel)
+        except ObjectDoesNotExist:
+            playlist = False
+
+        ctx.update({
+            'playlist': playlist,
+        })
         return ctx
