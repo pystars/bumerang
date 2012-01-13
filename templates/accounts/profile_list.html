@@ -1,10 +1,9 @@
-{% extends "inside.html" %}
+{% extends "accounts/accounts_wrapper.html" %}
 {% load sitetree %}
 
 {% block title %}Участники{% endblock %}
 
-{% block left_col %}
-<section class="l-cols__section"><div class="l-cols__section__i">
+{% block left_column %}
     <header class="b-page-head">
         <h1>Участники</h1>
     </header>
@@ -50,5 +49,4 @@
         {% endfor %}
     </section>
     {% if is_paginated %}{% load paginator %}{% paginator %}{% endif %}
-</div></section>
 {% endblock %}
