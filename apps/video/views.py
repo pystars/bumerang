@@ -4,13 +4,11 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, HttpResponse
-from django.http import Http404, HttpResponseRedirect
-from django.views.generic import ListView, DetailView
+from django.http import Http404
 from django.db.models import Q
-from django.views.generic.base import View, TemplateView
-from django.views.generic.detail import BaseDetailView
-from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView, UpdateView, BaseDeleteView
-from django.views.generic.list import MultipleObjectTemplateResponseMixin
+from django.views.generic import (ListView, DetailView, View, CreateView,
+                                  DeleteView, UpdateView)
+from django.views.generic.edit import ModelFormMixin
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
 from apps.accounts.models import Profile
