@@ -88,6 +88,29 @@ $(function(){
         $('#tint').hide();
     });
 
+    $('.one_video_delete').click(function(){
+        var checkboxes = [];
+        checkboxes.push($(this).attr('videoid'));
+        $.ajax({
+            type: 'POST',
+            url: $('form[name=videosdelete]').attr('action'),
+            data: {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                checkboxes: JSON.stringify(checkboxes)
+            },
+            success: function(response){
+                show_notification('success', response['message']);
+                $.each(checkboxes, function(i, v){
+                    $('#popup-del-video').hide();
+                    $('#tint').hide();
+                    $('form[name=videosdelete] #video_item' + v).hide(300, function(){
+                        get_videos_count();
+                    });
+                });
+            }
+        });
+    });
+
     $('#popup-del-video .videos_delete').click(function(){
         var cb_queryset = $('form[name=videosdelete] input[type=checkbox]');
         var checkboxes = [];

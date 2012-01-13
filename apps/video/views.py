@@ -22,16 +22,22 @@ from models import Video
 class VideosDeleteView(View):
     def get_queryset(self):
         ids = json.loads(self.request.POST['checkboxes'])
-        videos = Video.objects.filter(id__in=ids)
-        return videos
+        # Если владелец - текущий пользователь, выбирутся
+        # все видео. Иначе ни одного, удалять будет нечего.
+        # И пусть хацкеры ломают головы ;)
+        return Video.objects.filter(id__in=ids, owner=self.request.user)
 
     def get(self, request, **kwargs):
         return HttpResponse(status=403)
 
     def post(self, request, **kwargs):
         videos = self.get_queryset()
+        if videos.count() > 1:
+            msg = u'Видео успешно удалены'
+        else:
+            msg = u'Видео успешно удалено'
 #        videos.delete()
-        return HttpResponse(json.dumps({'message': u'Видео успешно удалены'}), mimetype="application/json")
+        return HttpResponse(json.dumps({'message': msg}), mimetype="application/json")
 
 class VideoDeleteView(DeleteView):
     model = Video
