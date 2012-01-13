@@ -49,7 +49,7 @@ class Profile(User):
     # Независимый участник
     work = models.TextField(u'Работа и карьера', **nullable)
     education = models.TextField(u'Образование', **nullable)
-    interests = models.TextField(u'Образование', **nullable)
+    interests = models.TextField(u'Интересы', **nullable)
     nickname = models.CharField(u'Никнейм', max_length=100, **nullable)
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 
