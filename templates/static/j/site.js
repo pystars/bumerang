@@ -138,4 +138,10 @@ $(function(){
             }
         });
     });
+
+    // Submit forms
+    $('.b-button').click(function(){
+        $(this).parents('form').submit();
+        return false;
+    });
 })
