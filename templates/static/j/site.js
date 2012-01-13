@@ -56,7 +56,7 @@ $(function(){
 
     function crop_initial_coords() {
         var coords = $('#id_avatar_coords').val();
-        if (coords != undefined && coords != '') {
+        if (coords != undefined && coords != ''){
             var c = JSON.parse($('#id_avatar_coords').val());
             return [c.x, c.y, c.x2, c.y2];
         } else {
