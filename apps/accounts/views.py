@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-from django.contrib.auth.forms import PasswordChangeForm
-
+import json
 try:
     from cStringIO import StringIO
 except ImportError:
     import StringIO
 
-import json
 from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
@@ -18,6 +16,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile

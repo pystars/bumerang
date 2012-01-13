@@ -46,7 +46,7 @@
         </nav>
         <ul class="buttons-wrap">
             <li>
-                <a href="#" class="b-button b-button_yellow b-button_add">Добавить видео</a>
+                <a href="{% url video-album-add %}" class="b-button b-button_yellow b-button_add">Добавить видео</a>
             </li>
             <li>
                 {% if not user.id %}

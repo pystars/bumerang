@@ -63,9 +63,7 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('email', 'type')
-        widgets = {
-            'type': forms.RadioSelect()
-        }
+        widgets = {'type': forms.RadioSelect()}
 
 
 #TODO: Перенести email пользователя в модель User из профиля
