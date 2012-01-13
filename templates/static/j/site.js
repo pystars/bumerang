@@ -26,9 +26,20 @@ JSON.parse = JSON.parse || function (str) {
     return p;
 };
 
-
 // Site variables
 var delay_time = 4000;
+
+function show_notification(status, text) {
+    var tpl = '<div class="alert-message ' + status +'">' +
+              '<a class="close msg-close" href="#">×</a>' +
+              '<p>'+text+'</p>' +
+              '</div>'
+    $('.l-page__i').prepend($(tpl));
+    $('.msg-close').click(function(){
+        $(this).parent().hide();
+    })
+    $('.alert-message').delay(delay_time).hide(300);
+}
 
 // Site handlers
 $(function(){
@@ -62,5 +73,46 @@ $(function(){
         minSize: [150, 150],
         setSelect: crop_initial_coords(),
         aspectRatio: 1
+    });
+
+    // Videos
+
+    function get_videos_count(){
+        var vcount = ($('form[name=videosdelete] .announ-item:visible').length);
+        console.log(vcount);
+        $("#videos_count").html('Всего '+vcount+' видео');
+    }
+
+    $('#popup-del-video .cancel').click(function(){
+        $('#popup-del-video').hide();
+        $('#tint').hide();
+    });
+
+    $('#popup-del-video .videos_delete').click(function(){
+        var cb_queryset = $('form[name=videosdelete] input[type=checkbox]');
+        var checkboxes = [];
+        $.each(cb_queryset, function(i, v) {
+            if ($(v).attr('checked')) {
+                checkboxes.push($(v).attr('value'));
+            }
+        });
+        $.ajax({
+            type: 'POST',
+            url: $('form[name=videosdelete]').attr('action'),
+            data: {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                checkboxes: JSON.stringify(checkboxes)
+            },
+            success: function(response){
+                show_notification('success', response['message']);
+                $.each(checkboxes, function(i, v){
+                    $('#popup-del-video').hide();
+                    $('#tint').hide();
+                    $('form[name=videosdelete] #video_item' + v).hide(300, function(){
+                        get_videos_count();
+                    });
+                });
+            }
+        });
     });
 })

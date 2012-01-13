@@ -8,9 +8,7 @@ from django.core.urlresolvers import reverse
 
 from mediainfo import get_metadata
 
-
 nullable = dict(null=True, blank=True)
-
 
 class VideoAlbum(models.Model):
     user = models.ForeignKey(User)

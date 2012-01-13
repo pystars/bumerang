@@ -1,20 +1,8 @@
-{% extends "inside.html" %}
+{% extends "accounts/tabs_wrapper.html" %}
 {% load sitetree %}
 {% load rupluralize %}
 
-{% block title %}{{ profile.title }}{% endblock %}
-
-{% block left_col %}
-    <div class="l-cols__section__i">
-    <div class="b-tabs d-sh">
-    <dl>
-    <dt class="first">
-        <span>Профиль</span>
-        <i class="l"></i>
-        <i class="r"></i>
-    </dt>
-    <dd><div class="b-tabs__tab-content">
-    </div></dd>
+{% block profile_video_tab %}
     <dt class="selected">
         <span>Видео</span>
         <small>{{ profile.video_set.count }}</small>
@@ -26,7 +14,11 @@
         <header class="b-profile__head b-profile__head_small cleared">
             <div class="b-profile__pic">
                 <div class="b-ava b-ava_small">
-                    <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
+                    {% if object.min_avatar %}
+                        <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
+                    {% else %}
+                        <img src="{{ MEDIA_URL }}i/noava.jpg" width="60" height="60" alt="" />
+                    {% endif %}
                     <i class="b-ava__sh"></i>
                 </div>
             </div>
@@ -34,7 +26,13 @@
                 <ul class="b-service-buttons">
                     <li class="edit"><i></i><a href="">Редактировать профиль</a></li>
                 </ul>
-                <h4>{{ profile.title }}</h4>
+                {% if profile.title %}
+                    {% if profile.type != 1 %}
+                        <h4>{{ profile.get_type_display }} &laquo;{{ profile.title }}&raquo;</h4>
+                    {% else %}
+                        <h4>{{ profile.title }}</h4>
+                    {% endif %}
+                {% endif %}
                 <p>{{ profile.place }}</p>
             </div>
         </header>
@@ -214,15 +212,4 @@
         {% endif %}
     </section>
     </div></dd>
-    <dt>
-        <span>Фото</span>
-        <small>0</small>
-        <i class="l"></i>
-        <i class="r"></i>
-    </dt>
-    <dd><div class="b-tabs__tab-content">
-    </div></dd>
-    </dl>
-    </div>
-    </div>
 {% endblock %}

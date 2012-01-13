@@ -16,11 +16,14 @@ def to_hm(value, is_last=False):
         total_time = time.gmtime(offset_time+int(value.video.duration/1000))
     return time.strftime('%H:%M', total_time)
 
-#@register.filter
-#def last_to_hm(value):
-#    total = int((value.offset + value.video.duration)/1000)
-#    time_val = time.gmtime(total)
-#    return time.strftime('%H:%M', time_val)
+@register.filter
+def to_hms(value):
+    # It's may be stupid, i don't know best way
+    total_time = time.gmtime(int(value/1000))
+    if total_time.tm_hour == '00':
+        return time.strftime('%H:%M:%S', total_time)
+    else:
+        return time.strftime('%M:%S', total_time)
 
 @register.filter
 def is_future(value):

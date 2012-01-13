@@ -4,17 +4,34 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, HttpResponse
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView, UpdateView
+from django.views.generic.base import View, TemplateView
+from django.views.generic.detail import BaseDetailView
+from django.views.generic.edit import CreateView, ModelFormMixin, DeleteView, UpdateView, BaseDeleteView
+from django.views.generic.list import MultipleObjectTemplateResponseMixin
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
 from apps.accounts.models import Profile
-from apps.video.models import VideoAlbum
+from apps.video.models import VideoAlbum, Video
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
 
+
+class VideosDeleteView(View):
+    def get_queryset(self):
+        ids = json.loads(self.request.POST['checkboxes'])
+        videos = Video.objects.filter(id__in=ids)
+        return videos
+
+    def get(self, request, **kwargs):
+        return HttpResponse(status=403)
+
+    def post(self, request, **kwargs):
+        videos = self.get_queryset()
+#        videos.delete()
+        return HttpResponse(json.dumps({'message': u'Видео успешно удалены'}), mimetype="application/json")
 
 class VideoDeleteView(DeleteView):
     model = Video

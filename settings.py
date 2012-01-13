@@ -136,8 +136,6 @@ INSTALLED_APPS = (
     'south',
     'mptt',
     'tinymce',
-#    'endless_pagination',
-    #'gunicorn',
 )
 
 TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")

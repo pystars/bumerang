@@ -77,4 +77,8 @@ urlpatterns = patterns('',
         ProfileView.as_view(),
         name='profile-detail'
     ),
+    url(r'^(?P<pk>[\d]+)/video/$',
+        ProfileView.as_view(template_name_suffix='_detail_video'),
+        name='profile-video-detail'
+    ),
 )
