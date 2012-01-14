@@ -860,9 +860,9 @@ textarea {
 	position:relative;
 }
 
-.b-quote blockquote > * {
-	display:inline;
-}
+/*.b-quote blockquote > * {*/
+	/*display:inline;*/
+/*}*/
 
 *+html .b-quote blockquote {
 	z-index:expression(runtimeStyle.zIndex = 1, this.innerHTML = this.innerHTML = "<span class='before-blockquote'>\AB</span>" + this.innerHTML + "<span class='after-blockquote'>\BB</span>");
@@ -874,8 +874,8 @@ textarea {
 	color:#cf7600;
 	font-size:3em;
 	line-height:0;
-	position:relative;
-	top:.18em;
+	position:absolute;
+	top:0.18em;
 	display:-moz-inline-box;display:inline-block;//display:inline;zoom:1; 
 	vertical-align:top;
 	width:.68em;
@@ -887,9 +887,9 @@ textarea {
 	color:#cf7600;
 	font-size:3em;
 	line-height:0;
-	margin-left:.1em;
-	position:relative;
-	top:.25em;
+	position:absolute;
+	bottom: 0.18em;
+    right: 0;
 	display:-moz-inline-box;display:inline-block;//display:inline;zoom:1; 
 	vertical-align:top;
 	width:.68em;

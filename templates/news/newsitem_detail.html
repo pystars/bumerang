@@ -10,12 +10,13 @@
                 <h1>{{ newsitem.title }}</h1>
                 <time class="date">{{ newsitem.creation_date|date:'d E Y' }}</time>
             </header>
-            <p class="b-intro">
-                {{ newsitem.preview_text|safe }}
-            </p>
+{#            <p class="b-intro">#}
+{#                #}
+{#            </p>#}
             <div class="h-ugc">
                 <figure class="b-quote">
                     <blockquote>
+                        {{ newsitem.preview_text|safe }}
                         {{ newsitem.text|safe }}
                     </blockquote>
                 </figure>
