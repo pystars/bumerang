@@ -25,13 +25,15 @@
                 {% endwith %}
                 <div class="b-hr"><hr /></div>
                 <header class="b-head cleared">
-                    <a href="{% url video-album-detail video_album.id %}" class="b-button-prev"><span>Назад</span></a>
+                    {% if video_album %}
+                        <a href="{% url video-album-detail video_album.id %}" class="b-button-prev"><span>Назад</span></a>
+                    {% endif %}
                     <h3>
-                        Добавить видео в альбом &laquo;{{ video_album.title }}&raquo;
+                        Добавить видео{% if video_album %} в альбом &laquo;{{ video_album.title }}&raquo;{% endif %}
                     </h3>
                 </header>
                 <section class="b-form b-form_album b-form_smaller">
-                    <form name="editform" action="{% url video-add video_album.id %}" method="post" enctype="multipart/form-data">
+                    <form name="editform" action="{% if video_album %}{% url album-video-add video_album.id %}{% else %}{% url video-add %}{% endif %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="b-form__fields">
                             {% for item in form %}

@@ -6,14 +6,14 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" />
     <!--[if lt IE 9]>
-		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
     <link rel="stylesheet" href="{{ STATIC_URL }}s/reset.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}s/style.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}s/alerts.css" />
     <!--[if lte IE 9]>
-		<link rel="stylesheet" href="{{ STATIC_URL }}s/style-ie.css" />
-	<![endif]-->
+        <link rel="stylesheet" href="{{ STATIC_URL }}s/style-ie.css" />
+    <![endif]-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|PT+Sans+Narrow:400,700&amp;subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     {% block head_css %}{% endblock %}
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-1.6.2.min.js"></script>
@@ -46,7 +46,7 @@
         </nav>
         <ul class="buttons-wrap">
             <li>
-                <a href="{% url video-album-add %}" class="b-button b-button_yellow b-button_add">Добавить видео</a>
+                <a href="{% if request.user.videoalbum_set.count %}{% url video-add %}{% else %}{% url video-album-add %}{% endif %}" class="b-button b-button_yellow b-button_add">Добавить видео</a>
             </li>
             <li>
                 {% if not user.id %}
@@ -170,17 +170,17 @@
                 <div class="b-form__field">
                     <label>
                         <span class="f-title"><span>Почта</span></span>
-					<span class="f-input">
-						{{ auth_form.username }}
-					</span>
+                    <span class="f-input">
+                        {{ auth_form.username }}
+                    </span>
                     </label>
                 </div>
                 <div class="b-form__field">
                     <label>
                         <span class="f-title"><span>Пароль</span></span>
-					<span class="f-input">
-						{{ auth_form.password }}
-					</span>
+                        <span class="f-input">
+                            {{ auth_form.password }}
+                        </span>
                     </label>
                     <span class="f-forgot"><a href="{% url password-recover %}">забыл пароль</a></span>
                 </div>

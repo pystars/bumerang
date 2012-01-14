@@ -103,15 +103,15 @@ class Video(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None):
         super(Video, self).save(force_insert, force_update, using)
-        if not self.duration:
-            query = {
-                'Video' : {
-                    'Duration' : int,
-                    }
-            }
-            minfo = get_metadata(self.original_file.path, **query)
-            self.duration = minfo['Video']['Duration']
-            self.save()
+        query = {
+            'Video' : {
+                'Duration' : int,
+                }
+        }
+        file_field = self.best_quality_file() or self.original_file
+        minfo = get_metadata(file_field.path, **query)
+        self.duration = minfo['Video']['Duration']
+        self.save()
 
     def delete(self, using=None):
         for field in self._meta.fields:

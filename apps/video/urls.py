@@ -10,13 +10,13 @@ from apps.video.views import (VideoListView, upload_view,
 
 
 urlpatterns = patterns('',
-    url(r'^videoalbum/add/$',
+    url(r'^video-album/add/$',
         login_required(VideoAlbumCreateView.as_view()),
         name='video-album-add'
     ),
-    url(r'^album(?P<video_album_id>[\d]+)/video/add/$',
+    url(r'^album(?P<video_album_id>[\d]+)/add/$',
         login_required(VideoCreateView.as_view()),
-        name='video-add'
+        name='album-video-add'
     ),
     url(r'^album(?P<pk>[\d]+)/$',
         DetailView.as_view(model=VideoAlbum),
@@ -25,6 +25,10 @@ urlpatterns = patterns('',
     url(r'^album(?P<pk>[\d]+)/edit/$',
         login_required(VideoAlbumUpdateView.as_view()),
         name='video-album-edit'
+    ),
+    url(r'^add/$',
+        login_required(VideoCreateView.as_view()),
+        name='video-add'
     ),
     url(r'^(?P<pk>[\d]+)/edit/$',
         VideoUpdateView.as_view(template_name_suffix='_edit_form'),

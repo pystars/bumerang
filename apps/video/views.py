@@ -11,7 +11,8 @@ from django.views.generic.edit import ModelFormMixin, UpdateView
 
 from settings import VIDEO_UPLOAD_PATH
 from models import Video, VideoAlbum
-from forms import VideoForm, VideoAlbumForm, VideoCreateForm
+from forms import (VideoForm, VideoAlbumForm, VideoCreateForm,
+                   AlbumVideoCreateForm)
 
 
 class VideosDeleteView(View):
@@ -68,11 +69,26 @@ class VideoDeleteView(DeleteView):
 
 class VideoCreateView(CreateView):
     model = Video
-    form_class = VideoCreateForm
+#    form_class = AlbumVideoCreateForm
+
+    def get_form_class(self):
+        if 'video_album_id' in self.kwargs:
+            return AlbumVideoCreateForm
+        return VideoCreateForm
+
+    def album(self):
+        if 'video_album_id' in self.kwargs:
+            try:
+                return VideoAlbum.objects.get(
+                    owner=self.request.user, pk=self.kwargs['video_album_id'])
+            except VideoAlbum.DoesNotExist:
+                pass
+        return None
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.album_id = self.kwargs['video_album_id']
+        if self.album():
+            self.object.album = self.album()
         self.object.owner = self.request.user
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
@@ -84,10 +100,7 @@ class VideoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(VideoCreateView, self).get_context_data(**kwargs)
-        ctx.update({
-            'video_album': VideoAlbum.objects.get(
-                pk=self.kwargs['video_album_id'])
-        })
+        ctx.update({'video_album': self.album()})
         return ctx
 
 
@@ -157,7 +170,8 @@ def save_upload( uploaded, filename, raw_data ):
                 while foo:
                     dest.write(foo)
                     foo = uploaded.read(1024)
-                    # if not raw, it was a form upload so read in the normal Django chunks fashion
+                    # if not raw, it was a form upload so read in the normal
+                    # Django chunks fashion
             else:
                 for c in uploaded.chunks():
                     dest.write(c)

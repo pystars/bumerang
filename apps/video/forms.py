@@ -9,6 +9,7 @@ class VideoCreateForm(forms.ModelForm):
         model = Video
         fields = (
             'title',
+            'album',
             'original_file',
             'hq_file',
             'mq_file',
@@ -19,15 +20,24 @@ class VideoCreateForm(forms.ModelForm):
         )
 
 
-class VideoForm(forms.ModelForm):
-    access = forms.ChoiceField(choices=Video.ACCESS_FLAGS, initial=1)
+class AlbumVideoCreateForm(VideoCreateForm):
+    class Meta(VideoCreateForm.Meta):
+        exclude = ('album',)
 
+
+class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
+        widgets = {'access': forms.widgets.RadioSelect}
         fields = (
             'title',
-            'slug',
+#            'slug',
             'album',
+            'original_file',
+            'hq_file',
+            'mq_file',
+            'lq_file',
+            'preview',
             'category',
             'description',
             'year',
