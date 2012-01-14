@@ -10,7 +10,7 @@ from mediainfo import get_metadata
 nullable = dict(null=True, blank=True)
 
 class VideoAlbum(models.Model):
-    user = models.ForeignKey(User)
+    owner = models.ForeignKey(User)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание')
 
