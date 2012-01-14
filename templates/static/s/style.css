@@ -322,6 +322,10 @@ h3.title + p.subtitle {margin-top:-.45em;}
 	margin:0 0 .9em 0;
 }
 
+.h-ugc ol {
+    list-style-type: decimal;
+}
+
 .h-ugc ul,
 .h-ugc .b-num-list {
 	margin-bottom:1.8em;
@@ -391,7 +395,11 @@ h3.title + p.subtitle {margin-top:-.45em;}
 	font-style:italic;
 	font-size:.875em;
 	line-height:1.15em;
-	display:block;
+	/*display:block;*/
+}
+
+.h-ugc strong {
+    font-weight: bolder;
 }
 
 table {
