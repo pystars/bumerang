@@ -20,8 +20,8 @@ class RegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            if field.widget.__class__ == forms.widgets.TextInput \
-            or field.widget.__class__ == forms.widgets.PasswordInput:
+            if (field.widget.__class__ == forms.widgets.TextInput
+            or field.widget.__class__ == forms.widgets.PasswordInput):
                 if field.widget.attrs.has_key('class'):
                     field.widget.attrs['class'] += ' medium'
                 else:
@@ -31,7 +31,8 @@ class RegistrationForm(forms.ModelForm):
         password1 = self.cleaned_data.get("password1", "")
         password2 = self.cleaned_data["password2"]
         if password1 != password2:
-            raise forms.ValidationError(_("The two password fields didn't match."))
+            raise forms.ValidationError(_(
+                "The two password fields didn't match."))
         return password2
 
     def clean_email(self):
@@ -45,14 +46,16 @@ class RegistrationForm(forms.ModelForm):
         email = self.cleaned_data.get('email', '')
         try:
             Profile.objects.get(email=email)
-            raise forms.ValidationError('Пользователь с таким адресом уже существует.')
+            raise forms.ValidationError(
+                'Пользователь с таким адресом уже существует.')
         except ObjectDoesNotExist:
             return email
 
     def save(self, commit=True):
         profile = super(RegistrationForm, self).save(commit=False)
         algo = 'sha1'
-        salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
+        salt = get_hexdigest(
+            algo, str(random.random()), str(random.random()))[:5]
         hsh = get_hexdigest(algo, salt, self.cleaned_data['password1'])
         profile.password = '%s$%s$%s' % (algo, salt, hsh)
         profile.username = uuid4().get_hex()[:30]
@@ -87,7 +90,8 @@ class VideoAlbumForm(forms.ModelForm):
 class VideoCreateForm(forms.ModelForm):
     class Meta:
         model = Video
-        fields = ('title', 'original_file', 'hq_file', 'lq_file', 'mq_file', 'category', 'description')
+        fields = ('title', 'original_file', 'hq_file', 'lq_file', 'mq_file',
+                  'category', 'description')
 
 
 class VideoUpdateForm(forms.ModelForm):
@@ -137,7 +141,9 @@ class UserProfileInfoForm(forms.ModelForm):
     Форма редактирования профиля пользователя
     '''
     title = forms.CharField(max_length=255, label=u'Имя, фамилия')
-    description = forms.CharField(label=u'О себе', widget=forms.Textarea)
+    description = forms.CharField(label=u'О себе', required=False,
+        widget=forms.Textarea)
+
     class Meta:
         model = Profile
         fields = (

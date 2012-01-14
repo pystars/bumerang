@@ -12,13 +12,15 @@ def get_avatar_path(instance, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(instance.id))
     if not os.path.exists(path):
         os.makedirs(path)
-    return 'avatars/{0}/full{1}'.format(str(instance.id), os.path.splitext(filename)[1])
+    return 'avatars/{0}/full{1}'.format(
+        str(instance.id), os.path.splitext(filename)[1])
 
 def get_mini_avatar_path(instance, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(instance.id))
     if not os.path.exists(path):
         os.makedirs(path)
-    return 'avatars/{0}/min{1}'.format(str(instance.id), os.path.splitext(filename)[1])
+    return 'avatars/{0}/min{1}'.format(
+        str(instance.id), os.path.splitext(filename)[1])
 
 class Profile(User):
     ACCOUNT_TYPES = (
@@ -34,8 +36,10 @@ class Profile(User):
 
     type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
-    avatar = models.ImageField(u'Фотография профиля', upload_to=get_avatar_path, **nullable)
-    min_avatar = models.ImageField(u'Уменьшенная фотография профиля', upload_to=get_mini_avatar_path, **nullable)
+    avatar = models.ImageField(u'Фотография профиля',
+        upload_to=get_avatar_path, **nullable)
+    min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
+        upload_to=get_mini_avatar_path, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
     place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
@@ -55,7 +59,8 @@ class Profile(User):
 
     # Школа
     faculties = models.CharField(u'Образование', max_length=255, **nullable)
-    teachers = models.ForeignKey('self', verbose_name=u'Преподаватели', related_name='teachers_set', **nullable)
+    teachers = models.ForeignKey('self', verbose_name=u'Преподаватели',
+        related_name='teachers_set', **nullable)
 
     #Студия
     services = models.CharField(u'Услуги', max_length=255, **nullable)

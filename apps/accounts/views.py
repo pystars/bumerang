@@ -31,11 +31,13 @@ class RegistrationFormView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.add_message(self.request, messages.SUCCESS, u'Регистрация прошла успешно. Теперь вы можете залогиниться.')
+        messages.add_message(self.request, messages.SUCCESS,
+            u'Регистрация прошла успешно. Теперь вы можете залогиниться.')
         return super(RegistrationFormView, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR, u'Ошибка при регистрации')
+        messages.add_message(self.request, messages.ERROR,
+            u'Ошибка при регистрации')
         return self.render_to_response(self.get_context_data(form=form))
 
 class PasswordRecoveryView(FormView):
@@ -45,8 +47,8 @@ class PasswordRecoveryView(FormView):
     def form_valid(self, form):
         receiver_email = form.data['email']
         new_password = uuid4().get_hex()[:8]
-
-        salt = get_hexdigest('sha1', str(random.random()), str(random.random()))[:5]
+        salt = get_hexdigest(
+            'sha1', str(random.random()), str(random.random()))[:5]
         hsh = get_hexdigest('sha1', salt, new_password)
         new_password_hash = '%s$%s$%s' % ('sha1', salt, hsh)
 
@@ -109,11 +111,13 @@ class ProfileInfoEditView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.add_message(self.request, messages.SUCCESS, u'Профиль успешно обновлен')
+        messages.add_message(self.request, messages.SUCCESS,
+            u'Профиль успешно обновлен')
         return super(ProfileInfoEditView, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR, u'Ошибка при обновлении профиля')
+        messages.add_message(self.request, messages.ERROR,
+            u'Ошибка при обновлении профиля')
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -202,31 +206,37 @@ class ProfileSettingsEditView(TemplateView):
         ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
         ctx.update({
             'email_form': ProfileEmailEditForm(),
-            'pwd_form': PasswordChangeForm(self.request.user),
+            'pwd_form': PasswordChangeForm(self.get_object()),
         })
         ctx.update(kwargs)
         return ctx
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return self.request.user
 
     def post(self, request):
+        kwargs = {}
         if 'old_password' in request.POST:
-            pwd_form = PasswordChangeForm(self.request.user, request.POST)
+            pwd_form = PasswordChangeForm(self.get_object(), request.POST)
             if pwd_form.is_valid():
                 pwd_form.save()
-                messages.add_message(self.request, messages.SUCCESS, u'Пароль успешно изменен')
-                return self.render_to_response(self.get_context_data())
+                messages.add_message(self.request, messages.SUCCESS,
+                    u'Пароль успешно изменен')
             else:
-                messages.add_message(self.request, messages.ERROR, u'Ошибка при изменении пароля')
-                return self.render_to_response(self.get_context_data(pwd_form=pwd_form))
+                messages.add_message(self.request, messages.ERROR,
+                    u'Ошибка при изменении пароля')
+                kwargs['pwd_form'] = pwd_form
 
         if 'email' in request.POST:
-            email_form = ProfileEmailEditForm(request.POST)
+            email_form = ProfileEmailEditForm(
+                request.POST, instance=self.get_object())
             if email_form.is_valid():
-                self.request.user = email_form.save()
-                messages.add_message(self.request, messages.SUCCESS, u'Почтовый адрес успешно изменен')
-                return self.render_to_response(self.get_context_data())
+                email_form.save()
+                messages.add_message(self.request, messages.SUCCESS,
+                    u'Почтовый адрес успешно изменен')
             else:
-                messages.add_message(self.request, messages.ERROR, u'Ошибка при изменении почтового адреса')
-                return self.render_to_response(self.get_context_data(email_form=email_form))
+                messages.add_message(self.request, messages.ERROR,
+                    u'Ошибка при изменении почтового адреса')
+                kwargs['email_form'] = email_form
+
+        return self.render_to_response(self.get_context_data(**kwargs))
