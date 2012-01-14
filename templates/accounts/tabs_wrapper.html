@@ -6,19 +6,20 @@
     {% if object.id == user.id %}
         Ваш профиль
     {% else %}
-        {#  TODO: Избежать отображения None #}
-        {% if object.type != 1 %}
-            {{ object.get_type_display }} &laquo;{{ object.title }}&raquo;
+        {% if object.title %}
+            {% if object.type != 1 %}
+                {{ object.get_type_display }} &laquo;{{ object.title }}&raquo;
+            {% endif %}
         {% else %}
-            {{ object.title }}
+            {{ "Заполните имя профиля" }}
         {% endif %}
     {% endif %}
 {% endblock %}
 
 {% block left_column %}
-    <div class="b-tabs d-sh">
+<div class="b-tabs d-sh">
     <dl>
-        {% block profile_tab %}
+    {% block profile_tab %}
         <dt class="first">
             <a href="{% url profile-detail object.id %}">
                 <span>Профиль</span>
@@ -26,39 +27,46 @@
             <i class="l"></i>
             <i class="r"></i>
         </dt>
-        <dd><div class="b-tabs__tab-content">
-        </div></dd>
-        {% endblock %}
+        <dd>
+            <div class="b-tabs__tab-content">
 
-        {% block profile_video_tab %}
-            <dt class="first">
-                {% spaceless %}
-                <a href="{% url profile-video-detail object.id %}">
-                    <span>Видео</span>
-                </a>
-                {% endspaceless %}
-                <small>{{ profile.video_set.count }}</small>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd><div class="b-tabs__tab-content">
-            </div></dd>
-        {% endblock %}
+            </div>
+        </dd>
+    {% endblock %}
 
-        {% block profile_photo_tab %}
-            <dt class="first">
-                {% spaceless %}
-                <a href="">
-                    <span>Фото</span>
-                </a>
-                {% endspaceless %}
-                <small>0</small>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd><div class="b-tabs__tab-content">
-            </div></dd>
-        {% endblock %}
+    {% block profile_video_tab %}
+        <dt>
+            {% spaceless %}
+            <a href="{% url profile-video-detail object.id %}">
+                <span>Видео</span>
+            </a>
+            {% endspaceless %}
+            <small>{{ profile.video_set.count }}</small>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+        <dd>
+            <div class="b-tabs__tab-content">
+            </div>
+        </dd>
+    {% endblock %}
+
+    {% block profile_photo_tab %}
+        <dt>
+            {% spaceless %}
+            <a href="">
+                <span>Фото</span>
+            </a>
+            {% endspaceless %}
+            <small>0</small>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+        <dd>
+            <div class="b-tabs__tab-content">
+            </div>
+        </dd>
+    {% endblock %}
     </dl>
-    </div>
+</div>
 {% endblock %}

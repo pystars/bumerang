@@ -3,119 +3,119 @@
 {% load rupluralize %}
 
 {% block profile_tab %}
-			<dt class="first selected">
-				<span>Профиль {% for videoalbum in object.user.videoalbum_set.all %}{{ videoalbum }}{% endfor %}</span>
-				<i class="l"></i>
-				<i class="r"></i>
-			</dt>
-			<dd class="selected"><div class="b-tabs__tab-content">
-				<section class="b-profile">
-					<header class="b-profile__head cleared">
-						<div class="b-profile__pic">
-							<div class="b-ava b-ava_big">
-                                {% if object.min_avatar %}
-                                    <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
-                                {% else %}
-                                    <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
-                                {% endif %}
-								<i class="b-ava__sh"></i>
-							</div>
-							<ul class="b-opts b-opts_prof2">
-								<li><strong>Просмотров</strong> <span>{{ object.views_count }}</span></li>
-								<li><strong>Друзей</strong> <span>{{ object.friends_count }}</span></li>
-							</ul>
-						</div>
-						<div class="b-profile__txt">
-							{% include "accounts/service_buttons.html" %}
-
-                            {% if object.title %}
-								{% if object.type != 1 %}
-                                    <h2>{{ object.get_type_display }} &laquo;{{ object.title }}&raquo;</h2>
-								{% else %}
-									<h2>{{ object.title }}</h2>
-								{% endif %}
-                            {% endif %}
-
-                            {% if not object.title %}
-                                Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
-                                Заполните его в разделе &laquo;<a href="{% url profile-edit %}">редактирования</a>&raquo;
-                            {% endif %}
-
-							<ul class="b-opts b-opts_prof1">
-								{% if object.place %}
-								<li><strong>Откуда</strong><span>{{ object.place }}</span></li>
-								{% endif %}
-								{% if object.birthday %}
-								<li><strong>День рождения</strong> <span>{{ object.birthday }}</span></li>
-								{% endif %}
-								{% if object.nickname %}
-								<li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
-								{% endif %}
-							</ul>
-                            {% if object.description %}
-							<p class="smaller">
-								{{ object.description }}
-							</p>
-                            {% endif %}
-						</div>
-					</header>
-				</section>
-
-                {% if object.work or object.education or object.interests or object.services or object.team %}
-                <div class="tab-container js-toggle2-container js-toggle2-container_resume">
-                    <div class="b-hr"><hr /></div>
-                    <div class="tab-block js-toggle2-block">
-                        <section class="b-resume">
-                            {% if object.work %}
-                            <h2>Работа и карьера</h2>
-                            <dl>
-                                <dt>Род деятельности</dt>
-                                <dd>
-                                    {{ object.work }}
-                                </dd>
-                            </dl>
-                            {% endif %}
-                            {% if object.education %}
-                            <h2>Образование</h2>
-                            <dl>
-                                <dt>Учебные заведения, специальность</dt>
-                                <dd>
-                                    {{ object.education }}
-                                </dd>
-                            </dl>
-                            {% endif %}
-                            {% if object.interests %}
-                            <h2>Интересы</h2>
-                            <dl>
-                                <dt>Увлечения и хобби</dt>
-                                <dd>
-                                    {{ object.interests }}
-                                </dd>
-                            </dl>
-                            {% endif %}
-                            {% if object.team %}
-                                <h2>Команда</h2>
-                                <dl>
-                                    <dd>
-                                        {{ object.team }}
-                                    </dd>
-                                </dl>
-                            {% endif %}
-                            {% if object.services %}
-                            <h2>Услуги</h2>
-                            <dl>
-                                <dd>
-                                    {{ object.services }}
-                                </dd>
-                            </dl>
-                            {% endif %}
-                        </section>
-                    </div>
-                    <div class="tab-button">
-                        <div class="b-hr"><hr /></div>
-                        <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
-                    </div>
+<dt class="first selected">
+    <span>Профиль</span>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd class="selected"><div class="b-tabs__tab-content">
+    <section class="b-profile">
+        <header class="b-profile__head cleared">
+            <div class="b-profile__pic">
+                <div class="b-ava b-ava_big">
+                    {% if object.min_avatar %}
+                        <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
+                    {% else %}
+                        <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
+                    {% endif %}
+                    <i class="b-ava__sh"></i>
                 </div>
+                <ul class="b-opts b-opts_prof2">
+                    <li><strong>Просмотров</strong> <span>{{ object.views_count }}</span></li>
+                    <li><strong>Друзей</strong> <span>{{ object.friends_count }}</span></li>
+                </ul>
+            </div>
+            <div class="b-profile__txt">
+                {% include "accounts/service_buttons.html" %}
+
+                {% if object.title %}
+                    {% if object.type != 1 %}
+                        <h2>{{ object.get_type_display }} &laquo;{{ object.title }}&raquo;</h2>
+                    {% else %}
+                        <h2>{{ object.title }}</h2>
+                    {% endif %}
                 {% endif %}
-			</div></dd>
+
+                {% if not object.title %}
+                    Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
+                    Заполните его в разделе &laquo;<a href="{% url profile-edit %}">редактирования</a>&raquo;
+                {% endif %}
+
+                <ul class="b-opts b-opts_prof1">
+                    {% if object.place %}
+                    <li><strong>Откуда</strong><span>{{ object.place }}</span></li>
+                    {% endif %}
+                    {% if object.birthday %}
+                    <li><strong>День рождения</strong> <span>{{ object.birthday }}</span></li>
+                    {% endif %}
+                    {% if object.nickname %}
+                    <li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
+                    {% endif %}
+                </ul>
+                {% if object.description %}
+                <p class="smaller">
+                    {{ object.description }}
+                </p>
+                {% endif %}
+            </div>
+        </header>
+    </section>
+
+    {% if object.work or object.education or object.interests or object.services or object.team %}
+    <div class="tab-container js-toggle2-container js-toggle2-container_resume">
+        <div class="b-hr"><hr /></div>
+        <div class="tab-block js-toggle2-block">
+            <section class="b-resume">
+                {% if object.work %}
+                <h2>Работа и карьера</h2>
+                <dl>
+                    <dt>Род деятельности</dt>
+                    <dd>
+                        {{ object.work }}
+                    </dd>
+                </dl>
+                {% endif %}
+                {% if object.education %}
+                <h2>Образование</h2>
+                <dl>
+                    <dt>Учебные заведения, специальность</dt>
+                    <dd>
+                        {{ object.education }}
+                    </dd>
+                </dl>
+                {% endif %}
+                {% if object.interests %}
+                <h2>Интересы</h2>
+                <dl>
+                    <dt>Увлечения и хобби</dt>
+                    <dd>
+                        {{ object.interests }}
+                    </dd>
+                </dl>
+                {% endif %}
+                {% if object.team %}
+                    <h2>Команда</h2>
+                    <dl>
+                        <dd>
+                            {{ object.team }}
+                        </dd>
+                    </dl>
+                {% endif %}
+                {% if object.services %}
+                <h2>Услуги</h2>
+                <dl>
+                    <dd>
+                        {{ object.services }}
+                    </dd>
+                </dl>
+                {% endif %}
+            </section>
+        </div>
+        <div class="tab-button">
+            <div class="b-hr"><hr /></div>
+            <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
+        </div>
+    </div>
+    {% endif %}
+</div></dd>
 {% endblock %}

@@ -3,13 +3,10 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
-{% block left_column %}
-<div class="b-tabs d-sh">
-    <dl>
-        <dd><div class="b-tabs__tab-content">
-        </div></dd>
-        <dt class="first selected">
-            <span>Видеоальбом</span>
+{% block profile_video_tab %}
+        <dt class="selected">
+            <span>Видео</span>
+            <small>{{ object.owner.profile.video_set.count }}</small>
             <i class="l"></i>
             <i class="r"></i>
         </dt>
@@ -93,8 +90,6 @@
                 </div>
             </section>
         </div></dd>
-    </dl>
-</div>
 {% endblock %}
 
 {% block popup %}
