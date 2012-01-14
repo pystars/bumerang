@@ -10,34 +10,7 @@
         <i class="r"></i>
     </dt>
     <dd class="selected"><div class="b-tabs__tab-content">
-    <section class="b-profile">
-        <header class="b-profile__head b-profile__head_small cleared">
-            <div class="b-profile__pic">
-                <div class="b-ava b-ava_small">
-                    {% if object.min_avatar %}
-                        <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
-                    {% else %}
-                        <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
-                    {% endif %}
-                    <i class="b-ava__sh"></i>
-                </div>
-            </div>
-            <div class="b-profile__txt">
-                <ul class="b-service-buttons">
-                    <li class="edit"><i></i><a href="">Редактировать профиль</a></li>
-                </ul>
-                {% if profile.title %}
-                    {% if profile.type != 1 %}
-                        <h4>{{ profile.get_type_display }} &laquo;{{ profile.title }}&raquo;</h4>
-                    {% else %}
-                        <h4>{{ profile.title }}</h4>
-                    {% endif %}
-                {% endif %}
-                <p>{{ profile.place }}</p>
-            </div>
-        </header>
-
-    </section>
+    {% include "snippets/section_profile.html" %}
     <div class="b-hr"><hr /></div>
     <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v">
         <header class="b-gallery__head">

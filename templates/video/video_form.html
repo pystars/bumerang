@@ -20,33 +20,9 @@
             </dt>
 
             <dd class="selected"><div class="b-tabs__tab-content">
-                <section class="b-profile">
-                    <header class="b-profile__head b-profile__head_small cleared">
-                        <div class="b-profile__pic">
-                            <div class="b-ava b-ava_small">
-                                <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
-                                <i class="b-ava__sh"></i>
-                            </div>
-                        </div>
-                        <div class="b-profile__txt">
-                            {% include "accounts/service_buttons.html" %}
-                            <h4>
-                                {% if user.profile.title %}
-                                    {% if user.profile.title %}
-                                        {% if user.profile.type != 1 %}
-                                            {{ user.profile.get_type_display }} &laquo;{{ user.profile.title }}&raquo;
-                                        {% else %}
-                                            {{ user.profile.title }}
-                                        {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                    Заполните имя профиля
-                                {% endif %}
-                            </h4>
-                            <p>{{ user.profile.place }}</p>
-                        </div>
-                    </header>
-                </section>
+                {% with request.user.profile as profile %}
+                {% include "snippets/section_profile.html" %}
+                {% endwith %}
                 <div class="b-hr"><hr /></div>
                 <header class="b-head cleared">
                     <a href="{% url video-album-detail video_album.id %}" class="b-button-prev"><span>Назад</span></a>
