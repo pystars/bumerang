@@ -44,4 +44,4 @@ class VideoForm(forms.ModelForm):
 class VideoAlbumForm(forms.ModelForm):
     class Meta:
         model = VideoAlbum
-        exclude = ('user',)
+        exclude = ('owner',)
