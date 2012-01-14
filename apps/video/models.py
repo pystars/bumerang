@@ -3,7 +3,6 @@ from datetime import timedelta, datetime
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.aggregates import Max
 from django.core.urlresolvers import reverse
 
 from mediainfo import get_metadata
@@ -94,12 +93,9 @@ class Video(models.Model):
         default=1, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
 
-    #TODO: ratings
-
     def save(self, force_insert=False, force_update=False, using=None):
         super(Video, self).save(force_insert, force_update, using)
         if not self.duration:
-            floatint = lambda x: int(float(x))
             query = {
                 'Video' : {
                     'Duration' : int,
