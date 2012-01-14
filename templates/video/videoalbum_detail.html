@@ -1,123 +1,120 @@
 {% extends "video/tabs_wrapper.html" %}
-{% load sitetree %}
-{% load rupluralize %}
-{% load videotags %}
+{% load sitetree rupluralize videotags %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
 {% block left_column %}
     <div class="b-tabs d-sh">
     <dl>
-            <dd><div class="b-tabs__tab-content">
-            </div></dd>
-            <dt class="first selected">
-                <span>Видеоальбом</span>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd class="selected"><div class="b-tabs__tab-content">
-                <section class="b-profile">
-                    <header class="b-profile__head b-profile__head_small cleared">
-                        <div class="b-profile__pic">
-                            <div class="b-ava b-ava_small">
-                                {% if object.user.profile.min_avatar %}
-                                    <img src="{{ object.user.profile.min_avatar.url }}" width="60" height="60" alt="" />
-                                {% else %}
-                                    <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
-                                {% endif %}
-                                <i class="b-ava__sh"></i>
-                            </div>
-                        </div>
-                        <div class="b-profile__txt">
-                            {% if user.id == object.user.id %}
-                            <ul class="b-service-buttons">
-                                <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
-                            </ul>
+        <dd><div class="b-tabs__tab-content">
+        </div></dd>
+        <dt class="first selected">
+            <span>Видеоальбом</span>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+        <dd class="selected"><div class="b-tabs__tab-content">
+            <section class="b-profile">
+                <header class="b-profile__head b-profile__head_small cleared">
+                    <div class="b-profile__pic">
+                        <div class="b-ava b-ava_small">
+                            {% if object.user.profile.min_avatar %}
+                                <img src="{{ object.user.profile.min_avatar.url }}" width="60" height="60" alt="" />
+                            {% else %}
+                                <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
                             {% endif %}
-                            <a href="{% url profile-detail object.user.profile.id %}">
-                                <h4>{{ object.user.profile.title }}</h4>
-                            </a>
-                            <p>{{ object.user.profile.place }}</p>
+                            <i class="b-ava__sh"></i>
                         </div>
-                    </header>
-                </section>
-                <div class="b-hr"><hr /></div>
-                <header class="b-head cleared">
-                    {% if user.id == object.user.id %}
-                    <ul class="b-service-buttons">
-                        <li class="addphoto"><i></i><a href="{% url video-add object.id %}">Добавить видео</a></li>
-                        <li class="edit"><i></i><a href="{% url video-album-edit object.id %}">Редактировать альбом</a></li>
-                    </ul>
-                    {% endif %}
-                    <a href="{% url profile-video-detail object.user.id %}" class="b-button-prev"><span>Все альбомы</span></a>
-                    <h3>
-                        {{ object.title }}
-                    </h3>
-                    <div class="b-head__descr d-rounded d-rounded_r5">
-                        {{ object.description }}
+                    </div>
+                    <div class="b-profile__txt">
+                        {% if user.id == object.user.id %}
+                        <ul class="b-service-buttons">
+                            <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
+                        </ul>
+                        {% endif %}
+                        <a href="{% url profile-detail object.user.profile.id %}">
+                            <h4>{{ object.user.profile.title }}</h4>
+                        </a>
+                        <p>{{ object.user.profile.place }}</p>
                     </div>
                 </header>
+            </section>
+            <div class="b-hr"><hr /></div>
+            <header class="b-head cleared">
+                {% if user.id == object.user.id %}
+                <ul class="b-service-buttons">
+                    <li class="addphoto"><i></i><a href="{% url video-add object.id %}">Добавить видео</a></li>
+                    <li class="edit"><i></i><a href="{% url video-album-edit object.id %}">Редактировать альбом</a></li>
+                </ul>
+                {% endif %}
+                <a href="{% url profile-video-detail object.user.id %}" class="b-button-prev"><span>Все альбомы</span></a>
+                <h3>
+                    {{ object.title }}
+                </h3>
+                <div class="b-head__descr d-rounded d-rounded_r5">
+                    {{ object.description }}
+                </div>
+            </header>
 
-                <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
-                    <header class="announs-head cleared">
-                        {% if object.user.id == user.id %}
-                            <a class="b-button b-button_yellow b-button_small l-button-move popup-handle" rel="popup-move-video">Переместить в альбом...</a>
-                            <a class="b-button b-button_red b-button_small l-button-del popup-handle" rel="popup-del-video">Удалить</a>
-                        {% endif %}
-                        <p class="smaller" id="videos_count">Всего {{ object.video_set.count }} видео</p>
-                    </header>
-                    <div class="announs-items">
-                        <form name="videosdelete" action="{% url videos-delete %}" method="post">
-                        {% csrf_token %}
-                        {% for video in object.video_set.all %}
-                            <article class="announ-item" id="video_item{{ video.id }}">
-                                <div class="ai-img d-sh">
-                                    <a href="">
-											<span>
-												<img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
-												<span class="time">{{ video.duration|to_hms }}</span>
-											</span>
-                                        <i class="b-ico b-ico_play"><i></i></i>
-                                    </a>
-                                </div>
-                                <header class="ai-head">
-                                    <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
-                                </header>
-                                <footer class="ai-foot">
-                                    <time class="date">{{ video.created }}</time>
-                                    <ul class="b-stat">
-                                        <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                                        <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                                    </ul>
-                                </footer>
-                                {% if video.owner.id == user.id %}
-                                <div class="ui-checkbox">
-                                    <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox{{ video.id }}" />
-                                    <label for="checkbox{{ video.id }}"></label>
-                                </div>
-                                <div class="ui-menu">
-                                    <span class="b-dropdown">
-                                        <label class="b-menu-button b-dropdown__handle" ></label>
-                                        <span class="b-dropdown__popup">
-                                            <span class="b-dropdown__popup__i">
-                                                <span class="b-dropdown__popup__i__i">
-                                                    <span class="b-dropdown__arr"></span>
-                                                    <a class="b-dropdown__link one_video_delete" videoid="{{ video.id }}">Удалить</a>
-                                                    <a href="{% url video-edit video.id %}" class="b-dropdown__link" id="video{{ video.id }}">Редактировать</a>
-                                                    <a href="#" class="b-dropdown__link popup-handle last" rel="popup-move-video" id="move_video{{ video.id }}">Переместить...</a>
-                                                </span>
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
+                <header class="announs-head cleared">
+                    {% if object.user.id == user.id %}
+                        <a class="b-button b-button_yellow b-button_small l-button-move popup-handle" rel="popup-move-video">Переместить в альбом...</a>
+                        <a class="b-button b-button_red b-button_small l-button-del popup-handle" rel="popup-del-video">Удалить</a>
+                    {% endif %}
+                    <p class="smaller" id="videos_count">Всего {{ object.video_set.count }} видео</p>
+                </header>
+                <div class="announs-items">
+                    <form name="videosdelete" action="{% url videos-delete %}" method="post">
+                    {% csrf_token %}
+                    {% for video in object.video_set.all %}
+                        <article class="announ-item" id="video_item{{ video.id }}">
+                            <div class="ai-img d-sh">
+                                <a href="">
+                                        <span>
+                                            <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
+                                            <span class="time">{{ video.duration|to_hms }}</span>
+                                        </span>
+                                    <i class="b-ico b-ico_play"><i></i></i>
+                                </a>
+                            </div>
+                            <header class="ai-head">
+                                <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
+                            </header>
+                            <footer class="ai-foot">
+                                <time class="date">{{ video.created }}</time>
+                                <ul class="b-stat">
+                                    <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                    <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                                </ul>
+                            </footer>
+                            {% if video.owner.id == user.id %}
+                            <div class="ui-checkbox">
+                                <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox{{ video.id }}" />
+                                <label for="checkbox{{ video.id }}"></label>
+                            </div>
+                            <div class="ui-menu">
+                                <span class="b-dropdown">
+                                    <label class="b-menu-button b-dropdown__handle" ></label>
+                                    <span class="b-dropdown__popup">
+                                        <span class="b-dropdown__popup__i">
+                                            <span class="b-dropdown__popup__i__i">
+                                                <span class="b-dropdown__arr"></span>
+                                                <a class="b-dropdown__link one_video_delete" videoid="{{ video.id }}">Удалить</a>
+                                                <a href="{% url video-edit video.id %}" class="b-dropdown__link" id="video{{ video.id }}">Редактировать</a>
+                                                <a href="#" class="b-dropdown__link popup-handle last" rel="popup-move-video" id="move_video{{ video.id }}">Переместить...</a>
                                             </span>
                                         </span>
                                     </span>
-                                </div>
-                                {% endif %}
-                            </article>
-                        {% endfor %}
-                        </form>
-                    </div>
-                </section>
-            </div></dd>
-
+                                </span>
+                            </div>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                    </form>
+                </div>
+            </section>
+        </div></dd>
     </dl>
     </div>
 {% endblock %}
