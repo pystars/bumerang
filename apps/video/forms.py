@@ -19,13 +19,28 @@ class VideoCreateForm(forms.ModelForm):
             'description'
         )
 
+    def __init__(self, user, *args, **kwargs):
+        super(VideoCreateForm, self).__init__(*args, **kwargs)
+        self.fields['album'].queryset = self.fields['album'].queryset.filter(
+            owner=user)
 
-class AlbumVideoCreateForm(VideoCreateForm):
-    class Meta(VideoCreateForm.Meta):
-        exclude = ('album',)
+
+class AlbumVideoCreateForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = (
+            'title',
+            'original_file',
+            'hq_file',
+            'mq_file',
+            'lq_file',
+            'preview',
+            'category',
+            'description'
+            )
 
 
-class VideoForm(forms.ModelForm):
+class VideoForm(VideoCreateForm):
     class Meta:
         model = Video
         widgets = {'access': forms.widgets.RadioSelect}

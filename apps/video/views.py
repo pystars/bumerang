@@ -69,12 +69,11 @@ class VideoDeleteView(DeleteView):
 
 class VideoCreateView(CreateView):
     model = Video
-#    form_class = AlbumVideoCreateForm
 
-    def get_form_class(self):
-        if 'video_album_id' in self.kwargs:
-            return AlbumVideoCreateForm
-        return VideoCreateForm
+    def get_form(self, form_class):
+        if self.album():
+            return AlbumVideoCreateForm(**self.get_form_kwargs())
+        return VideoCreateForm(self.request.user, **self.get_form_kwargs())
 
     def album(self):
         if 'video_album_id' in self.kwargs:
@@ -106,7 +105,9 @@ class VideoCreateView(CreateView):
 
 class VideoUpdateView(UpdateView):
     model = Video
-    form_class = VideoForm
+
+    def get_form(self, form_class):
+        return VideoForm(self.request.user, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
         return Video.objects.get(id=self.kwargs['pk'], owner=self.request.user)
@@ -149,7 +150,7 @@ class VideoAlbumCreateView(CreateView):
         return super(ModelFormMixin, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('video-add', kwargs={'video_album_id': self.object.id})
+        return reverse('album-video-add', kwargs={'video_album_id': self.object.id})
 
 
 def save_upload( uploaded, filename, raw_data ):
