@@ -28,12 +28,12 @@
                             </div>
                         </div>
                         <div class="b-profile__txt">
-                            {% if user.id == object.owner.id %}
+                            {% if user.id == object.owner_id %}
                                 <ul class="b-service-buttons">
                                     <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
                                 </ul>
                             {% endif %}
-                            <a href="{% url profile-detail object.owner.profile.id %}">
+                            <a href="{% url profile-detail object.owner.profile_id %}">
                                 <h4>{{ object.owner.profile.title }}</h4>
                             </a>
                             <p>{{ object.owner.profile.place }}</p>
@@ -117,7 +117,7 @@
             </header>
             <div class="b-form__fields">
                 <div class="b-form__field">
-                    {% for item in object.user.videoalbum_set.all %}
+                    {% for item in object.owner.videoalbum_set.all %}
                         <div class="b-form__field b-form__field_radio">
                             <div class="f-radio">
                                 <div>

@@ -44,7 +44,7 @@ class VideoMoveView(View):
 
     def post(self, request, **kwargs):
         album = get_object_or_404(VideoAlbum,
-            id=request.POST.get('album_id'), user=request.user)
+            id=request.POST.get('album_id'), owner=request.user)
         if Video.objects.filter(id=request.POST.get('video_id'),
                 owner=request.user).update(album=album):
             msg = u'Видео успешно перемещено'
@@ -106,6 +106,7 @@ class VideoUpdateView(UpdateView):
             u'Информация о видео успешно обновлена')
         return super(VideoUpdateView, self).form_valid(form)
 
+
 class VideoListView(ListView):
     queryset = Video.objects.filter(
         Q(hq_file__isnull=False) |
@@ -129,7 +130,7 @@ class VideoAlbumCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.user = self.request.user
+        self.object.owner = self.request.user
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
 

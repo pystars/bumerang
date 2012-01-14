@@ -3,7 +3,7 @@
 {% load rupluralize %}
 
 {% block title %}
-    {% if object.user.id == user.id %}
+    {% if object.owner_id == user.id %}
         Ваш профиль
     {% else %}
         {#  TODO: Избежать отображения None #}
@@ -20,7 +20,7 @@
         <dl>
             {% block profile_tab %}
                 <dt class="first">
-                    <a href="{% url profile-detail object.user.id %}">
+                    <a href="{% url profile-detail object.owner_id %}">
                         <span>Профиль</span>
                     </a>
                     <i class="l"></i>
@@ -33,7 +33,7 @@
             {% block profile_video_tab %}
                 <dt class="first">
                     {% spaceless %}
-                        <a href="{% url profile-video-detail object.user.id %}">
+                        <a href="{% url profile-video-detail object.owner_id %}">
                             <span>Видео</span>
                         </a>
                     {% endspaceless %}
