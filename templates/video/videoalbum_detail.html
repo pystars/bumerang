@@ -32,7 +32,7 @@
                             <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
                         </ul>
                         {% endif %}
-                        <a href="{% url profile-detail object.owner.profile_id %}">
+                        <a href="{% url profile-detail object.owner_id %}">
                             <h4>{{ object.owner.profile.title }}</h4>
                         </a>
                         <p>{{ object.owner.profile.place }}</p>

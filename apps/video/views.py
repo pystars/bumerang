@@ -31,7 +31,8 @@ class VideosDeleteView(View):
             msg = u'Видео успешно удалены'
         else:
             msg = u'Видео успешно удалено'
-        videos.delete()
+        for video in videos.all():
+            video.delete()
         return HttpResponse(json.dumps({'message': msg}),
             mimetype="application/json")
 

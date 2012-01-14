@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from datetime import timedelta, datetime
 
 from django.db import models
@@ -114,10 +115,17 @@ class Video(models.Model):
 
     def delete(self, using=None):
         for field in self._meta.fields:
-            if issubclass(field, models.FileField):
-                f = getattr(self, field)
-        print 'video deleted'
-#        super(Video, self).delete(using=using)
+            if issubclass(field.__class__, models.FileField):
+                file_field = getattr(self, field.name)
+                #TODO: remove prints after tests
+                try:
+                    os.remove(file_field.path)
+                    print 'deleted %s' % file_field.path
+                except ValueError:
+                    print 'no file specified with %s' % field.name
+                except OSError:
+                    print "can't remove file %s" % file_field.path
+        super(Video, self).delete(using=using)
 
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
