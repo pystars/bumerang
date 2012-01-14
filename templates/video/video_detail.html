@@ -1,5 +1,5 @@
 {% extends "video/video_wrapper.html" %}
-{% load sitetree %}
+{% load sitetree videotags %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
@@ -64,7 +64,7 @@
                     {% endif %}
                     <li>
                         <strong>Длительность (сек):</strong>
-                        <span>{{ object.duration }}</span>
+                        <span>{{ object.duration|default_if_none:0|to_hms }}</span>
                     </li>
                     {% if object.authors %}
                         <li>

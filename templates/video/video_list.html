@@ -1,5 +1,5 @@
 {% extends "video/video_wrapper.html" %}
-{% load sitetree %}
+{% load sitetree videotags %}
 
 {% block title %}Видеоархив{% endblock %}
 
@@ -18,7 +18,7 @@
                     <a href="{% url video-detail item.id %}">
                         <span>
                             <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
-                            <span class="time">{{ item.duration }}</span>
+                            <span class="time">{{ item.duration|default_if_none:0|to_hms }}</span>
                         </span>
                         <i class="b-ico b-ico_play"><i></i></i>
                     </a>
