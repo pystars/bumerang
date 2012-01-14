@@ -2,21 +2,16 @@
 import json
 
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import Http404
 from django.db.models import Q
-from django.views.generic import (ListView, DetailView, View, CreateView,
-                                  DeleteView, UpdateView)
+from django.views.generic import ListView, View, CreateView, DeleteView
 from django.views.generic.edit import ModelFormMixin, UpdateView
 
-from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
-from apps.accounts.models import Profile
-from apps.video.forms import VideoForm, VideoAlbumForm
-from apps.video.models import VideoAlbum, Video
 from settings import VIDEO_UPLOAD_PATH
-from models import Video
+from models import Video, VideoAlbum
+from forms import VideoForm, VideoAlbumForm, VideoCreateForm
 
 
 class VideosDeleteView(View):
@@ -37,7 +32,8 @@ class VideosDeleteView(View):
         else:
             msg = u'Видео успешно удалено'
         videos.delete()
-        return HttpResponse(json.dumps({'message': msg}), mimetype="application/json")
+        return HttpResponse(json.dumps({'message': msg}),
+            mimetype="application/json")
 
 
 class VideoMoveView(View):
@@ -55,7 +51,8 @@ class VideoMoveView(View):
         else:
             msg = u'Ошибка перемещения видео'
 
-        return HttpResponse(json.dumps({'message': msg}), mimetype="application/json")
+        return HttpResponse(json.dumps({'message': msg}),
+            mimetype="application/json")
 
 
 class VideoDeleteView(DeleteView):
@@ -105,7 +102,8 @@ class VideoUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.add_message(self.request, messages.SUCCESS, u'Информация о видео успешно обновлена')
+        messages.add_message(self.request, messages.SUCCESS,
+            u'Информация о видео успешно обновлена')
         return super(VideoUpdateView, self).form_valid(form)
 
 class VideoListView(ListView):
@@ -123,16 +121,6 @@ class VideoAlbumUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('video-album-detail', kwargs={'pk': self.object.id})
-
-class VideoAlbumDetailView(DetailView):
-    model = VideoAlbum
-
-    def get_context_data(self, **kwargs):
-        ctx = super(VideoAlbumDetailView, self).get_context_data(**kwargs)
-        ctx.update({
-            'profile': Profile.objects.get(pk=kwargs['object'].user.id),
-        })
-        return ctx
 
 
 class VideoAlbumCreateView(CreateView):
@@ -213,9 +201,4 @@ def upload_view(request):
             return HttpResponse(json.dumps({
                 'success': success
             }))
-        else:
-            return HttpResponse(json.dumps({
-                'success': success
-            }))
-
-        #return render(request, 'video/valums.html')
+        return HttpResponse(json.dumps({'success': success}))

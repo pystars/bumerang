@@ -8,7 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from apps.accounts.models import Profile
-from apps.video.models import VideoAlbum, Video
 
 
 class RegistrationForm(forms.ModelForm):
@@ -79,28 +78,6 @@ class PasswordRecoveryForm(forms.Form):
             profile = Profile.objects.get(e_mail=email)
         except ObjectDoesNotExist:
             raise ValidationError(u'Пользователь с таким адресом не существует')
-
-
-class VideoAlbumForm(forms.ModelForm):
-    class Meta:
-        model = VideoAlbum
-        fields = ('title', 'description')
-
-
-class VideoCreateForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = ('title', 'original_file', 'hq_file', 'lq_file', 'mq_file',
-                  'category', 'description')
-
-
-class VideoUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = ('title', 'original_file', 'description', 'album')
-
-    def __init__(self, *args, **kwargs):
-        super(VideoUpdateForm, self).__init__(*args, **kwargs)
 
 
 class ProfileInfoEditForm(forms.ModelForm):

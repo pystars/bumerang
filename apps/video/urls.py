@@ -3,11 +3,10 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
 
-from apps.video.models import Video
+from apps.video.models import Video, VideoAlbum
 from apps.video.views import (VideoListView, upload_view,
-    VideoCreateView, VideoAlbumCreateView, VideoAlbumDetailView,
-    VideoDeleteView, VideosDeleteView, VideoUpdateView, VideoMoveView,
-    VideoAlbumUpdateView)
+    VideoCreateView, VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
+    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView)
 
 
 urlpatterns = patterns('',
@@ -20,7 +19,7 @@ urlpatterns = patterns('',
         name='video-add'
     ),
     url(r'^album(?P<pk>[\d]+)/$',
-        VideoAlbumDetailView.as_view(),
+        DetailView.as_view(model=VideoAlbum),
         name='video-album-detail'
     ),
     url(r'^video-album(?P<pk>[\d]+)/edit/$',

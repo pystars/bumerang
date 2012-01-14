@@ -93,30 +93,37 @@ class Video(models.Model):
         default=1, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
 
+    class Meta:
+        verbose_name = u'Видео'
+        verbose_name_plural = u'Видео'
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
+
     def save(self, force_insert=False, force_update=False, using=None):
         super(Video, self).save(force_insert, force_update, using)
         if not self.duration:
             query = {
                 'Video' : {
                     'Duration' : int,
-                }
+                    }
             }
             minfo = get_metadata(self.original_file.path, **query)
             self.duration = minfo['Video']['Duration']
             self.save()
 
-    def __unicode__(self):
-        return u'{0}'.format(self.title)
-
-    class Meta:
-        verbose_name = u'Видео'
-        verbose_name_plural = u'Видео'
-
-    def best_quality_file(self):
-        return self.hq_file or self.mq_file or self.lq_file or None
+    def delete(self, using=None):
+        for field in self._meta.fields:
+            if issubclass(field, models.FileField):
+                f = getattr(self, field)
+        print 'video deleted'
+#        super(Video, self).delete(using=using)
 
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
+
+    def best_quality_file(self):
+        return self.hq_file or self.mq_file or self.lq_file or None
 
 
 class Channel(models.Model):
