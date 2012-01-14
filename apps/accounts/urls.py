@@ -74,17 +74,12 @@ urlpatterns = patterns('',
             form_class=StudioProfileServicesForm)),
         name='profile-edit-services'
     ),
-    url(r'^(?P<pk>[\d]+)/video/$',
-        ProfileVideoView.as_view(
-            template_name_suffix='_video'),
-        name='profile_video'
-    ),
     url(r'^(?P<pk>[\d]+)/$',
         ProfileView.as_view(),
         name='profile-detail'
     ),
     url(r'^(?P<pk>[\d]+)/video/$',
-        ProfileView.as_view(template_name_suffix='_detail_video'),
+        ProfileView.as_view(template_name_suffix='_video'),
         name='profile-video-detail'
     ),
 )
