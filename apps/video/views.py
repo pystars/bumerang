@@ -2,13 +2,14 @@
 import json
 
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import Http404
 from django.db.models import Q
 from django.views.generic import (ListView, DetailView, View, CreateView,
                                   DeleteView, UpdateView)
-from django.views.generic.edit import ModelFormMixin
+from django.views.generic.edit import ModelFormMixin, UpdateView
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
 from apps.accounts.models import Profile
@@ -35,8 +36,27 @@ class VideosDeleteView(View):
             msg = u'Видео успешно удалены'
         else:
             msg = u'Видео успешно удалено'
-#        videos.delete()
+        videos.delete()
         return HttpResponse(json.dumps({'message': msg}), mimetype="application/json")
+
+
+class VideoMoveView(View):
+    model = Video
+
+    def get(self, request, **kwargs):
+        return HttpResponse(status=403)
+
+    def post(self, request, **kwargs):
+        album = get_object_or_404(VideoAlbum,
+            id=request.POST.get('album_id'), user=request.user)
+        if Video.objects.filter(id=request.POST.get('video_id'),
+                owner=request.user).update(album=album):
+            msg = u'Видео успешно перемещено'
+        else:
+            msg = u'Ошибка перемещения видео'
+
+        return HttpResponse(json.dumps({'message': msg}), mimetype="application/json")
+
 
 class VideoDeleteView(DeleteView):
     model = Video
@@ -82,6 +102,11 @@ class VideoUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('video-edit', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.add_message(self.request, messages.SUCCESS, u'Информация о видео успешно обновлена')
+        return super(VideoUpdateView, self).form_valid(form)
 
 class VideoListView(ListView):
     queryset = Video.objects.filter(

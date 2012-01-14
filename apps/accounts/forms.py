@@ -3,7 +3,7 @@ from uuid import uuid4
 import random
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.contrib.auth.models import get_hexdigest
+from django.contrib.auth.models import get_hexdigest, User
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
@@ -128,7 +128,7 @@ class ProfileResumeEditForm(forms.ModelForm):
 class ProfileEmailEditForm(forms.ModelForm):
     email = forms.EmailField(required=True)
     class Meta:
-        model = Profile
+        model = User
         fields = ('email',)
 
 

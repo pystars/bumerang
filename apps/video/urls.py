@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from apps.video.models import Video
 from apps.video.views import (VideoListView, upload_view,
     VideoCreateView, VideoAlbumCreateView, VideoAlbumDetailView,
-    VideoDeleteView, VideosDeleteView, VideoUpdateView)
+    VideoDeleteView, VideosDeleteView, VideoUpdateView, VideoMoveView)
 
 
 urlpatterns = patterns('',
@@ -34,6 +34,10 @@ urlpatterns = patterns('',
         VideosDeleteView.as_view(),
         name='videos-delete'
     ),
+    url(r'^video-move/$',
+        VideoMoveView.as_view(),
+        name='video-move'
+    ),
     url(r'^delete/(?P<pk>\w+)/$',
         login_required(VideoDeleteView.as_view()),
         name='video-delete'
@@ -42,8 +46,8 @@ urlpatterns = patterns('',
         DetailView.as_view(model=Video),
         name='video-detail'
     ),
-    url(r'^$',
-        upload_view,
-        name='VideoView'
-    ),
+#    url(r'^$',
+#        upload_view,
+#        name='VideoView'
+#    ),
 )

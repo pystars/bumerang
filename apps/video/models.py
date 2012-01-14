@@ -49,11 +49,11 @@ class VideoGenre(models.Model):
 
 class Video(models.Model):
     ACCESS_FLAGS = (
-        (1, 'All users'),
-        (2, 'Users with link'),
-        (3, 'Users with link and password'),
-        (4, 'Friends'),
-        (5, 'Only for me'),
+        (1, u'Всем пользователям'),
+        (2, u'Пользователем, у которых есть ссылка'),
+        (3, u'Пользователем, у которых есть ссылка и пароль'),
+        (4, u'Друзьям'),
+        (5, u'Только мне'),
     )
 
     published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве',

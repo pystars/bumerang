@@ -64,7 +64,4 @@ class Profile(User):
     objects = UserManager()
 
     def __unicode__(self):
-        if self.title:
-            return self.title
-        else:
-            return self.email
+        return self.email

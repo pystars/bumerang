@@ -139,9 +139,32 @@ $(function(){
         });
     });
 
+    $('.b-dropdown__link[id*="move_video"]').click(function(){
+        var id = $(this).attr('id');
+        var video_to_move = parseInt(id.split('move_video')[1]);
+        $('#popup-move-video .videos_move').click(function(){
+            $.ajax({
+                type: 'POST',
+                url: $('#popup-move-video form').attr('action'),
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    album_id: $('#popup-move-video input[name=album]:checked').attr('value'),
+                    video_id: video_to_move
+                },
+                success: function(response) {
+                    show_notification('success', response['message']);
+                    $('#popup-move-video').hide();
+                    $('#tint').hide();
+                }
+            });
+        });
+    });
+
     // Submit forms
     $('.button-submit').click(function(){
         $(this).parents('form').submit();
         return false;
     });
+
+
 })

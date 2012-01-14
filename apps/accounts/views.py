@@ -224,7 +224,7 @@ class ProfileSettingsEditView(TemplateView):
         if 'email' in request.POST:
             email_form = ProfileEmailEditForm(request.POST)
             if email_form.is_valid():
-                email_form.save()
+                self.request.user = email_form.save()
                 messages.add_message(self.request, messages.SUCCESS, u'Почтовый адрес успешно изменен')
                 return self.render_to_response(self.get_context_data())
             else:
