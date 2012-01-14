@@ -8,7 +8,7 @@
     {% else %}
         {#  TODO: Избежать отображения None #}
         {% if object.type != 1 %}
-            {{ object.get_type_display }} {{ object.title }}
+            {{ object.get_type_display }} &laquo;{{ object.title }}&raquo;
         {% else %}
             {{ object.title }}
         {% endif %}

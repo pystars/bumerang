@@ -106,7 +106,7 @@
             "description": "",
             "insitetree": true,
             "hint": "\u0421\u043e\u0432\u0435\u0442\u044b \u043f\u0440\u043e\u0444\u0435\u0441\u0441\u0438\u043e\u043d\u0430\u043b\u043e\u0432",
-            "url": "advice-list",
+            "url": "/advices/",
             "inbreadcrumbs": true,
             "title": "\u0421\u043e\u0432\u0435\u0442\u044b \u043f\u0440\u043e\u0444\u0435\u0441\u0441\u0438\u043e\u043d\u0430\u043b\u043e\u0432",
             "tree": 1,
@@ -116,7 +116,7 @@
             "inmenu": true,
             "access_loggedin": false,
             "hidden": false,
-            "urlaspattern": true
+            "urlaspattern": false
         }
     },
     {
@@ -129,7 +129,7 @@
             "description": "",
             "insitetree": true,
             "hint": "",
-            "url": "advice-detail advice.url",
+            "url": "AdvicesUrlView advice.url",
             "inbreadcrumbs": true,
             "title": "{{ advice.name }}",
             "tree": 1,

@@ -45,10 +45,10 @@
                 <header class="b-head cleared">
                     {% if user.id == object.user.id %}
                     <ul class="b-service-buttons">
-                        <li class="edit"><i></i><a href="">Редактировать альбом</a></li>
+                        <li class="edit"><i></i><a href="{% url video-album-edit object.id %}">Редактировать альбом</a></li>
                     </ul>
                     {% endif %}
-                    <a href="" class="b-button-prev"><span>Все альбомы</span></a>
+                    <a href="{% url profile-video-detail object.user.id %}" class="b-button-prev"><span>Все альбомы</span></a>
                     <h3>
                         {{ object.title }}
                     </h3>

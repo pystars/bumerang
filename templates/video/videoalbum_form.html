@@ -24,7 +24,11 @@
                     <header class="b-profile__head b-profile__head_small cleared">
                         <div class="b-profile__pic">
                             <div class="b-ava b-ava_small">
-                                <img src="{{ STATIC_URL }}i/fake/ava1s.jpg" width="60" height="60" alt="" />
+                                {% if user.profile.min_avatar %}
+                                    <img src="{{ user.profile.min_avatar.url }}" width="60" height="60" alt="" />
+                                {% else %}
+                                    <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
+                                {% endif %}
                                 <i class="b-ava__sh"></i>
                             </div>
                         </div>
@@ -51,7 +55,11 @@
                 <header class="b-head cleared">
                     <a href="" class="b-button-prev"><span>Назад</span></a>
                     <h3>
+                        {% if form.instance.id %}
+                        Редактирование альбома &laquo;{{ form.instance.title }}&raquo;
+                        {% else %}
                         Создание альбома
+                        {% endif %}
                     </h3>
                 </header>
                 <section class="b-form b-form_album b-form_smaller">
