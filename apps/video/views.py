@@ -13,7 +13,7 @@ from django.views.generic.edit import ModelFormMixin, UpdateView
 
 from apps.accounts.forms import VideoAlbumForm, VideoCreateForm
 from apps.accounts.models import Profile
-from apps.video.forms import VideoForm
+from apps.video.forms import VideoForm, VideoAlbumForm
 from apps.video.models import VideoAlbum, Video
 from settings import VIDEO_UPLOAD_PATH
 from models import Video
@@ -116,6 +116,13 @@ class VideoListView(ListView):
     )
     paginate_by = 25
 
+
+class VideoAlbumUpdateView(UpdateView):
+    model = VideoAlbum
+    form_class = VideoAlbumForm
+
+    def get_success_url(self):
+        return reverse('video-album-detail', kwargs={'pk': self.object.id})
 
 class VideoAlbumDetailView(DetailView):
     model = VideoAlbum

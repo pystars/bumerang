@@ -78,7 +78,11 @@
                         </div>
                         <footer class="b-form__footer">
                             <div class="wrap">
-                                <a href="" class="b-button b-button_yellow button-submit">Создать</a>
+                                {% if form.instance.id %}
+                                    <a href="" class="b-button b-button_yellow button-submit">Сохранить</a>
+                                {% else %}
+                                    <a href="" class="b-button b-button_yellow button-submit">Создать</a>
+                                {% endif %}
                             </div>
                         </footer>
                     </form>
