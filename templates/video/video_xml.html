@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <movie>
-    <duration>{{ object.duration|divisibleby:1000|default:0 }}</duration>
+    <duration>{{ object.seconds_duration }}</duration>
     {% if object.preview %}<preview>{{ object.preview.url }}</preview>{% endif %}
     <video>
         {% if object.hq_file %}<link title="HD+" bps="2048">{{ object.hq_file.url }}</link>{% endif %}
