@@ -15,6 +15,7 @@ class VideoAlbum(models.Model):
     owner = models.ForeignKey(User)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание')
+    cover = models.OneToOneField('Video', on_delete=models.SET_NULL, **nullable)
 
     class Meta:
         verbose_name = u'Видеоальбом'
@@ -22,6 +23,11 @@ class VideoAlbum(models.Model):
 
     def __unicode__(self):
         return u'{0}'.format(self.title)
+
+    def preview(self):
+        if self.cover:
+            return self.cover.preview
+        return None
 
 
 class VideoCategory(models.Model):
@@ -115,6 +121,9 @@ class Video(models.Model):
         except ExecutionError:
             pass #TODO: remove it after tests
         super(Video, self).save(*args, **kwargs)
+        if not self.album.cover and self.preview:
+            self.album.cover = self
+            self.album.save()
 
     def delete(self, using=None):
         for field in self._meta.fields:

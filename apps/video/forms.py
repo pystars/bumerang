@@ -69,4 +69,4 @@ class VideoForm(VideoCreateForm):
 class VideoAlbumForm(forms.ModelForm):
     class Meta:
         model = VideoAlbum
-        exclude = ('owner',)
+        fields = ('title', 'description')
