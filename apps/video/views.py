@@ -134,7 +134,7 @@ class VideoListView(ListView):
 
 class XMLDetailView(DetailView):
     def render_to_response(self, context, **response_kwargs):
-#        response_kwargs['content_type'] = 'text/xml'
+        response_kwargs['content_type'] = 'text/xml'
         return super(XMLDetailView, self).render_to_response(context,
             **response_kwargs)
 

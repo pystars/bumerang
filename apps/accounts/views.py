@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView
 from django.http import HttpResponseRedirect
-from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
@@ -199,14 +198,17 @@ class ProfileAvatarEditView(UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class ProfileSettingsEditView(TemplateView):
+class ProfileSettingsEditView(UpdateView):
+    model = User
+    email_form_class = ProfileEmailEditForm
+    pwd_form_class = PasswordChangeForm
     template_name = "accounts/profile_edit_settings.html"
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
         ctx.update({
-            'email_form': ProfileEmailEditForm(),
-            'pwd_form': PasswordChangeForm(self.get_object()),
+            'email_form': self.email_form_class(),
+            'pwd_form': self.pwd_form_class(self.get_object()),
         })
         ctx.update(kwargs)
         return ctx
@@ -214,29 +216,35 @@ class ProfileSettingsEditView(TemplateView):
     def get_object(self, queryset=None):
         return self.request.user
 
-    def post(self, request):
-        kwargs = {}
-        if 'old_password' in request.POST:
-            pwd_form = PasswordChangeForm(self.get_object(), request.POST)
-            if pwd_form.is_valid():
-                pwd_form.save()
-                messages.add_message(self.request, messages.SUCCESS,
-                    u'Пароль успешно изменен')
-            else:
-                messages.add_message(self.request, messages.ERROR,
-                    u'Ошибка при изменении пароля')
-                kwargs['pwd_form'] = pwd_form
+    def get_form_class(self):
+        if self.password_changing():
+            return self.pwd_form_class
+        return self.email_form_class
 
-        if 'email' in request.POST:
-            email_form = ProfileEmailEditForm(
-                request.POST, instance=self.get_object())
-            if email_form.is_valid():
-                email_form.save()
-                messages.add_message(self.request, messages.SUCCESS,
-                    u'Почтовый адрес успешно изменен')
-            else:
-                messages.add_message(self.request, messages.ERROR,
-                    u'Ошибка при изменении почтового адреса')
-                kwargs['email_form'] = email_form
+    def password_changing(self):
+        if 'old_password' in self.request.POST:
+            return True
 
-        return self.render_to_response(self.get_context_data(**kwargs))
+    def get_form(self, form_class):
+        kwargs = self.get_form_kwargs()
+        if issubclass(form_class, self.pwd_form_class):
+            kwargs['user'] = kwargs.pop('instance')
+        return form_class(**kwargs)
+
+    def form_valid(self, form):
+        message = u'Почтовый адрес успешно изменен'
+        if self.password_changing():
+            message = u'Пароль успешно изменен'
+        messages.add_message(self.request, messages.SUCCESS, message)
+        self.object = form.save()
+        return self.render_to_response(self.get_context_data())
+
+    def form_invalid(self, form):
+        message = u'Ошибка при изменении почтового адреса'
+        form_name = 'email_form'
+        if self.password_changing():
+            message = u'Ошибка при и зменении пароля'
+            form_name = 'pwd_form'
+        messages.add_message(self.request, messages.ERROR, message)
+        return self.render_to_response(
+            self.get_context_data(**{form_name:form}))
