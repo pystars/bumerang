@@ -51,7 +51,7 @@
                     <strong class="gi-title">{{ videoalbum.title }}</strong>
                 </a>
                 <figcaption class="gi-caption">
-                    {{ videoalbum.description }}
+                    {{ videoalbum.description|truncatewords:10 }}
                 </figcaption>
                 <div class="ui-checkbox">
                     <input type="checkbox" name="" value="" id="checkbox-01" />

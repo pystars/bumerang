@@ -45,11 +45,11 @@
                     {% for video in object.video_set.all %}
                         <article class="announ-item" id="video_item{{ video.id }}">
                             <div class="ai-img d-sh">
-                                <a href="">
-                                        <span>
-                                            <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
-                                            <span class="time">{{ video.duration|to_hms }}</span>
-                                        </span>
+                                <a href="{% url video-detail video.id %}">
+                                    <span>
+                                        <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
+                                        <span class="time">{{ video.duration|to_hms }}</span>
+                                    </span>
                                     <i class="b-ico b-ico_play"><i></i></i>
                                 </a>
                             </div>
@@ -63,7 +63,7 @@
                                     <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
                                 </ul>
                             </footer>
-                            {% if video.owner.id == user.id %}
+                            {% if video.owner_id == user.id %}
                             <div class="ui-checkbox">
                                 <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox{{ video.id }}" />
                                 <label for="checkbox{{ video.id }}"></label>

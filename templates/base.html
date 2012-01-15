@@ -62,7 +62,7 @@
                         </div>
                         <div class="b-dropdown2 cleared" id="dropdown2">
                             <div class="b-ava b-ava_small">
-                                <a href="{% url profile-detail user.id %}" class="js-double-hover" title="{{ user.profile.title }}">
+                                <a href="{% url profile-detail user.id %}" class="js-double-hover" title="{{ user.profile_title }}">
                                     {% if not user.profile.min_avatar %}
                                         <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="{{ user.profile.title }}" />
                                     {% else %}

@@ -31,7 +31,7 @@ urlpatterns = patterns('',
         name='video-add'
     ),
     url(r'^(?P<pk>[\d]+)/edit/$',
-        VideoUpdateView.as_view(template_name_suffix='_edit_form'),
+        VideoUpdateView.as_view(),
         name='video-edit'
     ),
     url(r'^archive/$',
