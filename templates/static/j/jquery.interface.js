@@ -123,7 +123,8 @@ $(document).ready(function(){
 	
 	
 	/* Custom Input */
-	$('input').not('.b-sort__helper').customInput();
+    /* TODO: this raise error on edit video page */
+//	$('input').not('.b-sort__helper').customInput();
 
 	
 	/* Popup */

@@ -64,17 +64,18 @@ $(function(){
         }
     }
 
-    $('#current_avatar').Jcrop({
-        onChange: function(c){
-            $('#id_avatar_coords').val(JSON.stringify(c));
-        },
-        bgColor:     'black',
-        bgOpacity:   .5,
-        minSize: [150, 150],
-        setSelect: crop_initial_coords(),
-        aspectRatio: 1
-    });
-
+    if ($.Jcrop) {
+        $('#current_avatar').Jcrop({
+            onChange: function(c){
+                $('#id_avatar_coords').val(JSON.stringify(c));
+            },
+            bgColor:     'black',
+            bgOpacity:   .5,
+            minSize: [150, 150],
+            setSelect: crop_initial_coords(),
+            aspectRatio: 1
+        });
+    }
     // Videos
 
     function get_videos_count(){
@@ -167,4 +168,4 @@ $(function(){
     });
 
 
-})
+});
