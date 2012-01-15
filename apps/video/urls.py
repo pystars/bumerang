@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from apps.video.models import Video, VideoAlbum
 from apps.video.views import (VideoListView, upload_view,
     VideoCreateView, VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
-    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView)
+    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView)
 
 
 urlpatterns = patterns('',
@@ -31,7 +31,7 @@ urlpatterns = patterns('',
         name='video-add'
     ),
     url(r'^(?P<pk>[\d]+)/edit/$',
-        VideoUpdateView.as_view(template_name_suffix='_edit_form'),
+        VideoUpdateView.as_view(),
         name='video-edit'
     ),
     url(r'^archive/$',
@@ -53,6 +53,11 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\w+)/$',
         DetailView.as_view(model=Video),
         name='video-detail'
+    ),
+    url(r'^(?P<pk>\w+).xml$',
+        XMLDetailView.as_view(
+            model=Video, template_name_suffix='_xml'),
+        name='video-xml'
     ),
 #    url(r'^$',
 #        upload_view,

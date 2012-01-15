@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<movie>
+    <duration>{{ object.duration|divisibleby:1000 }}</duration>
+    <preview>{{ object.preview.url }}</preview>
+    <video>
+        <link title="HD+" bps="2048">{{ object.hq_file.url }}</link>
+        <link title="HD" bps="1024" default="1">{{ object.mq_file.url }}</link>
+        <link title="SD" bps="512">{{ object.lq_file.url }}</link>
+    </video>
+</movie>

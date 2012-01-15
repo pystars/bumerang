@@ -1,14 +1,5 @@
 {% extends "video/tabs_wrapper.html" %}
-{% load sitetree %}
-{% load rupluralize %}
-
-{% block head_css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}s/alerts.css" />
-{% endblock %}
-
-{% block head_js %}
-    <script type="text/javascript" src="{{ STATIC_URL }}j/site.js"></script>
-{% endblock %}
+{% load sitetree rupluralize %}
 
 {% block profile_video_tab %}
     <dt class="selected">

@@ -7,6 +7,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import Http404
 from django.db.models import Q
 from django.views.generic import ListView, View, CreateView, DeleteView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView
 
 from settings import VIDEO_UPLOAD_PATH
@@ -129,6 +130,13 @@ class VideoListView(ListView):
         Q(lq_file__isnull=False)
     )
     paginate_by = 25
+
+
+class XMLDetailView(DetailView):
+    def render_to_response(self, context, **response_kwargs):
+#        response_kwargs['content_type'] = 'text/xml'
+        return super(XMLDetailView, self).render_to_response(context,
+            **response_kwargs)
 
 
 class VideoAlbumUpdateView(UpdateView):

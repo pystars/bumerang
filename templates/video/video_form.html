@@ -1,14 +1,5 @@
 {% extends "video/video_wrapper.html" %}
-{% load sitetree %}
-{% load rupluralize %}
-
-{% block head_css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}s/alerts.css" />
-{% endblock %}
-
-{% block head_js %}
-    <script type="text/javascript" src="{{ STATIC_URL }}j/site.js"></script>
-{% endblock %}
+{% load sitetree rupluralize %}
 
 {% block left_column %}
     <div class="b-tabs d-sh">
@@ -18,7 +9,6 @@
                 <i class="l"></i>
                 <i class="r"></i>
             </dt>
-
             <dd class="selected"><div class="b-tabs__tab-content">
                 {% with request.user.profile as profile %}
                 {% include "snippets/section_profile.html" %}
@@ -29,11 +19,16 @@
                         <a href="{% url video-album-detail video_album.id %}" class="b-button-prev"><span>Назад</span></a>
                     {% endif %}
                     <h3>
+                        {% if form.instance.pk %}
+                        Редактирование видео
+                        {% else %}
                         Добавить видео{% if video_album %} в альбом &laquo;{{ video_album.title }}&raquo;{% endif %}
+                        {% endif %}
                     </h3>
                 </header>
-                <section class="b-form b-form_album b-form_smaller">
-                    <form name="editform" action="{% if video_album %}{% url album-video-add video_album.id %}{% else %}{% url video-add %}{% endif %}" method="post" enctype="multipart/form-data">
+                <section class="b-form b-form_album b-form_edit b-form_smaller">
+                    <form name="editform" action=""
+                          method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="b-form__fields">
                             {% for item in form %}
@@ -56,7 +51,13 @@
                         </div>
                         <footer class="b-form__footer">
                             <div class="wrap">
-                                <a href="" class="b-button b-button_yellow button-submit">Создать</a>
+                                <a href="#" class="b-button b-button_yellow button-submit">
+                                    {% if form.instance.pk %}
+                                    Сохранить
+                                    {% else %}
+                                    Создать
+                                    {% endif %}
+                                </a>
                             </div>
                         </footer>
                     </form>
