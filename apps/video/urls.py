@@ -34,7 +34,7 @@ urlpatterns = patterns('',
         login_required(VideoUpdateView.as_view()),
         name='video-edit'
     ),
-    url(r'^archive/$',
+    url(r'^$',
         VideoListView.as_view(),
         name='video-list'
     ),

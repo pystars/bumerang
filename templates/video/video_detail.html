@@ -3,11 +3,13 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
-{% block head_js %}
+{% block head_css %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flashplayer/history/history.css" />
-    <script type="text/javascript" src="history/history.js"></script>
-    <!-- END Browser History required section -->
+{% endblock %}
 
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}flashplayer/history/history.js"></script>
+    <!-- END Browser History required section -->
     <script type="text/javascript" src="{{ STATIC_URL }}flashplayer/swfobject.js"></script>
     <script type="text/javascript">
         // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
@@ -32,7 +34,6 @@
         // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
         swfobject.createCSS("#flashContent", "display:block;text-align:left;");
     </script>
-{#<script type="text/javascript" src="{{ STATIC_URL }}flowplayer/flowplayer-3.2.6.min.js"></script>#}
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -61,7 +62,6 @@
                             + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
                 </script>
             </div>
-{#            <a id="player" href="{{ MEDIA_URL }}{{ object.best_quality_file }}" style="width: 720px;"></a>#}
             <div class="b-movie__panel cleared">
                 <div class="b-vote">
                     <a href="" class="b-vote__like"><i class="b-ico b-ico_heart"><i></i></i><span>нравится</span></a>
@@ -143,12 +143,12 @@
                 <div class="b-form__fields">
                     <div class="b-form__field">
                         <label>
-										<span class="b-ava b-ava_small">
-											<img src="i/fake/ava1.jpg" width="100" height="100" alt="" />
-										</span>
-										<span class="f-textarea">
-											<textarea rows="5" cols="20" class="wide"></textarea>
-										</span>
+                            <span class="b-ava b-ava_small">
+                                <img src="i/fake/ava1.jpg" width="100" height="100" alt="" />
+                            </span>
+                            <span class="f-textarea">
+                                <textarea rows="5" cols="20" class="wide"></textarea>
+                            </span>
                         </label>
                     </div>
                 </div>
@@ -188,36 +188,4 @@
             </section>
         </div>
     </section>
-    <script type="text/javascript">
-        $(function(){
-            flowplayer("player", "{{ STATIC_URL }}flowplayer/flowplayer-3.2.7.swf", {
-                plugins:  {
-                    controls: {
-
-                        // tooltips configuration
-                        tooltips: {
-
-                            // enable english tooltips on all buttons
-                            buttons: true,
-
-                            // customized texts for buttons
-                            play: 'Воспроизвести',
-                            pause: 'Пауза',
-                            fullscreen: 'На весь экран'
-                        },
-
-                        // background color for all tooltips
-                        tooltipColor: '#112233',
-
-                        // text color
-                        tooltipTextColor: '#8899ff'
-                    }
-                },
-                clip: {
-                    autoPlay: false,
-                    autoBuffering: true
-                }
-            })
-        })
-    </script>
 {% endblock %}

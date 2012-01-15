@@ -101,8 +101,7 @@ class Video(models.Model):
     def __unicode__(self):
         return u'{0}'.format(self.title)
 
-    def save(self, force_insert=False, force_update=False, using=None):
-        super(Video, self).save(force_insert, force_update, using)
+    def save(self, *args, **kwargs):
         query = {
             'Video' : {
                 'Duration' : int,
@@ -111,7 +110,7 @@ class Video(models.Model):
         file_field = self.best_quality_file() or self.original_file
         minfo = get_metadata(file_field.path, **query)
         self.duration = minfo['Video']['Duration']
-        self.save()
+        super(Video, self).save(*args, **kwargs)
 
     def delete(self, using=None):
         for field in self._meta.fields:
@@ -132,6 +131,9 @@ class Video(models.Model):
 
     def best_quality_file(self):
         return self.hq_file or self.mq_file or self.lq_file or None
+
+    def seconds_duration(self):
+        return (self.duration or 0) / 1000
 
 
 class Channel(models.Model):
