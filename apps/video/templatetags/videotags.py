@@ -19,7 +19,7 @@ def to_hm(value, is_last=False):
 @register.filter
 def to_hms(value):
     # It's may be stupid, i don't know best way
-    total_time = time.gmtime(int(value/1000))
+    total_time = time.gmtime(int((value or 0)/1000))
     if total_time.tm_hour == '00':
         return time.strftime('%H:%M:%S', total_time)
     else:
