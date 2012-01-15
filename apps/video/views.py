@@ -39,6 +39,27 @@ class VideosDeleteView(View):
             mimetype="application/json")
 
 
+class VideoalbumsDeleteView(View):
+    def get_queryset(self):
+        ids = json.loads(self.request.POST['ids'])
+        return Video.objects.filter(id__in=ids, owner=self.request.user)
+
+    def get(self, request, **kwargs):
+        return HttpResponse(status=403)
+
+    def post(self, request, **kwargs):
+        videoalbums = self.get_queryset()
+        if videoalbums.count() > 1:
+            msg = u'Видеоальбомы успешно удалены'
+        else:
+            msg = u'Видеоальбом успешно удален'
+        for videoalbum in videoalbums.all():
+#            videoalbum.delete()
+            print(videoalbum.id)
+
+        return HttpResponse(json.dumps({'message': msg}),
+                            mimetype="application/json")
+
 class VideoMoveView(View):
     model = Video
 

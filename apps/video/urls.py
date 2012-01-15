@@ -6,11 +6,11 @@ from django.views.generic.detail import DetailView
 from apps.video.models import Video, VideoAlbum
 from apps.video.views import (VideoListView, upload_view,
     VideoCreateView, VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
-    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView)
+    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView, VideoalbumsDeleteView)
 
 
 urlpatterns = patterns('',
-    url(r'^video-album/add/$',
+    url(r'^album/add/$',
         login_required(VideoAlbumCreateView.as_view()),
         name='video-album-add'
     ),
@@ -38,9 +38,13 @@ urlpatterns = patterns('',
         VideoListView.as_view(),
         name='video-list'
     ),
-    url(r'^multi-delete/$',
+    url(r'^videos-delete/$',
         login_required(VideosDeleteView.as_view()),
         name='videos-delete'
+    ),
+    url(r'^albums-delete/$',
+        login_required(VideoalbumsDeleteView.as_view()),
+        name='videoalbums-delete'
     ),
     url(r'^video-move/$',
         login_required(VideoMoveView.as_view()),
@@ -59,8 +63,4 @@ urlpatterns = patterns('',
             model=Video, template_name_suffix='_xml'),
         name='video-xml'
     ),
-#    url(r'^$',
-#        upload_view,
-#        name='VideoView'
-#    ),
 )

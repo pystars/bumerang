@@ -26,6 +26,22 @@ JSON.parse = JSON.parse || function (str) {
     return p;
 };
 
+// RU pluralize
+function ru_pluralize(value, args) {
+    var args_array = args.split(',');
+    var count = parseInt(value);
+    var a = count % 10;
+    var b = count % 100;
+
+    if (a == 1 && b != 11) {
+        return args_array[0];
+    } else if ((a >= 2) && (a <= 4) && ((b < 10) || (b >= 20))) {
+        return args_array[1];
+    } else {
+        return args_array[2];
+    }
+};
+
 // Site variables
 var delay_time = 4000;
 
@@ -39,10 +55,59 @@ function show_notification(status, text) {
         $(this).parent().hide();
     })
     $('.alert-message').delay(delay_time).hide(300);
-}
+};
 
-// Site handlers
-$(function(){
+
+/*
+* Video functions
+* */
+function get_albums_count() {
+    return $('form[name=videoalbums] .b-gallery__item:visible').length;
+};
+
+function show_albums_count() {
+    var count = get_albums_count();
+    if (count != 0) {
+        $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#video-plurals').text()));
+    } else {
+        $('#albums-count').text('Нет ни одного альбома');
+    };
+};
+
+function hide_videoalbums_by_ids(ids) {
+    $.each(ids, function(i, val) {
+        $('#videoalbum-item-'+val).hide(300, function() {
+            if (get_albums_count() == 0) {
+                $('#videoalbum-empty-block').show();
+            };
+            show_albums_count();
+        });
+    });
+};
+
+function delete_albums(ids) {
+    var url = $('form[name=videoalbums]').attr('action');
+    hide_videoalbums_by_ids(ids);
+
+    $.ajax({
+        type: 'post',
+        url: url,
+        data: {
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            ids: JSON.stringify(ids)
+        },
+        success: function(response) {
+            show_notification('success', response['message']);
+            hide_videoalbums_by_ids(ids);
+            show_albums_count();
+        }
+    })
+};
+
+/*
+* Site handlers
+* */
+$(function() {
     // Messages
     $('.msg-close').click(function(){
         $(this).parent().hide();
@@ -64,6 +129,9 @@ $(function(){
         }
     }
 
+    /*
+    * JCrop handler
+    * */
     if ($.Jcrop) {
         $('#current_avatar').Jcrop({
             onChange: function(c){
@@ -76,8 +144,10 @@ $(function(){
             aspectRatio: 1
         });
     }
-    // Videos
 
+    /*
+    * Video objects handlers
+    * */
     function get_videos_count(){
         var vcount = ($('form[name=videosdelete] .announ-item:visible').length);
         console.log(vcount);
@@ -160,6 +230,18 @@ $(function(){
             });
         });
     });
+
+    /*
+    * One videoalbum delete handler
+    * */
+    $('.b-dropdown__link[id*=videoalbum-delete-]').click(function() {
+        var id = $(this).attr('id');
+        id = parseInt(id.split('videoalbum-delete-')[1]);
+        delete_albums([id]);
+        return false;
+    });
+
+
 
     // Submit forms
     $('.button-submit').click(function(){

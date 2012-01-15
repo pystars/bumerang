@@ -1,15 +1,17 @@
 <section class="b-profile">
     <header class="b-profile__head b-profile__head_small cleared">
-        <div class="b-profile__pic">
-            <div class="b-ava b-ava_small">
-                {% if profile.min_avatar %}
-                    <img src="{{ profile.min_avatar.url }}" width="60" height="60" alt=""/>
-                {% else %}
-                    <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt=""/>
-                {% endif %}
-                <i class="b-ava__sh"></i>
+        <a href="{% url profile-detail profile.id %}">
+            <div class="b-profile__pic">
+                <div class="b-ava b-ava_small">
+                    {% if profile.min_avatar %}
+                        <img src="{{ profile.min_avatar.url }}" width="60" height="60" alt=""/>
+                    {% else %}
+                        <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt=""/>
+                    {% endif %}
+                    <i class="b-ava__sh"></i>
+                </div>
             </div>
-        </div>
+        </a>
         <div class="b-profile__txt">
             {% if request.user.id == profile.id %}
                 <ul class="b-service-buttons">

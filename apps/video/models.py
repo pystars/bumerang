@@ -5,6 +5,7 @@ from datetime import timedelta, datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from apps.video.mediainfo import ExecutionError
 
 from mediainfo import get_metadata
 
@@ -108,8 +109,11 @@ class Video(models.Model):
                 }
         }
         file_field = self.best_quality_file() or self.original_file
-        minfo = get_metadata(file_field.path, **query)
-        self.duration = minfo['Video']['Duration']
+        try:
+            minfo = get_metadata(file_field.path, **query)
+            self.duration = minfo['Video']['Duration']
+        except ExecutionError:
+            pass #TODO: remove it after tests
         super(Video, self).save(*args, **kwargs)
 
     def delete(self, using=None):
