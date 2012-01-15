@@ -31,7 +31,7 @@ urlpatterns = patterns('',
         name='video-add'
     ),
     url(r'^(?P<pk>[\d]+)/edit/$',
-        VideoUpdateView.as_view(),
+        login_required(VideoUpdateView.as_view()),
         name='video-edit'
     ),
     url(r'^archive/$',
@@ -39,11 +39,11 @@ urlpatterns = patterns('',
         name='video-list'
     ),
     url(r'^multi-delete/$',
-        VideosDeleteView.as_view(),
+        login_required(VideosDeleteView.as_view()),
         name='videos-delete'
     ),
     url(r'^video-move/$',
-        VideoMoveView.as_view(),
+        login_required(VideoMoveView.as_view()),
         name='video-move'
     ),
     url(r'^delete/(?P<pk>\w+)/$',
