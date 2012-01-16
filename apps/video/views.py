@@ -34,8 +34,7 @@ class VideosDeleteView(View):
         else:
             msg = u'Видео успешно удалено'
         for video in videos.all():
-            #video.delete()
-            print(video.id)
+            video.delete()
         return HttpResponse(json.dumps({'message': msg}),
             mimetype="application/json")
 
@@ -55,8 +54,7 @@ class VideoalbumsDeleteView(View):
         else:
             msg = u'Видеоальбом успешно удален'
         for videoalbum in videoalbums.all():
-#            videoalbum.delete()
-            print(videoalbum.id)
+            videoalbum.delete()
 
         return HttpResponse(json.dumps({'message': msg}),
                             mimetype="application/json")

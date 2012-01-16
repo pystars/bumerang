@@ -51,7 +51,7 @@ class PasswordRecoveryView(FormView):
         hsh = get_hexdigest('sha1', salt, new_password)
         new_password_hash = '%s$%s$%s' % ('sha1', salt, hsh)
 
-        profile = Profile.objects.get(e_mail=receiver_email)
+        profile = Profile.objects.get(email=receiver_email)
         profile.password = new_password_hash
         profile.save()
         #TODO: Сделать отправку почты через шаблоны и класс работы с почтой

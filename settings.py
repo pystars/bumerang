@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-#from local_settings import *
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -193,3 +191,7 @@ if DEBUG:
     )
 
     STATICFILES_DIRS += (os.path.join(PROJECT_ROOT, 'media'),)
+
+
+from local_settings import (EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER,
+                            EMAIL_USE_TLS)

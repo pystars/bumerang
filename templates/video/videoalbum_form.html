@@ -1,6 +1,14 @@
 {% extends "video/video_wrapper.html" %}
 {% load sitetree rupluralize %}
 
+{% block title %}
+    {% if form.instance.pk %}
+        Редактирование видеоальбома &laquo;{{ form.instance.title }}&raquo;
+    {% else %}
+        Создание видеоальбома
+    {% endif %}
+{% endblock %}
+
 {% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
@@ -30,8 +38,9 @@
                         <hr/>
                     </div>
                     <header class="b-head cleared">
-                        <a href="" class="b-button-prev"><span>Назад</span></a>
-
+                        {% if form.instance.id %}
+                            <a href="{% url video-album-detail form.instance.id %}" class="b-button-prev"><span>Назад</span></a>
+                        {% endif %}
                         <h3>
                             {% if form.instance.id %}
                                 Редактирование

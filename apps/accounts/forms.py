@@ -68,14 +68,13 @@ class RegistrationForm(forms.ModelForm):
         widgets = {'type': forms.RadioSelect()}
 
 
-#TODO: Перенести email пользователя в модель User из профиля
 class PasswordRecoveryForm(forms.Form):
     email = forms.EmailField()
 
     def clean_email(self):
         email = self.cleaned_data.get('email', None)
         try:
-            profile = Profile.objects.get(e_mail=email)
+            profile = Profile.objects.get(email=email)
         except ObjectDoesNotExist:
             raise ValidationError(u'Пользователь с таким адресом не существует')
 
