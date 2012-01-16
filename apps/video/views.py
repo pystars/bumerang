@@ -70,15 +70,25 @@ class VideoMoveView(View):
     def post(self, request, **kwargs):
         album = get_object_or_404(VideoAlbum,
             id=request.POST.get('album_id'), owner=request.user)
-#        if Video.objects.filter(id=request.POST.get('video_id'),
-#                owner=request.user).update(album=album):
-#            msg = u'Видео успешно перемещено'
-#        else:
-#            msg = u'Ошибка перемещения видео'
+        if Video.objects.filter(id=request.POST.get('video_id'),
+                owner=request.user).update(album=album):
+            msg = u'Видео успешно перемещено'
+        else:
+            msg = u'Ошибка перемещения видео'
 
-        msg = 'asd'
         return HttpResponse(json.dumps({'message': msg}),
             mimetype="application/json")
+
+
+class VideoMakeCoverView(View):
+    model = Video
+
+    def get(self, request, **kwargs):
+        return HttpResponse(status=403)
+
+    def post(self, request, **kwargs):
+        return HttpResponse(json.dumps({'message': msg}),
+                            mimetype="application/json")
 
 
 class VideoDeleteView(DeleteView):

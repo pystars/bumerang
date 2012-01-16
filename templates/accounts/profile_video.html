@@ -74,7 +74,7 @@
             <div class="clear"></div>
             {% if profile.video_set.count %}
                 {% if profile.id == request.user.id %}
-                    <a href="#" class="b-button b-button_red b-button_small l-button-del" id="video-delete-button">Удалить</a>
+                    <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button">Удалить</a>
                 {% endif %}
                 <p class="smaller" id="videos-count">
                     Всего {{ profile.video_set.count }} видео

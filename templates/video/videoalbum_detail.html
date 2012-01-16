@@ -10,7 +10,7 @@
             <i class="l"></i>
             <i class="r"></i>
         </dt>
-        <dd class="selected"><div class="b-tabs__tab-content">
+        <dd class="selected"><div class="b-tabs__tab-content" id="videoalbum-id-{{ object.id }}">
             {% with object.owner.profile as profile %}
             {% include "snippets/section_profile.html" %}
             {% endwith %}

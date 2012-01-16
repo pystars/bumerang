@@ -214,6 +214,7 @@ $(function() {
                 $('#tint').hide();
                 return false;
             });
+            return false;
         }
         return false;
     });
@@ -267,8 +268,26 @@ $(function() {
         return false;
     });
 
+    /*
+    * Make cover of album
+    * */
+    $('.b-dropdown__link[id*=make-cover-]').click(function() {
+        var id = parseInt($(this).attr('id').split('make-cover-')[1]);
 
-
+        $.ajax({
+            type: 'post',
+            url: '/video/make-cover/',
+            data: {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                video_id: id
+            },
+            success: function(response) {
+                show_notification('success', response['message']);
+                $('#popup-move-video').hide();
+                $('#tint').hide();
+            }
+        });
+    });
 
     // Submit forms
     $('.button-submit').click(function(){
