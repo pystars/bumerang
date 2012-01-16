@@ -79,7 +79,6 @@ function get_selected_items(formname) {
     $.each($('form[name='+formname+'] input[type=checkbox]:checked'), function(i, v) {
         checkboxes.push(parseInt($(v).attr('value')));
     });
-    console.log(checkboxes);
     return checkboxes;
 };
 
