@@ -272,7 +272,8 @@ $(function() {
     * Make cover of album
     * */
     $('.b-dropdown__link[id*=make-cover-]').click(function() {
-        var id = parseInt($(this).attr('id').split('make-cover-')[1]);
+        var aid = parseInt($('div[id*=videoalbum-id-]').split('videoalbum-id-')[1]);
+        var vid = parseInt($(this).attr('id').split('make-cover-')[1]);
 
         $.ajax({
             type: 'post',

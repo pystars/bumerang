@@ -54,7 +54,7 @@ urlpatterns = patterns('',
         login_required(VideoDeleteView.as_view()),
         name='video-delete'
     ),
-    url(r'^make-cover/$',
+    url(r'^cover/(?P<apk>\w+)/(?P<vpk>\w+)/$',
         login_required(VideoMakeCoverView.as_view()),
         name='video-delete'
     ),
