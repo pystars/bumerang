@@ -121,9 +121,10 @@ class Video(models.Model):
         except ExecutionError:
             pass #TODO: remove it after tests
         super(Video, self).save(*args, **kwargs)
-        if not self.album.cover and self.preview:
-            self.album.cover = self
-            self.album.save()
+        if self.album:
+            if not self.album.cover and self.preview:
+                self.album.cover = self
+                self.album.save()
 
     def delete(self, using=None):
         for field in self._meta.fields:
