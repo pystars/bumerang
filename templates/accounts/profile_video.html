@@ -25,11 +25,13 @@
     </dt>
     <dd class="selected"><div class="b-tabs__tab-content">
     {% include "snippets/section_profile.html" %}
-    <div class="b-hr"><hr /></div>
+    <div class="b-hr">
+        <hr />
+    </div>
     <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v">
         <header class="b-gallery__head">
             <ul class="b-service-buttons">
-                {% if profile.id == user.id %}
+                {% if profile.id == request.user.id %}
                     <li class="addvideoalbum">
                         <i></i>
                         <a href="{% url video-album-add %}">Добавить альбом</a>
@@ -38,63 +40,26 @@
             </ul>
             <h3>Видеоальбомы</h3>
             <div class="clear"></div>
-            {% if profile.videoalbum_set %}
-                {% if profile.id == user.id %}
-                <a href="" class="b-button b-button_red b-button_small l-button-del">Удалить</a>
+            {% if profile.videoalbum_set.count %}
+                {% if profile.id == request.user.id %}
+                <a href="#" id="videoalbum-delete-buton" class="b-button b-button_red b-button_small l-button-del">Удалить</a>
                 {% endif %}
                     <p class="smaller" id="albums-count">
                         Всего {{ profile.videoalbum_set.count }} {{ profile.videoalbum_set.count|rupluralize:"альбом,альбома,альбомов" }}
-                        <div id="video-plurals" style="display: none;">альбом,альбома,альбомов</div>
+                        <div id="videoalbums-plurals" style="display: none;">альбом,альбома,альбомов</div>
                     </p>
             {% endif %}
         </header>
 
-
-        <div id="videoalbum-empty-block" class="b-empty b-empty_video-album" {% if profile.videoalbum_set.all %}style="display: none;"{% endif %}>
+        <div id="videoalbum-empty-block" class="b-empty b-empty_video-album" {% if profile.videoalbum_set.count %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет видеоальбомов</strong>
-            {% if profile.id == user.id %}
+            {% if profile.id == request.user.id %}
                 <div>
                     <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
                 </div>
             {% endif %}
         </div>
-{#        <div class="b-gallery__items">#}
-{#            {% for videoalbum in profile.videoalbum_set.all %}#}
-{#            <figure class="b-gallery__item">#}
-{#                <a href="{% url video-album-detail videoalbum.id %}">#}
-{#                    <span class="gi-img">#}
-{#                        <span>#}
-{#                            <img src="{{ STATIC_URL }}i/fake/photo1.jpg" width="190" height="123" alt="" />#}
-{#                        </span>#}
-{#                    </span>#}
-{#                    <strong class="gi-title">{{ videoalbum.title }}</strong>#}
-{#                </a>#}
-{#                <figcaption class="gi-caption">#}
-{#                    {{ videoalbum.description|truncatewords:10 }}#}
-{#                </figcaption>#}
-{#                <div class="ui-checkbox">#}
-{#                    <input type="checkbox" name="" value="" id="checkbox-01" />#}
-{#                    <label for="checkbox-01"></label>#}
-{#                </div>#}
-{#                <div class="ui-menu">#}
-{#                    <span class="b-dropdown">#}
-{#                        <label class="b-menu-button b-dropdown__handle" ></label>#}
-{#                        <span class="b-dropdown__popup">#}
-{#                            <span class="b-dropdown__popup__i">#}
-{#                                <span class="b-dropdown__popup__i__i">#}
-{#                                    <span class="b-dropdown__arr"></span>#}
-{#                                    <a href="" class="b-dropdown__link">Удалить</a>#}
-{#                                    <a href="{% url video-album-edit videoalbum.id %}" class="b-dropdown__link last">Редактировать</a>#}
-{#                                </span>#}
-{#                            </span>#}
-{#                        </span>#}
-{#                    </span>#}
-{#                </div>#}
-{#            </figure>#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#            {% with object.videoalbum_set.all as videoalbum_list %}#}
         {% include "snippets/videoalbums_list.html" %}
     </section>
     <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
@@ -106,106 +71,35 @@
                 </li>
             </ul>
             <h3>Видеоролики</h3>
-            <div class="b-sort">
-                <div class="b-sort__title">Сортировка</div>
-                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort1" />
-                <label class="b-sort__handle" for="sort1"><span>по просмотрам</span></label>
-                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort2" />
-                <label class="b-sort__handle" for="sort2"><span>по оценкам</span></label>
-                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort3" />
-                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>
-            </div>
+            <div class="clear"></div>
+            {% if profile.video_set.count %}
+                {% if profile.id == request.user.id %}
+                    <a href="#" id="video-delete-button" class="b-button b-button_red b-button_small l-button-del">Удалить</a>
+                {% endif %}
+                <p class="smaller" id="videos-count">
+                    Всего {{ profile.video_set.count }} видео
+                    <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
+                </p>
+            {% endif %}
+{#            <div class="b-sort">#}
+{#                <div class="b-sort__title">Сортировка</div>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort1" />#}
+{#                <label class="b-sort__handle" for="sort1"><span>по просмотрам</span></label>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort2" />#}
+{#                <label class="b-sort__handle" for="sort2"><span>по оценкам</span></label>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort3" />#}
+{#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
+{#            </div>#}
         </header>
-        {% if not videos %}
-        <div class="b-empty b-empty_video">
+
+        <div id="video-empty-block" class="b-empty b-empty_video" {% if profile.videoalbum_set.count %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет видеороликов</strong>
-            <div><a href="" class="b-button b-button_yellow">Загрузить видео</a></div>
+            <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
         </div>
-        {% else %}
-        <div class="announs-items">
-            <article class="announ-item">
-                <div class="ai-img d-sh">
-                    <a href="#">
-                        <span>
-                            <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
-                            <span class="time">1:54</span>
-                        </span>
-                        <i class="b-ico b-ico_play"><i></i></i>
-                    </a>
-                </div>
-                <header class="ai-head">
-                    <h3><a href="">Название видео длинное, чтобы не вмещалось</a></h3>
-                </header>
-                <footer class="ai-foot">
-                    <time class="date">21.09.2011, 15:35</time>
-                    <ul class="b-stat">
-                        <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                        <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                    </ul>
-                </footer>
-                <div class="ui-checkbox">
-                    <input type="checkbox" name="" value="" id="checkbox-06" />
-                    <label for="checkbox-06"></label>
-                </div>
-                <div class="ui-menu">
-                    <span class="b-dropdown">
-                        <label class="b-menu-button b-dropdown__handle" ></label>
-                        <span class="b-dropdown__popup">
-                            <span class="b-dropdown__popup__i">
-                                <span class="b-dropdown__popup__i__i">
-                                    <span class="b-dropdown__arr"></span>
-                                    <a href="" class="b-dropdown__link">Удалить</a>
-                                    <a href="" class="b-dropdown__link">Редактировать</a>
-                                    <a href="" class="b-dropdown__link last">Переместить...</a>
-                                </span>
-                            </span>
-                        </span>
-                    </span>
-                </div>
-            </article>
-            <article class="announ-item">
-                <div class="ai-img d-sh">
-                    <a href="">
-                        <span>
-                            <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
-                            <span class="time">1:54</span>
-                        </span>
-                        <i class="b-ico b-ico_play"><i></i></i>
-                    </a>
-                </div>
-                <header class="ai-head">
-                    <h3><a href="">BACKSTAGE</a></h3>
-                </header>
-                <footer class="ai-foot">
-                    <time class="date">21.09.2011, 15:35</time>
-                    <ul class="b-stat">
-                        <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                        <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                    </ul>
-                </footer>
-                <div class="ui-checkbox">
-                    <input type="checkbox" name="" value="" id="checkbox-07" />
-                    <label for="checkbox-07"></label>
-                </div>
-                <div class="ui-menu">
-                    <span class="b-dropdown">
-                        <label class="b-menu-button b-dropdown__handle" ></label>
-                        <span class="b-dropdown__popup">
-                            <span class="b-dropdown__popup__i">
-                                <span class="b-dropdown__popup__i__i">
-                                    <span class="b-dropdown__arr"></span>
-                                    <a href="" class="b-dropdown__link">Удалить</a>
-                                    <a href="" class="b-dropdown__link">Редактировать</a>
-                                    <a href="" class="b-dropdown__link last">Переместить...</a>
-                                </span>
-                            </span>
-                        </span>
-                    </span>
-                </div>
-            </article>
-        </div>
-        {% endif %}
+        {% with profile.video_set.all as videos %}
+            {% include "snippets/videos_list.html" %}
+        {% endwith %}
     </section>
     </div></dd>
 {% endblock %}

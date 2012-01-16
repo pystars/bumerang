@@ -56,7 +56,7 @@
                 {% else %}
                     <div class="b-head-user cleared">
                         <div class="right">
-                            <div class="b-head-user__help"><a href="" class="b-head-user__link b-head-user__link">Помощь</a></div>
+                            <div class="b-head-user__help"><a href="/help/" class="b-head-user__link b-head-user__link">Помощь</a></div>
                             <div class="b-head-user__exit"><a href="{% url logout %}" class="b-head-user__link b-head-user__link_exit">Выйти</a></div>
                         </div>
                         <div class="b-dropdown2 cleared" id="dropdown2">
@@ -90,27 +90,27 @@
                                         {% endif %}
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
-                                    <a href="" class="b-dropdown2__link">Сообщения</a>
+                                    <a href="#" class="b-dropdown2__link">Сообщения</a>
                                     <small class="b-dropdown2__count">1678</small>
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
-                                    <a href="" class="b-dropdown2__link">Друзья</a>
+                                    <a href="#" class="b-dropdown2__link">Друзья</a>
                                     <small class="b-dropdown2__count">2</small>
                                 </li>
                                 <li class="b-dropdown2__item">
-                                    <a href="" class="b-dropdown2__link">Видеосюжеты</a>
+                                    <a href="{% url profile-video-detail user.id %}" class="b-dropdown2__link">Видеосюжеты</a>
                                     <small class="b-dropdown2__count">{{ user.profile.video_set.count|default:'0' }}</small>
                                 </li>
-                                <li class="b-dropdown2__item">
-                                    <a href="" class="b-dropdown2__link">Фотографии</a>
-                                </li>
-                                <li class="b-dropdown2__item">
-                                    <a href="" class="b-dropdown2__link">Комментарии</a>
-                                    <small class="b-dropdown2__count">26</small>
-                                </li>
-                                <li class="b-dropdown2__item">
-                                    <a href="" class="b-dropdown2__link">Избранное видео</a>
-                                </li>
+{#                                <li class="b-dropdown2__item">#}
+{#                                    <a href="" class="b-dropdown2__link">Фотографии</a>#}
+{#                                </li>#}
+{#                                <li class="b-dropdown2__item">#}
+{#                                    <a href="" class="b-dropdown2__link">Комментарии</a>#}
+{#                                    <small class="b-dropdown2__count">26</small>#}
+{#                                </li>#}
+{#                                <li class="b-dropdown2__item">#}
+{#                                    <a href="" class="b-dropdown2__link">Избранное видео</a>#}
+{#                                </li>#}
                             </ul>
                         </div>
                     </div>
@@ -147,12 +147,13 @@
     </aside>
     <aside class="l-foot__r">
         <p class="artiv">
-            Сделано в студии
-            &laquo;<a href=""><img src="{{ STATIC_URL }}i/artiv-logo.png" alt="" width="44" height="20" />Артив</a>&raquo;
+            {% spaceless %}
+                Сделано в студии &laquo;<a href="http://pystars.com/">PyStars</a>&raquo;
+            {% endspaceless %}
             <br/>
-            <a href="">Информация о сайте</a>
+            <a href="/about/">Информация о сайте</a>
         </p>
-        <p class="intex">Проектирование — компания &laquo;<a href="">Интех-М</a>&raquo;</p>
+{#        <p class="intex">Проектирование — компания &laquo;<a href="">Интех-М</a>&raquo;</p>#}
     </aside>
 </div></footer><!--l-foot-->
 <div class="l-tint" id="tint"></div>

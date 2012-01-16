@@ -1,0 +1,50 @@
+<div class="announs-items">
+    <form name="videos" action="{% url videos-delete %}" method="post">
+        {% for video in videos %}
+            <article class="announ-item" id="video-item-{{ video.id }}">
+                <div class="ai-img d-sh">
+                    <a href="{% url video-detail video.id %}">
+                        <span>
+                            <img src="{{ STATIC_URL }}i/fake/mov1b.jpg" width="190" height="123" alt="" />
+                            <span class="time">1:54</span>
+                        </span>
+                        <i class="b-ico b-ico_play"><i></i></i>
+                    </a>
+                </div>
+                <header class="ai-head">
+                    <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
+                </header>
+                <footer class="ai-foot">
+                    <time class="date">{{ video.created|date:'j.m.Y, G:i' }}</time>
+                    <ul class="b-stat">
+                        <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                        <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                    </ul>
+                </footer>
+                {% if request.user.profile.id == video.owner_id %}
+                    <div class="ui-checkbox">
+                        <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox-{{ video.id }}" />
+                        <label for="checkbox-{{ video.id }}"></label>
+                    </div>
+                    <div class="ui-menu">
+                        <span class="b-dropdown">
+                            <label class="b-menu-button b-dropdown__handle" ></label>
+                            <span class="b-dropdown__popup">
+                                <span class="b-dropdown__popup__i">
+                                    <span class="b-dropdown__popup__i__i">
+                                        <span class="b-dropdown__arr"></span>
+                                        <a href="#" class="b-dropdown__link" id="video-delete-{{ video.id }}">Удалить</a>
+                                        <a href="{% url video-edit video.id %}" class="b-dropdown__link">Редактировать</a>
+                                        {% if videoalbum %}
+                                            <a href="#" class="b-dropdown__link popup-handle last" rel="popup-move-video" id="move-video-{{ video.id }}"> Переместить...</a>
+                                        {% endif %}
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </div>
+                {% endif %}
+            </article>
+        {% endfor %}
+    </form>
+</div>

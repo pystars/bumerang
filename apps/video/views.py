@@ -18,7 +18,7 @@ from forms import (VideoForm, VideoAlbumForm, VideoCreateForm,
 
 class VideosDeleteView(View):
     def get_queryset(self):
-        ids = json.loads(self.request.POST['checkboxes'])
+        ids = json.loads(self.request.POST['ids'])
         # Если владелец - текущий пользователь, выбирутся
         # все видео. Иначе ни одного, удалять будет нечего.
         # И пусть хацкеры ломают головы ;)
@@ -34,7 +34,8 @@ class VideosDeleteView(View):
         else:
             msg = u'Видео успешно удалено'
         for video in videos.all():
-            video.delete()
+            #video.delete()
+            print(video.id)
         return HttpResponse(json.dumps({'message': msg}),
             mimetype="application/json")
 
@@ -69,12 +70,13 @@ class VideoMoveView(View):
     def post(self, request, **kwargs):
         album = get_object_or_404(VideoAlbum,
             id=request.POST.get('album_id'), owner=request.user)
-        if Video.objects.filter(id=request.POST.get('video_id'),
-                owner=request.user).update(album=album):
-            msg = u'Видео успешно перемещено'
-        else:
-            msg = u'Ошибка перемещения видео'
+#        if Video.objects.filter(id=request.POST.get('video_id'),
+#                owner=request.user).update(album=album):
+#            msg = u'Видео успешно перемещено'
+#        else:
+#            msg = u'Ошибка перемещения видео'
 
+        msg = 'asd'
         return HttpResponse(json.dumps({'message': msg}),
             mimetype="application/json")
 

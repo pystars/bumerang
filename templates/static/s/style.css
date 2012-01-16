@@ -4262,7 +4262,7 @@ textarea {
 .b-button-prev.disabled span {background-position:100% -154px;color:#a6a49c !important;text-shadow:0 1px 0 #fff !important;}
 
 .l-button-del {float:right;position:relative;margin:-2px -4px 0 0;}
-.l-button-move {float:right;position:relative;margin:-2px -4px 0 12px;}
+.l-button-move {float:right;position:relative;margin:-2px 12px 0 -4px;}
 
 /* b-button_file */
 .b-button_file {
