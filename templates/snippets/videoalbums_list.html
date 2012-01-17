@@ -6,7 +6,7 @@
                 <span class="gi-img">
                     <span>
                         {% if videoalbum.preview %}
-                            {{ videoalbum.preview }}
+                            <img src="{{ videoalbum.preview.url }}" width="190" height="123" alt="{{ videoalbum.title }}" />
                         {% else %}
                             <img src="{{ STATIC_URL }}i/nophoto.png" width="190" height="123" alt="{{ videoalbum.title }}" />
                         {% endif %}

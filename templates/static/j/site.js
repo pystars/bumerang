@@ -281,6 +281,9 @@ $(function() {
             data: {
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                 cover: vid
+            },
+            success: function() {
+//                window.location.reload();
             }
         });
     });
