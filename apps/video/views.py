@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.views.generic import ListView, View, CreateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView
+from apps.video.forms import VideoAlbumCoverForm
 
 from settings import VIDEO_UPLOAD_PATH
 from models import Video, VideoAlbum
@@ -78,16 +79,21 @@ class VideoMoveView(View):
             mimetype="application/json")
 
 
-class VideoMakeCoverView(View):
-    model = Video
+class VideoSetCoverView(UpdateView):
+    model = VideoAlbum
+    form_class = VideoAlbumCoverForm
+
+    def get_form(self, form_class):
+        a = VideoAlbumCoverForm(**self.get_form_kwargs())
+        return a
 
     def get(self, request, **kwargs):
         return HttpResponse(status=403)
 
-    def post(self, request, **kwargs):
-        return HttpResponse(json.dumps({'message': msg}),
-                            mimetype="application/json")
-
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS, u'Обложка видеоальбома обновлена')
+        return reverse('video-album-detail', args=[self.object.id])
 
 class VideoDeleteView(DeleteView):
     model = Video

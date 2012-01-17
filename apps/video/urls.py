@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
 
 from apps.video.models import Video, VideoAlbum
-from apps.video.views import (VideoListView, upload_view,
-    VideoCreateView, VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
-    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView, VideoalbumsDeleteView, VideoMakeCoverView)
+from apps.video.views import (VideoListView, VideoCreateView,
+    VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
+    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView,
+    VideoalbumsDeleteView, VideoSetCoverView)
 
 
 urlpatterns = patterns('',
@@ -25,6 +26,10 @@ urlpatterns = patterns('',
     url(r'^album(?P<pk>[\d]+)/edit/$',
         login_required(VideoAlbumUpdateView.as_view()),
         name='video-album-edit'
+    ),
+    url(r'^album(?P<pk>[\d]+)/set-cover/$',
+        login_required(VideoSetCoverView.as_view()),
+        name='video-album-cover'
     ),
     url(r'^add/$',
         login_required(VideoCreateView.as_view()),
@@ -52,10 +57,6 @@ urlpatterns = patterns('',
     ),
     url(r'^delete/(?P<pk>\w+)/$',
         login_required(VideoDeleteView.as_view()),
-        name='video-delete'
-    ),
-    url(r'^cover/(?P<apk>\w+)/(?P<vpk>\w+)/$',
-        login_required(VideoMakeCoverView.as_view()),
         name='video-delete'
     ),
     url(r'^(?P<pk>\w+)/$',

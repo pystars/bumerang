@@ -272,20 +272,15 @@ $(function() {
     * Make cover of album
     * */
     $('.b-dropdown__link[id*=make-cover-]').click(function() {
-        var aid = parseInt($('div[id*=videoalbum-id-]').split('videoalbum-id-')[1]);
+        var aid = parseInt($('div[id*=videoalbum-id-]').attr('id').split('videoalbum-id-')[1]);
         var vid = parseInt($(this).attr('id').split('make-cover-')[1]);
 
         $.ajax({
             type: 'post',
-            url: '/video/make-cover/',
+            url: '/video/album'+aid+'/set-cover/',
             data: {
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                video_id: id
-            },
-            success: function(response) {
-                show_notification('success', response['message']);
-                $('#popup-move-video').hide();
-                $('#tint').hide();
+                cover: vid
             }
         });
     });
