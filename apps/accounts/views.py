@@ -85,7 +85,10 @@ class ProfileVideoView(DetailView):
 
 
 class UsersListView(ListView):
-    model = Profile
+    queryset = Profile.objects.filter(
+        is_active=True,
+        title__isnull=False
+    )
     paginate_by = 25
 
 
