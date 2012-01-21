@@ -1,5 +1,5 @@
 {% extends "video/video_wrapper.html" %}
-{% load sitetree videotags %}
+{% load sitetree videotags truncatechars %}
 
 {% block title %}Видеоархив{% endblock %}
 
@@ -26,7 +26,7 @@
                 <header class="ai-head">
                     <h3><a href="{% url video-detail item.id %}">{{ item.title }}</a></h3>
                     <p>
-                        {{ item.description|linebreaksbr }}
+                        {{ item.description|truncatechars:150|linebreaksbr }}
                     </p>
                 </header>
                 <footer class="ai-foot">
