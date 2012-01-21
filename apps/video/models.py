@@ -104,6 +104,7 @@ class Video(models.Model):
     class Meta:
         verbose_name = u'Видео'
         verbose_name_plural = u'Видео'
+        ordering = ('-id',)
 
     def __unicode__(self):
         return u'{0}'.format(self.title)
