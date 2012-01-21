@@ -48,7 +48,14 @@
 {#{% endblock %}#}
 
 {% block left_column %}
-
+    <header class="b-page-head">
+        <nav class="b-crumbs">
+            <a href="{% url users-list %}">Участники</a>
+            <span class="b-crumbs__sep">/</span>
+            <a href="{% url profile-detail object.owner.id %}">{{ object.owner.profile.title }}</a>
+        </nav>
+        <h1>{{ object.title }}</h1>
+    </header>
     <div class="b-main-box d-rounded d-rounded_r10 d-sh cleared">
         <section class="b-movie js-toggle2-container">
             <div id="flashContent">
