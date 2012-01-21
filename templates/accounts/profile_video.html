@@ -65,10 +65,12 @@
     <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
         <header class="announs-head">
             <ul class="b-service-buttons">
+                {% if profile.id == request.user.id %}
                 <li class="addvideo">
                     <i></i>
                     <a href="{% url video-add %}">Добавить видео</a>
                 </li>
+                {% endif %}
             </ul>
             <h3>Видеоролики</h3>
             <div class="clear"></div>
