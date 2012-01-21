@@ -6,25 +6,26 @@
 
 {% block content %}
 		<div class="b-main-box d-rounded d-rounded_r10 d-sh">
-			<section class="b-tv">
-				<header class="b-tv__head">
-					<div class="b-now">
-						<div class="b-plenka">
-							<h2 class="b-plenka__i">
-								<span class="b-plenka__title">Сейчас в эфире:</span>
-								<a href="">Самый быстрый способ сделать монтаж дома</a>
-							</h2>
-						</div>
-						<p class="now-brief" id="now-brief">
-							Мега видео ПРО участников бумеранга, Всегда вместе и рядом, Про бумеранг
-						</p>
-					</div>
-					<div class="b-close-lnk">
-						<i class="b-ico b-ico_x"><i></i></i>
-						<span class="b-pseudolink"><span>Скрыть программу передач</span></span>
-					</div>
-				</header><!--b-tv__head-->
-				<div class="b-tv__body"><div class="b-tv__body__i">
+            <section class="b-tv js-toggle2-container js-toggle2-container_tv">
+                <header class="b-tv__head">
+                    <div class="b-now">
+                        <div class="b-plenka">
+                            <h2 class="b-plenka__i">
+                                <span class="b-plenka__title">Сейчас в эфире:</span>
+                                <a href="">Самый быстрый способ сделать монтаж дома</a>
+                            </h2>
+                        </div>
+                        <p class="now-brief" id="now-brief">
+                            Мега видео ПРО участников бумеранга, Всегда вместе и рядом, Про бумеранг
+                        </p>
+                    </div>
+                    <div class="b-close-lnk">
+                        <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>
+                        <span class="b-pseudolink js-toggle2-lnk"><span class="js-toggle2-text">Скрыть программу передач</span></span>
+                    </div>
+                </header><!--b-tv__head-->
+
+                <div class="b-tv__body js-toggle2-block"><div class="b-tv__body__i">
 					<div class="l-cols l-cols_tv"><div class="l-cols__i cleared">
 						<section class="l-cols__section"><div class="l-cols__section__i">
 							<article class="b-tv-programs">
@@ -105,13 +106,13 @@
 					</div></div><!--l-cols-->
 				</div></div><!--b-tv__body-->
 			</section><!--b-tv-->
-			<div class="l-cols l-cols_movie js-toggle2-block"><div class="l-cols__i cleared">
+            <div class="l-cols l-cols_movie"><div class="l-cols__i cleared">
 				<section class="l-cols__section"><div class="l-cols__section__i">
-					<section class="b-movie">
+                    <section class="b-movie js-toggle2-container js-toggle2-container_movie">
 						<video id="movie" width="100%" height="380" preload controls style="background:url({{ STATIC_URL }}i/fake/video.jpg) repeat-x;">
 							<img src="{{ STATIC_URL }}i/fake/video.jpg" width="100%" height="380" />
 						</video>
-						<article>
+                        <article class="js-toggle2-block">
 							<p>
 								В случае если какое-то поле не было заполнено в информации о сюжете, то оно не выводится.
 								В окне описания к сюжету разрешается добавлять много текста. Если контент не умещается,
@@ -152,12 +153,12 @@
 								</li>
 							</ul>
 						</article>
-						<footer class="b-movie__foot">
-							<div class="b-close-lnk">
-								<i class="b-ico b-ico_x"><i></i></i>
-								<span class="b-pseudolink js-toggle2-lnk"><span>Скрыть описание ролика</span></span>
-							</div>
-						</footer>
+                        <footer class="b-movie__foot">
+                            <div class="b-close-lnk">
+                                <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>
+                                <span class="b-pseudolink js-toggle2-lnk"><span><span class="js-toggle2-text">Скрыть</span> описание ролика</span></span>
+                            </div>
+                        </footer>
 					</section><!--b-movie-->
 				</div></section>
 				<aside class="l-cols__side"><div class="l-cols__side__i">
