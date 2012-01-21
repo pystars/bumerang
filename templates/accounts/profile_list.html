@@ -9,7 +9,7 @@
     </header>
     <section class="b-participants">
         {% for profile in object_list %}
-            {% if profile.is_active %}
+            {% if profile.is_active and profile.title %}
             <div class="b-tag d-rounded d-rounded_r10 d-sh">
                 <div class="b-tag__i">
                     <section class="b-participants__item cleared">
