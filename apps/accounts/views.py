@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import json
+from django.contrib.sites.models import Site
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -10,7 +12,7 @@ from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, TemplateView
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
@@ -30,14 +32,54 @@ class RegistrationFormView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+
+        activation_code = get_hexdigest('sha1',
+                             str(random.random()),
+                             str(random.random()))[:32]
+
+        self.object.is_active = False
+        self.object.activation_code = activation_code
+
+        current_site = Site.objects.get_current()
+        url = reverse('activate-account', args=[activation_code])
+
+        full_activation_url = 'http://{0}{1}'.format(current_site, url)
+
+        #TODO: Сделать отправку почты через шаблоны и класс работы с почтой
+        send_mail(
+            u'Активация аккаунта на сервисe БумерангПРО',
+            u'Ссылка для активации аккаунта: %s' % full_activation_url,
+            u'alexilorenz@gmail.com',
+            [form.cleaned_data['email']],
+            )
+
+        self.object.save()
+
         messages.add_message(self.request, messages.SUCCESS,
-            u'Регистрация прошла успешно. Теперь вы можете залогиниться.')
+            u'Регистрация прошла успешно. Проверьте почту и активируйте аккаунт.')
         return super(RegistrationFormView, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR,
             u'Ошибка при регистрации')
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class AccountActivationView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        try:
+            user = Profile.objects.get(activation_code=kwargs['code'])
+            user.is_active = True
+            user.activation_code = ''
+            user.save()
+            messages.add_message(self.request, messages.SUCCESS,
+                                 u'Аккаунт успешно активирован')
+            return HttpResponseRedirect('/accounts/success_activation/')
+        except ObjectDoesNotExist:
+            messages.add_message(self.request, messages.ERROR,
+                                 u'Ошибка при активации аккаунта')
+            return HttpResponseRedirect('/accounts/fail_activation/')
+
 
 class PasswordRecoveryView(FormView):
     form_class = PasswordRecoveryForm

@@ -8,7 +8,7 @@ from apps.accounts.forms import (ProfileResumeEditForm,
 from apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
-     ProfileVideoView)
+     ProfileVideoView, AccountActivationView)
 
 
 urlpatterns = patterns('',
@@ -27,6 +27,10 @@ urlpatterns = patterns('',
     url(r'^recover/$',
         PasswordRecoveryView.as_view(),
         name='password-recover'
+    ),
+    url(r'^activate/(?P<code>\w{0,32})/$',
+        AccountActivationView.as_view(),
+        name='activate-account'
     ),
     url(r'^logout/$',
         'django.contrib.auth.views.logout',

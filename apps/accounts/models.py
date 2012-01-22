@@ -46,6 +46,7 @@ class Profile(User):
     description = models.TextField(u'Описание', **nullable)
     views_count = models.IntegerField(u'Просмотров', default=0, editable=False)
     friends_count = models.IntegerField(u'Друзей', default=0, editable=False)
+    activation_code = models.CharField(max_length=32, editable=False, **nullable)
 
     '''
     Специфические для разных типов пользователей поля
