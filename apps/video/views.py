@@ -166,7 +166,7 @@ class VideoListView(ListView):
         Q(mq_file__isnull=False) |
         Q(lq_file__isnull=False),
         blocked=False,
-
+        published_in_archive=True,
     )
     paginate_by = 25
 
