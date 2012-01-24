@@ -107,7 +107,7 @@ class Video(models.Model):
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
 
     # Кастомный менеджер объектов
-    video_objects = VideoManager()
+    public_objects = VideoManager()
 
     class Meta:
         verbose_name = u'Видео'

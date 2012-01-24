@@ -1,6 +1,7 @@
 <div class="announs-items">
     <form name="videos" action="{% url videos-delete %}" method="post">
         {% for video in videos %}
+            {% if not video.blocked %}
             <article class="announ-item" id="video-item-{{ video.id }}">
                 <div class="ai-img d-sh">
                     <a href="{% url video-detail video.id %}">
@@ -50,6 +51,7 @@
                     </div>
                 {% endif %}
             </article>
+            {% endif %}
         {% endfor %}
     </form>
 </div>

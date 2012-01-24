@@ -2,6 +2,7 @@
 from __future__ import division
 import json
 from django.contrib.sites.models import Site
+from apps.utils.email import send_single_email
 
 try:
     from cStringIO import StringIO
@@ -46,12 +47,20 @@ class RegistrationFormView(CreateView):
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
 
         #TODO: Сделать отправку почты через шаблоны и класс работы с почтой
-        send_mail(
-            u'Активация аккаунта на сервисe БумерангПРО',
-            u'Ссылка для активации аккаунта: %s' % full_activation_url,
-            u'alexilorenz@gmail.com',
-            [form.cleaned_data['email']],
-            )
+#        send_mail(
+#            u'Активация аккаунта на сервисe БумерангПРО',
+#            u'Ссылка для активации аккаунта: %s' % full_activation_url,
+#            u'alexilorenz@gmail.com',
+#            [form.cleaned_data['email']],
+#            )
+
+
+        ctx = {'subject': u'Активация аккаунта на сервисe БумерангПРО',
+               'text': u'Ссылка для активации аккаунта: ',
+               'link': full_activation_url}
+        send_single_email('email/activation_email.html', ctx, ctx['subject'],
+                          'noreply@bumerangpro.com',
+                          [form.cleaned_data['email']])
 
         self.object.save()
 
