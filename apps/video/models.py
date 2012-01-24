@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.db.models.query import QuerySet
 import os
 from datetime import timedelta, datetime
 
@@ -54,6 +55,10 @@ class VideoGenre(models.Model):
         verbose_name_plural = u'Жанры видео'
 
 
+class VideoManager(models.Manager):
+    def get_query_set(self):
+        return super(VideoManager, self).get_query_set().filter(blocked=False)
+
 class Video(models.Model):
     ACCESS_FLAGS = (
         (1, u'Всем пользователям'),
@@ -100,6 +105,9 @@ class Video(models.Model):
     access = models.IntegerField(u'Кому доступно видео', choices=ACCESS_FLAGS,
         default=1, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
+
+    # Кастомный менеджер объектов
+    video_objects = VideoManager()
 
     class Meta:
         verbose_name = u'Видео'

@@ -161,11 +161,10 @@ class VideoUpdateView(UpdateView):
 
 
 class VideoListView(ListView):
-    queryset = Video.objects.filter(
+    queryset = Video.video_objects.filter(
         Q(hq_file__isnull=False) |
         Q(mq_file__isnull=False) |
         Q(lq_file__isnull=False),
-        blocked=False,
         published_in_archive=True,
     )
     paginate_by = 25
