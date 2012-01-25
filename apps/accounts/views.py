@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import json
-from django.contrib.sites.models import Site
-from apps.utils.email import send_single_email
+from PIL import Image
 
 try:
     from cStringIO import StringIO
 except ImportError:
     import StringIO
 
-from PIL import Image
+from django.contrib.sites.models import Site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -22,7 +21,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile
-
+from apps.utils.email import send_single_email
+from settings import EMAIL_NOREPLY_ADDR
 
 class RegistrationFormView(CreateView):
     form_class = RegistrationForm
@@ -59,7 +59,7 @@ class RegistrationFormView(CreateView):
                'text': u'Ссылка для активации аккаунта: ',
                'link': full_activation_url}
         send_single_email('email/activation_email.html', ctx, ctx['subject'],
-                          'noreply@bumerangpro.com',
+                          EMAIL_NOREPLY_ADDR,
                           [form.cleaned_data['email']])
 
         self.object.save()
@@ -109,7 +109,7 @@ class PasswordRecoveryView(FormView):
         send_mail(
             u'Восстановление пароля от сервиса БумерангПРО',
             u'Ваш новый пароль: %s' % new_password,
-            u'alexilorenz@gmail.com',
+            EMAIL_NOREPLY_ADDR,
             [receiver_email],
         )
 

@@ -194,6 +194,7 @@ if DEBUG:
 
     STATICFILES_DIRS += (os.path.join(PROJECT_ROOT, 'media'),)
 
+EMAIL_NOREPLY_ADDR = 'noreply@bumerangpro.com'
 
 from local_settings import (EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER,
                             EMAIL_USE_TLS)
