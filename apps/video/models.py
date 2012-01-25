@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hashlib import sha1
 from django.db.models.query import QuerySet
 import os
 from datetime import timedelta, datetime
@@ -59,6 +60,14 @@ class VideoManager(models.Manager):
     def get_query_set(self):
         return super(VideoManager, self).get_query_set().filter(blocked=False)
 
+
+class VideoFileField(models.FileField):
+    def generate_filename(self, instance, filename):
+        filename, extension = os.path.splitext(filename.encode('utf-8'))
+        hashname = sha1(filename).hexdigest()
+        return os.path.join(self.get_directory_name(), self.get_filename(''.join([hashname, extension])))
+
+
 class Video(models.Model):
     ACCESS_FLAGS = (
         (1, u'Всем пользователям'),
@@ -76,7 +85,7 @@ class Video(models.Model):
 
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
-    original_file = models.FileField(u"Оригинальное видео",
+    original_file = VideoFileField(u"Оригинальное видео",
         upload_to='videos/originals', **nullable)
     hq_file = models.FileField(u'Видео высокого качества',
         upload_to='videos/high', **nullable)
@@ -118,6 +127,9 @@ class Video(models.Model):
         return u'{0}'.format(self.title)
 
     def save(self, *args, **kwargs):
+
+        super(Video, self).save(*args, **kwargs)
+
         query = {
             'Video' : {
                 'Duration' : int,
