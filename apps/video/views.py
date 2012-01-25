@@ -94,6 +94,17 @@ class VideoSetCoverView(UpdateView):
             self.request, messages.SUCCESS, u'Обложка видеоальбома обновлена')
         return reverse('video-album-detail', args=[self.object.id])
 
+
+class VideoDetailView(DetailView):
+    model = Video
+
+    def get(self, request, **kwargs):
+        video = self.get_object()
+        video.views_count += 1
+        video.save()
+
+        return super(VideoDetailView, self).get(request, **kwargs)
+
 class VideoDeleteView(DeleteView):
     model = Video
 

@@ -7,7 +7,7 @@ from apps.video.models import Video, VideoAlbum
 from apps.video.views import (VideoListView, VideoCreateView,
     VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
     VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView,
-    VideoalbumsDeleteView, VideoSetCoverView)
+    VideoalbumsDeleteView, VideoSetCoverView, VideoDetailView)
 
 
 urlpatterns = patterns('',
@@ -60,7 +60,7 @@ urlpatterns = patterns('',
         name='video-delete'
     ),
     url(r'^(?P<pk>\w+)/$',
-        DetailView.as_view(model=Video),
+        VideoDetailView.as_view(),
         name='video-detail'
     ),
     url(r'^(?P<pk>\w+).xml$',

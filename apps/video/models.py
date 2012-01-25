@@ -115,6 +115,8 @@ class Video(models.Model):
     access = models.IntegerField(u'Кому доступно видео', choices=ACCESS_FLAGS,
         default=1, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
+    views_count = models.IntegerField(u'Количество просмотров видео', default=0,
+                                      editable=False, **nullable)
 
     # Кастомный менеджер объектов
     public_objects = VideoManager()
