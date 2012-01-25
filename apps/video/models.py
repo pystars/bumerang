@@ -87,11 +87,11 @@ class Video(models.Model):
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = VideoFileField(u"Оригинальное видео",
         upload_to='videos/originals', **nullable)
-    hq_file = models.FileField(u'Видео высокого качества',
+    hq_file = VideoFileField(u'Видео высокого качества',
         upload_to='videos/high', **nullable)
-    mq_file = models.FileField(u'Видео среднего качества',
+    mq_file = VideoFileField(u'Видео среднего качества',
         upload_to='videos/medium', **nullable)
-    lq_file = models.FileField(u'Видео низкого качества',
+    lq_file = VideoFileField(u'Видео низкого качества',
         upload_to='videos/low', **nullable)
     preview = models.FileField(u'Превью',
         upload_to='videos/previews', **nullable)
