@@ -95,7 +95,8 @@ class Video(models.Model):
         upload_to='videos/low', **nullable)
     preview = models.FileField(u'Превью',
         upload_to='videos/previews', **nullable)
-    duration = models.IntegerField(u'Длительность', editable=False, **nullable)
+    duration = models.IntegerField(u'Длительность', default=0,
+                                   editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
     album = models.ForeignKey(VideoAlbum, verbose_name=u'Альбом',
         max_length=255, **nullable)
@@ -127,21 +128,24 @@ class Video(models.Model):
         return u'{0}'.format(self.title)
 
     def save(self, *args, **kwargs):
-
         super(Video, self).save(*args, **kwargs)
-
         query = {
             'Video' : {
                 'Duration' : int,
                 }
         }
         file_field = self.best_quality_file() or self.original_file
+
         try:
             minfo = get_metadata(file_field.path, **query)
             self.duration = minfo['Video']['Duration']
+            super(Video, self).save(*args, **kwargs)
+        except ValueError:
+            # Видеофайл не прикреплен. Что ж, бывает
+            pass
         except ExecutionError:
             pass #TODO: remove it after tests
-        super(Video, self).save(*args, **kwargs)
+
         if self.album:
             if not self.album.cover and self.preview:
                 self.album.cover = self
