@@ -24,7 +24,7 @@
                     </a>
                 </div>
                 <header class="ai-head">
-                    <h3><a href="{% url video-detail item.id %}">{{ item.title }}</a></h3>
+                    <h3><a href="{% url video-detail item.id %}">{{ item.title|truncatechars:60 }}</a></h3>
                     <p>
                         {{ item.description|truncatechars:150|linebreaksbr }}
                     </p>

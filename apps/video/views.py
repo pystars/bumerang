@@ -141,13 +141,13 @@ class VideoCreateView(CreateView):
 
 
 class VideoUpdateView(UpdateView):
-    model = Video
-
+    #model = Video
+    #queryset =
     def get_form(self, form_class):
         return VideoForm(self.request.user, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
-        return Video.objects.get(id=self.kwargs['pk'], owner=self.request.user)
+        return Video.public_objects.get(id=self.kwargs['pk'], owner=self.request.user)
 
     def get_success_url(self):
         return reverse('video-edit', kwargs={'pk': self.kwargs['pk']})
