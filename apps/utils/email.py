@@ -31,3 +31,12 @@ def send_activation_success(to_addr):
         }
     send_single_email("email/activation_success.html", ctx, ctx['subject'],
                       EMAIL_NOREPLY_ADDR, [to_addr])
+
+def send_new_password(password, to_addr):
+    ctx = {
+        'subject': u'Восстановление пароля от сервиса probumerang.tv',
+        'header': u'Восстановление пароля от сервиса probumerang.tv.',
+        'password': password
+    }
+    send_single_email("email/new_password.html", ctx, ctx['subject'],
+                      EMAIL_NOREPLY_ADDR, [to_addr])

@@ -198,8 +198,10 @@ class Video(models.Model):
     views_count = models.IntegerField(u'Количество просмотров видео', default=0,
                                       editable=False, **nullable)
 
+    objects = models.Manager()
     # Кастомный менеджер объектов
     public_objects = VideoManager()
+
 
     class Meta:
         verbose_name = u'Видео'

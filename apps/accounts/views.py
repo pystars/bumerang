@@ -10,7 +10,6 @@ except ImportError:
 
 from django.contrib.sites.models import Site
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
 from django.http import HttpResponseRedirect
@@ -21,8 +20,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile
-from apps.utils.email import send_activation_link, send_activation_success
-from settings import EMAIL_NOREPLY_ADDR
+from apps.utils.email import send_activation_link, send_activation_success, \
+    send_new_password
 
 class RegistrationFormView(CreateView):
     form_class = RegistrationForm
@@ -45,24 +44,6 @@ class RegistrationFormView(CreateView):
         url = reverse('activate-account', args=[activation_code])
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
-
-        #TODO: Сделать отправку почты через шаблоны и класс работы с почтой
-#        send_mail(
-#            u'Активация аккаунта на сервисe БумерангПРО',
-#            u'Ссылка для активации аккаунта: %s' % full_activation_url,
-#            u'alexilorenz@gmail.com',
-#            [form.cleaned_data['email']],
-#            )
-
-#
-#        ctx = {'subject': u'Активация аккаунта на сайте probumerang.tv',
-#               'text': u'Ссылка для активации аккаунта: ',
-#               'link': full_activation_url}
-#        send_single_email('email/activation_link.html', ctx, ctx['subject'],
-#                          EMAIL_NOREPLY_ADDR,
-#                          [form.cleaned_data['email']])
-#
-
 
         send_activation_link(full_activation_url, form.cleaned_data['email'])
 
@@ -88,11 +69,6 @@ class AccountActivationView(TemplateView):
             messages.add_message(self.request, messages.SUCCESS,
                                  u'Аккаунт успешно активирован')
 
-#            ctx = {'subject': u'Акативация на сайте probumerang.tv подтверждена.'}
-#            send_single_email('email/activation_success.html', ctx,
-#                              ctx['subject'],
-#                              EMAIL_NOREPLY_ADDR,
-#                              [user.email])
             send_activation_success(user.email)
 
             return HttpResponseRedirect('/accounts/success_activation/')
@@ -106,6 +82,9 @@ class PasswordRecoveryView(FormView):
     form_class = PasswordRecoveryForm
     template_name = "accounts/password_recovery.html"
 
+    def get_success_url(self):
+        return '/'
+
     def form_valid(self, form):
         receiver_email = form.data['email']
         new_password = uuid4().get_hex()[:8]
@@ -118,12 +97,14 @@ class PasswordRecoveryView(FormView):
         profile.password = new_password_hash
         profile.save()
         #TODO: Сделать отправку почты через шаблоны и класс работы с почтой
-        send_mail(
-            u'Восстановление пароля от сервиса БумерангПРО',
-            u'Ваш новый пароль: %s' % new_password,
-            EMAIL_NOREPLY_ADDR,
-            [receiver_email],
-        )
+#        send_mail(
+#            u'Восстановление пароля от сервиса БумерангПРО',
+#            u'Ваш новый пароль: %s' % new_password,
+#            EMAIL_NOREPLY_ADDR,
+#            [receiver_email],
+#        )
+
+        send_new_password(new_password, receiver_email)
 
         return HttpResponseRedirect(self.get_success_url())
 
