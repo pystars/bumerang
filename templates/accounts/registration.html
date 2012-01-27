@@ -61,7 +61,8 @@
                                     </div>
                                 {% endfor %}
                             {% endwith %}
-                            <div class="f-err"><span>{{ form.type.errors }}</span></div>
+{#                        TODO: Изменить сообщение об ошибке в валидаторе#}
+                            {% if form.type.errors %}<div class="f-err" style="margin-left: 0px;"><span>Укажите тип пользователя</span></div>{% endif %}
                         </div>
                     </div>
                 </fieldset>

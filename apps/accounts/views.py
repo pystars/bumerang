@@ -45,6 +45,7 @@ class RegistrationFormView(CreateView):
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
 
+        # TODO: перевести на сигналы + celery
         send_activation_link(full_activation_url, form.cleaned_data['email'])
 
         self.object.save()
@@ -83,6 +84,7 @@ class PasswordRecoveryView(FormView):
     template_name = "accounts/password_recovery.html"
 
     def get_success_url(self):
+        # TODO: Сделать страницу для редиректа
         return '/'
 
     def form_valid(self, form):
@@ -96,13 +98,6 @@ class PasswordRecoveryView(FormView):
         profile = Profile.objects.get(email=receiver_email)
         profile.password = new_password_hash
         profile.save()
-        #TODO: Сделать отправку почты через шаблоны и класс работы с почтой
-#        send_mail(
-#            u'Восстановление пароля от сервиса БумерангПРО',
-#            u'Ваш новый пароль: %s' % new_password,
-#            EMAIL_NOREPLY_ADDR,
-#            [receiver_email],
-#        )
 
         send_new_password(new_password, receiver_email)
 
