@@ -288,6 +288,20 @@ $(function() {
         });
     });
 
+
+    /*
+    * Enter key handler
+    * */
+    $(document).keypress(function(e) {
+        if(e.keyCode == 13) {
+            console.log('Enter pressed')
+            $('.button-submit').parents('form').submit();
+            return false;
+        }
+    });
+
+
+
     // Submit forms
     $('.button-submit').click(function(){
         $(this).parents('form').submit();
