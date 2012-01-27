@@ -4,7 +4,6 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, HttpResponse, get_object_or_404
-from django.http import Http404
 from django.db.models import Q
 from django.views.generic import ListView, View, CreateView, DeleteView
 from django.views.generic.detail import DetailView
@@ -99,11 +98,9 @@ class VideoDetailView(DetailView):
     model = Video
 
     def get(self, request, **kwargs):
-        video = self.get_object()
-        video.views_count += 1
-        video.save()
-
-        return super(VideoDetailView, self).get(request, **kwargs)
+        response = super(VideoDetailView, self).get(request, **kwargs)
+        Video.objects.filter(pk=kwargs['pk']).update(views_count=self.object.views_count + 1)
+        return response
 
 class VideoDeleteView(DeleteView):
     model = Video
