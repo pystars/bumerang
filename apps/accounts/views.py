@@ -21,7 +21,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile
-from apps.utils.email import send_single_email
+from apps.utils.email import send_activation_link, send_activation_success
 from settings import EMAIL_NOREPLY_ADDR
 
 class RegistrationFormView(CreateView):
@@ -54,13 +54,17 @@ class RegistrationFormView(CreateView):
 #            [form.cleaned_data['email']],
 #            )
 
+#
+#        ctx = {'subject': u'Активация аккаунта на сайте probumerang.tv',
+#               'text': u'Ссылка для активации аккаунта: ',
+#               'link': full_activation_url}
+#        send_single_email('email/activation_link.html', ctx, ctx['subject'],
+#                          EMAIL_NOREPLY_ADDR,
+#                          [form.cleaned_data['email']])
+#
 
-        ctx = {'subject': u'Активация аккаунта на сервисe БумерангПРО',
-               'text': u'Ссылка для активации аккаунта: ',
-               'link': full_activation_url}
-        send_single_email('email/activation_email.html', ctx, ctx['subject'],
-                          EMAIL_NOREPLY_ADDR,
-                          [form.cleaned_data['email']])
+
+        send_activation_link(full_activation_url, form.cleaned_data['email'])
 
         self.object.save()
 
@@ -83,6 +87,14 @@ class AccountActivationView(TemplateView):
             user.save()
             messages.add_message(self.request, messages.SUCCESS,
                                  u'Аккаунт успешно активирован')
+
+#            ctx = {'subject': u'Акативация на сайте probumerang.tv подтверждена.'}
+#            send_single_email('email/activation_success.html', ctx,
+#                              ctx['subject'],
+#                              EMAIL_NOREPLY_ADDR,
+#                              [user.email])
+            send_activation_success(user.email)
+
             return HttpResponseRedirect('/accounts/success_activation/')
         except ObjectDoesNotExist:
             messages.add_message(self.request, messages.ERROR,

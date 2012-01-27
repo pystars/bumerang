@@ -2,6 +2,7 @@
 from django.template import loader, Context
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
+from settings import EMAIL_NOREPLY_ADDR
 
 def send_single_email(template, context, subject, from_email, to_list):
     tpl = loader.get_template(template)
@@ -14,3 +15,19 @@ def send_single_email(template, context, subject, from_email, to_list):
     msg.send()
 
 
+def send_activation_link(link, to_addr):
+    ctx = {
+        'subject': u'Активация аккаунта на сайте probumerang.tv',
+        'header': u'Активация аккаунта на сайте probumerang.tv.',
+        'link': link,
+    }
+    send_single_email("email/activation_email.html", ctx, ctx['subject'],
+                      EMAIL_NOREPLY_ADDR, [to_addr])
+
+def send_activation_success(to_addr):
+    ctx = {
+        'subject': u'Активация на сайте probumerang.tv подтверждена',
+        'header': u'Регистрация успешно подтверждена.'
+        }
+    send_single_email("email/activation_success.html", ctx, ctx['subject'],
+                      EMAIL_NOREPLY_ADDR, [to_addr])

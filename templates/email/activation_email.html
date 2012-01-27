@@ -1,14 +1,9 @@
 {% extends "email/base.html" %}
 
 {% block content %}
-    <table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
-        <tr>
-            <td valign="top">
-                <p style="color: #222222;">{{ text }}</p>
-                <a href="{{ link }}" target ="_blank" title="Ссылка для активации аккаунта" style="color: #005A8C;">{{ link }}</a>
-                <hr />
-                <p class="mobile_link" style="color: #dddddd;">bumerangpro.com</p>
-            </td>
-        </tr>
-    </table>
+    <td>
+        <p style="margin: 4px 0 4px 0;">
+            Ссылка для активации аккаунта: <a href="{{ link }}" target ="_blank" style="color: #005A8C;">{{ link }}</a>
+        </p>
+    </td>
 {% endblock %}
