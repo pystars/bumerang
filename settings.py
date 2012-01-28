@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'apps.advices',
     'apps.video',
     'apps.accounts',
+    'apps.utils'
 
     # external
     'south',
