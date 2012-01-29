@@ -1,10 +1,19 @@
 {% extends "accounts/profile_edit_wrapper.html" %}
-{% load sitetree %}
+{% load sitetree formtags %}
 
 {% block title %}Редактироване профиля{% endblock %}
 
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+{% endblock %}
+
 {% block edit_form %}
+
+{% if form|form_type in 'StudioProfileInfoForm SchoolProfileInfoForm UserProfileInfoForm' %}
     <section class="b-form b-form_smaller b-form_edit">
+{% else %}
+    <section class="b-form b-form_smaller b-form_edit b-form_left">
+{% endif %}
         <form name="editform" action="" method="post">
             {% csrf_token %}
             <div class="b-form__fields">
@@ -24,7 +33,11 @@
                             <span class="f-title">
                                 <span>{{ item.label }}</span>
                             </span>
-                            <span class="f-input">
+                            {% if item|widget_type == 'TextInput' %}
+                                <span class="f-input">
+                            {% endif %}{% if item|widget_type == 'Textarea' %}
+                                <span class="f-textarea">
+                            {% endif %}
                                 {{ item }}
                             </span>
                         </label>

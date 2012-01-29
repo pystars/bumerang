@@ -293,9 +293,8 @@ $(function() {
     * Enter key handler
     * */
     $(document).keypress(function(e) {
-        if(e.keyCode == 13) {
-            console.log('Enter pressed')
-            $('.button-submit').parents('form').submit();
+        if($('.button-login').is(':visible') && e.keyCode == 13) {
+            $('.button-login').parents('form').submit();
             return false;
         }
     });

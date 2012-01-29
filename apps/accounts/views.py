@@ -2,6 +2,8 @@
 from __future__ import division
 import json
 from PIL import Image
+from django.forms.models import modelformset_factory, inlineformset_factory
+from django.views.generic.base import View
 
 try:
     from cStringIO import StringIO
@@ -19,7 +21,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 
 from apps.accounts.forms import *
-from apps.accounts.models import Profile
+from apps.accounts.models import Profile, TeachersRelationship
 from apps.utils.email import send_activation_link, send_activation_success, \
     send_new_password
 
@@ -167,6 +169,79 @@ class ProfileUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user.profile
+
+    def get_success_url(self):
+        return self.request.path
+
+
+class FormsetUpdateView(UpdateView):
+    template_name = "accounts/profile_formset.html"
+    fk_name = None
+    model = None
+    form = None
+
+    def __init__(self, **kwargs):
+        for kw, arg in kwargs.iteritems():
+            setattr(self, kw, arg)
+
+        self.FormSet = inlineformset_factory(
+            parent_model=Profile,
+            model=self.model,
+            form=self.form,
+            fk_name=self.fk_name,
+            extra=1)
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return self.request.path
+
+    def get_context_data(self, **kwargs):
+        context = kwargs
+        context['object'] = self.get_object()
+        context_object_name = self.get_context_object_name(self.get_object())
+        if context_object_name:
+            context[context_object_name] = self.get_object()
+        if not 'formset' in context:
+            context['formset'] = self.FormSet(instance=self.get_object())
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(FormsetUpdateView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        formset = self.FormSet(request.POST, instance=self.get_object())
+        if formset.is_valid():
+            formset.save()
+
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            self.object = self.get_object()
+            return self.render_to_response(self.get_context_data(formset=formset))
+
+
+class TeachersEditView(UpdateView):
+    form_class = TeacherForm
+#    model = Profile
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_form(self, form_class):
+        form = super(TeachersEditView, self).get_form(form_class)
+        form.fields['teachers'].queryset = Profile.objects.exclude(id=self.get_object().id)
+        return form
+
+    def form_valid(self, form):
+#        form.save()
+        for account in form.cleaned_data['teachers']:
+            rel = TeachersRelationship(from_profile=self.get_object(),
+                                       to_profile=account,
+                                       status=1)
+            rel.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return self.request.path

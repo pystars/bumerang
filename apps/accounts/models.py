@@ -22,6 +22,7 @@ def get_mini_avatar_path(instance, filename):
     return 'avatars/{0}/min{1}'.format(
         str(instance.id), os.path.splitext(filename)[1])
 
+
 class Profile(User):
     ACCOUNT_TYPES = (
         (1, u'Независимый участник'),
@@ -46,7 +47,8 @@ class Profile(User):
     description = models.TextField(u'Описание', **nullable)
     views_count = models.IntegerField(u'Просмотров', default=0, editable=False)
     friends_count = models.IntegerField(u'Друзей', default=0, editable=False)
-    activation_code = models.CharField(max_length=32, editable=False, **nullable)
+    activation_code = models.CharField(max_length=32, editable=False,
+                                       **nullable)
 
     '''
     Специфические для разных типов пользователей поля
@@ -59,15 +61,48 @@ class Profile(User):
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 
     # Школа
-    faculties = models.CharField(u'Образование', max_length=255, **nullable)
-    teachers = models.ForeignKey('self', verbose_name=u'Преподаватели',
-        related_name='teachers_set', **nullable)
+    teachers = models.ManyToManyField('self', through='TeachersRelationship',
+                                      verbose_name=u'Преподаватели',
+                                      related_name='teacher_related_to',
+                                      symmetrical=False,
+                                      **nullable)
 
     #Студия
-    services = models.CharField(u'Услуги', max_length=255, **nullable)
-    team = models.ForeignKey('self', verbose_name=u'Команда', **nullable)
+#    services = models.CharField(u'Услуги', max_length=255, **nullable)
+    team = models.ManyToManyField('self', verbose_name=u'Команда', **nullable)
 
     objects = UserManager()
 
     def __unicode__(self):
         return self.email
+
+
+REL_TEACHER_REQUEST = 1
+REL_TEACHER_ACCEPTED = 2
+REL_TEACHER_STATUSES = (
+    (REL_TEACHER_REQUEST, u'Запрос отправлен'),
+    (REL_TEACHER_ACCEPTED, u'Запрос принят'),
+)
+
+
+class TeachersRelationship(models.Model):
+    from_profile = models.ForeignKey(Profile, related_name='from_profile')
+    to_profile = models.ForeignKey(Profile, related_name='to_profile')
+    status = models.IntegerField(choices=REL_TEACHER_STATUSES)
+
+
+class Faculty(models.Model):
+    title = models.CharField(u'Название', max_length=255, blank=False)
+    description = models.TextField(u'Описание', blank=False)
+    owner = models.ForeignKey(Profile, verbose_name=u'Факультеты')
+
+    def __unicode__(self):
+        return self.title
+
+class Service(models.Model):
+    title = models.CharField(u'Название', max_length=255, blank=False)
+    description = models.TextField(u'Описание', blank=False)
+    owner = models.ForeignKey(Profile, verbose_name=u'Услуги')
+
+    def __unicode__(self):
+        return self.title

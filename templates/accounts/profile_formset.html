@@ -1,0 +1,66 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Редактироване профиля{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+    {#    <section class="b-form b-form_smaller b-form_edit">#}
+
+
+    <section class="b-form b-form_smaller b-form_edit b-form_left">
+
+        <form name="editform" action="" method="post">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <h3 class="title">
+                    {% if user.profile.type == 1 %}
+                        {% sitetree_page_title from "user_edit_menu" %}
+                    {% endif %}{% if user.profile.type == 2 %}
+                        {% sitetree_page_title from "school_edit_menu" %}
+                    {% endif %}{% if user.profile.type == 3 %}
+                        {% sitetree_page_title from "studio_edit_menu" %}
+                    {% endif %}
+                </h3>
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                    <fieldset>
+                    {% for item in form %}
+                        <div class="b-form__field">
+                            <label>
+                                {% if item|widget_type == 'TextInput' %}
+                                    <span class="f-title"><span>{{ item.label }}</span></span>
+                                    <span class="f-input">{{ item }}</span>
+                                {% endif %}{% if item|widget_type == 'Textarea' %}
+                                    <span class="f-title"><span>{{ item.label }}</span></span>
+                                    <span class="f-textarea">{{ item }}</span>
+                                {% endif %}{% if item|widget_type == 'CheckboxInput' %}
+                                    <span class="f-input"><span>{{ item.label }}</span>{{ item }}</span>
+                                {% endif %}
+
+                                {% if item|widget_type == 'HiddenInput' %}
+                                    {{ item }}
+                                {% endif %}
+                            </label>
+                        {% if item.errors %}
+                            <div class="f-err" style="margin-left: 0;"><span>{{ item.errors.0 }}</span></div>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+                    </fieldset>
+
+{#                    {{ form.as_p }}#}
+                {% endfor %}
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+    </section>
+{% endblock %}
+

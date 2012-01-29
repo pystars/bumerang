@@ -8,7 +8,6 @@
             "friends_count": 0,
             "title": "Jeffree Star",
             "nickname": null,
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "avatars/5/min_1.jpg",
@@ -17,12 +16,9 @@
             "avatar": "avatars/5/full.jpg",
             "groups": [],
             "gender": null,
-            "services": "\u041f\u0440\u043e\u0444\u0435\u0441\u0441\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u044a\u0451\u043c\u043a\u0430",
             "avatar_coords": "{\"x\":25,\"y\":0,\"x2\":175,\"y2\":150,\"w\":150,\"h\":150}",
             "education": null,
             "type": 3,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     },
@@ -35,7 +31,6 @@
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "",
@@ -44,12 +39,9 @@
             "avatar": "",
             "groups": [],
             "gender": null,
-            "services": null,
             "avatar_coords": null,
             "education": null,
             "type": 1,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     },
@@ -62,7 +54,6 @@
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "",
@@ -71,12 +62,9 @@
             "avatar": "",
             "groups": [],
             "gender": null,
-            "services": null,
             "avatar_coords": null,
             "education": null,
             "type": 2,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     },
@@ -89,7 +77,6 @@
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "",
@@ -98,12 +85,9 @@
             "avatar": "",
             "groups": [],
             "gender": null,
-            "services": null,
             "avatar_coords": null,
             "education": null,
             "type": 1,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     },
@@ -116,7 +100,6 @@
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "",
@@ -125,12 +108,9 @@
             "avatar": "",
             "groups": [],
             "gender": null,
-            "services": null,
             "avatar_coords": null,
             "education": null,
             "type": 1,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     },
@@ -143,7 +123,6 @@
             "friends_count": 0,
             "title": "\u0421\u0435\u043c\u0435\u043d \u0421\u0435\u043c\u0435\u043d\u044b\u0447",
             "nickname": "",
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "avatars/10/min_1.jpg",
@@ -152,12 +131,9 @@
             "avatar": "avatars/10/full.jpg",
             "groups": [],
             "gender": null,
-            "services": null,
             "avatar_coords": "{\"x\":0,\"y\":0,\"x2\":283,\"y2\":283,\"w\":283,\"h\":283}",
             "education": null,
             "type": 1,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     },
@@ -170,7 +146,6 @@
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "team": null,
             "work": null,
             "user_permissions": [],
             "min_avatar": "",
@@ -179,12 +154,9 @@
             "avatar": "",
             "groups": [],
             "gender": null,
-            "services": null,
             "avatar_coords": null,
             "education": null,
             "type": 1,
-            "teachers": null,
-            "faculties": null,
             "views_count": 0
         }
     }

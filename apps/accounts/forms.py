@@ -4,10 +4,51 @@ import random
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import get_hexdigest, User
+from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
-from apps.accounts.models import Profile
+from apps.accounts.models import Profile, Faculty, Service
+
+
+class InfoEditFormsMixin(forms.ModelForm):
+    '''
+    Миксин, добавляющий стилизацию полей формы
+    '''
+    def __init__(self, *args, **kwargs):
+        super(InfoEditFormsMixin, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if (field.widget.__class__ == forms.widgets.TextInput
+                or field.widget.__class__ == forms.widgets.PasswordInput):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide'
+                else:
+                    field.widget.attrs.update({'class': 'wide'})
+            if (field.widget.__class__ == forms.widgets.Textarea):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide wide_about'
+                else:
+                    field.widget.attrs.update({'class': 'wide wide_about'})
+
+
+class EditFormsMixin(forms.ModelForm):
+    '''
+    Миксин, добавляющий стилизацию полей формы
+    '''
+    def __init__(self, *args, **kwargs):
+        super(EditFormsMixin, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if (field.widget.__class__ == forms.widgets.TextInput
+                or field.widget.__class__ == forms.widgets.PasswordInput):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide'
+                else:
+                    field.widget.attrs.update({'class': 'wide'})
+            if (field.widget.__class__ == forms.widgets.Textarea):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide wide_descr2'
+                else:
+                    field.widget.attrs.update({'class': 'wide wide_descr2'})
 
 
 class RegistrationForm(forms.ModelForm):
@@ -79,7 +120,7 @@ class PasswordRecoveryForm(forms.Form):
             raise ValidationError(u'Пользователь с таким адресом не существует')
 
 
-class ProfileInfoEditForm(forms.ModelForm):
+class ProfileInfoEditForm(InfoEditFormsMixin, forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
@@ -132,7 +173,7 @@ class UserProfileInfoForm(forms.ModelForm):
             )
 
 
-class SchoolProfileInfoForm(forms.ModelForm):
+class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
     '''
     Форма редактирования профиля школы
     '''
@@ -143,25 +184,45 @@ class SchoolProfileInfoForm(forms.ModelForm):
         fields = ('title', 'place', 'description',)
 
 
-class SchoolProfileFacultiesForm(forms.ModelForm):
+class FacultyForm(EditFormsMixin, forms.ModelForm):
     '''
-    Форма редактирования факультетов школы
+    Форма редактирования одного факультета
     '''
     class Meta:
+        model = Faculty
+        fields = ('title', 'description')
+
+
+class ServiceForm(EditFormsMixin, forms.ModelForm):
+    '''
+    Форма редактирования одной услуги
+    '''
+    class Meta:
+        model = Service
+        fields = ('title', 'description')
+
+
+class TeacherForm(forms.ModelForm):
+    '''
+    Форма редактирования одного преподавателя
+    '''
+    teachers = forms.ModelMultipleChoiceField(queryset=Profile.objects.all())
+    class Meta:
         model = Profile
-        fields = ('faculties',)
+        fields = ('teachers',)
 
 
 class SchoolProfileTeachersForm(forms.ModelForm):
     '''
     Форма редактирования преподавателей школы
+    Удалить
     '''
     class Meta:
         model = Profile
         fields = ('teachers',)
 
 
-class StudioProfileInfoForm(forms.ModelForm):
+class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
     '''
     Форма редактирования профиля студии
     '''
@@ -172,13 +233,13 @@ class StudioProfileInfoForm(forms.ModelForm):
         fields = ('title', 'place', 'description', )
 
 
-class StudioProfileServicesForm(forms.ModelForm):
-    '''
-    Форма редактирования услуг студии
-    '''
-    class Meta:
-        model = Profile
-        fields = ('services',)
+#class StudioProfileServicesForm(forms.ModelForm):
+#    '''
+#    Форма редактирования услуг студии
+#    '''
+#    class Meta:
+#        model = Profile
+#        fields = ('services',)
 
 
 class StudioProfileTeamForm(forms.ModelForm):

@@ -143,7 +143,7 @@ TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
 TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
 
 TINYMCE_PLUGINS = [
-#    'safari',
+    'safari',
     'table',
     'advlink',
     'advimage',

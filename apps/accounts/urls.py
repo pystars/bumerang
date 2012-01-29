@@ -3,12 +3,13 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from apps.accounts.forms import (ProfileResumeEditForm,
-     SchoolProfileFacultiesForm, SchoolProfileTeachersForm,
-     StudioProfileTeamForm, StudioProfileServicesForm)
+     SchoolProfileTeachersForm,
+     StudioProfileTeamForm, FacultyForm, TeacherForm, ServiceForm)
+from apps.accounts.models import Faculty, Profile, Service
 from apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
-     ProfileVideoView, AccountActivationView)
+     AccountActivationView, FormsetUpdateView, TeachersEditView)
 
 
 urlpatterns = patterns('',
@@ -58,14 +59,25 @@ urlpatterns = patterns('',
         login_required(ProfileSettingsEditView.as_view()),
         name='profile-edit-settings'
     ),
+#    url(r'^edit-faculties/$',
+#        login_required(ProfileUpdateView.as_view(
+#            form_class=SchoolProfileFacultiesForm)),
+#        name='profile-edit-faculties'
+#    ),
     url(r'^edit-faculties/$',
-        login_required(ProfileUpdateView.as_view(
-            form_class=SchoolProfileFacultiesForm)),
+        login_required(FormsetUpdateView.as_view(
+            model=Faculty,
+            form=FacultyForm,
+        )),
         name='profile-edit-faculties'
     ),
+#    url(r'^edit-teachers/$',
+#        login_required(ProfileUpdateView.as_view(
+#            form_class=SchoolProfileTeachersForm)),
+#        name='profile-edit-teachers'
+#    ),
     url(r'^edit-teachers/$',
-        login_required(ProfileUpdateView.as_view(
-            form_class=SchoolProfileTeachersForm)),
+        login_required(TeachersEditView.as_view()),
         name='profile-edit-teachers'
     ),
     url(r'^edit-team/$',
@@ -73,9 +85,16 @@ urlpatterns = patterns('',
             form_class=StudioProfileTeamForm)),
         name='profile-edit-team'
     ),
+#    url(r'^edit-services/$',
+#        login_required(ProfileUpdateView.as_view(
+#            form_class=StudioProfileServicesForm)),
+#        name='profile-edit-services'
+#    ),
     url(r'^edit-services/$',
-        login_required(ProfileUpdateView.as_view(
-            form_class=StudioProfileServicesForm)),
+        login_required(FormsetUpdateView.as_view(
+            model=Service,
+            form=ServiceForm,
+        )),
         name='profile-edit-services'
     ),
     url(r'^(?P<pk>[\d]+)/$',

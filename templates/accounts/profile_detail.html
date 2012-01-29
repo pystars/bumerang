@@ -61,7 +61,7 @@
         </header>
     </section>
 
-    {% if object.work or object.education or object.interests or object.services or object.team %}
+    {% if object.work or object.education or object.interests or object.service_set.count or object.team or object.faculty_set.count %}
     <div class="tab-container js-toggle2-container js-toggle2-container_resume">
         <div class="b-hr"><hr /></div>
         <div class="tab-block js-toggle2-block">
@@ -93,6 +93,37 @@
                     </dd>
                 </dl>
                 {% endif %}
+
+                {# Услуги #}
+                {% if object.service_set.count %}
+                    <h2>Услуги</h2>
+                    {% for service in object.service_set.all %}
+                        <dl>
+                            <dt>
+                                {{ service.title }}
+                            </dt>
+                            <dd>
+                                {{ service.description }}
+                            </dd>
+                        </dl>
+                    {% endfor %}
+                {% endif %}
+
+                {# Факультеты и курсы #}
+                {% if object.faculty_set.count %}
+                    <h2>Факультеты и курсы</h2>
+                    {% for faculty in object.faculty_set.all %}
+                    <dl>
+                        <dt>
+                            {{ faculty.title }}
+                        </dt>
+                        <dd>
+                            {{ faculty.description }}
+                        </dd>
+                    </dl>
+                    {% endfor %}
+                {% endif %}
+
                 {% if object.team %}
                     <h2>Команда</h2>
                     <dl>

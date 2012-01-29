@@ -8,6 +8,18 @@ from local_settings import get_sudo_pwd
 env.hosts = [u"web@62.76.179.205:22"]
 env.passwords = { u"web@62.76.179.205:22" : get_sudo_pwd() } 
 
+def syncdb():
+	'''
+	Makes local syncdb and load fixtures
+	'''
+	migrations = ['sitetree',]
+	local('rm bumerang.db')
+	local('python ./manage.py syncdb --noinput')
+	for migration in migrations:
+		 local('python ./manage.py migrate {0}'.format(migration))
+
+	local('python ./manage.py loaddata fixtures/*.json')
+
 def update(branch):
 	'''
 	 Makes git pull
