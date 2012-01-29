@@ -36,7 +36,9 @@ USE_L10N = True
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
 MEDIA_URL = 'http://62.76.179.205/media/'
-if DEBUG:
+
+from local_settings import LOCALHOST
+if LOCALHOST:
     MEDIA_URL = 'http://localhost:8000/media/'
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
