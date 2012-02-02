@@ -129,7 +129,7 @@ class UsersListView(ListView):
     queryset = Profile.objects.filter(
         is_active=True,
         title__isnull=False
-    )
+    ).order_by('-id')
     paginate_by = 25
 
 
