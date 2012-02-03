@@ -3,6 +3,8 @@ from __future__ import division
 import json
 from PIL import Image
 from django.forms.models import modelformset_factory, inlineformset_factory
+from django.template.response import TemplateResponse
+from django.utils import simplejson
 from django.views.generic.base import View
 
 try:
@@ -14,7 +16,7 @@ from django.contrib.sites.models import Site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
@@ -365,3 +367,50 @@ class ProfileSettingsEditView(UpdateView):
         messages.add_message(self.request, messages.ERROR, message)
         return self.render_to_response(
             self.get_context_data(**{form_name:form}))
+
+
+
+import simplejson
+def autocomplete_test(request):
+    if 'query' in request.GET:
+        queryset = Profile.objects.filter(email__startswith=request.GET['query'],
+                                          type=1,
+                                          title__isnull=False,
+                                          is_active=True).values('id', 'email', 'title')[:10]
+
+        if queryset:
+            rsp = {
+                'query': request.GET['query'],
+                'suggestions': [i['email'] for i in queryset],
+                'data': [i['id'] for i in queryset],
+            }
+        else:
+            rsp = {
+                'query': request.GET['query'],
+                'suggestions': [u'Пользователи не найдены'],
+                'fail': True
+            }
+
+
+
+        return HttpResponse(simplejson.dumps(rsp), mimetype='application/json', status=200)
+
+    if 'select_query' in request.GET:
+
+        user = Profile.objects.get(email=request.GET['select_query'],
+                                   type=1,
+                                   title__isnull=False,
+                                   is_active=True)
+
+        if user:
+            rsp = {
+                'id': user.id,
+                'title': user.title,
+                'avatar': user.avatar.url
+            }
+
+            return HttpResponse(simplejson.dumps(rsp), mimetype='application/json', status=200)
+
+        return HttpResponse(json.dumps({'fuck': 'you'},ensure_ascii=False), mimetype='application/json', status=200)
+
+    return TemplateResponse(request, 'accounts/autocomplete_test.html', {})

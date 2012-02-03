@@ -12,12 +12,8 @@ def syncdb():
 	'''
 	Makes local syncdb and load fixtures
 	'''
-	migrations = ['sitetree',]
-	local('rm bumerang.db')
-	local('python ./manage.py syncdb --noinput')
-	for migration in migrations:
-		 local('python ./manage.py migrate {0}'.format(migration))
-
+	local('python ./manage.py reset_db --noinput --router=default')
+	local('python ./manage.py syncdb --noinput --migrate')
 	local('python ./manage.py loaddata fixtures/*.json')
 
 def update(branch):

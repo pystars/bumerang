@@ -19,7 +19,8 @@ class InfoEditFormsMixin(forms.ModelForm):
         super(InfoEditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
-                or field.widget.__class__ == forms.widgets.PasswordInput):
+                or field.widget.__class__ == forms.widgets.PasswordInput
+                or field.widget.__class__ == forms.widgets.DateInput):
                 if field.widget.attrs.has_key('class'):
                     field.widget.attrs['class'] += ' wide'
                 else:
@@ -153,7 +154,7 @@ class ProfileEmailEditForm(forms.ModelForm):
         fields = ('email',)
 
 
-class UserProfileInfoForm(forms.ModelForm):
+class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
     '''
     Форма редактирования профиля пользователя
     '''

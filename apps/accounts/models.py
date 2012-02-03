@@ -35,7 +35,8 @@ class Profile(User):
         (2, u'Женский'),
     )
 
-    type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1)
+    type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1,
+                               db_index=True)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
     avatar = models.ImageField(u'Фотография профиля',
         upload_to=get_avatar_path, **nullable)
@@ -94,7 +95,7 @@ class TeachersRelationship(models.Model):
 class Faculty(models.Model):
     title = models.CharField(u'Название', max_length=255, blank=False)
     description = models.TextField(u'Описание', blank=False)
-    owner = models.ForeignKey(Profile, verbose_name=u'Факультеты')
+    owner = models.ForeignKey(Profile, verbose_name=u'Факультеты',)
 
     def __unicode__(self):
         return self.title

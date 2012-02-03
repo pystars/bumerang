@@ -88,6 +88,9 @@ MIDDLEWARE_CLASSES = (
     'apps.accounts.middleware.KeepLoggedInMiddleware',
 )
 
+if DEBUG:
+    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('apps.utils.middleware.ProfilerMiddleware',)
+
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Keep me logged settings
@@ -199,5 +202,7 @@ if DEBUG:
 
 EMAIL_NOREPLY_ADDR = 'noreply@bumerangpro.com'
 
-from local_settings import (EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER,
-                            EMAIL_USE_TLS)
+#from local_settings import (EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER,
+#                            EMAIL_USE_TLS)
+
+from local_settings import *

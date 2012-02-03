@@ -9,7 +9,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 class Advice(MPTTModel):
     name = models.CharField(max_length=255, unique=True)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children')
     description = models.TextField(verbose_name=u'Описание раздела', default=u'Введите описание')
     # Slug of node's name
     slug = models.SlugField()

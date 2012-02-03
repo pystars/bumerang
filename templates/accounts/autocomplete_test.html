@@ -1,0 +1,53 @@
+{% extends "video/video_wrapper.html" %}
+{% load sitetree videotags truncatechars %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}j/autocomplete/styles.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/autocomplete/jquery.autocomplete-min.js"></script>
+{% endblock %}
+
+{% block title %}Тест автокомплита{% endblock %}
+
+{% block left_column %}
+    <input type="text" name="q" id="query" class="wide" />
+
+    <div id="userslist"></div>
+
+    <script type="text/javascript">
+        $('#query').autocomplete({
+            serviceUrl:'/accounts/autocomplete/',
+            minChars:2,
+            delimiter: /(,|;)\s*/, // regex or character
+            maxHeight:400,
+            width:300,
+            zIndex: 9999,
+            deferRequestBy: 0, //miliseconds
+//            params: { country:'Yes' }, //aditional parameters
+            noCache: false, //default is false, set to true to disable caching
+            // callback function:
+            onSelect: function(value, data) {
+                $.ajax({
+                    url: '/accounts/autocomplete/',
+                    method: 'GET',
+                    data: {
+                        select_query: value
+                    },
+                    success: function(response) {
+                        $('#userslist').append(
+                                $("<h2>"+response.title+"</h2>")
+                        ).append(
+                            $('<img />').attr({
+                                src: response.avatar
+                            }).css('max-width', '200px')
+                        )
+                    }
+                })
+            }
+            // local autosugest options:
+//            lookup: ['January', 'February', 'March', 'April', 'May'] //local lookup values
+        });
+    </script>
+{% endblock %}

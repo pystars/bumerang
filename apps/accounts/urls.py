@@ -9,7 +9,7 @@ from apps.accounts.models import Faculty, Profile, Service
 from apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
-     AccountActivationView, FormsetUpdateView, TeachersEditView)
+     AccountActivationView, FormsetUpdateView, TeachersEditView, autocomplete_test)
 
 
 urlpatterns = patterns('',
@@ -17,6 +17,14 @@ urlpatterns = patterns('',
         UsersListView.as_view(),
         name="users-list"
     ),
+
+
+    url(r'^autocomplete/$',
+        autocomplete_test,
+        name='autocomplete'
+    ),
+
+
     url(r'^register/$',
         RegistrationFormView.as_view(),
         name='registration'
