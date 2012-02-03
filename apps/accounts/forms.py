@@ -144,7 +144,8 @@ class ProfileAvatarEditForm(forms.ModelForm):
 class ProfileResumeEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('work', 'education', 'interests',)
+        fields = ('work_type', 'work_company', 'schools', 'courses',
+            'hobby', 'fav_movies', 'fav_music', 'fav_books')
 
 
 class ProfileEmailEditForm(forms.ModelForm):

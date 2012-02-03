@@ -55,9 +55,18 @@ class Profile(User):
     Специфические для разных типов пользователей поля
     '''
     # Независимый участник
-    work = models.TextField(u'Работа и карьера', **nullable)
-    education = models.TextField(u'Образование', **nullable)
-    interests = models.TextField(u'Интересы', **nullable)
+#    work = models.TextField(u'Работа и карьера', **nullable)
+#    education = models.TextField(u'Образование', **nullable)
+#    interests = models.TextField(u'Интересы', **nullable)
+    work_type = models.TextField(u'Род деятельности', **nullable)
+    work_company = models.TextField(u'Компания', **nullable)
+    schools = models.TextField(u'Учебные заведения, специальность', **nullable)
+    courses = models.TextField(u'Учебные курсы, сертификаты', **nullable)
+    hobby = models.TextField(u'Увлечения и хобби', **nullable)
+    fav_movies = models.TextField(u'Любимые фильмы и передачи', **nullable)
+    fav_music = models.TextField(u'Любимая музыка', **nullable)
+    fav_books = models.TextField(u'Любимые книги', **nullable)
+
     nickname = models.CharField(u'Никнейм', max_length=100, **nullable)
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 

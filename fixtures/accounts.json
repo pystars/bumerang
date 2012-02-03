@@ -3,12 +3,10 @@
         "pk": 5,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": "I'll fuckin kill you :3",
             "friends_count": 0,
             "title": "Jeffree Star",
             "nickname": null,
-            "work": null,
             "user_permissions": [],
             "min_avatar": "avatars/5/min_1.jpg",
             "birthday": null,
@@ -17,7 +15,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": "{\"x\":25,\"y\":0,\"x2\":175,\"y2\":150,\"w\":150,\"h\":150}",
-            "education": null,
             "type": 3,
             "views_count": 0
         }
@@ -26,12 +23,10 @@
         "pk": 6,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": null,
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "work": null,
             "user_permissions": [],
             "min_avatar": "",
             "birthday": null,
@@ -40,7 +35,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": null,
-            "education": null,
             "type": 1,
             "views_count": 0
         }
@@ -49,12 +43,10 @@
         "pk": 7,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": null,
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "work": null,
             "user_permissions": [],
             "min_avatar": "",
             "birthday": null,
@@ -63,7 +55,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": null,
-            "education": null,
             "type": 2,
             "views_count": 0
         }
@@ -72,12 +63,10 @@
         "pk": 8,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": null,
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "work": null,
             "user_permissions": [],
             "min_avatar": "",
             "birthday": null,
@@ -86,7 +75,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": null,
-            "education": null,
             "type": 1,
             "views_count": 0
         }
@@ -95,12 +83,10 @@
         "pk": 9,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": null,
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "work": null,
             "user_permissions": [],
             "min_avatar": "",
             "birthday": null,
@@ -109,7 +95,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": null,
-            "education": null,
             "type": 1,
             "views_count": 0
         }
@@ -118,12 +103,10 @@
         "pk": 10,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": "",
             "friends_count": 0,
             "title": "\u0421\u0435\u043c\u0435\u043d \u0421\u0435\u043c\u0435\u043d\u044b\u0447",
             "nickname": "",
-            "work": null,
             "user_permissions": [],
             "min_avatar": "avatars/10/min_1.jpg",
             "birthday": null,
@@ -132,7 +115,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": "{\"x\":0,\"y\":0,\"x2\":283,\"y2\":283,\"w\":283,\"h\":283}",
-            "education": null,
             "type": 1,
             "views_count": 0
         }
@@ -141,12 +123,10 @@
         "pk": 11,
         "model": "accounts.profile",
         "fields": {
-            "interests": null,
             "description": null,
             "friends_count": 0,
             "title": null,
             "nickname": null,
-            "work": null,
             "user_permissions": [],
             "min_avatar": "",
             "birthday": null,
@@ -155,7 +135,6 @@
             "groups": [],
             "gender": null,
             "avatar_coords": null,
-            "education": null,
             "type": 1,
             "views_count": 0
         }
