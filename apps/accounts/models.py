@@ -86,6 +86,53 @@ class Profile(User):
     def __unicode__(self):
         return self.email
 
+    def get_field_dict(self, field):
+        '''
+        Принимает строку названия поля и возвращает его лейбл и значение
+        '''
+        value = self.__dict__[field]
+        if value:
+            return { 'name': self._meta.get_field(field).verbose_name,
+                     'value': value }
+        else:
+            return None
+
+    def get_fields_group(self, label, field_names):
+        '''
+        Принимает лейбл и список полей для группы полей, проверяет,
+        заполнено ли хоть одно поле, и, если да, возвращает словарь из
+        лейбла группы и массива заполненных полей
+        '''
+        values = map(lambda x: self.get_field_dict(x), field_names)
+        filtered_or_empty = filter(lambda a: True if a else False, values)
+
+        return { 'name': label,
+                 'values': filtered_or_empty }
+
+    def get_user_profile_resume(self):
+        values = [self.get_fields_group(u'Работа и карьера',
+                      ['work_type', 'work_company']),
+                  self.get_fields_group(u'Образование',
+                      ['schools', 'courses']),
+                  self.get_fields_group(u'Интересы',
+                      ['hobby', 'fav_movies', 'fav_music', 'fav_books']),
+                  ]
+
+        return filter(lambda a: True if a else False, values)
+
+    def get_studio_profile_resume(self):
+        result = []
+
+        services_qs = self.service_set.all().order_by('id')
+        services_list = list([({'name': name.title,
+                                'value': name.description}) for name
+                                                            in services_qs])
+
+        result.append({'name': u'Услуги',
+                       'values': filter(lambda a: True if a
+                                                else False, services_list)})
+
+        return result
 
 REL_TEACHER_REQUEST = 1
 REL_TEACHER_ACCEPTED = 2
