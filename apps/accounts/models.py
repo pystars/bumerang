@@ -132,8 +132,7 @@ class Profile(User):
                                 'value': name.description}) for name
                                                             in services_qs])
 
-        item_values = filter(lambda a: True if a['values']
-                                            else False, services_list)
+        item_values = filter(lambda a: True if a else False, services_list)
 
         if item_values:
             result.append({'name': u'Услуги',
