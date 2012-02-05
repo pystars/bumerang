@@ -116,13 +116,14 @@ class ProfileView(DetailView):
             return self.request.user.profile
         return super(ProfileView, self).get_object(queryset=queryset)
 
-#    def get(self, request, **kwargs):
-#        response = super(VideoDetailView, self).get(request, **kwargs)
-#        Video.objects.filter(pk=kwargs['pk']).update(views_count=self.object.views_count + 1)
-#        return response
-
     def get(self, request, **kwargs):
-        return super(ProfileView, self).get(request, **kwargs)
+        response = super(ProfileView, self).get(request, **kwargs)
+        if self.get_object().id == request.user.profile.id:
+            return response
+        else:
+            Profile.objects.filter(pk=self.get_object().id).update(
+                views_count=self.get_object().views_count + 1)
+        return response
 
 class ProfileVideoView(DetailView):
     model = Profile
