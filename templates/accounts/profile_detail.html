@@ -16,7 +16,13 @@
                     {% if object.min_avatar %}
                         <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
                     {% else %}
-                        <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
+                        {% if object.type == 1 %}
+                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
+                        {% endif %}{% if object.type == 2 %}
+                            <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="" />
+                        {% endif %}{% if object.type == 3 %}
+                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
+                        {% endif %}
                     {% endif %}
                     <i class="b-ava__sh"></i>
                 </div>
