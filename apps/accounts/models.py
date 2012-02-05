@@ -81,6 +81,10 @@ class Profile(User):
 #    services = models.CharField(u'Услуги', max_length=255, **nullable)
     team = models.ManyToManyField('self', verbose_name=u'Команда', **nullable)
 
+    views_count = models.IntegerField(u'Количество просмотров профиля',
+                                      default=0,
+                                      editable=False, **nullable)
+
     objects = UserManager()
 
     def __unicode__(self):
@@ -118,7 +122,7 @@ class Profile(User):
                       ['hobby', 'fav_movies', 'fav_music', 'fav_books']),
                   ]
 
-        return filter(lambda a: True if a else False, values)
+        return filter(lambda a: True if a['values'] else False, values)
 
     def get_studio_profile_resume(self):
         result = []
@@ -128,9 +132,12 @@ class Profile(User):
                                 'value': name.description}) for name
                                                             in services_qs])
 
-        result.append({'name': u'Услуги',
-                       'values': filter(lambda a: True if a
-                                                else False, services_list)})
+        item_values = filter(lambda a: True if a['values']
+                                            else False, services_list)
+
+        if item_values:
+            result.append({'name': u'Услуги',
+                           'values': item_values})
 
         return result
 
