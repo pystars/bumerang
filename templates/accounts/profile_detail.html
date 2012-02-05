@@ -37,8 +37,12 @@
                 {% endif %}
 
                 {% if not object.title %}
-                    Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
-                    Заполните его в разделе &laquo;<a href="{% url profile-edit %}">редактирования</a>&raquo;
+                    {% if object.id == request.user.profile_id %}
+                        Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
+                        Заполните его в разделе &laquo;<a href="{% url profile-edit %}">редактирования</a>&raquo;
+                    {% else %}
+                        Пользователь ещё не заполнил свой профиль
+                    {% endif %}
                 {% endif %}
 
                 <ul class="b-opts b-opts_prof1">

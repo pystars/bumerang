@@ -103,7 +103,9 @@ class PasswordRecoveryView(FormView):
         profile.password = new_password_hash
         profile.save()
 
-        send_new_password(new_password, receiver_email)
+#        send_new_password(new_password, receiver_email)
+        from apps.utils.tasks import send_new_password_task
+        send_new_password_task.delay(new_password, receiver_email)
 
         return HttpResponseRedirect(self.get_success_url())
 

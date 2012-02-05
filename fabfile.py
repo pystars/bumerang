@@ -16,6 +16,12 @@ def syncdb():
 	local('python ./manage.py syncdb --noinput --migrate')
 	local('python ./manage.py loaddata fixtures/*.json')
 
+def celeryd():
+    '''
+    Runs celeryd process on local machine
+    '''
+    local('python ./manage.py celeryd -v 0')
+
 def update(branch):
 	'''
 	 Makes git pull

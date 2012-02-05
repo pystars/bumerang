@@ -142,6 +142,8 @@ INSTALLED_APPS = (
     'south',
     'mptt',
     'tinymce',
+    'djcelery',
+    'djkombu',
 )
 
 TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
@@ -206,3 +208,9 @@ EMAIL_NOREPLY_ADDR = 'noreply@bumerangpro.com'
 #                            EMAIL_USE_TLS)
 
 from local_settings import *
+
+import djcelery
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+BROKER_POOL_LIMIT = 10
+djcelery.setup_loader()
