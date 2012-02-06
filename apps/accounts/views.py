@@ -98,7 +98,7 @@ class AccountActivationView(TemplateView):
         try:
             user = Profile.objects.get(activation_code=kwargs['code'])
 
-            if user.activation_code_expire > datetime.now():
+            if user.activation_code_expire < datetime.now():
                 user.delete()
 
                 notify_error(
