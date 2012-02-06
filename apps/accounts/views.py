@@ -2,6 +2,7 @@
 from __future__ import division
 import json
 from PIL import Image
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import modelformset_factory, inlineformset_factory
 from django.template.response import TemplateResponse
 from django.utils import simplejson
@@ -24,8 +25,23 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile, TeachersRelationship
-from apps.utils.email import send_activation_link, send_activation_success, \
-    send_new_password
+from apps.utils.email import send_activation_link, send_activation_success
+from apps.utils.tasks import send_new_password_task
+
+def notify_success(request, message):
+    '''
+    Выводит уведомление об успешном сохранении информации профиля
+    '''
+    messages.add_message(request, messages.SUCCESS, message)
+    return
+
+def notify_error(request, message):
+    '''
+    Выводит уведомление об ошибке при сохранении информации профиля
+    '''
+    messages.add_message(request, messages.ERROR, message)
+    return
+
 
 class RegistrationFormView(CreateView):
     form_class = RegistrationForm
@@ -49,18 +65,29 @@ class RegistrationFormView(CreateView):
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
 
-        # TODO: перевести на сигналы + celery
+        # TODO: перевести на celery
         send_activation_link(full_activation_url, form.cleaned_data['email'])
 
         self.object.save()
 
-        messages.add_message(self.request, messages.SUCCESS,
-            u'Регистрация прошла успешно. Проверьте почту и активируйте аккаунт.')
+        notify_success(
+            self.request,
+            message=u'''
+            Регистрация прошла успешно.
+            Проверьте вашу почту и активируйте аккаунт.
+            '''
+        )
+
         return super(RegistrationFormView, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR,
-            u'Ошибка при регистрации')
+        notify_error(
+            self.request,
+            message=u'''
+            При регистрации произошла ошибка.
+            '''
+        )
+
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -74,12 +101,28 @@ class AccountActivationView(TemplateView):
             messages.add_message(self.request, messages.SUCCESS,
                                  u'Аккаунт успешно активирован')
 
+            notify_success(
+                self.request,
+                message=u'''
+                Ваш аккаунт успешно активирован.
+                Теперь вы можете <a href="%s">войти</a> в систему.
+                ''' % reverse('login')
+            )
+
             send_activation_success(user.email)
 
             return HttpResponseRedirect('/accounts/success_activation/')
+
         except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.ERROR,
-                                 u'Ошибка при активации аккаунта')
+            notify_error(
+                self.request,
+                message=u'''
+                При активации аккаунта произошла ошибка.
+                Возможно, аккаунт уже активирован,
+                либо срок действия ссылки истёк.
+                '''
+            )
+
             return HttpResponseRedirect('/accounts/fail_activation/')
 
 
@@ -88,7 +131,6 @@ class PasswordRecoveryView(FormView):
     template_name = "accounts/password_recovery.html"
 
     def get_success_url(self):
-        # TODO: Сделать страницу для редиректа
         return '/'
 
     def form_valid(self, form):
@@ -103,9 +145,15 @@ class PasswordRecoveryView(FormView):
         profile.password = new_password_hash
         profile.save()
 
-#        send_new_password(new_password, receiver_email)
-        from apps.utils.tasks import send_new_password_task
         send_new_password_task.delay(new_password, receiver_email)
+        notify_success(
+            self.request,
+            message=u'''
+                Ваш новый пароль был отправлен на указанный вами e-mail.
+                После авторизации вы сможете его сменить в разделе
+                редактирования профиля.
+                '''
+        )
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -166,13 +214,23 @@ class ProfileInfoEditView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        messages.add_message(self.request, messages.SUCCESS,
-            u'Профиль успешно обновлен')
+        notify_success(
+            self.request,
+            message=u'''
+                Данные профиля успешно обновлены.
+                '''
+        )
+
         return super(ProfileInfoEditView, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR,
-            u'Ошибка при обновлении профиля')
+        notify_error(
+            self.request,
+            message=u'''
+                При обновлении данных профиля произошла ошибка.
+                '''
+        )
+
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -225,12 +283,26 @@ class FormsetUpdateView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         formset = self.FormSet(request.POST, instance=self.get_object())
+
         if formset.is_valid():
             formset.save()
+            notify_success(
+                self.request,
+                message=u'''
+                Данные профиля успешно обновлены.
+                '''
+            )
 
             return HttpResponseRedirect(self.get_success_url())
         else:
             self.object = self.get_object()
+            notify_error(
+                self.request,
+                message=u'''
+                При обновлении данных профиля произошла ошибка.
+                '''
+            )
+
             return self.render_to_response(self.get_context_data(formset=formset))
 
 
@@ -319,11 +391,26 @@ class ProfileAvatarEditView(UpdateView):
 
         self.object.min_avatar.save('min.jpg', suf, save=False)
         form.save()
-        messages.add_message(self.request, messages.SUCCESS, u'Фотография профиля успешно обновлена')
+
+        notify_success(
+            self.request,
+            message=u'''
+            Фотография профиля успешно обновлена.
+            '''
+        )
+
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR, u'Ошибка при обновлении фотографии профиля')
+        notify_error(
+            self.request,
+            message=u'''
+            Произошла ошибка при обновлении фотографии профиля.
+            Возможно, файл, который вы загрузили, поврежден
+            или не является изображением.
+            '''
+        )
+
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -361,66 +448,23 @@ class ProfileSettingsEditView(UpdateView):
         return form_class(**kwargs)
 
     def form_valid(self, form):
-        message = u'Почтовый адрес успешно изменен'
+        message = u'Почтовый адрес успешно изменен.'
         if self.password_changing():
-            message = u'Пароль успешно изменен'
-        messages.add_message(self.request, messages.SUCCESS, message)
+            message = u'Пароль успешно изменен.'
+
+        notify_success(self.request, message=message)
+
         self.object = form.save()
         return self.render_to_response(self.get_context_data())
 
     def form_invalid(self, form):
-        message = u'Ошибка при изменении почтового адреса'
+        message = u'Ошибка при изменении почтового адреса.'
         form_name = 'email_form'
         if self.password_changing():
-            message = u'Ошибка при и зменении пароля'
+            message = u'Ошибка при изменении пароля.'
             form_name = 'pwd_form'
-        messages.add_message(self.request, messages.ERROR, message)
+
+        notify_error(self.request, message=message)
+
         return self.render_to_response(
             self.get_context_data(**{form_name:form}))
-
-
-
-import simplejson
-def autocomplete_test(request):
-    if 'query' in request.GET:
-        queryset = Profile.objects.filter(email__startswith=request.GET['query'],
-                                          type=1,
-                                          title__isnull=False,
-                                          is_active=True).values('id', 'email', 'title')[:10]
-
-        if queryset:
-            rsp = {
-                'query': request.GET['query'],
-                'suggestions': [i['email'] for i in queryset],
-                'data': [i['id'] for i in queryset],
-            }
-        else:
-            rsp = {
-                'query': request.GET['query'],
-                'suggestions': [u'Пользователи не найдены'],
-                'fail': True
-            }
-
-
-
-        return HttpResponse(simplejson.dumps(rsp), mimetype='application/json', status=200)
-
-    if 'select_query' in request.GET:
-
-        user = Profile.objects.get(email=request.GET['select_query'],
-                                   type=1,
-                                   title__isnull=False,
-                                   is_active=True)
-
-        if user:
-            rsp = {
-                'id': user.id,
-                'title': user.title,
-                'avatar': user.avatar.url
-            }
-
-            return HttpResponse(simplejson.dumps(rsp), mimetype='application/json', status=200)
-
-        return HttpResponse(json.dumps({'fuck': 'you'},ensure_ascii=False), mimetype='application/json', status=200)
-
-    return TemplateResponse(request, 'accounts/autocomplete_test.html', {})

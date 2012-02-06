@@ -28,9 +28,25 @@
     {% block notifications %}
         {% if messages %}
             {% for message in messages %}
-                <div class="alert-message {{ message.tags }}">
-                    <a class="close msg-close" href="#">×</a>
-                    <p>{{ message }}</p>
+                <div class="modal notification {{ message.tags }}">
+                    <div class="modal-header">
+                        <a class="close popup-close" data-dismiss="modal">×</a>
+                        <h3>
+                            {% if message.tags == 'error' %}
+                                Ошибка
+                            {% endif %}{% if message.tags == 'success' %}
+                                Успешно
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <div class="modal-body">
+                        {% autoescape off %}
+                        <p>{{ message }}</p>
+                        {% endautoescape %}
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="b-button b-button_yellow right popup-close">Ok</a>
+                    </div>
                 </div>
             {% endfor %}
         {% endif %}

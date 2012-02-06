@@ -45,7 +45,7 @@ function ru_pluralize(value, args) {
 };
 
 // Site variables
-var delay_time = 4000;
+var delay_time = 10000;
 
 function show_notification(status, text) {
     var tpl = '<div class="alert-message ' + status +'">' +
@@ -158,6 +158,16 @@ function delete_albums(ids) {
         }
     })
 };
+
+
+function show_popup_notification(popup_id) {
+    var popup = $("#" + popup_id);
+    $('#tint').show();
+    popup.css('margin-left', - pop.width() / 2 + 'px');
+    popup.css("top", (($(window).height() - pop.outerHeight()) / 2) + $(window).scrollTop() + "px");
+    popup.show();
+}
+
 
 /*
 * Site handlers
@@ -290,16 +300,17 @@ $(function() {
 
 
     /*
-    * Enter key handler
+    * Enter key handler for login forms
     * */
     $(document).keypress(function(e) {
-        if($('.button-login').is(':visible') && e.keyCode == 13) {
-            $('.button-login').parents('form').submit();
-            return false;
+        if (e.keyCode == 13) {
+            if ($('#popup-login').is(':visible')) {
+                $('form[name=login_form]').submit();
+            } else {
+                $('form[name=loginform]').submit();
+            }
         }
     });
-
-
 
     // Submit forms
     $('.button-submit').click(function(){
@@ -327,6 +338,36 @@ $(function() {
             return [0, 0, 150, 150];
         }
     }
+
+
+    /*
+    * Хэндлер уведомлений
+    * */
+    $('.modal.notification').show(function() {
+        var popup = $(this);
+        var close = popup.find('.popup-close');
+
+        $('#tint').show();
+        popup.css('margin-left', - popup.width() / 2 + 'px');
+        popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
+        popup.show();
+
+        close.bind('click', function(e) {
+            e.preventDefault();
+            popup.fadeOut('fast');
+            $('#tint').fadeOut('fast');
+        });
+
+        window.setTimeout(function() {
+            close.trigger('click');
+        }, delay_time);
+
+        $(document).keydown(function(e) {
+            if (e.keyCode == 27) {
+                close.trigger('click');
+            }
+        });
+    });
 
     /*
      * JCrop handler

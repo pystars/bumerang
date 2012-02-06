@@ -18,25 +18,23 @@
         {% csrf_token %}
         <div class="b-form__fields">
             <h3 class="title">Редактирование Фотографии</h3>
-            <p>
-                Выберите область фотографии, которая будет использованна для юзерпика.
-                <br/>
-                Или загрузите новый файл.
-            </p>
-
             <fieldset>
                 <div class="b-form__field">
                     <label>
-                            <span class="f-title">
-                                Фотография профиля:
-                            </span>
-                            <span class="f-input">
-                                <input type="file" name="avatar" id="id_avatar" />
-                                <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value|default:'' }}" id="id_avatar_coords" />
-                            </span>
+                        <span class="f-title">
+                            <p>
+                                Выберите область фотографии, которая будет использована для юзерпика.
+                                <br/>
+                                Или загрузите новый файл.
+                            </p>
+                        </span>
+                        <span class="f-input">
+                            <input type="file" name="avatar" id="id_avatar" />
+                            <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value|default:'' }}" id="id_avatar_coords" />
+                        </span>
                     </label>
                     {% if form.avatar.errors %}
-                        <div class="f-err"><span>{{ form.avatar.errors }}</span></div>
+                        <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.avatar.errors }}</span></div>
                     {% endif %}
                 </div>
             </fieldset>
