@@ -63,9 +63,6 @@ class RegistrationFormView(CreateView):
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
         self.object.activation_code_expire = datetime.now() + timedelta(days=1)
 
-        # TODO: перевести на celery
-#        send_activation_link(full_activation_url, form.cleaned_data['email'])
-
         send_activation_link_task(full_activation_url,
                                   form.cleaned_data['email'])
 
@@ -110,7 +107,7 @@ class AccountActivationView(TemplateView):
                     ''' % reverse('registration')
                 )
 
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect(reverse('BumerangIndexView'))
 
             user.is_active = True
             user.activation_code = ''
@@ -125,7 +122,7 @@ class AccountActivationView(TemplateView):
 
             send_activation_success(user.email)
 
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('BumerangIndexView'))
 
         except ObjectDoesNotExist:
             notify_error(
@@ -137,7 +134,7 @@ class AccountActivationView(TemplateView):
                 '''
             )
 
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('BumerangIndexView'))
 
 
 class PasswordRecoveryView(FormView):
@@ -265,6 +262,25 @@ class ProfileUpdateView(UpdateView):
     def get_success_url(self):
         return self.request.path
 
+    def form_valid(self, form):
+        notify_success(
+            self.request,
+            message=u'''
+                Данные профиля успешно обновлены.
+                '''
+        )
+
+        return super(ProfileUpdateView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        notify_error(
+            self.request,
+            message=u'''
+                При обновлении данных профиля произошла ошибка.
+                '''
+        )
+
+        return super(ProfileUpdateView, self).form_invalid(form)
 
 class FormsetUpdateView(UpdateView):
     template_name = "accounts/profile_formset.html"

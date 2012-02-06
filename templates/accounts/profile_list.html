@@ -37,14 +37,14 @@
                             {% endif %}
                         </div>
                         <header class="pi-head">
-                            <h3><a href="{% url profile-detail profile.id %}">{{ profile.title }}</a></h3>
+                            <h3><a href="{% url profile-detail profile.id %}" target="_blank">{{ profile.title }}</a></h3>
                             <div>{{ profile.video_list.count }}</div>
                             <div>Зарегистрировался {{ profile.date_joined|date:'d E Y' }}</div>
                         </header>
                         <footer class="pi-foot">
                             <ul class="b-stat">
                                 <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>{{ profile.views_count }}</span></li>
                             </ul>
                         </footer>
                     </section>
