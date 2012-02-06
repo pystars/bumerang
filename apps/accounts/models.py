@@ -50,6 +50,7 @@ class Profile(User):
     friends_count = models.IntegerField(u'Друзей', default=0, editable=False)
     activation_code = models.CharField(max_length=32, editable=False,
                                        **nullable)
+    activation_code_expire = models.DateTimeField(editable=False, **nullable)
 
     '''
     Специфические для разных типов пользователей поля

@@ -313,7 +313,8 @@ $(function() {
     });
 
     // Submit forms
-    $('.button-submit').click(function(){
+    $('.button-submit').click(function(e){
+        e.preventDefault();
         $(this).parents('form').submit();
         return false;
     });

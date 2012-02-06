@@ -118,25 +118,5 @@
             "type": 1,
             "views_count": 0
         }
-    },
-    {
-        "pk": 11,
-        "model": "accounts.profile",
-        "fields": {
-            "description": null,
-            "friends_count": 0,
-            "title": null,
-            "nickname": null,
-            "user_permissions": [],
-            "min_avatar": "",
-            "birthday": null,
-            "place": null,
-            "avatar": "",
-            "groups": [],
-            "gender": null,
-            "avatar_coords": null,
-            "type": 1,
-            "views_count": 0
-        }
     }
 ]

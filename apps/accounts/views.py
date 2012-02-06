@@ -2,11 +2,7 @@
 from __future__ import division
 import json
 from PIL import Image
-from django.core.exceptions import ObjectDoesNotExist
-from django.forms.models import modelformset_factory, inlineformset_factory
-from django.template.response import TemplateResponse
-from django.utils import simplejson
-from django.views.generic.base import View
+from datetime import datetime, timedelta
 
 try:
     from cStringIO import StringIO
@@ -22,11 +18,12 @@ from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
+from django.forms.models import inlineformset_factory
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile, TeachersRelationship
-from apps.utils.email import send_activation_link, send_activation_success
-from apps.utils.tasks import send_new_password_task
+from apps.utils.email import send_activation_success
+from apps.utils.tasks import send_new_password_task, send_activation_link_task
 
 def notify_success(request, message):
     '''
@@ -64,17 +61,22 @@ class RegistrationFormView(CreateView):
         url = reverse('activate-account', args=[activation_code])
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
+        self.object.activation_code_expire = datetime.now() + timedelta(days=1)
 
         # TODO: перевести на celery
-        send_activation_link(full_activation_url, form.cleaned_data['email'])
+#        send_activation_link(full_activation_url, form.cleaned_data['email'])
+
+        send_activation_link_task(full_activation_url,
+                                  form.cleaned_data['email'])
 
         self.object.save()
 
         notify_success(
             self.request,
             message=u'''
-            Регистрация прошла успешно.
-            Проверьте вашу почту и активируйте аккаунт.
+            Регистрация прошла успешно. Вам была отправлена ссылка
+            для активации аккаунта.
+            Проверьте почту и активируйте ваш аккаунт.
             '''
         )
 
@@ -95,12 +97,24 @@ class AccountActivationView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             user = Profile.objects.get(activation_code=kwargs['code'])
+
+            if user.activation_code_expire > datetime.now():
+                user.delete()
+
+                notify_error(
+                    self.request,
+                    message=u'''
+                    С момента регистрации прошло больше суток и активационная
+                    ссылка устарела.
+                    Пройдите процедуру <a href="%s">регистрации</a> заново.
+                    ''' % reverse('registration')
+                )
+
+                return HttpResponseRedirect('/')
+
             user.is_active = True
             user.activation_code = ''
             user.save()
-            messages.add_message(self.request, messages.SUCCESS,
-                                 u'Аккаунт успешно активирован')
-
             notify_success(
                 self.request,
                 message=u'''
@@ -111,19 +125,19 @@ class AccountActivationView(TemplateView):
 
             send_activation_success(user.email)
 
-            return HttpResponseRedirect('/accounts/success_activation/')
+            return HttpResponseRedirect('/')
 
         except ObjectDoesNotExist:
             notify_error(
                 self.request,
                 message=u'''
                 При активации аккаунта произошла ошибка.
-                Возможно, аккаунт уже активирован,
+                Возможно, аккаунт уже был активирован ранее,
                 либо срок действия ссылки истёк.
                 '''
             )
 
-            return HttpResponseRedirect('/accounts/fail_activation/')
+            return HttpResponseRedirect('/')
 
 
 class PasswordRecoveryView(FormView):
@@ -168,12 +182,20 @@ class ProfileView(DetailView):
 
     def get(self, request, **kwargs):
         response = super(ProfileView, self).get(request, **kwargs)
-        if self.get_object().id == request.user.profile.id:
+
+        try:
+            user_id = request.user.profile.id
+        except AttributeError:
+            user_id = None
+
+        if self.get_object().id == user_id:
             return response
         else:
             Profile.objects.filter(pk=self.get_object().id).update(
                 views_count=self.get_object().views_count + 1)
+
         return response
+
 
 class ProfileVideoView(DetailView):
     model = Profile
