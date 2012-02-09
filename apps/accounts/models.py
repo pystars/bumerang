@@ -43,7 +43,7 @@ class Profile(User):
     min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
         upload_to=get_mini_avatar_path, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
-    place = models.CharField(u'Откуда', max_length=255, **nullable)
+#    place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
     views_count = models.IntegerField(u'Просмотров', default=0, editable=False)

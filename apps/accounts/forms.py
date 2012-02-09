@@ -127,7 +127,9 @@ class ProfileInfoEditForm(InfoEditFormsMixin, forms.ModelForm):
         fields = (
             'title',
             'nickname',
-            'place',
+            'country',
+            'region',
+            'city',
             'birthday',
             'gender',
             'description',
@@ -171,6 +173,7 @@ class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
             'country',
             'region',
             'city',
+            'birthday',
             'description',
             )
 
@@ -183,7 +186,9 @@ class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
     description = forms.CharField(label=u'О себе', widget=forms.Textarea)
     class Meta:
         model = Profile
-        fields = ('title', 'place', 'description',)
+        fields = ('title', 'country',
+                  'region',
+                  'city', 'description',)
 
 
 class FacultyForm(EditFormsMixin, forms.ModelForm):
@@ -232,7 +237,9 @@ class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea, label=u'Описание')
     class Meta:
         model = Profile
-        fields = ('title', 'place', 'description', )
+        fields = ('title', 'country',
+                  'region',
+                  'city', 'description', )
 
 
 #class StudioProfileServicesForm(forms.ModelForm):

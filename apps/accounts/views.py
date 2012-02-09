@@ -229,7 +229,7 @@ class ProfileInfoEditView(UpdateView):
             return StudioProfileInfoForm
 
     def get_success_url(self):
-        return reverse("profile-edit")
+        return reverse("profile-detail", args=[self.get_object().id])
 
     def form_valid(self, form):
         self.object = form.save()

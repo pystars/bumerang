@@ -60,7 +60,7 @@
                     {% endif %}
 
                     {% if object.birthday %}
-                    <li><strong>День рождения</strong> <span>{{ object.birthday }}</span></li>
+                    <li><strong>День рождения</strong> <span>{{ object.birthday|date:"d E, Y" }}</span></li>
                     {% endif %}
                     {% if object.nickname %}
                     <li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
