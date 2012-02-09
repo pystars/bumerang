@@ -16,6 +16,15 @@ def syncdb():
 	local('python ./manage.py syncdb --noinput --migrate')
 	local('python ./manage.py loaddata fixtures/*.json')
 
+def remote_syncdb():
+    '''
+	Makes remote syncdb and load fixtures
+	'''
+    with cd('/web/bumerang'):
+        run('/home/web/.virtualenvs/bumerang/bin/python ./manage.py reset_db --noinput --router=default')
+        run('/home/web/.virtualenvs/bumerang/bin/python ./manage.py syncdb --noinput --migrate')
+        run('/home/web/.virtualenvs/bumerang/bin/python ./manage.py loaddata fixtures/*.json')
+
 def celeryd():
     '''
     Runs celeryd process on local machine
@@ -30,16 +39,18 @@ def update(branch):
 		run('git reset --hard HEAD')
 		run('git pull origin {0}'.format(branch))
 
-def sync():
-	put('./bumerang.db', '/web/bumerang/')
+#def sync():
+#	put('./bumerang.db', '/web/bumerang/')
 
 def reload():
-	sudo('supervisorctl restart bumerang')
-	sudo('service nginx restart')
+    sudo('supervisorctl restart bumerang')
+    sudo('supervisorctl restart bumerang_celeryd')
+    sudo('service nginx restart')
 
 def fullsync(branch):
 	update(branch)
-	sync()
+	#sync()
+	remote_syncdb()
 	reload()
 	
 

@@ -411,7 +411,7 @@ class ProfileAvatarEditView(UpdateView):
         # Если изображение слишком широкое, ужимаем
         if img.size[0] > MAX_WIDTH:
             aspect = img.size[0] / img.size[1]
-            new_height = int(round(img.size[1] * aspect))
+            new_height = int(round(img.size[1] / aspect))
             # Вот с этим изображением мы и будем работать
             img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
         # Иначе просто обрезаем
@@ -420,7 +420,6 @@ class ProfileAvatarEditView(UpdateView):
                                   coords['x2'],
                                   coords['y2']))
         cropped_image.thumbnail((180, 180), Image.ANTIALIAS)
-
 
         temp_handle = StringIO()
         cropped_image.save(temp_handle, 'jpeg')
