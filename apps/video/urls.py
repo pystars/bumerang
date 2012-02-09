@@ -3,11 +3,13 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
 
-from apps.video.models import Video, VideoAlbum
-from apps.video.views import (VideoListView, VideoCreateView,
-    VideoAlbumCreateView, VideoDeleteView, VideosDeleteView,
-    VideoUpdateView, VideoMoveView, VideoAlbumUpdateView, XMLDetailView,
-    VideoalbumsDeleteView, VideoSetCoverView, VideoDetailView)
+from apps.utils.views import XMLDetailView, ObjectsDeleteView
+from models import Video
+from albums.models import VideoAlbum
+from views import (VideoListView, VideoCreateView, VideoDetailView,
+    VideoUpdateView, VideoMoveView)
+from albums.views import (VideoAlbumCreateView, VideoSetCoverView,
+    VideoAlbumUpdateView)
 
 
 urlpatterns = patterns('',
@@ -44,21 +46,21 @@ urlpatterns = patterns('',
         name='video-list'
     ),
     url(r'^videos-delete/$',
-        login_required(VideosDeleteView.as_view()),
+        login_required(ObjectsDeleteView.as_view(model=Video)),
         name='videos-delete'
     ),
     url(r'^albums-delete/$',
-        login_required(VideoalbumsDeleteView.as_view()),
+        login_required(ObjectsDeleteView.as_view(model=VideoAlbum)),
         name='videoalbums-delete'
     ),
     url(r'^video-move/$',
         login_required(VideoMoveView.as_view()),
         name='video-move'
     ),
-    url(r'^delete/(?P<pk>\w+)/$',
-        login_required(VideoDeleteView.as_view()),
-        name='video-delete'
-    ),
+#    url(r'^delete/(?P<pk>\w+)/$',
+#        login_required(VideoDeleteView.as_view()),
+#        name='video-delete'
+#    ),
     url(r'^(?P<pk>\w+)/$',
         VideoDetailView.as_view(),
         name='video-detail'

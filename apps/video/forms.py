@@ -1,58 +1,38 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
-from apps.video.models import Video, VideoAlbum
+from models import Video
 
 
-class VideoCreateForm(forms.ModelForm):
+class BaseVideoForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(BaseVideoForm, self).__init__(*args, **kwargs)
+        self.fields['album'].queryset = self.fields[
+                'album'].queryset.filter(owner=user)
+
+
+class VideoCreateForm(BaseVideoForm):
+
     class Meta:
         model = Video
         fields = (
             'title',
-            'album',
             'original_file',
-            'hq_file',
-            'mq_file',
-            'lq_file',
-            'preview',
+            'album',
             'category',
             'description'
         )
 
-    def __init__(self, user, *args, **kwargs):
-        super(VideoCreateForm, self).__init__(*args, **kwargs)
-        self.fields['album'].queryset = self.fields['album'].queryset.filter(
-            owner=user)
 
+class VideoForm(BaseVideoForm):
 
-class AlbumVideoCreateForm(forms.ModelForm):
-    class Meta:
-        model = Video
-        fields = (
-            'title',
-            'original_file',
-            'hq_file',
-            'mq_file',
-            'lq_file',
-            'preview',
-            'category',
-            'description'
-            )
-
-
-class VideoForm(VideoCreateForm):
     class Meta:
         model = Video
         widgets = {'access': forms.widgets.RadioSelect}
         fields = (
             'title',
-#            'slug',
             'album',
             'original_file',
-            'hq_file',
-            'mq_file',
-            'lq_file',
-            'preview',
             'category',
             'description',
             'year',
@@ -66,14 +46,6 @@ class VideoForm(VideoCreateForm):
         )
 
 
-class VideoAlbumForm(forms.ModelForm):
-    class Meta:
-        model = VideoAlbum
-        fields = ('title', 'description')
-
-
-class VideoAlbumCoverForm(forms.ModelForm):
-    class Meta:
-        model = VideoAlbum
-        fields = ('cover',)
-
+class VideoUpdateAlbumForm(forms.Form):
+    video_id = forms.CharField()
+    album_id = forms.IntegerField()

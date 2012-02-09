@@ -37,6 +37,9 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
 MEDIA_URL = 'http://62.76.179.205/media/'
 
+FILE_UPLOAD_TEMP_DIR = os.path.join(PROJECT_ROOT, 'media', 'tmp')
+FILE_UPLOAD_PERMISSIONS = 777
+
 from local_settings import LOCALHOST
 if LOCALHOST:
     MEDIA_URL = 'http://localhost:8000/media/'
@@ -135,6 +138,11 @@ INSTALLED_APPS = (
     'apps.news',
     'apps.advices',
     'apps.video',
+    'apps.video.albums',
+    'apps.video.playlists',
+    'apps.video.converting',
+    'apps.photo',
+    'apps.photo.albums',
     'apps.accounts',
     'apps.utils',
 

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.views.generic.base import TemplateView
 
-from apps.video.models import PlayList, Channel
+from apps.video.playlists.models import PlayList, Channel
 
 
 class BumerangIndexView(TemplateView):

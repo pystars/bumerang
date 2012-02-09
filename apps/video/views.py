@@ -3,95 +3,44 @@ import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.db.models import Q, F
-from django.views.generic import ListView, View, CreateView, DeleteView
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import ModelFormMixin, UpdateView
-from apps.video.forms import VideoAlbumCoverForm
+from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
+from django.views.generic.list import MultipleObjectMixin
 
-from settings import VIDEO_UPLOAD_PATH
-from models import Video, VideoAlbum
-from forms import (VideoForm, VideoAlbumForm, VideoCreateForm,
-                   AlbumVideoCreateForm)
-
-
-class VideosDeleteView(View):
-    def get_queryset(self):
-        ids = json.loads(self.request.POST['ids'])
-        # Если владелец - текущий пользователь, выбирутся
-        # все видео. Иначе ни одного, удалять будет нечего.
-        # И пусть хацкеры ломают головы ;)
-        return Video.objects.filter(id__in=ids, owner=self.request.user)
-
-    def get(self, request, **kwargs):
-        return HttpResponse(status=403)
-
-    def post(self, request, **kwargs):
-        videos = self.get_queryset()
-        if videos.count() > 1:
-            msg = u'Видео успешно удалены'
-        else:
-            msg = u'Видео успешно удалено'
-        for video in videos.all():
-            video.delete()
-        return HttpResponse(json.dumps({'message': msg}),
-            mimetype="application/json")
+from models import Video
+from apps.utils.views import AjaxView, OwnerMixin
+from albums.models import VideoAlbum
+from tasks import ConvertVideoTask
+from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
 
 
-class VideoalbumsDeleteView(View):
-    def get_queryset(self):
-        ids = json.loads(self.request.POST['ids'])
-        return Video.objects.filter(id__in=ids, owner=self.request.user)
-
-    def get(self, request, **kwargs):
-        return HttpResponse(status=403)
-
-    def post(self, request, **kwargs):
-        videoalbums = self.get_queryset()
-        if videoalbums.count() > 1:
-            msg = u'Видеоальбомы успешно удалены'
-        else:
-            msg = u'Видеоальбом успешно удален'
-        for videoalbum in videoalbums.all():
-            videoalbum.delete()
-
-        return HttpResponse(json.dumps({'message': msg}),
-                            mimetype="application/json")
-
-class VideoMoveView(View):
+class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
     model = Video
+    form_class = VideoUpdateAlbumForm
+    
+    def get_queryset(self, **kwargs):
+        return super(VideoMoveView, self).get_queryset(**kwargs)
 
-    def get(self, request, **kwargs):
-        return HttpResponse(status=403)
-
-    def post(self, request, **kwargs):
-        album = get_object_or_404(VideoAlbum,
-            id=request.POST.get('album_id'), owner=request.user)
-        if Video.objects.filter(id=request.POST.get('video_id'),
-                owner=request.user).update(album=album):
+    def form_valid(self, form):
+        try:
+            kwargs = dict(pk=int(form.cleaned_data['video_id']))
+        except ValueError:
+            try:
+                kwargs = dict(id__in=map(int,
+                    json.loads(form.cleaned_data['video_id'])))
+            except ValueError:
+                return HttpResponseForbidden()
+        album = get_object_or_404(VideoAlbum, pk=form.cleaned_data['album_id'],
+            owner=self.request.user)
+        if self.get_queryset().filter(**kwargs).update(album=album):
             msg = u'Видео успешно перемещено'
         else:
             msg = u'Ошибка перемещения видео'
-
-        return HttpResponse(json.dumps({'message': msg}),
-            mimetype="application/json")
-
-
-class VideoSetCoverView(UpdateView):
-    model = VideoAlbum
-    form_class = VideoAlbumCoverForm
-
-    def get_form(self, form_class):
-        return VideoAlbumCoverForm(**self.get_form_kwargs())
-
-    def get(self, request, **kwargs):
-        return HttpResponse(status=403)
-
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS, u'Обложка видеоальбома обновлена')
-        return reverse('video-album-detail', args=[self.object.id])
+        return super(VideoMoveView, self).render_to_response(message=msg)
 
 
 class VideoDetailView(DetailView):
@@ -99,43 +48,26 @@ class VideoDetailView(DetailView):
 
     def get(self, request, **kwargs):
         response = super(VideoDetailView, self).get(request, **kwargs)
-        Video.objects.filter(pk=kwargs['pk']).update(
-            views_count=F('views_count') + 1)
+        self.get_queryset().update(views_count=F('views_count') + 1)
         return response
-
-class VideoDeleteView(DeleteView):
-    model = Video
-
-    def get_queryset(self):
-        return Video.objects.filter(owner=self.request.user)
-
-    def get_success_url(self):
-        return self.request.path
 
 
 class VideoCreateView(CreateView):
     model = Video
 
     def get_form(self, form_class):
-        if self.album():
-            return AlbumVideoCreateForm(**self.get_form_kwargs())
         return VideoCreateForm(self.request.user, **self.get_form_kwargs())
 
-    def album(self):
-        if 'video_album_id' in self.kwargs:
-            try:
-                return VideoAlbum.objects.get(
-                    owner=self.request.user, pk=self.kwargs['video_album_id'])
-            except VideoAlbum.DoesNotExist:
-                pass
-        return None
+    def get_initial(self):
+        result = super(VideoCreateView, self).get_initial()
+        result.update(album=self.kwargs.get('video_album_id', None))
+        return result
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        if self.album():
-            self.object.album = self.album()
         self.object.owner = self.request.user
         self.object.save()
+        ConvertVideoTask.delay(self.object)
         return super(ModelFormMixin, self).form_valid(form)
 
     def form_invalid(self, form):
@@ -143,68 +75,33 @@ class VideoCreateView(CreateView):
             self.request, messages.ERROR, u'Ошибка при загрузке видео')
         return super(VideoCreateView, self).form_invalid(form)
 
-    def get_context_data(self, **kwargs):
-        ctx = super(VideoCreateView, self).get_context_data(**kwargs)
-        ctx.update({'video_album': self.album()})
-        return ctx
 
+class VideoUpdateView(OwnerMixin, UpdateView):
+    model = Video
 
-class VideoUpdateView(UpdateView):
-    #model = Video
-    #queryset =
     def get_form(self, form_class):
         return VideoForm(self.request.user, **self.get_form_kwargs())
-
-    def get_object(self, queryset=None):
-        return Video.public_objects.get(id=self.kwargs['pk'], owner=self.request.user)
 
     def get_success_url(self):
         return reverse('video-edit', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
         self.object = form.save()
+        if 'original_file' in form.changed_data:
+            ConvertVideoTask.delay(self.object)
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
         return super(VideoUpdateView, self).form_valid(form)
 
 
 class VideoListView(ListView):
-    queryset = Video.public_objects.filter(
+    queryset = Video.objects.filter(
         Q(hq_file__isnull=False) |
         Q(mq_file__isnull=False) |
         Q(lq_file__isnull=False),
         published_in_archive=True,
     )
     paginate_by = 25
-
-
-class XMLDetailView(DetailView):
-    def render_to_response(self, context, **response_kwargs):
-        response_kwargs['content_type'] = 'text/xml'
-        return super(XMLDetailView, self).render_to_response(context,
-            **response_kwargs)
-
-
-class VideoAlbumUpdateView(UpdateView):
-    model = VideoAlbum
-    form_class = VideoAlbumForm
-
-    def get_success_url(self):
-        return reverse('video-album-detail', kwargs={'pk': self.object.id})
-
-
-class VideoAlbumCreateView(CreateView):
-    model = VideoAlbum
-    form_class = VideoAlbumForm
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.owner = self.request.user
-        self.object.save()
-        return super(ModelFormMixin, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('album-video-add', kwargs={'video_album_id': self.object.id})
 
 
 #def save_upload( uploaded, filename, raw_data ):

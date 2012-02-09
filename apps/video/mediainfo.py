@@ -1,6 +1,5 @@
 import os
 import sys
-#from future_builtins import zip
 from subprocess import Popen, PIPE
 try:
     # if we're on Django, respect the project settings.
@@ -87,3 +86,10 @@ def get_metadata(filename, **inform):
         raise ExecutionError(cmd, proc.returncode, stderr)
 
     return _parse_inform_output(stdout, inform)
+
+def video_duration(filename):
+    query = {'Video' : {'Duration' : int,}}
+    minfo = get_metadata(filename, **query)
+    if minfo:
+        return minfo['Video']['Duration']
+    return None

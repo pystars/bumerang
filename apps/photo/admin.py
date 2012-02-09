@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from apps.video.models import Video, VideoCategory, VideoGenre
+from models import Photo, PhotoCategory, PhotoGenre
 
 
-class VideoAdmin(admin.ModelAdmin):
+class PhotoAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     readonly_fields = ['original_file', 'created']
     list_display = ['title', 'category', 'created', 'owner',
@@ -16,6 +16,6 @@ class TitleSlugAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
 
-admin.site.register(Video, VideoAdmin)
-admin.site.register(VideoGenre, TitleSlugAdmin)
-admin.site.register(VideoCategory, TitleSlugAdmin)
+admin.site.register(Photo, PhotoAdmin)
+admin.site.register(PhotoGenre, TitleSlugAdmin)
+admin.site.register(PhotoCategory, TitleSlugAdmin)

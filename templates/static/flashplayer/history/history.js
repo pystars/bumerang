@@ -18,11 +18,11 @@ BrowserHistoryUtils = {
 BrowserHistory = (function() {
     // type of browser
     var browser = {
-        ie: false, 
-        ie8: false, 
-        firefox: false, 
-        safari: false, 
-        opera: false, 
+        ie: false,
+        ie8: false,
+        firefox: false,
+        safari: false,
+        opera: false,
         version: -1
     };
 
@@ -43,7 +43,7 @@ BrowserHistory = (function() {
 
     // History maintenance (used only by Safari)
     var currentHistoryLength = -1;
-    
+
     // Flag to denote the existence of onhashchange
     var browserHasHashChange = false;
 
@@ -116,14 +116,14 @@ BrowserHistory = (function() {
     function getPlayer(id) {
         var i;
 
-		if (id && document.getElementById(id)) {
-			var r = document.getElementById(id);
-			if (typeof r.SetVariable != "undefined") {
-				return r;
-			}
-			else {
-				var o = r.getElementsByTagName("object");
-				var e = r.getElementsByTagName("embed");
+        if (id && document.getElementById(id)) {
+            var r = document.getElementById(id);
+            if (typeof r.SetVariable != "undefined") {
+                return r;
+            }
+            else {
+                var o = r.getElementsByTagName("object");
+                var e = r.getElementsByTagName("embed");
                 for (i = 0; i < o.length; i++) {
                     if (typeof o[i].browserURLChange != "undefined")
                         return o[i];
@@ -132,11 +132,11 @@ BrowserHistory = (function() {
                     if (typeof e[i].browserURLChange != "undefined")
                         return e[i];
                 }
-			}
-		}
-		else {
-			var o = document.getElementsByTagName("object");
-			var e = document.getElementsByTagName("embed");
+            }
+        }
+        else {
+            var o = document.getElementsByTagName("object");
+            var e = document.getElementsByTagName("embed");
             for (i = 0; i < e.length; i++) {
                 if (typeof e[i].browserURLChange != "undefined")
                 {
@@ -149,10 +149,10 @@ BrowserHistory = (function() {
                     return o[i];
                 }
             }
-		}
-		return undefined;
-	}
-    
+        }
+        return undefined;
+    }
+
     function getPlayers() {
         var i;
         var players = [];
@@ -175,32 +175,32 @@ BrowserHistory = (function() {
         return players;
     }
 
-	function getIframeHash() {
-		var doc = getHistoryFrame().contentWindow.document;
-		var hash = String(doc.location.search);
-		if (hash.length == 1 && hash.charAt(0) == "?") {
-			hash = "";
-		}
-		else if (hash.length >= 2 && hash.charAt(0) == "?") {
-			hash = hash.substring(1);
-		}
-		return hash;
-	}
+    function getIframeHash() {
+        var doc = getHistoryFrame().contentWindow.document;
+        var hash = String(doc.location.search);
+        if (hash.length == 1 && hash.charAt(0) == "?") {
+            hash = "";
+        }
+        else if (hash.length >= 2 && hash.charAt(0) == "?") {
+            hash = hash.substring(1);
+        }
+        return hash;
+    }
 
     /* Get the current location hash excluding the '#' symbol. */
     function getHash() {
-       // It would be nice if we could use document.location.hash here,
-       // but it's faulty sometimes.
-       var idx = document.location.href.indexOf('#');
-       return (idx >= 0) ? document.location.href.substr(idx+1) : '';
+        // It would be nice if we could use document.location.hash here,
+        // but it's faulty sometimes.
+        var idx = document.location.href.indexOf('#');
+        return (idx >= 0) ? document.location.href.substr(idx+1) : '';
     }
 
     /* Get the current location hash excluding the '#' symbol. */
     function setHash(hash) {
-       // It would be nice if we could use document.location.hash here,
-       // but it's faulty sometimes.
-       if (hash == '') hash = '#'
-       document.location.hash = hash;
+        // It would be nice if we could use document.location.hash here,
+        // but it's faulty sometimes.
+        if (hash == '') hash = '#'
+        document.location.hash = hash;
     }
 
     function createState(baseUrl, newUrl, flexAppUrl) {
@@ -320,12 +320,12 @@ BrowserHistory = (function() {
                     currentHref = document.location.href;
                     document.location.reload();
                 } else {
-					if (getHash() != getIframeHash()) {
-						// this.iframe.src = this.blankURL + hash;
-						var sourceToSet = historyFrameSourcePrefix + getHash();
-						getHistoryFrame().src = sourceToSet;
+                    if (getHash() != getIframeHash()) {
+                        // this.iframe.src = this.blankURL + hash;
+                        var sourceToSet = historyFrameSourcePrefix + getHash();
+                        getHistoryFrame().src = sourceToSet;
                         currentHref = document.location.href;
-					}
+                    }
                 }
             }
         }
@@ -336,12 +336,12 @@ BrowserHistory = (function() {
                 //alert("did change: " + history.length + ", " + historyHash.length + "|" + historyHash[history.length] + "|>" + historyHash.join("|"));
                 var flexAppUrl = getHash();
                 if (browser.version < 528.16 /* Anything earlier than Safari 4.0 */)
-                {    
+                {
                     // If it did change and we're running Safari 3.x or earlier, 
                     // then we have to look the old state up in our hand-maintained 
                     // array since document.location.hash won't have changed, 
                     // then call back into BrowserManager.
-                currentHistoryLength = history.length;
+                    currentHistoryLength = history.length;
                     flexAppUrl = historyHash[currentHistoryLength];
                 }
 
@@ -362,8 +362,8 @@ BrowserHistory = (function() {
                 var bsl = backStack.length;
 
                 var urlActions = {
-                    back: false, 
-                    forward: false, 
+                    back: false,
+                    forward: false,
                     set: false
                 }
 
@@ -374,7 +374,7 @@ BrowserHistory = (function() {
                     // clearInterval(this.locationTimer);
                     handleBackButton();
                 }
-                
+
                 // first check to see if we could have gone forward. We always halt on
                 // a no-hash item.
                 if (forwardStack.length > 0) {
@@ -391,10 +391,10 @@ BrowserHistory = (function() {
                         handleBackButton();
                     }
                 }
-                
+
                 if (!urlActions.back && !urlActions.forward) {
                     var foundInStacks = {
-                        back: -1, 
+                        back: -1,
                         forward: -1
                     }
 
@@ -430,9 +430,9 @@ BrowserHistory = (function() {
     }
 
     var _initialize = function () {
-        
+
         browserHasHashChange = ("onhashchange" in document.body);
-        
+
         if (browser.ie)
         {
             var scripts = document.getElementsByTagName('script');
@@ -447,7 +447,7 @@ BrowserHistory = (function() {
             var iframe = document.createElement("iframe");
             iframe.id = 'ie_historyFrame';
             iframe.name = 'ie_historyFrame';
-            iframe.src = 'javascript:false;'; 
+            iframe.src = 'javascript:false;';
 
             try {
                 document.body.appendChild(iframe);
@@ -488,27 +488,27 @@ BrowserHistory = (function() {
             }
         }
 
-        if (browserHasHashChange)        
+        if (browserHasHashChange)
             document.body.onhashchange = hashChangeHandler;
     }
 
     return {
-        historyHash: historyHash, 
-        backStack: function() { return backStack; }, 
-        forwardStack: function() { return forwardStack }, 
-        getPlayer: getPlayer, 
+        historyHash: historyHash,
+        backStack: function() { return backStack; },
+        forwardStack: function() { return forwardStack },
+        getPlayer: getPlayer,
         initialize: function(src) {
             _initialize(src);
-        }, 
+        },
         setURL: function(url) {
             document.location.href = url;
-        }, 
+        },
         getURL: function() {
             return document.location.href;
-        }, 
+        },
         getTitle: function() {
             return document.title;
-        }, 
+        },
         setTitle: function(title) {
             try {
                 backStack[backStack.length - 1].title = title;
@@ -517,15 +517,15 @@ BrowserHistory = (function() {
             if (browser.safari) {
                 if (title == "") {
                     try {
-                    var tmp = window.location.href.toString();
-                    title = tmp.substring((tmp.lastIndexOf("/")+1), tmp.lastIndexOf("#"));
+                        var tmp = window.location.href.toString();
+                        title = tmp.substring((tmp.lastIndexOf("/")+1), tmp.lastIndexOf("#"));
                     } catch(e) {
                         title = "";
                     }
                 }
             }
             document.title = title;
-        }, 
+        },
         setDefaultURL: function(def)
         {
             defaultHash = def;
@@ -561,8 +561,8 @@ BrowserHistory = (function() {
                 }
                 setInterval(checkForUrlChange, 50);
             }
-            
-            
+
+
             if (browser.firefox || browser.opera)
             {
                 var reg = new RegExp("#" + def + "$");
@@ -574,7 +574,7 @@ BrowserHistory = (function() {
                 setInterval(checkForUrlChange, 50);
             }
 
-        }, 
+        },
 
         /* Set the current browser URL; called from inside BrowserManager to propagate
          * the application state out to the container.
@@ -583,28 +583,28 @@ BrowserHistory = (function() {
             if (browser.ie && typeof objectId != "undefined") {
                 currentObjectId = objectId;
             }
-           //fromIframe = fromIframe || false;
-           //fromFlex = fromFlex || false;
-           //alert("setBrowserURL: " + flexAppUrl);
-           //flexAppUrl = (flexAppUrl == "") ? defaultHash : flexAppUrl ;
+            //fromIframe = fromIframe || false;
+            //fromFlex = fromFlex || false;
+            //alert("setBrowserURL: " + flexAppUrl);
+            //flexAppUrl = (flexAppUrl == "") ? defaultHash : flexAppUrl ;
 
-           var pos = document.location.href.indexOf('#');
-           var baseUrl = pos != -1 ? document.location.href.substr(0, pos) : document.location.href;
-           var newUrl = baseUrl + '#' + flexAppUrl;
+            var pos = document.location.href.indexOf('#');
+            var baseUrl = pos != -1 ? document.location.href.substr(0, pos) : document.location.href;
+            var newUrl = baseUrl + '#' + flexAppUrl;
 
-           if (document.location.href != newUrl && document.location.href + '#' != newUrl) {
-               currentHref = newUrl;
-               addHistoryEntry(baseUrl, newUrl, flexAppUrl);
-               currentHistoryLength = history.length;
-           }
-        }, 
+            if (document.location.href != newUrl && document.location.href + '#' != newUrl) {
+                currentHref = newUrl;
+                addHistoryEntry(baseUrl, newUrl, flexAppUrl);
+                currentHistoryLength = history.length;
+            }
+        },
 
         browserURLChange: function(flexAppUrl) {
             var objectId = null;
             if (browser.ie && currentObjectId != null) {
                 objectId = currentObjectId;
             }
-            
+
             if (typeof BrowserHistory_multiple != "undefined" && BrowserHistory_multiple == true) {
                 var pl = getPlayers();
                 for (var i = 0; i < pl.length; i++) {
@@ -657,7 +657,7 @@ function goForwardOrBackInHistory(step)
 
 //BrowserHistoryUtils.addEvent(window, "load", function() { BrowserHistory.initialize(); });
 (function(i) {
-    var u =navigator.userAgent;var e=/*@cc_on!@*/false; 
+    var u =navigator.userAgent;var e=/*@cc_on!@*/false;
     var st = setTimeout;
     if(/webkit/i.test(u)){
         st(function(){
@@ -667,11 +667,11 @@ function goForwardOrBackInHistory(step)
     } else if((/mozilla/i.test(u)&&!/(compati)/.test(u)) || (/opera/i.test(u))){
         document.addEventListener("DOMContentLoaded",i,false);
     } else if(e){
-    (function(){
-        var t=document.createElement('doc:rdy');
-        try{t.doScroll('left');
-            i();t=null;
-        }catch(e){st(arguments.callee,0);}})();
+        (function(){
+            var t=document.createElement('doc:rdy');
+            try{t.doScroll('left');
+                i();t=null;
+            }catch(e){st(arguments.callee,0);}})();
     } else{
         window.onload=i;
     }

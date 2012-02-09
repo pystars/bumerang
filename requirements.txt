@@ -11,3 +11,4 @@ wsgiref==0.1.2
 django-extensions
 django-celery==2.4.2
 django-kombu==0.9.4
+celery
