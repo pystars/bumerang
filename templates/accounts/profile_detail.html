@@ -52,9 +52,13 @@
                 {% endif %}
 
                 <ul class="b-opts b-opts_prof1">
-                    {% if object.place %}
-                    <li><strong>Откуда</strong><span>{{ object.place }}</span></li>
+                    {% if object.get_profile_from_string %}
+                        <li>
+                            <strong>Откуда</strong>
+                            <span>{{ object.get_profile_from_string }}</span>
+                        </li>
                     {% endif %}
+
                     {% if object.birthday %}
                     <li><strong>День рождения</strong> <span>{{ object.birthday }}</span></li>
                     {% endif %}

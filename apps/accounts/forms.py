@@ -168,9 +168,9 @@ class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
         fields = (
             'title',
             'nickname',
-            'place',
-            'birthday',
-            'gender',
+            'country',
+            'region',
+            'city',
             'description',
             )
 

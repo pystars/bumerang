@@ -59,6 +59,9 @@ class Profile(User):
 #    work = models.TextField(u'Работа и карьера', **nullable)
 #    education = models.TextField(u'Образование', **nullable)
 #    interests = models.TextField(u'Интересы', **nullable)
+    country = models.CharField(u'Страна', max_length=255, **nullable)
+    region = models.CharField(u'Регион', max_length=255, **nullable)
+    city = models.CharField(u'Город', max_length=255, **nullable)
     work_type = models.TextField(u'Род деятельности', **nullable)
     work_company = models.TextField(u'Компания', **nullable)
     schools = models.TextField(u'Учебные заведения, специальность', **nullable)
@@ -90,6 +93,19 @@ class Profile(User):
 
     def __unicode__(self):
         return self.email
+
+    def get_profile_from_string(self):
+        '''
+        Возвращает строку для поля "откуда" профиля
+        '''
+        result = u''
+        if self.country:
+            result += self.country
+        if self.region:
+            result += u', {0}'.format(self.region)
+        if self.city:
+            result += u', {0}'.format(self.city)
+        return result
 
     def get_field_dict(self, field):
         '''
