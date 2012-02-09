@@ -94,18 +94,11 @@ class Profile(User):
     def __unicode__(self):
         return self.email
 
-    def get_profile_from_string(self):
+    def get_locality(self):
         '''
         Возвращает строку для поля "откуда" профиля
         '''
-        result = u''
-        if self.country:
-            result += self.country
-        if self.region:
-            result += u', {0}'.format(self.region)
-        if self.city:
-            result += u', {0}'.format(self.city)
-        return result
+        return ", ".join([s for s in self.country, self.region, self.city if s])
 
     def get_field_dict(self, field):
         '''
@@ -149,7 +142,7 @@ class Profile(User):
                                 'value': name.description}) for name
                                                             in services_qs])
 
-        item_values = filter(lambda a: True if a else False, services_list)
+        item_values = [service for service in services_list if service]
 
         if item_values:
             result.append({'name': u'Услуги',

@@ -13,35 +13,49 @@
 {% endblock %}
 
 {% block edit_form %}
-<section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_photo">
+<section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_photo2">
     <form name="avatar_form" action="{% url profile-edit-avatar %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="b-form__fields">
             <h3 class="title">Редактирование Фотографии</h3>
             <fieldset>
-                <div class="b-form__field">
-                    <label>
-                        <span class="f-title">
-                            <p>
-                                Выберите область фотографии, которая будет использована для юзерпика.
-                                <br/>
-                                Или загрузите новый файл.
-                            </p>
-                        </span>
-                        <span class="f-input">
-                            <input type="file" name="avatar" id="id_avatar" />
-                            <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value|default:'' }}" id="id_avatar_coords" />
-                        </span>
-                    </label>
+                <div class="b-form__pic">
+                    <div class="b-ava b-ava_big">
+                        {% if user.profile.min_avatar %}
+                            <img src="{{ user.profile.min_avatar.url }}" width="175" height="175" alt="Добавьте фото" />
+                        {% else %}
+                            {% if user.profile.type == 1 %}
+                                <img src="{{ STATIC_URL }}i/noava-b.jpg" width="175" height="175" alt="Добавьтете фото" />
+                            {% endif %}
+                            {% if user.profile.type == 2 %}
+                                <img src="{{ STATIC_URL }}i/add-school-foto.png" width="175" height="175" alt="Добавьте фото" />
+                            {% endif %}
+                            {% if user.profile.type == 3 %}
+                                <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте фото" />
+                            {% endif %}
+                        {% endif %}
+                        <i class="b-ava__sh"></i>
+                    </div>
+                </div>
+                <div class="b-form__txt">
+                    Загрузите фотографию и выберите область, которая будет использована для юзерпика.
+{#                    <div><a href="#" class="b-button b-button_small b-button_file">Выберите файл...</a></div>#}
+                    <span class="f-input">
+                        <input type="file" name="avatar" id="id_avatar" style="margin-top: 8px;" />
+                        <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value|default:'' }}" id="id_avatar_coords" />
+                    </span>
                     {% if form.avatar.errors %}
                         <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.avatar.errors }}</span></div>
                     {% endif %}
                 </div>
+                <div class="clear" style="height: 18px;"></div>
+
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" id="current_avatar" style="max-width: 710px;" />
+                {% endif %}
             </fieldset>
 
-            {% if user.profile.avatar %}
-                <img src="{{ user.profile.avatar.url }}" id="current_avatar" style="max-width: 710px"/>
-            {% endif %}
+
             </div>
         <footer class="b-form__footer">
             <div class="wrap">

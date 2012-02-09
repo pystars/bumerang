@@ -25,6 +25,8 @@ from apps.accounts.models import Profile, TeachersRelationship
 from apps.utils.email import send_activation_success
 from apps.utils.tasks import send_new_password_task, send_activation_link_task
 
+# TODO: рефакторить нотификации
+
 def notify_success(request, message):
     '''
     Выводит уведомление об успешном сохранении информации профиля

@@ -2478,6 +2478,10 @@ textarea {
 	color:#dc291e;
 }
 
+.b-form__txt .f-err {
+    color:#dc291e;
+}
+
 .b-form__err {
 	margin:0 0 1.5em 0;
 }
