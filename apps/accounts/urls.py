@@ -21,10 +21,14 @@ urlpatterns = patterns('',
         RegistrationFormView.as_view(),
         name='registration'
     ),
-    url(r'^login/$',
-        'django.contrib.auth.views.login',
-        name='login'
-    ),
+#    url(r'^login/$',
+#        'django.contrib.auth.views.login',
+#        name='login'
+#    ),
+url(r'^login/$',
+    'apps.accounts.views.login',
+    name='login'
+),
     url(r'^recover/$',
         PasswordRecoveryView.as_view(),
         name='password-recover'

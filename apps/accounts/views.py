@@ -1,24 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import json
+import urlparse
 from PIL import Image
 from datetime import datetime, timedelta
+from django.db.models import F
+from django.shortcuts import render_to_response
+from django.template.context import RequestContext
 
 try:
     from cStringIO import StringIO
 except ImportError:
     import StringIO
 
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import Site, get_current_site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.forms.models import inlineformset_factory
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 
 from apps.accounts.forms import *
 from apps.accounts.models import Profile, TeachersRelationship
@@ -40,6 +45,88 @@ def notify_error(request, message):
     '''
     messages.add_message(request, messages.ERROR, message)
     return
+
+def login(request, template_name='registration/login.html',
+          redirect_field_name=REDIRECT_FIELD_NAME,
+          authentication_form=AuthenticationForm,
+          current_app=None, extra_context=None):
+    """
+    Displays the login form and handles the login action.
+    """
+    redirect_to = request.REQUEST.get(redirect_field_name, '')
+
+    if request.method == "POST":
+        form = authentication_form(data=request.POST)
+        if form.is_valid():
+            netloc = urlparse.urlparse(redirect_to)[1]
+
+            profile = Profile.objects.get(email=form.cleaned_data['username'])
+            name = profile.title
+
+            message = u'''
+            Вы авторизованы. Пожалуйста, заполните имя вашего профиля.
+            '''
+
+            if profile.type == 1:
+                name = profile.nickname or profile.title
+                if name:
+                    message = u'''
+                    Добро пожаловать, %s. Вы авторизованы.
+                    ''' % (name)
+            if profile.type == 2:
+                if profile.title:
+                    message = u'''
+                    Добро пожаловать. Вы авторизовались как школа «%s».
+                    ''' % (profile.title)
+            if profile.type == 3:
+                if profile.title:
+                    message = u'''
+                    Добро пожаловать. Вы авторизовались как студия «%s».
+                    ''' % (profile.title)
+
+            notify_success(request, message=message)
+
+            # Use default setting if redirect_to is empty
+            if not redirect_to:
+                redirect_to = reverse('profile-detail', args=[profile.id])
+
+            # Security check -- don't allow redirection to a different
+            # host.
+            elif netloc and netloc != request.get_host():
+                redirect_to = reverse('BumerangIndexView')
+
+            # Okay, security checks complete. Log the user in.
+            auth_login(request, form.get_user())
+
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+
+            return HttpResponseRedirect(redirect_to)
+
+        else:
+            notify_error(
+                request,
+                message=u'''
+                Неправильный логин или пароль.
+                '''
+            )
+
+    else:
+        form = authentication_form(request)
+
+    request.session.set_test_cookie()
+
+    current_site = get_current_site(request)
+
+    context = {
+        'form': form,
+        redirect_field_name: redirect_to,
+        'site': current_site,
+        'site_name': current_site.name,
+        }
+    context.update(extra_context or {})
+    return render_to_response(template_name, context,
+                              context_instance=RequestContext(request, current_app=current_app))
 
 
 class RegistrationFormView(CreateView):
@@ -191,7 +278,7 @@ class ProfileView(DetailView):
             return response
         else:
             Profile.objects.filter(pk=self.get_object().id).update(
-                views_count=self.get_object().views_count + 1)
+                views_count=F('views_count') + 1)
 
         return response
 
