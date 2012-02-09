@@ -5,14 +5,11 @@
 
 {% block head_js %}
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
 {% endblock %}
 
 {% block edit_form %}
-    {#    <section class="b-form b-form_smaller b-form_edit">#}
-
-
     <section class="b-form b-form_smaller b-form_edit b-form_left">
-
         <form name="editform" action="" method="post">
             {% csrf_token %}
             <div class="b-form__fields">
@@ -27,7 +24,7 @@
                 </h3>
                 {{ formset.management_form }}
                 {% for form in formset.forms %}
-                    <fieldset>
+                    <fieldset id="{{ form.prefix }}-row">
                     {% for item in form %}
                         <div class="b-form__field">
                             <label>
@@ -37,8 +34,9 @@
                                 {% endif %}{% if item|widget_type == 'Textarea' %}
                                     <span class="f-title"><span>{{ item.label }}</span></span>
                                     <span class="f-textarea">{{ item }}</span>
-                                {% endif %}{% if item|widget_type == 'CheckboxInput' %}
-                                    <span class="f-input"><span>{{ item.label }}</span>{{ item }}</span>
+                                {% endif %}
+                                {% if item|widget_type == 'CheckboxInput' %}
+                                    <span class="f-input del-checkbox"><span>{{ item.label }}</span>{{ item }}</span>
                                 {% endif %}
 
                                 {% if item|widget_type == 'HiddenInput' %}
@@ -51,8 +49,6 @@
                         </div>
                     {% endfor %}
                     </fieldset>
-
-{#                    {{ form.as_p }}#}
                 {% endfor %}
             </div>
             <footer class="b-form__footer">
@@ -62,5 +58,19 @@
             </footer>
         </form>
     </section>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form fieldset').formset({
+                {% if user.profile.type == 2 %}
+                    prefix: 'faculty_set',
+                    addText: 'Новый факультет'
+                {% else %}
+                    prefix: 'service_set',
+                    addText: 'Новая услуга'
+                {% endif %}
+            })
+        })
+    </script>
 {% endblock %}
 

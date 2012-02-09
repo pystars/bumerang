@@ -79,7 +79,13 @@
                             <div class="b-ava b-ava_small">
                                 <a href="{% url profile-detail user.id %}" class="js-double-hover" title="{{ user.profile_title }}">
                                     {% if not user.profile.min_avatar %}
-                                        <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="{{ user.profile.title }}" />
+                                        {% if object.type == 1 %}
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="{{ user.profile.title }}" />
+                                        {% endif %}{% if object.type == 2 %}
+                                            <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="{{ user.profile.title }}" />
+                                        {% endif %}{% if object.type == 3 %}
+                                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="{{ user.profile.title }}" />
+                                        {% endif %}
                                     {% else %}
                                         <img src="{{ user.profile.min_avatar.url }}" width="60" height="60" alt="{{ user.profile.title }}" />
                                     {% endif %}
