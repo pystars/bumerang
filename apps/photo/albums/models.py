@@ -9,7 +9,7 @@ from apps.photo.models import Photo
 class PhotoAlbum(models.Model, TitleUnicode):
     owner = models.ForeignKey(User)
     title = models.CharField(u'Название', max_length=100)
-    description = models.TextField(u'Описание')
+    description = models.TextField(u'Описание', **nullable)
     cover = models.OneToOneField(Photo, on_delete=models.SET_NULL, **nullable)
 
     class Meta:

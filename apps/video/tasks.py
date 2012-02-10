@@ -11,7 +11,7 @@ class ConvertVideoTask(Task):
 
     def get_commandline(self):
         return (
-            ['HandBrakeCLI', '-O', '-C', '1', '-i', self.original_file_path]
+            ['HandBrakeCLI', '-O', '-C', '2', '-i', self.original_file_path]
             + self.convert_options + ['-o', self.result_file]
         )
 
@@ -30,12 +30,13 @@ class ConvertVideoTask(Task):
             field = getattr(video, options.title).field
             self.result_file = field.storage.path(field.upload_to(video, ''))
             self.convert_options = options.as_commandline()
-            print self.get_commandline()
+            setattr(video, options.title, None)
+            video.save()
             process = subprocess.call(self.get_commandline(), shell=False)
             if process:
                 video.status = video.ERROR
             else:
                 video.status = video.READY
                 setattr(video, options.title, self.result_file)
-        video.save()
+                video.save()
         return "Ready"
