@@ -28,7 +28,8 @@ class ConvertVideoTask(Task):
         video.save()
         for options in ConvertOptions.objects.all():
             field = getattr(video, options.title).field
-            self.result_file = field.storage.path(field.upload_to(video, ''))
+            upload_to = field.upload_to(video, '')
+            self.result_file = field.storage.path(upload_to)
             self.convert_options = options.as_commandline()
             setattr(video, options.title, None)
             video.save()
@@ -37,6 +38,6 @@ class ConvertVideoTask(Task):
                 video.status = video.ERROR
             else:
                 video.status = video.READY
-                setattr(video, options.title, self.result_file)
+                setattr(video, options.title, upload_to)
                 video.save()
         return "Ready"
