@@ -50,7 +50,7 @@
 {% block left_column %}
     <header class="b-page-head">
         <nav class="b-crumbs">
-            <a href="{% url users-list %}">Участники</a>
+            <a href="{% url users-list %}" class="return-to-previous-page">Вернуться на предыдущую страницу</a>
             <span class="b-crumbs__sep">/</span>
             <a href="{% url profile-detail object.owner.id %}">{{ object.owner.profile.title }}</a>
         </nav>

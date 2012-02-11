@@ -10,9 +10,6 @@
                 <h1>{{ newsitem.title }}</h1>
                 <time class="date">{{ newsitem.creation_date|date:'d E Y' }}</time>
             </header>
-{#            <p class="b-intro">#}
-{#                #}
-{#            </p>#}
             <div class="h-ugc">
                 <figure class="b-quote">
                     <blockquote>
@@ -20,13 +17,10 @@
                         {{ newsitem.text|safe }}
                     </blockquote>
                 </figure>
-                <a href="{% url news-list %}">Вернуться к списку новостей</a>
+                <a href="{% url news-list %}" class="return-to-previous-page">&larr; Вернуться к списку новостей</a>
             </div>
         {% endautoescape %}
     </article>
-{#    <header class="b-page-head">#}
-{#        <h1>Новости</h1>#}
-{#    </header>#}
     <section class="b-announs b-announs_news">
         {% for item in object_list %}
             <article class="announ-item">

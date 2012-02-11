@@ -312,6 +312,16 @@ $(function() {
         }
     });
 
+    /*
+    * Обработчик ссылки "назад"
+    * */
+    $('.return-to-previous-page').click(function(e) {
+        if (window.history.length) {
+            e.preventDefault();
+            window.history.back();
+        }
+    });
+
     // Submit forms
     $('.button-submit').click(function(e){
         e.preventDefault();
