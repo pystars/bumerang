@@ -5181,6 +5181,9 @@ h3.title+.b-form_edit_login-pass {
     margin-bottom: 0;
 }
 
+.flash-content-wrapper {
+    height: 420px;
+}
 
 /* Стили форматирования простых страниц */
 
