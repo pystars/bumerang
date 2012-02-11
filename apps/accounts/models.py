@@ -142,11 +142,9 @@ class Profile(User):
                                 'value': name.description}) for name
                                                             in services_qs])
 
-        item_values = [service for service in services_list if service]
-
-        if item_values:
+        if services_list:
             result.append({'name': u'Услуги',
-                           'values': item_values})
+                           'values': services_list})
 
         return result
 

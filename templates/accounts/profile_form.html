@@ -33,7 +33,7 @@
                             <span class="f-title">
                                 <span>{{ item.label }}</span>
                             </span>
-                            {% if item|widget_type == 'TextInput' or item|widget_type == 'DateInput' %}
+                            {% if item|widget_type in 'TextInput DateInput' %}
                                 <span class="f-input">
                             {% endif %}{% if item|widget_type == 'Textarea' %}
                                 <span class="f-textarea">
