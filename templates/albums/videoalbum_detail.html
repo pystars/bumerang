@@ -34,8 +34,8 @@
             <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
                 <header class="announs-head cleared">
                     {% if object.owner.id == request.user.id %}
-                        <a class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button">Удалить</a>
-                        <a class="b-button b-button_yellow b-button_small l-button-move popup-handle" rel="popup-move-video" id="move-video-button">Переместить в альбом...</a>
+                        <a class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
+                        <a class="b-button b-button_yellow b-button_small l-button-move popup-handle" rel="popup-move-video" id="move-video-button" style="display: none;">Переместить в альбом...</a>
                     {% endif %}
                     <p class="smaller" id="videos-count">
                         Всего {{ object.video_set.count }} видео
