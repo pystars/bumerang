@@ -89,8 +89,6 @@ class Video(models.Model, TitleUnicode):
     lq_file = models.FileField(u'Видео низкого качества',
         storage=VideoFilesStorage(), upload_to=lq_upload_to,
         validators=[check_video_file], **nullable)
-    preview = models.FileField(u'Превью',
-        upload_to='videos/previews', **nullable)
     duration = models.IntegerField(u'Длительность', default=0,
                                    editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
@@ -155,6 +153,12 @@ class Video(models.Model, TitleUnicode):
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
 
+    def preview(self):
+        try:
+            return self.preview_set.all()[0].image
+        except IndexError:
+            return None
+
     def best_quality_file(self):
         return self.hq_file or self.mq_file or self.lq_file or None
 
@@ -167,3 +171,13 @@ class Video(models.Model, TitleUnicode):
             slug = random_string(cls.SLUG_LENGTH)
             if not cls.objects.filter(slug=slug).exists():
                 return slug
+
+
+def preview_upload_to(instance, filename):
+    return 'previews/{0}/{1}'.format(instance.owner.slug, filename)
+
+
+class Preview(models.Model):
+    owner = models.ForeignKey(Video)
+    image = models.ImageField(upload_to=preview_upload_to,
+        storage=VideoFilesStorage())
