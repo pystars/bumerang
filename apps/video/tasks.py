@@ -10,10 +10,8 @@ from converting.models import ConvertOptions
 class ConvertVideoTask(Task):
 
     def get_commandline(self):
-        return (
-            ['HandBrakeCLI', '-O', '-C', '2', '-i', self.original_file_path]
-            + self.convert_options + ['-o', self.result_file]
-        )
+        return (['HandBrakeCLI', '-O', '-C', '2', '-i', self.original_file_path]
+            + self.convert_options + ['-o', self.result_file])
 
     def run(self, video, **kwargs):
         """
