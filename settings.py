@@ -37,7 +37,7 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
 MEDIA_URL = 'http://62.76.179.205/media/'
 
-FILE_UPLOAD_TEMP_DIR = os.path.join(PROJECT_ROOT, 'media', 'tmp')
+FILE_UPLOAD_TEMP_DIR = os.path.join(MEDIA_ROOT, 'tmp')
 FILE_UPLOAD_PERMISSIONS = 777
 
 from local_settings import LOCALHOST
@@ -92,7 +92,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 if DEBUG:
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('apps.utils.middleware.ProfilerMiddleware',)
+    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
+        'apps.utils.middleware.ProfilerMiddleware',)
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -185,7 +186,7 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),
 )
 
-VIDEO_UPLOAD_PATH = os.path.join(PROJECT_ROOT, 'media/originals/')
+PREVIEWS_COUNT = 5
 
 if DEBUG:
     INSTALLED_APPS += ('debug_toolbar',)
