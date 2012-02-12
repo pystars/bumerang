@@ -26,7 +26,7 @@ from django.forms.models import inlineformset_factory
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 
 from apps.accounts.forms import *
-from apps.accounts.models import Profile, TeachersRelationship
+from apps.accounts.models import Profile
 from apps.utils.email import send_activation_success
 from apps.utils.tasks import send_new_password_task, send_activation_link_task
 
@@ -409,7 +409,7 @@ class FormsetUpdateView(UpdateView):
         return super(FormsetUpdateView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        formset = self.FormSet(request.POST, instance=self.get_object())
+        formset = self.FormSet(request.POST,request.FILES, instance=self.get_object())
 
         if formset.is_valid():
             formset.save()
@@ -431,31 +431,6 @@ class FormsetUpdateView(UpdateView):
             )
 
             return self.render_to_response(self.get_context_data(formset=formset))
-
-
-class TeachersEditView(UpdateView):
-    form_class = TeacherForm
-#    model = Profile
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
-    def get_form(self, form_class):
-        form = super(TeachersEditView, self).get_form(form_class)
-        form.fields['teachers'].queryset = Profile.objects.exclude(id=self.get_object().id)
-        return form
-
-    def form_valid(self, form):
-#        form.save()
-        for account in form.cleaned_data['teachers']:
-            rel = TeachersRelationship(from_profile=self.get_object(),
-                                       to_profile=account,
-                                       status=1)
-            rel.save()
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return self.request.path
 
 
 class ProfileAvatarEditView(UpdateView):

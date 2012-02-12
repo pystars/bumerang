@@ -8,7 +8,7 @@ from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
-from apps.accounts.models import Profile, Faculty, Service
+from apps.accounts.models import Profile, Faculty, Service, Teammate
 
 
 class InfoEditFormsMixin(forms.ModelForm):
@@ -209,24 +209,16 @@ class ServiceForm(EditFormsMixin, forms.ModelForm):
         fields = ('title', 'description')
 
 
-class TeacherForm(forms.ModelForm):
-    '''
-    Форма редактирования одного преподавателя
-    '''
-    teachers = forms.ModelMultipleChoiceField(queryset=Profile.objects.all())
+class TeammateForm(EditFormsMixin, forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ('teachers',)
+        model = Teammate
+        fields = ('photo', 'name', 'description')
 
 
-class SchoolProfileTeachersForm(forms.ModelForm):
-    '''
-    Форма редактирования преподавателей школы
-    Удалить
-    '''
+class TeacherForm(EditFormsMixin, forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ('teachers',)
+        model = Teammate
+        fields = ('photo', 'name', 'description')
 
 
 class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
@@ -251,10 +243,10 @@ class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
 #        fields = ('services',)
 
 
-class StudioProfileTeamForm(forms.ModelForm):
-    '''
-    Форма редактирования команды студии
-    '''
-    class Meta:
-        model = Profile
-        fields = ('team',)
+#class StudioProfileTeamForm(forms.ModelForm):
+#    '''
+#    Форма редактирования команды студии
+#    '''
+#    class Meta:
+#        model = Profile
+#        fields = ('team',)

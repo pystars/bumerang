@@ -75,15 +75,15 @@ class Profile(User):
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 
     # Школа
-    teachers = models.ManyToManyField('self', through='TeachersRelationship',
-                                      verbose_name=u'Преподаватели',
-                                      related_name='teacher_related_to',
-                                      symmetrical=False,
-                                      **nullable)
+#    teachers = models.ManyToManyField('self', through='TeachersRelationship',
+#                                      verbose_name=u'Преподаватели',
+#                                      related_name='teacher_related_to',
+#                                      symmetrical=False,
+#                                      **nullable)
 
     #Студия
 #    services = models.CharField(u'Услуги', max_length=255, **nullable)
-    team = models.ManyToManyField('self', verbose_name=u'Команда', **nullable)
+#    team = models.ManyToManyField('self', verbose_name=u'Команда', **nullable)
 
     views_count = models.IntegerField(u'Количество просмотров профиля',
                                       default=0,
@@ -148,18 +148,19 @@ class Profile(User):
 
         return result
 
-REL_TEACHER_REQUEST = 1
-REL_TEACHER_ACCEPTED = 2
-REL_TEACHER_STATUSES = (
-    (REL_TEACHER_REQUEST, u'Запрос отправлен'),
-    (REL_TEACHER_ACCEPTED, u'Запрос принят'),
-)
+    def get_school_profile_resume(self):
+        result = []
 
+        services_qs = self.faculty_set.all().order_by('id')
+        services_list = list([({'name': name.title,
+                                'value': name.description}) for name
+                                                            in services_qs])
 
-class TeachersRelationship(models.Model):
-    from_profile = models.ForeignKey(Profile, related_name='from_profile')
-    to_profile = models.ForeignKey(Profile, related_name='to_profile')
-    status = models.IntegerField(choices=REL_TEACHER_STATUSES)
+        if services_list:
+            result.append({'name': u'Факультеты',
+                           'values': services_list})
+
+        return result
 
 
 class Faculty(models.Model):
@@ -170,6 +171,7 @@ class Faculty(models.Model):
     def __unicode__(self):
         return self.title
 
+
 class Service(models.Model):
     title = models.CharField(u'Название', max_length=255, blank=False)
     description = models.TextField(u'Описание', blank=False)
@@ -177,3 +179,23 @@ class Service(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+class Teammate(models.Model):
+    photo = models.ImageField(u'Фотография', upload_to='teams')
+    name = models.CharField(u'Имя', max_length=255)
+    description = models.TextField(u'Описание')
+    owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Teacher(models.Model):
+    photo = models.ImageField(u'Фотография', upload_to='teachers')
+    name = models.CharField(u'Имя', max_length=255)
+    description = models.TextField(u'Описание')
+    owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
+
+    def __unicode__(self):
+        return self.name

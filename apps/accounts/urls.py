@@ -2,14 +2,13 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from apps.accounts.forms import (ProfileResumeEditForm,
-     SchoolProfileTeachersForm,
-     StudioProfileTeamForm, FacultyForm, TeacherForm, ServiceForm)
-from apps.accounts.models import Faculty, Profile, Service
+from apps.accounts.forms import (ProfileResumeEditForm, FacultyForm,
+                                 ServiceForm, TeammateForm, TeacherForm)
+from apps.accounts.models import Faculty, Service, Teammate, Teacher
 from apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
-     AccountActivationView, FormsetUpdateView, TeachersEditView)
+     AccountActivationView, FormsetUpdateView, )
 
 
 urlpatterns = patterns('',
@@ -80,20 +79,36 @@ url(r'^login/$',
 #            form_class=SchoolProfileTeachersForm)),
 #        name='profile-edit-teachers'
 #    ),
-    url(r'^edit-teachers/$',
-        login_required(TeachersEditView.as_view()),
-        name='profile-edit-teachers'
-    ),
-    url(r'^edit-team/$',
-        login_required(ProfileUpdateView.as_view(
-            form_class=StudioProfileTeamForm)),
-        name='profile-edit-team'
-    ),
+#    url(r'^edit-teachers/$',
+#        login_required(TeachersEditView.as_view()),
+#        name='profile-edit-teachers'
+#    ),
+#    url(r'^edit-team/$',
+#        login_required(ProfileUpdateView.as_view(
+#            form_class=StudioProfileTeamForm)),
+#        name='profile-edit-team'
+#    ),
 #    url(r'^edit-services/$',
 #        login_required(ProfileUpdateView.as_view(
 #            form_class=StudioProfileServicesForm)),
 #        name='profile-edit-services'
 #    ),
+url(r'^edit-teachers/$',
+    login_required(FormsetUpdateView.as_view(
+        model=Teacher,
+        form=TeacherForm,
+        template_name="accounts/profile_teachers_formset.html"
+        )),
+    name='profile-edit-teachers'
+),
+url(r'^edit-team/$',
+    login_required(FormsetUpdateView.as_view(
+        model=Teammate,
+        form=TeammateForm,
+        template_name="accounts/profile_team_formset.html"
+    )),
+    name='profile-edit-team'
+),
     url(r'^edit-services/$',
         login_required(FormsetUpdateView.as_view(
             model=Service,
