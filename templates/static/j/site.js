@@ -195,6 +195,24 @@ $(function() {
         return false;
     });
 
+    $('input[name=videoalbums]:checkbox').click(function() {
+        if ($('input[name=videoalbums]:checkbox').filter(':checked').length) {
+            $('#videoalbum-delete-buton').show();
+        } else {
+            $('#videoalbum-delete-buton').hide();
+        };
+    });
+
+    $('input[name=videos]:checkbox').click(function() {
+        if ($('input[name=videos]:checkbox').filter(':checked').length) {
+            $('#video-delete-button').show();
+            $('#move-video-button').show();
+        } else {
+            $('#video-delete-button').hide();
+            $('#move-video-button').hide();
+        };
+    });
+
     /*
     * Selected videoalbums delete handler
     * */
@@ -316,9 +334,9 @@ $(function() {
     * Обработчик ссылки "назад"
     * */
     $('.return-to-previous-page').click(function(e) {
-        if (window.history.length) {
+        if (document.referrer.match(window.location.hostname)) {
             e.preventDefault();
-            window.history.back();
+            window.location = document.referrer;
         }
     });
 
