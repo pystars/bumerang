@@ -2,7 +2,7 @@ from fabric.api import *
 from fabric.context_managers import lcd, hide, cd
 from fabric.operations import local, abort, put, sudo
 
-from local_settings import get_sudo_pwd
+from bumerang.local_settings import get_sudo_pwd
 
 #__all__ = ['test']
 env.hosts = [u"web@62.76.179.205:22"]
