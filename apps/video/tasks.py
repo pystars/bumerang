@@ -42,7 +42,7 @@ class ConvertVideoTask(Task):
             offset += step
 
     def screen_shot_cmd(self, path, offset, size, output):
-        return ['ffmpeg', '-itsoffset', str(offset), '-i', path,
+        return ['ffmpeg', '-itsoffset', '-{0}'.format(str(offset)), '-i', path,
                 '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
                 '-s', size, output]
 
