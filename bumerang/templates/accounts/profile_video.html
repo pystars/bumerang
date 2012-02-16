@@ -1,0 +1,130 @@
+{% extends "accounts/tabs_wrapper.html" %}
+{% load sitetree %}
+{% load rupluralize %}
+
+{% block title %}
+    {% if object.id == user.id %}
+        Ваше видео
+    {% else %}
+        {% if object.title %}
+            {% if object.type != 1 %}
+                Видео: {{ object.get_type_display }} &laquo;{{ object.title }}&raquo;
+            {% endif %}
+        {% else %}
+            {{ "Заполните имя профиля" }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block profile_video_tab %}
+    <dt class="selected">
+        <span>Видео</span>
+        <small>{{ profile.video_set.count }}</small>
+        <i class="l"></i>
+        <i class="r"></i>
+    </dt>
+    <dd class="selected"><div class="b-tabs__tab-content">
+    {% include "snippets/section_profile.html" %}
+    <div class="b-hr">
+        <hr />
+    </div>
+    <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v">
+        <header class="b-gallery__head">
+            <ul class="b-service-buttons">
+                {% if profile.id == request.user.id %}
+                    <li class="addvideoalbum">
+                        <i></i>
+                        <a href="{% url video-album-add %}">Добавить альбом</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <h3>Видеоальбомы</h3>
+            <div class="clear"></div>
+            {% if profile.videoalbum_set.count %}
+                {% if profile.id == request.user.id %}
+                <a href="#" id="videoalbum-delete-buton" class="b-button b-button_red b-button_small l-button-del" style="display: none;">Удалить</a>
+                {% endif %}
+                    <p class="smaller" id="albums-count">
+                        Всего {{ profile.videoalbum_set.count }} {{ profile.videoalbum_set.count|rupluralize:"альбом,альбома,альбомов" }}
+                        <div id="videoalbums-plurals" style="display: none;">альбом,альбома,альбомов</div>
+                    </p>
+            {% endif %}
+        </header>
+
+        <div id="videoalbum-empty-block" class="b-empty b-empty_video-album" {% if profile.videoalbum_set.count %}style="display: none;"{% endif %}>
+            <div class="b-empty__pic"></div>
+            <strong class="b-empty__text">Нет видеоальбомов</strong>
+            {% if profile.id == request.user.id %}
+                <div>
+                    <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+                </div>
+            {% endif %}
+        </div>
+        {% include "snippets/videoalbums_list.html" %}
+    </section>
+    <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
+        <header class="announs-head">
+            <ul class="b-service-buttons">
+                {% if profile.id == request.user.id %}
+                <li class="addvideo">
+                    <i></i>
+                    <a href="{% url video-add %}">Добавить видео</a>
+                </li>
+                {% endif %}
+            </ul>
+            <h3>Видеоролики</h3>
+            <div class="clear"></div>
+            {% if profile.video_set.count %}
+                {% if profile.id == request.user.id %}
+                    <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
+                {% endif %}
+                <p class="smaller" id="videos-count">
+                    Всего {{ profile.video_set.count }} видео
+                    <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
+                </p>
+            {% endif %}
+{#            <div class="b-sort">#}
+{#                <div class="b-sort__title">Сортировка</div>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort1" />#}
+{#                <label class="b-sort__handle" for="sort1"><span>по просмотрам</span></label>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort2" />#}
+{#                <label class="b-sort__handle" for="sort2"><span>по оценкам</span></label>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort3" />#}
+{#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
+{#            </div>#}
+        </header>
+
+        <div id="video-empty-block" class="b-empty b-empty_video" {% if profile.videoalbum_set.count %}style="display: none;"{% endif %}>
+            <div class="b-empty__pic"></div>
+            <strong class="b-empty__text">Нет видеороликов</strong>
+            <div><a href="{% url video-album-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+        </div>
+        {% with profile.video_set.all as videos %}
+            {% include "snippets/videos_list.html" %}
+        {% endwith %}
+    </section>
+    </div></dd>
+{% endblock %}
+
+{% block popup %}
+<section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+        <header class="b-form__header">
+            <h4>
+                Вы дйствительно хотите удалить видеозапись?
+            </h4>
+            <p>
+                Видео будет удалено безвозвратно.
+            </p>
+        </header>
+        <footer class="b-form__footer cleared">
+            <a href="#" class="b-button b-button_yellow left cancel" id="del-popup-cancel">Отменить</a>
+            <a href="#" class="b-button b-button_red right videos_delete" id="del-popup-confirm">Удалить</a>
+        </footer>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+{% endblock %}

@@ -1,0 +1,43 @@
+<div class="b-gallery__items">
+    <form name="videoalbums" action="{% url videoalbums-delete %}" method="post">
+        {% for videoalbum in object.videoalbum_set.all %}
+        <figure class="b-gallery__item" id="videoalbum-item-{{ videoalbum.id }}">
+            <a href="{% url video-album-detail videoalbum.id %}">
+                <span class="gi-img">
+                    <span>
+                        {% if videoalbum.preview %}
+                            <img src="{{ videoalbum.preview.url }}" width="190" height="123" alt="{{ videoalbum.title }}" />
+                        {% else %}
+                            <img src="{{ STATIC_URL }}i/nophoto.png" width="190" height="123" alt="{{ videoalbum.title }}" />
+                        {% endif %}
+                    </span>
+                </span>
+                <strong class="gi-title">{{ videoalbum.title }}</strong>
+            </a>
+            <figcaption class="gi-caption">
+                {{ videoalbum.description|truncatewords:8 }}
+            </figcaption>
+            {% if request.user.profile.id == videoalbum.owner_id %}
+                <div class="ui-checkbox">
+                    <input type="checkbox" name="videoalbums" value="{{ videoalbum.id }}" id="checkbox-{{ videoalbum.id }}" />
+                    <label for="checkbox-{{ videoalbum.id }}"></label>
+                </div>
+                <div class="ui-menu">
+                    <span class="b-dropdown">
+                        <label class="b-menu-button b-dropdown__handle" ></label>
+                        <span class="b-dropdown__popup">
+                            <span class="b-dropdown__popup__i">
+                                <span class="b-dropdown__popup__i__i">
+                                    <span class="b-dropdown__arr"></span>
+                                    <a href="#" class="b-dropdown__link" id="videoalbum-delete-{{ videoalbum.id }}">Удалить</a>
+                                    <a href="{% url video-album-edit videoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </div>
+            {% endif %}
+        </figure>
+        {% endfor %}
+    </form>
+</div>

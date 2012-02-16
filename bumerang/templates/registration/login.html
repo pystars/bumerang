@@ -1,0 +1,52 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Вход{% endblock %}
+
+{% block left_column %}
+    <section class="b-form">
+        <form name="loginform" action="" method="POST">
+        {% csrf_token %}
+        <header class="b-form__header">
+            <h1>
+                Вход
+            </h1>
+        </header>
+        <div class="b-form__fields">
+            <div class="b-form__field">
+                <label>
+                    <span class="f-title"><span>Почта</span></span>
+								<span class="f-input">
+									<span class="b-input">{{ form.username }}</span>
+								</span>
+                </label>
+            </div>
+            <div class="b-form__field">
+                <label>
+                    <span class="f-title"><span>Пароль</span></span>
+								<span class="f-input">
+                                    {{ form.password }}
+								</span>
+                </label>
+                {% if form.errors %}<div class="f-err"><span>Неправильный логин или пароль. Попробуйте ещё раз.</span></div>{% endif %}
+                <span class="f-forgot"><a href="{% url password-recover %}">забыл пароль</a></span>
+            </div>
+            <div class="b-form__field">
+                <div class="f-checkbox">
+                    <input type="checkbox" name="remember_me" value="" id="remember" />
+                    <label for="remember">
+                        запомнить меня
+                    </label>
+                </div>
+            </div>
+        </div>
+        <footer class="b-form__footer">
+            <div class="wrap"><a href="#" class="b-button b-button_yellow button-submit button-login">Войти</a></div>
+            <span class="or">или <a href="{% url registration %}">зарегистрироваться</a></span>
+        </footer>
+    </form>
+    </section><!--b-form-->
+{% endblock %}
+
+{% block right_column %}
+{% endblock %}

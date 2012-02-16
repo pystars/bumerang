@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Бумеранг PRO{% endblock %}
+
+{% load videotags %}
+
+{% block content %}
+		<div class="b-main-box d-rounded d-rounded_r10 d-sh">
+            <section class="b-tv js-toggle2-container js-toggle2-container_tv">
+                <header class="b-tv__head">
+                    <div class="b-now">
+                        <div class="b-plenka">
+                            <h2 class="b-plenka__i">
+                                <span class="b-plenka__title">Сейчас в эфире:</span>
+                                <a href="">Самый быстрый способ сделать монтаж дома</a>
+                            </h2>
+                        </div>
+                        <p class="now-brief" id="now-brief">
+                            Мега видео ПРО участников бумеранга, Всегда вместе и рядом, Про бумеранг
+                        </p>
+                    </div>
+                    <div class="b-close-lnk">
+                        <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>
+                        <span class="b-pseudolink js-toggle2-lnk"><span class="js-toggle2-text">Скрыть программу передач</span></span>
+                    </div>
+                </header><!--b-tv__head-->
+
+                <div class="b-tv__body js-toggle2-block"><div class="b-tv__body__i">
+					<div class="l-cols l-cols_tv"><div class="l-cols__i cleared">
+						<section class="l-cols__section"><div class="l-cols__section__i">
+							<article class="b-tv-programs">
+								<header class="tp-head">
+									<nav class="b-calend">
+										<h2 class="cal-head">
+											<span class="ch-day">{% now "d" %}</span>
+											<span class="ch-month">{% now "E" %}</span>
+										</h2>
+										<a href="" class="cal-day cal-day1">10</a>
+										<a href="" class="cal-day cal-day2">11</a>
+										<a href="" class="cal-day cal-day3">12</a>
+										<a href="" class="cal-day cal-day">13</a>
+										<a href="" class="cal-day">14</a>
+										<a href="" class="cal-day">15</a>
+									</nav>
+									<h3 class="tp-day">{% now "l" %}</h3>
+									<ul class="tp-ctrls">
+										<li class="tp-ctrl">
+											<span class="b-pseudolink"><span>Сейчас</span></span>
+											<time>{% now "G:i" %}</time>
+										</li>
+										<li class="tp-ctrl selected"><span class="selected">Весь день</span></li>
+									</ul> 
+								</header>
+								<div class="tp-items">
+                                    {% if not playlist.playlistitem_set %}
+                                        <p>
+                                            Трансляции ещё не запланированы
+                                        </p>
+                                    {% else %}
+                                        {% for item in playlist.playlistitem_set.all %}
+                                            {% with item.playlistitem_set.all.0 as item %}
+                                                <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
+                                                    <time>{{ item|to_hm }}</time>
+                                                    {{ item.video.title }}
+                                                </p>
+                                                {% if forloop.last %}
+                                                    <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %}">
+                                                        <time>{{ item|to_hm:'True' }}</time>
+                                                        Конец эфира
+                                                    </p>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    {% endif %}
+								</div>
+							</article>
+						</div></section>
+						<aside class="l-cols__side"><div class="l-cols__side__i">
+							<section class="b-announs b-announs_tv">
+								<article class="announ-item">
+									<div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ1.jpg" alt="" /></div>
+									<header class="ai-head">
+										<time class="date">5 августа, Пятница, 22:40-0:30</time>
+										<h4>Неоконченный урок</h4>
+										<p>
+											Jeremy was trying to get me to pound his
+											first, but I was too into taking the photo.
+											The second of these
+										</p>
+									</header>
+								</article>
+								<article class="announ-item">
+									<div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ2.jpg" alt="" /></div>
+									<header class="ai-head">
+										<time class="date">5 августа, Пятница, 22:40-0:30</time>
+										<h4>Неоконченный урок</h4>
+										<p>
+											Jeremy was trying to get me to pound his
+											first, but I was too into taking the photo.
+											The second of these
+										</p>
+									</header>
+								</article>
+							</section>
+						</div></aside>
+					</div></div><!--l-cols-->
+				</div></div><!--b-tv__body-->
+			</section><!--b-tv-->
+            <div class="l-cols l-cols_movie"><div class="l-cols__i cleared">
+				<section class="l-cols__section"><div class="l-cols__section__i">
+                    <section class="b-movie js-toggle2-container js-toggle2-container_movie">
+						<video id="movie" width="100%" height="380" preload controls style="background:url({{ STATIC_URL }}i/fake/video.jpg) repeat-x;">
+							<img src="{{ STATIC_URL }}i/fake/video.jpg" width="100%" height="380" />
+						</video>
+                        <article class="js-toggle2-block">
+							<p>
+								В случае если какое-то поле не было заполнено в информации о сюжете, то оно не выводится.
+								В окне описания к сюжету разрешается добавлять много текста. Если контент не умещается,
+								то правее появляется ползунок прокрутки.
+							</p>
+							<ul class="b-opts">
+								<li>
+									<strong>Жанр:</strong>
+									<span>социальный ролик</span>
+								</li>
+								<li>
+									<strong>Город:</strong>
+									<span>Волжский</span>
+								</li>
+								<li>
+									<strong>Страна:</strong>
+									<span>Россия</span>
+								</li>
+								<li>
+									<strong>Учреждение:</strong>
+									<span>студия Мультимедии и Анимации &laquo;Первые ласточки&raquo;</span>
+								</li>
+								<li>
+									<strong>Продолжительность:</strong>
+									<span>1 минута 11 секунд</span>
+								</li>
+								<li>
+									<strong>Авторы:</strong>
+									<span>Алексей Задубровский, Ярослав Симкин, Александр Рубан, Ирина Патрина, Елена Макарова, Светлана Узлова, Сергей Диденко</span>
+								</li>
+								<li>
+									<strong>Год:</strong>
+									<span>2011</span>
+								</li>
+								<li>
+									<strong>Участие в фестивалях:</strong>
+									<span>3 конкурс детского телевизионного творчества &laquo;ДЕТВора 2011&raquo;.</span>
+								</li>
+							</ul>
+						</article>
+                        <footer class="b-movie__foot">
+                            <div class="b-close-lnk">
+                                <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>
+                                <span class="b-pseudolink js-toggle2-lnk"><span><span class="js-toggle2-text">Скрыть</span> описание ролика</span></span>
+                            </div>
+                        </footer>
+					</section><!--b-movie-->
+				</div></section>
+				<aside class="l-cols__side"><div class="l-cols__side__i">
+					<section class="b-adv">
+						<header>
+							<div class="b-adv__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+							<div class="b-adv__title">Реклама</div>
+						</header>
+						<p>
+							<a href="">
+								<img src="{{ STATIC_URL }}i/fake/ban1.jpg" alt="" width="200" height="340" />
+							</a>
+						</p>
+						<p>
+							<a href="">
+								<img src="{{ STATIC_URL }}i/fake/ban2.jpg" alt="" width="200" height="240" />
+							</a>
+						</p>
+					</section>
+				</div></aside>
+			</div></div><!--l-cols-->
+		</div><!--b-main-box-->
+		<div class="l-cols l-cols_movies"><div class="l-cols__i cleared">
+			<section class="l-cols__col1"><div class="l-cols__col1__i">
+				<section class="b-announs b-announs_movie b-announs_movie_smaller js-toggle2-container">
+					<header class="announs-head">
+						<h2>Новые работы участников</h2>
+					</header>
+					<div class="announs-items">
+						<article class="announ-item cleared">
+							<div class="ai-img d-sh">
+								<a href="">
+									<span>
+										<img src="{{ STATIC_URL }}i/fake/mov2.png" width="165" height="107" alt="" />
+										<span class="time">1:54</span>
+									</span>
+								</a>
+							</div>
+							<header class="ai-head">
+								<hgroup>
+									<h3><a href="">BACKSTAGE</a></h3>
+									<h4>Студия &laquo;<a href="">12South</a>&raquo;</h4>
+								</hgroup>
+								<p>
+									Jeremy was trying to get me to pound his
+									first, but I was too into
+								</p>
+							</header>
+							<footer class="ai-foot">
+								<time class="date">21.09.2011, 15:35</time>
+								<ul class="b-stat">
+									<li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+									<li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+								</ul>
+							</footer>
+						</article>
+						<article class="announ-item cleared">
+							<div class="ai-img d-sh">
+								<a href="">
+									<span>
+										<img src="{{ STATIC_URL }}i/fake/mov1.png" width="165" height="107" alt="" />
+										<span class="time">1:54</span>
+									</span>
+								</a>
+							</div>
+							<header class="ai-head">
+								<hgroup>
+									<h3><a href="">Edit</a></h3>
+									<h4>Школа &laquo;<a href="">1249</a>&raquo;</h4>
+								</hgroup>
+							</header>
+							<footer class="ai-foot">
+								<time class="date">21.09.2011, 15:35</time>
+								<ul class="b-stat">
+									<li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+									<li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+								</ul>
+							</footer>
+						</article>
+					</div>
+				</section>
+			</div></section>
+			<section class="l-cols__col2"><div class="l-cols__col2__i">
+				<section class="b-announs b-announs_movie b-announs_movie_smaller">
+					<header class="announs-head">
+						<h2>Популярное видео</h2>
+					</header>
+					<div class="announs-items">
+						<article class="announ-item cleared">
+							<div class="ai-img d-sh">
+								<a href="">
+									<span>
+										<img src="{{ STATIC_URL }}i/fake/mov2.png" width="165" height="107" alt="" />
+										<span class="time">1:54</span>
+									</span>
+								</a>
+							</div>
+							<header class="ai-head">
+								<hgroup>
+									<h3><a href="">BACKSTAGE</a></h3>
+									<h4>Студия &laquo;<a href="">12South</a>&raquo;</h4>
+								</hgroup>
+								<p>
+									Jeremy was trying to get me to pound his
+									first, but I was too into
+								</p>
+							</header>
+							<footer class="ai-foot">
+								<time class="date">21.09.2011, 15:35</time>
+								<ul class="b-stat">
+									<li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+									<li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+								</ul>
+							</footer>
+						</article>
+						<article class="announ-item cleared">
+							<div class="ai-img d-sh">
+								<a href="">
+									<span>
+										<img src="{{ STATIC_URL }}i/fake/mov1.png" width="165" height="107" alt="" />
+										<span class="time">1:54</span>
+									</span>
+								</a>
+							</div>
+							<header class="ai-head">
+								<hgroup>
+									<h3><a href="">Edit</a></h3>
+									<h4>Школа &laquo;<a href="">1249</a>&raquo;</h4>
+								</hgroup>
+							</header>
+							<footer class="ai-foot">
+								<time class="date">21.09.2011, 15:35</time>
+								<ul class="b-stat">
+									<li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+									<li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+								</ul>
+							</footer>
+						</article>
+					</div>
+				</section>
+			</div></section>
+		</div></div><!--l-cols-->
+{% endblock %}

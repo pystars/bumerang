@@ -1,0 +1,118 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Редактироване профиля{% endblock %}
+
+{% block edit_form %}
+<section class="b-form b-form_smaller b-form_edit">
+    <form name="info_form" action="" method="POST">
+        {% csrf_token %}
+        <div class="b-form__fields">
+            <h3 class="title">Редактирование профиля</h3>
+            <fieldset>
+                <div class="b-form__field">
+                    <label>
+                                                    <span class="f-title">
+                                                        <span>
+                                                            {% if form.instance.type == 1 %}
+                                                                Имя Фамилия
+                                                            {% endif %}{% if form.instance.type == 2 %}
+                                                            Название школы
+                                                        {% endif %}{% if form.instance.type == 3 %}
+                                                            Название студии
+                                                        {% endif %}
+                                                        </span>
+                                                    </span>
+                                                        <span class="f-input">
+                                                            {{ form.title }}
+                                                        </span>
+                    </label>
+                    {% if form.title.errors %}
+                        <div class="f-err"><span>{{ form.title.errors }}</span></div>
+                    {% endif %}
+                </div>
+                {% if form.instance.type == 1 %}
+                    <div class="b-form__field">
+                        <label>
+                            <span class="f-title"><span>Никнейм</span></span>
+                                                        <span class="f-input">
+                                                            {{ form.nickname }}
+                                                        </span>
+                        </label>
+                    </div>
+                    {% if form.nickname.errors %}
+                        <div class="f-err"><span>{{ form.nickname.errors }}</span></div>
+                    {% endif %}
+                    <div class="b-form__field">
+                        <label>
+                            <span class="f-title"><span>День рождения</span></span>
+                                                        <span class="f-input">
+                                                            {{ form.birthday }}
+                                                        </span>
+                        </label>
+                        {% if form.birthday.errors %}
+                        <div class="f-err"><span>{{ form.birthday.errors }}</span></div>
+                        {% endif %}
+                    </div>
+                    <div class="b-form__field b-form__field_select last">
+                        <span class="f-title"><span>Пол</span></span>
+
+                        <div class="f-select">
+                            {{ form.gender }}
+                        </div>
+                    </div>
+                {% endif %}
+            </fieldset>
+            <fieldset>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Откуда</span></span>
+                                                        <span class="f-input">
+                                                            {{ form.place }}
+                                                        </span>
+                    </label>
+                    {% if form.place.errors %}
+                        <div class="f-err"><span>{{ form.place.errors }}</span></div>
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="b-form__field">
+                <label>
+                                                <span class="f-title">
+                                                    <span>
+                                                        {% if form.instance.type == 1 %}
+                                                            О себе
+                                                        {% else %}
+                                                            Описание
+                                                        {% endif %}
+                                                    </span>
+                                                </span>
+                                                    <span class="f-textarea">
+                                                        {{ form.description }}
+                                                    </span>
+                </label>
+                {% if form.description.errors %}
+                    <div class="f-err"><span>{{ form.description.errors }}</span></div>
+                {% endif %}
+            </div>
+        </div>
+        <footer class="b-form__footer">
+            <div class="wrap">
+                <a href="" class="b-button b-button_yellow button-submit">Сохранить</a>
+            </div>
+        </footer>
+    </form>
+</section>
+{% endblock %}
+
+{% block edit_side_nav %}
+    <ul>
+        <li class="selected"><strong>Общая информация</strong></li>
+        <li><a href="{% url profile-edit-avatar %}">Фотография профиля</a></li>
+        <li><a href="{% url profile-edit-resume %}">Резюме</a></li>
+        <li><a href="{% url profile-edit-settings %}">Настройка аккаунта</a></li>
+    </ul>
+    {% if user.profile.type == 1 %}
+        {% sitetree_menu from "profiles_menu" include "users_tree,this-siblings" template "accounts/left_menu.html" %}
+    {% endif %}
+{% endblock %}

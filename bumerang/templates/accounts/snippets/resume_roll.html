@@ -1,0 +1,67 @@
+{#Если это простой пользователь#}
+{% if object.type == 1 and object.get_user_profile_resume %}
+    <div class="tab-container js-toggle2-container js-toggle2-container_resume">
+        <div class="b-hr"><hr /></div>
+        <div class="tab-block js-toggle2-block">
+            <section class="b-resume">
+                {% for item in object.get_user_profile_resume %}
+                    {% include "accounts/snippets/resume_item.html" %}
+                {% endfor %}
+            </section>
+        </div>
+        <div class="tab-button">
+            <div class="b-hr"><hr /></div>
+            <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
+        </div>
+    </div>
+{% endif %}
+
+{#Если это школа#}
+{% if object.type == 2 and object.faculty_set.count or object.teacher_set.count %}
+    <div class="tab-container js-toggle2-container js-toggle2-container_resume">
+        <div class="b-hr"><hr /></div>
+        <div class="tab-block js-toggle2-block">
+            <section class="b-resume">
+                {% for item in object.get_school_profile_resume %}
+                    {% include "accounts/snippets/resume_item.html" %}
+                {% endfor %}
+
+                {% if object.teacher_set.count %}
+                    <h2>Преподаватели</h2>
+                    {% for person in object.teacher_set.all %}
+                        {% include 'accounts/snippets/resume_person_item.html' %}
+                    {% endfor %}
+                {% endif %}
+            </section>
+        </div>
+        <div class="tab-button">
+            <div class="b-hr"><hr /></div>
+            <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
+        </div>
+    </div>
+{% endif %}
+
+{#Если это студия#}
+{% if object.type == 3 and object.service_set.count or object.teammate_set.count %}
+    <div class="tab-container js-toggle2-container js-toggle2-container_resume">
+        <div class="b-hr"><hr /></div>
+        <div class="tab-block js-toggle2-block">
+            <section class="b-resume">
+                {% for item in object.get_studio_profile_resume %}
+                    {% include "accounts/snippets/resume_item.html" %}
+                {% endfor %}
+
+                {% if object.teammate_set.count %}
+                    <h2>Команда</h2>
+                    {% for person in object.teammate_set.all %}
+                        {% include 'accounts/snippets/resume_person_item.html' %}
+                    {% endfor %}
+                {% endif %}
+            </section>
+        </div>
+        <div class="tab-button">
+            <div class="b-hr"><hr /></div>
+            <a href="" class="b-button b-button_grey js-toggle2-lnk"><span class="js-toggle2-text">↑ Скрыть</span> резюме</a>
+        </div>
+    </div>
+{% endif %}

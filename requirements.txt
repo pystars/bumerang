@@ -1,7 +1,7 @@
 -e svn+http://code.djangoproject.com/svn/django/trunk/#egg=django-trunk
 pillow==1.7.6
 South==0.7.3
-django-debug-toolbar==0.8.5
+django-debug-toolbar==0.9.4
 django-filebrowser==3.4.0
 django-grappelli==2.3.5
 django-mptt==0.5.2

@@ -1,0 +1,22 @@
+{% extends "news/news_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}{% sitetree_page_title from "main_menu" %}{% endblock %}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <h1>Новости</h1>
+    </header>
+    <section class="b-announs b-announs_news">
+    {% for item in object_list %}
+        <article class="announ-item">
+            <header class="ai-head">
+                <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
+                <h3><a href="{% url news-detail item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                {{ item.preview_text|safe }}
+            </header>
+        </article>
+    {% endfor %}
+    {% include 'paginator/paginator.html' %}
+    </section>
+{% endblock %}

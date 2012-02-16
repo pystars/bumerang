@@ -1,0 +1,9 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <td>
+        <p style="margin: 4px 0 4px 0;">
+            Ссылка для активации аккаунта: <a href="{{ link }}" target ="_blank" style="color: #005A8C;">{{ link }}</a>
+        </p>
+    </td>
+{% endblock %}

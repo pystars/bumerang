@@ -1,0 +1,39 @@
+{% extends "advices/advices_wrapper.html" %}
+{% load mptt_tags %}
+
+{% block title %}{{ advice.name }}{% endblock %}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <nav>
+            <a href="{% url advice-list %}" title="Советы профессионалов">Советы профессионалов</a>
+            <span class="b-crumbs__sep">/</span>
+            {% for node in advice.get_ancestors %}
+                <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node.name }}</a>
+                <span class="b-crumbs__sep">/</span>
+            {% endfor %}
+            <span>{{ advice.name }}</span>
+        </nav>
+        <h2>{{ advice.name }}</h2>
+    </header>
+    <section class="b-announs b-announs_news">
+        {% for node in children %}
+            {% if not node.get_children %}
+                <article class="announ-item">
+                    <header class="ai-head">
+                        <h3>{{ node.name }}</h3>
+                        {{ node.description|safe }}
+                    </header>
+                </article>
+            {% else %}
+                <article class="announ-item">
+                    <header class="ai-head">
+                        <h3><a href="{{ node.get_absolute_url }}">{{ node.name }}</a></h3>
+                        {{ node.description|safe }}
+                    </header>
+                </article>
+            {% endif %}
+        {% endfor %}
+    </section>
+    <a href="{% url advice-list %}" class="return-to-previous-page">&larr; Вернуться к списку советов</a>
+{% endblock %}

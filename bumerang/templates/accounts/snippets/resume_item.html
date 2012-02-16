@@ -1,0 +1,13 @@
+{% if item.values %}
+<h2>{{ item.name }}</h2>
+{% for subitem in item.values %}
+    {% if subitem.value %}
+    <dl>
+        <dt>{{ subitem.name }}</dt>
+        <dd>
+            {{ subitem.value }}
+        </dd>
+    </dl>
+    {% endif %}
+{% endfor %}
+{% endif %}

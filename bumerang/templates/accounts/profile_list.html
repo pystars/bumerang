@@ -1,0 +1,58 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Участники{% endblock %}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <h1>Участники</h1>
+    </header>
+    <section class="b-participants">
+        {% for profile in object_list %}
+{#            {% if profile.is_active and profile.title %}#}
+            <div class="b-tag d-rounded d-rounded_r10 d-sh">
+                <div class="b-tag__i">
+                    <section class="b-participants__item cleared">
+                        <div class="b-ava">
+									<span>
+                                        {% if profile.min_avatar %}
+                                            <img src="{{ profile.min_avatar.url }}" width="100" height="100" alt="" />
+                                        {% else %}
+                                            {% if profile.type == 1 %}
+                                                <img src="{{ STATIC_URL }}i/noava-b.jpg" width="100" height="100" alt="" />
+                                            {% endif %}{% if profile.type == 2 %}
+                                                <img src="{{ STATIC_URL }}i/noava-school-b.png" width="100" height="100" alt="" />
+                                            {% endif %}{% if profile.type == 3 %}
+                                                <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="100" height="100" alt="" />
+                                            {% endif %}
+                                        {% endif %}
+									</span>
+                            <i class="b-ava__sh"></i>
+                            {% if profile.type == 1 %}
+                                <div class="b-ava__caption b-ava__caption_participant">Участник</div>
+                            {% endif %}{% if profile.type == 2 %}
+                                <div class="b-ava__caption b-ava__caption_school">Школа</div>
+                            {% endif %}{% if profile.type == 3 %}
+                                <div class="b-ava__caption b-ava__caption_studio">Студия</div>
+                            {% endif %}
+                        </div>
+                        <header class="pi-head">
+                            <h3><a href="{% url profile-detail profile.id %}" target="_blank">{{ profile.title }}</a></h3>
+                            <div>{{ profile.video_list.count }}</div>
+                            <div>Зарегистрировался {{ profile.date_joined|date:'d E Y' }}</div>
+                        </header>
+                        <footer class="pi-foot">
+                            <ul class="b-stat">
+                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>{{ profile.views_count }}</span></li>
+                            </ul>
+                        </footer>
+                    </section>
+                </div>
+                <i class="b-tag__hole"></i>
+            </div>
+{#            {% endif %}#}
+        {% endfor %}
+    </section>
+    {% include 'paginator/paginator.html' %}
+{% endblock %}
