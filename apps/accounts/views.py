@@ -325,7 +325,7 @@ class ProfileInfoEditView(UpdateView):
         notify_success(
             self.request,
             message=u'''
-                Данные профиля успешно обновлены.
+                Информация вашего профиля успешно обновлена.
                 '''
         )
 
@@ -355,8 +355,9 @@ class ProfileUpdateView(UpdateView):
         notify_success(
             self.request,
             message=u'''
-                Данные профиля успешно обновлены.
-                '''
+                Информация вашего профиля успешно обновлена.<br/>
+                <a href="{0}">Перейти к просмотру профиля</a>
+            '''.format(reverse("profile-detail", args=[self.get_object().id]))
         )
 
         return super(ProfileUpdateView, self).form_valid(form)
@@ -410,14 +411,14 @@ class FormsetUpdateView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         formset = self.FormSet(request.POST,request.FILES, instance=self.get_object())
-
         if formset.is_valid():
             formset.save()
             notify_success(
                 self.request,
                 message=u'''
-                Данные профиля успешно обновлены.
-                '''
+                Информация вашего профиля успешно обновлена.<br/>
+                 <a href="{0}">Перейти к просмотру профиля</a>
+            '''.format(reverse("profile-detail", args=[self.get_object().id]))
             )
 
             return HttpResponseRedirect(self.get_success_url())
