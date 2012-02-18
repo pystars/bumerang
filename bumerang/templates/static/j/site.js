@@ -392,7 +392,7 @@ $(function() {
         }, delay_time);
 
         $(document).keydown(function(e) {
-            if (e.keyCode == 27) {
+            if (e.keyCode == 27 || e.keyCode == 13) {
                 close.trigger('click');
             }
         });

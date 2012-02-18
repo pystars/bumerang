@@ -350,7 +350,7 @@ class ProfileUpdateView(UpdateView):
             message=u'''
                 Информация вашего профиля успешно обновлена.<br/>
                 <a href="{0}">Перейти к просмотру профиля</a>
-                '''.format(reverse("profile-detail", args=[self.get_object().id]))
+            '''.format(reverse("profile-detail", args=[self.get_object().id]))
         )
 
         return super(ProfileUpdateView, self).form_valid(form)
@@ -412,8 +412,7 @@ class FormsetUpdateView(UpdateView):
                 message=u'''
                 Информация вашего профиля успешно обновлена.<br/>
                  <a href="{0}">Перейти к просмотру профиля</a>
-                '''.format(reverse("profile-detail",
-                                   args=[self.get_object().id]))
+            '''.format(reverse("profile-detail", args=[self.get_object().id]))
             )
 
             return HttpResponseRedirect(self.get_success_url())
