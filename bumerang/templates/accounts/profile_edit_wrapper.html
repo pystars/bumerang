@@ -27,12 +27,11 @@
                             {% block edit_side_nav %}
                                 {% ifequal user.profile.type 1 %}
                                     {% sitetree_menu from "user_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+                                {% endifequal %}{% ifequal user.profile.type 2 %}
+                                    {% sitetree_menu from "school_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+                                {% endifequal %}{% ifequal user.profile.type 3 %}
+                                    {% sitetree_menu from "studio_edit_menu" include "trunk" template "accounts/left_menu.html" %}
                                 {% endifequal %}
-                            {% ifequal user.profile.type 2 %}
-                                {% sitetree_menu from "school_edit_menu" include "trunk" template "accounts/left_menu.html" %}
-                            {% endifequal %}{% ifequal user.profile.type 3 %}
-                                {% sitetree_menu from "studio_edit_menu" include "trunk" template "accounts/left_menu.html" %}
-                            {% endifequal %}
                             {% endblock %}
                         </nav>
                     </div>

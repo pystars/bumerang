@@ -4031,6 +4031,16 @@ textarea {
 	behavior:url(j/PIE.htc);
 }
 
+.b-tabs > dl > dt.last {
+    -webkit-border-radius:0 9px 0 0;
+    -moz-border-radius:0 9px 0 0;
+    border-radius:0 9px 0 0;
+    -pie-watch-ancestors:1;
+    behavior:url(j/PIE.htc);
+    float: right !important;
+    right: 0;
+}
+
 .b-tabs > dl > dt.first .l {
 	display:none;
 }

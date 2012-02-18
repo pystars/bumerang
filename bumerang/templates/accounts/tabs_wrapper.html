@@ -67,6 +67,11 @@
             </div>
         </dd>
     {% endblock %}
+        {% if form %}
+        <dt class="last">
+            <a href="{% url profile-self %}">Просмотр профиля</a>
+        </dt>
+        {% endif %}
     </dl>
 </div>
 {% endblock %}

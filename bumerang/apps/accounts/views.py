@@ -139,8 +139,8 @@ class RegistrationFormView(CreateView):
         return reverse('BumerangIndexView')
 
     def form_valid(self, form):
-        self.object = form.save()
-
+        self.object = form.save(commit=False)
+        self.object.username = form.cleaned_data['email'][:30]
         self.object.is_active = False
         self.object.activation_code = random_string(32)
 
@@ -234,13 +234,7 @@ class PasswordRecoveryView(FormView):
     def form_valid(self, form):
         receiver_email = form.data['email']
         new_password = uuid4().get_hex()[:8]
-#        salt = get_hexdigest(
-#            'sha1', str(random.random()), str(random.random()))[:5]
-#        hsh = get_hexdigest('sha1', salt, new_password)
-#        new_password_hash = '%s$%s$%s' % ('sha1', salt, hsh)
-
         profile = Profile.objects.get(email=receiver_email)
-#        profile.password = new_password_hash
         profile.set_password(new_password)
         profile.save()
 
@@ -324,7 +318,7 @@ class ProfileInfoEditView(UpdateView):
         notify_success(
             self.request,
             message=u'''
-                Данные профиля успешно обновлены.
+                Информация вашего профиля успешно обновлена.
                 '''
         )
 
@@ -354,8 +348,9 @@ class ProfileUpdateView(UpdateView):
         notify_success(
             self.request,
             message=u'''
-                Данные профиля успешно обновлены.
-                '''
+                Информация вашего профиля успешно обновлена.<br/>
+                <a href="{0}">Перейти к просмотру профиля</a>
+                '''.format(reverse("profile-detail", args=[self.get_object().id]))
         )
 
         return super(ProfileUpdateView, self).form_valid(form)
@@ -415,8 +410,10 @@ class FormsetUpdateView(UpdateView):
             notify_success(
                 self.request,
                 message=u'''
-                Данные профиля успешно обновлены.
-                '''
+                Информация вашего профиля успешно обновлена.<br/>
+                 <a href="{0}">Перейти к просмотру профиля</a>
+                '''.format(reverse("profile-detail",
+                                   args=[self.get_object().id]))
             )
 
             return HttpResponseRedirect(self.get_success_url())
