@@ -135,6 +135,15 @@ class ProfileAvatarEditForm(forms.ModelForm):
 
 
 class ProfileResumeEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProfileResumeEditForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if (field.widget.__class__ == forms.widgets.Textarea):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide wide_resume'
+                else:
+                    field.widget.attrs.update({'class': 'wide wide_resume'})
+
     class Meta:
         model = Profile
         fields = ('work_type', 'work_company', 'schools', 'courses',
