@@ -79,7 +79,7 @@
                     <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
                 {% endif %}
                 <p class="smaller" id="videos-count">
-                    Всего {{ profile.video_set.count }} видео
+                    Всего {{ profile.videos_without_album.count }} видео
                     <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
                 </p>
             {% endif %}
@@ -99,7 +99,7 @@
             <strong class="b-empty__text">Нет видеороликов</strong>
             <div><a href="{% url video-album-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
         </div>
-        {% with profile.video_set.all as videos %}
+        {% with profile.videos_without_album as videos %}
             {% include "snippets/videos_list.html" %}
         {% endwith %}
     </section>

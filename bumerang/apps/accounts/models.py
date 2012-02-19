@@ -35,6 +35,12 @@ class Profile(User):
         (2, u'Женский'),
     )
 
+    RESUME_FIELDS_GROUPS = [
+        (u'Работа и карьера', ['work_type', 'work_company']),
+        (u'Образование', ['schools', 'courses']),
+        (u'Интересы', ['hobby', 'fav_movies', 'fav_music', 'fav_books'])
+    ]
+
     type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1,
                                db_index=True)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
@@ -52,10 +58,7 @@ class Profile(User):
                                        **nullable)
     activation_code_expire = models.DateTimeField(editable=False, **nullable)
 
-    '''
-    Специфические для разных типов пользователей поля
-    '''
-    # Независимый участник
+    # Специфические для разных типов пользователей поля
 #    work = models.TextField(u'Работа и карьера', **nullable)
 #    education = models.TextField(u'Образование', **nullable)
 #    interests = models.TextField(u'Интересы', **nullable)
@@ -95,77 +98,49 @@ class Profile(User):
         return self.email
 
     def get_locality(self):
-        '''
+        u"""
         Возвращает строку для поля "откуда" профиля
-        '''
+        """
         return ", ".join([s for s in self.country, self.region, self.city if s])
 
-    def get_field_dict(self, field):
-        '''
-        Принимает строку названия поля и возвращает его лейбл и значение
-        '''
-        value = self.__dict__[field]
-        if value:
-            return { 'name': self._meta.get_field(field).verbose_name,
-                     'value': value }
-        else:
-            return None
-
-    def get_fields_group(self, label, field_names):
-        '''
-        Принимает лейбл и список полей для группы полей, проверяет,
-        заполнено ли хоть одно поле, и, если да, возвращает словарь из
-        лейбла группы и массива заполненных полей
-        '''
-        values = map(lambda x: self.get_field_dict(x), field_names)
-        filtered_or_empty = filter(lambda a: True if a else False, values)
-
-        return { 'name': label,
-                 'values': filtered_or_empty }
+    def get_fields_group(self, field_names):
+        u"""
+        Принимает список полей, проверяет, возвращает список словарей
+        {'name': <имя поля>, 'value':<значение>} для заполненных полей
+        """
+        field_names = set(field_names).intersection(
+            set(self._meta.get_all_field_names()))
+        return [{
+            'name': self._meta.get_field(field).verbose_name,
+            'value': getattr(self, field)}
+            for field in field_names if getattr(self, field, None)]
 
     def get_user_profile_resume(self):
-        values = [self.get_fields_group(u'Работа и карьера',
-                      ['work_type', 'work_company']),
-                  self.get_fields_group(u'Образование',
-                      ['schools', 'courses']),
-                  self.get_fields_group(u'Интересы',
-                      ['hobby', 'fav_movies', 'fav_music', 'fav_books']),
-                  ]
-
-        return filter(lambda a: True if a['values'] else False, values)
+        return [{'name': label, 'values': self.get_fields_group(fields)}
+            for label, fields in self.RESUME_FIELDS_GROUPS
+            if self.get_fields_group(fields)]
 
     def get_studio_profile_resume(self):
-        result = []
-
-        services_qs = self.service_set.all().order_by('id')
-        services_list = list([({'name': name.title,
-                                'value': name.description}) for name
-                                                            in services_qs])
-
+        services_list = [{'name': obj.title, 'value': obj.description}
+            for obj in self.service_set.all().order_by('id')]
         if services_list:
-            result.append({'name': u'Услуги',
-                           'values': services_list})
-
-        return result
+            return [{'name': u'Услуги', 'values': services_list}]
+        return []
 
     def get_school_profile_resume(self):
-        result = []
-
-        services_qs = self.faculty_set.all().order_by('id')
-        services_list = list([({'name': name.title,
-                                'value': name.description}) for name
-                                                            in services_qs])
-
+        services_list = [{'name': obj.title, 'value': obj.description}
+        for obj in self.faculty_set.all().order_by('id')]
         if services_list:
-            result.append({'name': u'Факультеты',
-                           'values': services_list})
+            return [{'name': u'Факультеты', 'values': services_list}]
+        return []
 
-        return result
+    def videos_without_album(self):
+        return self.video_set.filter(album__isnull=True)
 
 
 class Faculty(models.Model):
     title = models.CharField(u'Название', max_length=255, blank=False)
-    description = models.TextField(u'Описание', blank=False)
+    description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Факультеты',)
 
     def __unicode__(self):
@@ -174,7 +149,7 @@ class Faculty(models.Model):
 
 class Service(models.Model):
     title = models.CharField(u'Название', max_length=255, blank=False)
-    description = models.TextField(u'Описание', blank=False)
+    description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Услуги')
 
     def __unicode__(self):
