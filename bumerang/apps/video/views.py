@@ -34,8 +34,11 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
                     json.loads(form.cleaned_data['video_id'])))
             except ValueError:
                 return HttpResponseForbidden()
-        album = get_object_or_404(VideoAlbum, pk=form.cleaned_data['album_id'],
-            owner=self.request.user)
+        if 'album_id' in form.cleaned_data:
+            album = get_object_or_404(VideoAlbum,
+                pk=form.cleaned_data['album_id'], owner=self.request.user)
+        else:
+            album = None
         if self.get_queryset().filter(**kwargs).update(album=album):
             msg = u'Видео успешно перемещено'
         else:

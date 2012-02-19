@@ -48,4 +48,4 @@ class VideoForm(BaseVideoForm):
 
 class VideoUpdateAlbumForm(forms.Form):
     video_id = forms.CharField()
-    album_id = forms.IntegerField()
+    album_id = forms.IntegerField(required=False)
