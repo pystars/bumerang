@@ -149,7 +149,6 @@ class Video(models.Model, TitleUnicode):
         except ProtectedError:
             pass #TODO: raise delete error, say it to user
 
-
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
 
