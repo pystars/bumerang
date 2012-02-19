@@ -286,11 +286,20 @@ class ProfileVideoView(DetailView):
 
 
 class UsersListView(ListView):
-    queryset = Profile.objects.filter(
-        is_active=True,
-        title__isnull=False
-    ).order_by('-id')
+    model = Profile
     paginate_by = 25
+
+    def get_queryset(self):
+        qs = super(UsersListView, self).get_queryset()
+        if 'type' in self.kwargs:
+            qs = qs.filter(type=self.kwargs['type'])
+        return qs.filter(is_active=True, title__isnull=False).order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        ctx = super(UsersListView, self).get_context_data(**kwargs)
+        if 'type' in self.kwargs:
+            ctx.update({'current_type': self.kwargs['type']})
+        return ctx
 
 
 class ProfileInfoEditView(UpdateView):

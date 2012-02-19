@@ -16,6 +16,21 @@ urlpatterns = patterns('',
         UsersListView.as_view(),
         name="users-list"
     ),
+    url(r'^members/$',
+        UsersListView.as_view(),
+        kwargs={'type': 1},
+        name="members-list"
+    ),
+    url(r'^schools/$',
+        UsersListView.as_view(),
+        kwargs={'type': 2},
+        name="schools-list"
+    ),
+    url(r'^studios/$',
+        UsersListView.as_view(),
+        kwargs={'type': 3},
+        name="studios-list"
+    ),
     url(r'^register/$',
         RegistrationFormView.as_view(),
         name='registration'
