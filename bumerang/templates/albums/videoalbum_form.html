@@ -38,9 +38,7 @@
                         <hr/>
                     </div>
                     <header class="b-head cleared">
-                        {% if form.instance.id %}
-                            <a href="{% url video-album-detail form.instance.id %}" class="b-button-prev"><span>Назад</span></a>
-                        {% endif %}
+                        <a href="{% url video-list %}" class="b-button-prev return-to-previous-page"><span>Назад</span></a>
                         <h3>
                             {% if form.instance.id %}
                                 Редактирование

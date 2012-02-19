@@ -135,6 +135,15 @@ class ProfileAvatarEditForm(forms.ModelForm):
 
 
 class ProfileResumeEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProfileResumeEditForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if (field.widget.__class__ == forms.widgets.Textarea):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide wide_resume'
+                else:
+                    field.widget.attrs.update({'class': 'wide wide_resume'})
+
     class Meta:
         model = Profile
         fields = ('work_type', 'work_company', 'schools', 'courses',
@@ -147,12 +156,12 @@ class ProfileEmailEditForm(forms.ModelForm):
     def clean_username(self):
         try:
             Profile.objects.get(username=self.cleaned_data['username'])
-            raise ValidationError(u'Данный email уже используется')
+            raise ValidationError(u'Адрес уже зарегистрирован в системе')
         except ObjectDoesNotExist:
             return self.cleaned_data['username']
 
     class Meta:
-        model = User
+        model = Profile
         fields = ('username',)
 
 
@@ -231,21 +240,3 @@ class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
         fields = ('title', 'country',
                   'region',
                   'city', 'description', )
-
-
-#class StudioProfileServicesForm(forms.ModelForm):
-#    '''
-#    Форма редактирования услуг студии
-#    '''
-#    class Meta:
-#        model = Profile
-#        fields = ('services',)
-
-
-#class StudioProfileTeamForm(forms.ModelForm):
-#    '''
-#    Форма редактирования команды студии
-#    '''
-#    class Meta:
-#        model = Profile
-#        fields = ('team',)
