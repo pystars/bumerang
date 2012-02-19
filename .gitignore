@@ -4,4 +4,4 @@
 *.db
 local_settings.py
 .DS_Store
-media/*
+media/video/.+

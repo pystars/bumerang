@@ -1,0 +1,12 @@
+<uwsgi>
+    <socket>/tmp/bumerang.sock</socket>
+    <process>1</process>
+    <master/>
+    <pidfile>/tmp/bumerang.pid</pidfile>
+    <env>DJANGO_SETTINGS_MODULE=bumerang.settings</env>
+    <module>django.core.handlers.wsgi:WSGIHandler()</module>
+    <chdir>/Users/goodfellow/work/projects/bumer</chdir>
+    <virtualenv>/Users/goodfellow/.virtualenvs/bumerang14</virtualenv>
+    <daemonize>/tmp/bumerang-uwsgi.log</daemonize>
+    <vacuum/>
+</uwsgi>
