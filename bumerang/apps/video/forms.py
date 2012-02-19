@@ -10,6 +10,14 @@ class BaseVideoForm(forms.ModelForm):
         self.fields['album'].queryset = self.fields[
                 'album'].queryset.filter(owner=user)
 
+        for name, field in self.fields.items():
+            if (field.widget.__class__ == forms.widgets.TextInput
+                or field.widget.__class__ == forms.widgets.Textarea):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide'
+                else:
+                    field.widget.attrs.update({'class': 'wide'})
+
 
 class VideoCreateForm(BaseVideoForm):
 
