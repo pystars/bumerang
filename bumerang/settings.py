@@ -119,8 +119,6 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
 )
 
-AUTHENTICATION_BACKENDS = ('bumerang.apps.accounts.backends.EmailAuthBackend',)
-
 AUTH_PROFILE_MODULE = 'bumerang.apps.accounts.models.Profile'
 
 INSTALLED_APPS = (

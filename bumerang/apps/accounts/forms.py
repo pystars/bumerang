@@ -52,6 +52,7 @@ class EditFormsMixin(forms.ModelForm):
 
 
 class RegistrationForm(forms.ModelForm):
+    username = forms.EmailField(max_length=30)
     password1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
     password2 = forms.CharField(label=_("Password confirmation"),
         widget=forms.PasswordInput,
@@ -75,30 +76,20 @@ class RegistrationForm(forms.ModelForm):
                 "The two password fields didn't match."))
         return password2
 
-    def clean_email(self):
+    def clean_username(self, **kwargs):
         '''
-        Мы не можем изменить модель пользователя для указания
-        уникальности поля email, а стороннее вмешательство в БД
-        это не Ъ. Поэтому просто проводим
-        выборку по указанному адресу. Процедура регистрации
-        вызывается редко и не должна стать причиной излишней нагрузки
-       '''
-        email = self.cleaned_data.get('email', '')
+        По-хорошему, нужно переопределять error_messages для ошибки
+        существующего пользователя. Но я не нашёл как этого сделать
+        за адекватный срок. Поэтому так.
+        '''
         try:
-            Profile.objects.get(email=email)
-            raise forms.ValidationError(
-                'Пользователь с таким адресом уже существует.')
+            User.objects.get(username=self.cleaned_data['username'])
+            raise ValidationError(u'Пользователь с таким адресом уже существует')
         except ObjectDoesNotExist:
-            return email
+            return self.cleaned_data['username']
 
     def save(self, commit=True):
         profile = super(RegistrationForm, self).save(commit=False)
-#        algo = 'sha1'
-#        salt = get_hexdigest(
-#            algo, str(random.random()), str(random.random()))[:5]
-#        hsh = get_hexdigest(algo, salt, self.cleaned_data['password1'])
-#        profile.password = '%s$%s$%s' % (algo, salt, hsh)
-#        profile.username = uuid4().get_hex()[:30]
         profile.set_password(self.cleaned_data['password1'])
         if commit:
             profile.save()
@@ -106,7 +97,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('email', 'type')
+        fields = ('username', 'type')
         widgets = {'type': forms.RadioSelect()}
 
 

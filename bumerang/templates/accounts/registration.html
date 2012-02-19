@@ -18,14 +18,14 @@
 								<label>
                                     <span class="f-title"><span>Почта</span></span>
 									<span class="f-input">
-										<span class="b-input">{{ form.email }}</span>
+										<span class="b-input">{{ form.username }}</span>
 									</span>
                                 </label>
 								<span class="f-hint">
 									, она же логин
 								</span>
 							</span>
-                    {% if form.email.errors %}<div class="f-err"><span>{{ form.email.errors }}</span></div>{% endif %}
+                    {% if form.username.errors %}<div class="f-err"><span>{{ form.username.errors }}</span></div>{% endif %}
                 </div>
                 <fieldset>
                     <div class="b-form__field {% if form.password1.errors or form.password2.errors %}b-form__field_err{% endif %}">

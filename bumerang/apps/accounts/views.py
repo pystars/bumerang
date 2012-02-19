@@ -62,7 +62,7 @@ def login(request, template_name='registration/login.html',
         if form.is_valid():
             netloc = urlparse.urlparse(redirect_to)[1]
 
-            profile = Profile.objects.get(email=form.cleaned_data['username'])
+            profile = Profile.objects.get(username=form.cleaned_data['username'])
             name = profile.title
 
             message = u'''
@@ -140,7 +140,7 @@ class RegistrationFormView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.username = form.cleaned_data['email'][:30]
+#        self.object.email = form.cleaned_data['email']
         self.object.is_active = False
         self.object.activation_code = random_string(32)
 
@@ -149,11 +149,10 @@ class RegistrationFormView(CreateView):
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
         self.object.activation_code_expire = datetime.now() + timedelta(days=1)
+        self.object.save()
 
         send_activation_link_task(full_activation_url,
-                                  form.cleaned_data['email'])
-
-        self.object.save()
+                                  form.cleaned_data['username'])
 
         notify_success(
             self.request,
