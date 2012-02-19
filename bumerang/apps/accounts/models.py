@@ -108,8 +108,7 @@ class Profile(User):
         Принимает список полей, проверяет, возвращает список словарей
         {'name': <имя поля>, 'value':<значение>} для заполненных полей
         """
-        field_names = set(field_names).intersection(
-            set(self._meta.get_all_field_names()))
+        field_names = set(field_names) & set(self._meta.get_all_field_names())
         return [{
             'name': self._meta.get_field(field).verbose_name,
             'value': getattr(self, field)}

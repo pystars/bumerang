@@ -10,15 +10,18 @@ from models import Preview
 from converting.models import ConvertOptions
 
 
-class ConvertVideoTask(Task):
+class MakeScreenShots(Task):
+    def run(self, video, **kwargs):
+        """
+        Converts the Video and creates the related files.
+        """
+        logger = self.get_logger(**kwargs)
+        logger.info("Starting Video Post conversion: %s" % video)
 
-    def get_commandline(self):
-        return (['HandBrakeCLI', '-O', '-C', '2', '-i', self.original_file_path]
-            + self.convert_options + ['-o', self.result_file])
-
-    def get_screen_shots(self, video):
+        video.status = video.CONVERTING
+        video.save()
         for preview in video.preview_set.all():
-            os.unlink(preview.image.path)
+            os.remove(preview.image.path)
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
@@ -33,18 +36,27 @@ class ConvertVideoTask(Task):
             parent_path = os.path.split(output)[0]
             if not os.path.exists(parent_path):
                 os.makedirs(parent_path)
-            cmd = self.screen_shot_cmd(source_path, offset, size, output)
-            print ' '.join(cmd)
+            cmd = self.get_commandline(source_path, offset, size, output)
             process = subprocess.call(cmd, shell=False)
             if not process:
                 preview.image = upload_to
                 preview.save()
             offset += step
+        video.status = video.READY
+        video.save()
+        return "Ready"
 
-    def screen_shot_cmd(self, path, offset, size, output):
-        return ['ffmpeg', '-itsoffset', '-{0}'.format(str(offset)), '-i', path,
+    def get_commandline(self, path, offset, size, output):
+        return ['ffmpeg', '-itsoffset', '-{0}'.format(offset), '-i', path,
                 '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
                 '-s', size, output]
+
+
+class ConvertVideoTask(Task):
+
+    def get_commandline(self):
+        return (['HandBrakeCLI', '-O', '-C', '2', '-i', self.original_file_path]
+            + self.convert_options + ['-o', self.result_file])
 
     def run(self, video, **kwargs):
         """
@@ -69,8 +81,7 @@ class ConvertVideoTask(Task):
             if process:
                 video.status = video.ERROR
             else:
-                video.status = video.READY
                 setattr(video, file_field_name, upload_to)
                 video.save()
-        self.get_screen_shots(video)
+        MakeScreenShots.delay(video)
         return "Ready"
