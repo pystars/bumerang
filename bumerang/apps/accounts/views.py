@@ -206,7 +206,7 @@ class AccountActivationView(TemplateView):
                 ''' % reverse('login')
             )
 
-            send_activation_success(user.email)
+            send_activation_success(user.username)
 
             return HttpResponseRedirect(reverse('BumerangIndexView'))
 
