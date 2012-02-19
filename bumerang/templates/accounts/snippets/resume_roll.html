@@ -53,9 +53,11 @@
 
                 {% if object.teammate_set.count %}
                     <h2>Команда</h2>
-                    {% for person in object.teammate_set.all %}
-                        {% include 'accounts/snippets/resume_person_item.html' %}
-                    {% endfor %}
+                    <div class="b-resume__persons">
+                        {% for person in object.teammate_set.all %}
+                            {% include 'accounts/snippets/resume_person_item.html' %}
+                        {% endfor %}
+                    </dev>
                 {% endif %}
             </section>
         </div>
