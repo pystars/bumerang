@@ -14,7 +14,7 @@
                             <span>Логин-почта</span>
                         </span>
                         <span class="f-txt">
-                            <strong>{{ user.email }}</strong>
+                            <strong>{{ user.username }}</strong>
                         </span>
                     </label>
                 </div>
@@ -22,11 +22,11 @@
                     <label>
                         <span class="f-title"><span>Новая почта</span></span>
                         <span class="f-input">
-                            {{ email_form.email }}
+                            {{ email_form.username }}
                         </span>
                     </label>
-                    {% if email_form.email.errors %}
-                        <div class="f-err" style="margin-left: 120px;"><span>{{ email_form.email.errors }}</span></div>
+                    {% if email_form.username.errors %}
+                        <div class="f-err" style="margin-left: 120px;"><span>{{ email_form.username.errors }}</span></div>
                     {% endif %}
                 </div>
             </div>

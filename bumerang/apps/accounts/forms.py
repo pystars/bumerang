@@ -142,10 +142,18 @@ class ProfileResumeEditForm(forms.ModelForm):
 
 
 class ProfileEmailEditForm(forms.ModelForm):
-    email = forms.EmailField(required=True)
+    username = forms.EmailField(required=True)
+
+    def clean_username(self):
+        try:
+            Profile.objects.get(username=self.cleaned_data['username'])
+            raise ValidationError(u'Данный email уже используется')
+        except ObjectDoesNotExist:
+            return self.cleaned_data['username']
+
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ('username',)
 
 
 class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
