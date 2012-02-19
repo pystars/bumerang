@@ -1,3 +1,4 @@
+{% load videotags %}
 <div class="announs-items">
     <form name="videos" action="{% url videos-delete %}" method="post">
         {% for video in videos %}
@@ -11,7 +12,7 @@
                             {% else %}
                                 <img src="{{ STATIC_URL }}i/nophoto.png" width="190" height="123" alt="{{ video.title }}" />
                             {% endif %}
-                            <span class="time">1:54</span>
+                            <span class="time">{{ object.duration|default_if_none:0|to_hms }}</span>
                         </span>
                         <i class="b-ico b-ico_play"><i></i></i>
                     </a>
