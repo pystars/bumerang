@@ -147,12 +147,12 @@ class ProfileEmailEditForm(forms.ModelForm):
     def clean_username(self):
         try:
             Profile.objects.get(username=self.cleaned_data['username'])
-            raise ValidationError(u'Данный email уже используется')
+            raise ValidationError(u'Адрес уже зарегистрирован в системе')
         except ObjectDoesNotExist:
             return self.cleaned_data['username']
 
     class Meta:
-        model = User
+        model = Profile
         fields = ('username',)
 
 
@@ -231,21 +231,3 @@ class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
         fields = ('title', 'country',
                   'region',
                   'city', 'description', )
-
-
-#class StudioProfileServicesForm(forms.ModelForm):
-#    '''
-#    Форма редактирования услуг студии
-#    '''
-#    class Meta:
-#        model = Profile
-#        fields = ('services',)
-
-
-#class StudioProfileTeamForm(forms.ModelForm):
-#    '''
-#    Форма редактирования команды студии
-#    '''
-#    class Meta:
-#        model = Profile
-#        fields = ('team',)
