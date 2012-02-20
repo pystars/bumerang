@@ -18,5 +18,5 @@ class VideoAlbum(models.Model, TitleUnicode):
 
     def preview(self):
         if self.cover:
-            return self.cover.preview
+            return self.cover.preview()
         return None
