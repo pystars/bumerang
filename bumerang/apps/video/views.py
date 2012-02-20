@@ -112,7 +112,7 @@ class VideoListView(ListView):
         Q(lq_file__isnull=False),
         published_in_archive=True,
     )
-    paginate_by = 25
+    paginate_by = 5
 
 
 #def save_upload( uploaded, filename, raw_data ):
