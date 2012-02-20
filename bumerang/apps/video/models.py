@@ -65,6 +65,7 @@ class Video(models.Model, TitleUnicode):
     READY = 2
     ERROR = 3
     STATUS_CHOICES = choices(
+        (PENDING, u'ожидает очереди'),
         (CONVERTING, u'конвертируется'),
         (READY, u'обработано'),
         (ERROR, u'ошибка обработки')

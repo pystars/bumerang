@@ -11,11 +11,12 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
 
-from models import Video
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
+from models import Video
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
+from mediainfo import video_duration
 
 
 class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
@@ -69,6 +70,7 @@ class VideoCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
+        self.object.duration = video_duration(self.object.original_file.file)
         self.object.save()
         ConvertVideoTask.delay(self.object)
         return super(ModelFormMixin, self).form_valid(form)
@@ -89,9 +91,15 @@ class VideoUpdateView(OwnerMixin, UpdateView):
         return reverse('video-edit', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         if 'original_file' in form.changed_data:
+            self.object.duration = video_duration(
+                self.object.original_file.file)
+            self.object.status = self.object.PENDING
+            self.object.save()
             ConvertVideoTask.delay(self.object)
+        else:
+            self.object.save()
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
         return super(VideoUpdateView, self).form_valid(form)
