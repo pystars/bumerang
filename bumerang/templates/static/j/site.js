@@ -97,6 +97,8 @@ function show_videos_count() {
         $('#videos-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#videos-plurals').text()));
     } else {
         $('#videos-count').text('Нет ни одного видео');
+        $('#video-delete-button').hide();
+        $('#move-video-button').hide();
     };
 };
 
@@ -169,10 +171,115 @@ function show_popup_notification(popup_id) {
 }
 
 
+
+/******************************************************************************
+ * 
+ * Логика работы с видеоальбомами. Реализовано на библиотеке Backbone.js.
+ * Так же исользован функционал библиотеки Underscore.js.
+ * 
+ ******************************************************************************/
+
+var VideoAlbumsView = Backbone.View.extend({
+
+    el: 'body',
+    
+    selected_albums: [],
+    
+    events: {
+        'click .videoalbum input[type=checkbox]': 'clickCheckbox',
+        'click #videoalbum-delete-buton': 'clickDeleteButton'
+    },
+
+    initialize: function() {
+        this.updatePage();
+    },
+
+    clickCheckbox: function(e) {
+        // Получаем jQuery-объект кликнутого чекбокса
+        var el = $('#' + e['srcElement'].id);
+        
+        // Если он отмечен - добавляем в массив видеоальбомов
+        if (el.attr('checked')) {
+            this.selected_albums.push(
+                parseInt(el.attr('id').split('checkbox-')[1])
+            );
+        } else {
+            this.selected_albums = _.without(
+                this.selected_albums, 
+                parseInt(el.attr('id').split('checkbox-')[1])
+            );
+        }
+        
+        this.updatePage();
+    },
+
+    clickDeleteButton: function(e) {
+        e.preventDefault();
+        this.hideAlbums();
+        this.showAlbumsCount();
+        this.selected_albums = [];
+        this.updatePage();
+    },
+
+    hideAlbums: function() {
+        var view = this;
+        this.selected_albums.forEach(function(e, i, a) {
+            var el = $('#videoalbum-item-' + e);
+            el.hide(function() {
+                el.remove();
+                view.updatePage();
+            });
+        });
+    },
+
+    hideDeleteButton: function() {
+        $('#videoalbum-delete-buton').hide(300);
+    },
+    
+    showDeleteButton: function() {
+        $('#videoalbum-delete-buton').show(300);
+    },
+    
+    getAlbumsCount: function() {
+        return $('form .videoalbum:visible').length;
+    },
+    
+    showAlbumsCount: function() {
+        var count = this.getAlbumsCount();
+        if (count != 0) {
+            $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#videoalbums-plurals').text()));
+        } else {
+            $('#albums-count').text('Нет ни одного альбома');
+        };
+    },
+        
+    /*
+     * Функция обновления страницы. Перерисовывает контролы
+     * в соответствии с логикой работы представления
+     */
+    updatePage: function() {
+        if (this.selected_albums.length) {
+            this.showDeleteButton();
+        } else {
+            this.hideDeleteButton();
+        }
+        this.showAlbumsCount();
+        console.log('selected ' + this.selected_albums);
+    }
+    
+});
+
+/******************************************************************************/
+
+
+
 /*
 * Site handlers
 * */
 $(function() {
+
+    var vav = new VideoAlbumsView();
+
 /*
 * Video objects handlers
 * */
@@ -216,11 +323,12 @@ $(function() {
     /*
     * Selected videoalbums delete handler
     * */
+    /*
     $('#videoalbum-delete-buton').click(function() {
         delete_albums(get_selected_items('videoalbums'));
         return false;
     });
-
+    */
     /*
     * Single video delete handler
     * */
@@ -258,7 +366,7 @@ $(function() {
                 url: $('#popup-move-video form').attr('action'),
                 data: {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    album_id: $('#popup-move-video input[name=album]:checked').attr('value'),
+                    //album_id: $('#popup-move-video input[name=album]:checked').attr('value'),
                     video_id: id_to_move
                 },
                 success: function(response) {

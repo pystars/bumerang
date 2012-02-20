@@ -124,7 +124,7 @@ $(document).ready(function(){
 	
 	/* Custom Input */
     /* TODO: this raise error on edit video page */
-//	$('input').not('.b-sort__helper').customInput();
+	$('input').not('.b-sort__helper').customInput();
 
 	
 	/* Popup */
