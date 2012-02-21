@@ -175,9 +175,26 @@ function show_popup_notification(popup_id) {
 
 
 function invokeConfirmDialog(text, callback) {
-    //console.log(text);
-    console.log('calling callback');
-    callback.call(arr);
+    var popup = $('#popup-confirm-video');
+    var cancelButton = $('#' + popup.attr('id') + ' #confirm-popup-cancel');
+    var okButton = $('#' + popup.attr('id') + ' #confirm-popup-ok');
+    
+    $('#' + popup.attr('id') + ' #dialog-text').text(text);
+        
+    cancelButton.bind('click', function(e) {
+        popup.hide();
+        $('#tint').hide();
+    });
+    
+    okButton.bind('click', function(e) {
+        callback();
+        cancelButton.trigger('click');
+    });
+    
+    popup.css('margin-left', - popup.width() / 2 + 'px');
+    popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
+    $('#tint').show();
+    popup.show();
 };
 
 
@@ -187,15 +204,6 @@ function invokeConfirmDialog(text, callback) {
  * Так же исользован функционал библиотеки Underscore.js.
  * 
  ******************************************************************************/
-
-function ror(a) {
-    console.log('calling ror');
-    console.log(a);
-    return function(res) {
-        console.log('inside callback');
-        console.log(res);
-    }
-}
 
 var VideoAlbumsView = Backbone.View.extend({
 
@@ -208,14 +216,13 @@ var VideoAlbumsView = Backbone.View.extend({
         'click figure[id*=videoalbum-item-]': 'clickAlbumCheckbox',
         'click article[id*=video-item-]': 'clickVideoCheckbox',
         'click #videoalbum-delete-button': 'clickAlbumDeleteButton',
-        'click #video-delete-button': 'clickVideoDeleteButton'
+        'click #video-delete-button': 'clickVideoDeleteButton',
+        
+        'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete'
     },
 
     initialize: function() {
         this.updatePage();
-        a = this;
-        arr = 'asdasdadasd';
-        invokeConfirmDialog('asd', );
     },
 
     clickAlbumCheckbox: function(e) {
@@ -253,29 +260,73 @@ var VideoAlbumsView = Backbone.View.extend({
     },
 
     clickAlbumDeleteButton: function(e) {
-        var view = this;
         e.preventDefault();
+        var view = this;
         
-        $.ajax({
-            type: 'POST',
-            url: '/video/albums-delete/',
-            data: {
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                ids: JSON.stringify(view.selected_albums),
-            },
-            success: function(response) {
-                //hide_videos_by_ids([id_to_move])
-                show_notification('success', response['message']);
-                $('#popup-move-video').hide();
-                $('#tint').hide();
-                
-                view.hideAlbums();
-                view.showAlbumsCount();
-                view.selected_albums = [];
-                view.updatePage();
-            }
+        if (this.selected_albums.length > 1) {
+            msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
+        } else {
+            msg = 'Вы действительно хотите удалить выбранный видеольбом?';
+        }
+        
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/video/albums-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_albums),
+                },
+                success: function(response) {
+                    //hide_videos_by_ids([id_to_move])
+                    show_notification('success', response['message']);
+                    $('#popup-move-video').hide();
+                    $('#tint').hide();
+                    
+                    view.hideAlbums();
+                    view.showAlbumsCount();
+                    view.selected_albums = [];
+                    view.updatePage();
+                }
+            });
         });
+    },
+
+    clickSingleAlbumDelete: function(e) {
+        e.preventDefault();
+        var el = e['srcElement'];
+        this.selected_albums.push(
+            parseInt(el.id.split('videoalbum-delete-')[1])
+        );
         
+        if (this.selected_albums.length > 1) {
+            msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
+        } else {
+            msg = 'Вы действительно хотите удалить выбранный видеольбом?';
+        }
+        
+        var view = this;
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/video/albums-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_albums),
+                },
+                success: function(response) {
+                    //hide_videos_by_ids([id_to_move])
+                    show_notification('success', response['message']);
+                    $('#popup-move-video').hide();
+                    $('#tint').hide();
+                    
+                    view.hideAlbums();
+                    view.showAlbumsCount();
+                    view.selected_albums = [];
+                    view.updatePage();
+                }
+            });
+        });
     },
 
     clickVideoDeleteButton: function(e) {
@@ -339,7 +390,7 @@ var VideoAlbumsView = Backbone.View.extend({
             this.hideAlbumDeleteButton();
         }
         
-        console.log(this.selected_videos.length);
+        console.log(this.selected_albums.length);
         
         if (this.selected_videos.length) {
             this.showVideoDeleteButton();
@@ -349,7 +400,7 @@ var VideoAlbumsView = Backbone.View.extend({
         
         this.showAlbumsCount();
         
-        if (!this.getAlbumsCount()) {
+        if (!this.getAlbumsCount() && !$('#videoalbum-empty-block').is(':visible')) {
             var empty_block_tpl = $('#videoalbum-empty-block-tpl');
             $('#videoalbums-container').append(empty_block_tpl);
             empty_block_tpl.show(300, 'linear')
@@ -366,6 +417,10 @@ var VideoAlbumsView = Backbone.View.extend({
 * Site handlers
 * */
 $(function() {
+
+    _.templateSettings = {
+        interpolate : /\{=(.+?)\}/g
+    };
 
     var vav = new VideoAlbumsView();
 

@@ -22,7 +22,3 @@ class VideoAlbum(models.Model, TitleUnicode):
         verbose_name = u'Видеоальбом'
         verbose_name_plural = u'Видеоальбомы'
 
-    def preview(self):
-        if self.cover:
-            return self.cover.preview()
-        return None

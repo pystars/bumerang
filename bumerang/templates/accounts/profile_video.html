@@ -111,11 +111,35 @@
 {% endblock %}
 
 {% block popup %}
+
+<div id='popups-dock' style="display: none;"></div>
+
+<section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+        <header class="b-form__header">
+            <h4>
+                Подтвердите действие
+            </h4>
+            <p id="dialog-text">
+                {= text }
+            </p>
+        </header>
+        <footer class="b-form__footer cleared">
+            <a href="#" class="b-button b-button_yellow left cancel" id="confirm-popup-cancel">Отменить</a>
+            <a href="#" class="b-button b-button_red right videos_delete" id="confirm-popup-ok">Удалить</a>
+        </footer>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+
 <section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">
     <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
         <header class="b-form__header">
             <h4>
-                Вы дйствительно хотите удалить видеозапись?
+                Вы действительно хотите удалить видеозапись?
             </h4>
             <p>
                 Видео будет удалено безвозвратно.

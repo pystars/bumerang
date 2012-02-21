@@ -44,8 +44,7 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin)
         else:
             msg = u'{0} успешно удален'.format(self.model._meta.verbose_name)
         for object in objects.all():
-            #object.delete()
-            pass
+            object.delete()
         return super(ObjectsDeleteView, self).render_to_response(message=msg)
 
 
