@@ -32,6 +32,9 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin)
     def get_queryset(self, **kwargs):
         return super(ObjectsDeleteView, self).get_queryset().filter(**kwargs)
 
+#    def post(self, request, *args, **kwargs):
+#        return super(ObjectsDeleteView, self).post(request, *args, **kwargs)
+
     def form_valid(self, form):
         ids = json.loads(form.cleaned_data['ids'])
         objects = self.get_queryset(id__in=ids)
@@ -41,7 +44,8 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin)
         else:
             msg = u'{0} успешно удален'.format(self.model._meta.verbose_name)
         for object in objects.all():
-            object.delete()
+            #object.delete()
+            pass
         return super(ObjectsDeleteView, self).render_to_response(message=msg)
 
 

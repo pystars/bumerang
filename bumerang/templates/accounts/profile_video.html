@@ -28,7 +28,7 @@
     <div class="b-hr">
         <hr />
     </div>
-    <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v">
+    <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v" id="videoalbums-container">
         <header class="b-gallery__head">
             <ul class="b-service-buttons">
                 {% if profile.id == request.user.id %}
@@ -42,7 +42,7 @@
             <div class="clear"></div>
             {% if profile.videoalbum_set.count %}
                 {% if profile.id == request.user.id %}
-                <a href="#" id="videoalbum-delete-buton" class="b-button b-button_red b-button_small l-button-del" style="display: none;">Удалить</a>
+                <a href="#" id="videoalbum-delete-button" class="b-button b-button_red b-button_small l-button-del" style="display: none;">Удалить</a>
                 {% endif %}
                     <p class="smaller" id="albums-count">
                         Всего {{ profile.videoalbum_set.count }} {{ profile.videoalbum_set.count|rupluralize:"альбом,альбома,альбомов" }}
@@ -62,7 +62,7 @@
         </div>
         {% include "snippets/videoalbums_list.html" %}
     </section>
-    <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
+    <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="videos-container">
         <header class="announs-head">
             <ul class="b-service-buttons">
                 {% if profile.id == request.user.id %}
@@ -72,11 +72,12 @@
                 </li>
                 {% endif %}
             </ul>
-            <h3>Видеоролики</h3>
+            <h3>Видеоролики без альбомов</h3>
             <div class="clear"></div>
             {% if profile.video_set.count %}
                 {% if profile.id == request.user.id %}
                     <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
+                    <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="video-move-button" style="display: none;">Переместить</a>
                 {% endif %}
                 <p class="smaller" id="videos-count">
                     Всего {{ profile.videos_without_album.count }} видео
@@ -104,6 +105,9 @@
         {% endwith %}
     </section>
     </div></dd>
+
+    {% csrf_token %}
+
 {% endblock %}
 
 {% block popup %}
@@ -127,4 +131,15 @@
     <div class="b-popup__br"></div>
     <div class="b-popup__bl"></div>
 </section><!--b-popup-->
+
+{# Шаблоны для JavaScript кода #}
+<div style="display: none;">
+    <div id="videoalbum-empty-block-tpl" class="b-empty b-empty_video-album" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеоальбомов</strong>
+        <div>
+            <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

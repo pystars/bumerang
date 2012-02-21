@@ -74,6 +74,7 @@ function get_videos_count() {
 /*
 * Returns selected items from formname
 * */
+/*
 function get_selected_items(formname) {
     var checkboxes = [];
     $.each($('form[name='+formname+'] input[type=checkbox]:checked'), function(i, v) {
@@ -170,6 +171,14 @@ function show_popup_notification(popup_id) {
     popup.show();
 }
 
+*/
+
+
+function invokeConfirmDialog(text, callback) {
+    //console.log(text);
+    console.log('calling callback');
+    callback.call(arr);
+};
 
 
 /******************************************************************************
@@ -179,46 +188,100 @@ function show_popup_notification(popup_id) {
  * 
  ******************************************************************************/
 
+function ror(a) {
+    console.log('calling ror');
+    console.log(a);
+    return function(res) {
+        console.log('inside callback');
+        console.log(res);
+    }
+}
+
 var VideoAlbumsView = Backbone.View.extend({
 
     el: 'body',
     
     selected_albums: [],
+    selected_videos: [],
     
     events: {
-        'click .videoalbum input[type=checkbox]': 'clickCheckbox',
-        'click #videoalbum-delete-buton': 'clickDeleteButton'
+        'click figure[id*=videoalbum-item-]': 'clickAlbumCheckbox',
+        'click article[id*=video-item-]': 'clickVideoCheckbox',
+        'click #videoalbum-delete-button': 'clickAlbumDeleteButton',
+        'click #video-delete-button': 'clickVideoDeleteButton'
     },
 
     initialize: function() {
         this.updatePage();
+        a = this;
+        arr = 'asdasdadasd';
+        invokeConfirmDialog('asd', );
     },
 
-    clickCheckbox: function(e) {
-        // Получаем jQuery-объект кликнутого чекбокса
-        var el = $('#' + e['srcElement'].id);
-        
+    clickAlbumCheckbox: function(e) {
+        // Получаем jQuery-объект кликнутого чекбокса альбома
+        var el = e['srcElement'];
         // Если он отмечен - добавляем в массив видеоальбомов
-        if (el.attr('checked')) {
+        if (el.checked) {
             this.selected_albums.push(
-                parseInt(el.attr('id').split('checkbox-')[1])
+                parseInt(el.id.split('checkbox-')[1])
             );
         } else {
             this.selected_albums = _.without(
                 this.selected_albums, 
-                parseInt(el.attr('id').split('checkbox-')[1])
+                parseInt(el.id.split('checkbox-')[1])
+            );
+        }
+        
+        this.updatePage();
+    },
+    
+    clickVideoCheckbox: function(e) {
+        var el = e['srcElement'];
+        if (el.checked) {
+            this.selected_videos.push(
+                parseInt(el.id.split('checkbox-')[1])
+            );
+        } else {
+            this.selected_videos = _.without(
+                this.selected_videos, 
+                parseInt(el.id.split('checkbox-')[1])
             );
         }
         
         this.updatePage();
     },
 
-    clickDeleteButton: function(e) {
+    clickAlbumDeleteButton: function(e) {
+        var view = this;
         e.preventDefault();
-        this.hideAlbums();
-        this.showAlbumsCount();
-        this.selected_albums = [];
-        this.updatePage();
+        
+        $.ajax({
+            type: 'POST',
+            url: '/video/albums-delete/',
+            data: {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                ids: JSON.stringify(view.selected_albums),
+            },
+            success: function(response) {
+                //hide_videos_by_ids([id_to_move])
+                show_notification('success', response['message']);
+                $('#popup-move-video').hide();
+                $('#tint').hide();
+                
+                view.hideAlbums();
+                view.showAlbumsCount();
+                view.selected_albums = [];
+                view.updatePage();
+            }
+        });
+        
+    },
+
+    clickVideoDeleteButton: function(e) {
+        e.preventDefault();
+        
+        this.selected_videos = [];
     },
 
     hideAlbums: function() {
@@ -231,13 +294,25 @@ var VideoAlbumsView = Backbone.View.extend({
             });
         });
     },
+    
+    hideVideos: function() {
+        
+    },
 
-    hideDeleteButton: function() {
-        $('#videoalbum-delete-buton').hide(300);
+    hideAlbumDeleteButton: function() {
+        $('#videoalbum-delete-button').hide(300, 'linear');
     },
     
-    showDeleteButton: function() {
-        $('#videoalbum-delete-buton').show(300);
+    showAlbumDeleteButton: function() {
+        $('#videoalbum-delete-button').show(300, 'linear');
+    },
+    
+    hideVideoDeleteButton: function() {
+        $('#video-delete-button').hide(300, 'linear');
+    },
+    
+    showVideoDeleteButton: function() {
+        $('#video-delete-button').show(300, 'linear');
     },
     
     getAlbumsCount: function() {
@@ -259,12 +334,26 @@ var VideoAlbumsView = Backbone.View.extend({
      */
     updatePage: function() {
         if (this.selected_albums.length) {
-            this.showDeleteButton();
+            this.showAlbumDeleteButton();
         } else {
-            this.hideDeleteButton();
+            this.hideAlbumDeleteButton();
         }
+        
+        console.log(this.selected_videos.length);
+        
+        if (this.selected_videos.length) {
+            this.showVideoDeleteButton();
+        } else {
+            this.hideVideoDeleteButton();
+        }
+        
         this.showAlbumsCount();
-        console.log('selected ' + this.selected_albums);
+        
+        if (!this.getAlbumsCount()) {
+            var empty_block_tpl = $('#videoalbum-empty-block-tpl');
+            $('#videoalbums-container').append(empty_block_tpl);
+            empty_block_tpl.show(300, 'linear')
+        }
     }
     
 });
@@ -288,20 +377,23 @@ $(function() {
     /*
     * Close button popup video delete handler
     * */
+    /*
      $('#del-popup-cancel').click(function() {
         $('#popup-del-video').hide();
         $('#tint').hide();
      });
-
+*/
     /*
      * Single videoalbum delete handler
      * */
+     /*
     $('.b-dropdown__link[id*=videoalbum-delete-]').click(function() {
         var id = parseInt($(this).attr('id').split('videoalbum-delete-')[1]);
         delete_albums([id]);
         return false;
     });
-
+    * */
+/*
     $('input[name=videoalbums]:checkbox').click(function() {
         if ($('input[name=videoalbums]:checkbox').filter(':checked').length) {
             $('#videoalbum-delete-buton').show();
@@ -319,7 +411,7 @@ $(function() {
             $('#move-video-button').hide();
         };
     });
-
+*/
     /*
     * Selected videoalbums delete handler
     * */
@@ -332,14 +424,16 @@ $(function() {
     /*
     * Single video delete handler
     * */
+    /*
     $('.b-dropdown__link[id*=video-delete-]').click(function() {
         delete_video([parseInt($(this).attr('id').split('video-delete-')[1])]);
         return false;
     });
-
+*/
     /*
      * Selected videos delete handler
      * */
+     /*
     $('#video-delete-button').click(function() {
         var ids = get_selected_items('videos');
         if (ids.length) {
@@ -354,10 +448,11 @@ $(function() {
         }
         return false;
     });
-
+*/
     /*
     * Single video move handler
     * */
+    /*
     $('.b-dropdown__link[id*=move-video-]').click(function() {
         var id_to_move = parseInt($(this).attr('id').split('move-video-')[1]);
         $('.popup-videos-move-button').click(function() {
@@ -378,10 +473,11 @@ $(function() {
             });
         });
     })
-
+*/
     /*
     * Selected videos move
     * */
+    /*
     $('#move-video-button').click(function() {
         var ids_to_move = get_selected_items('videos');
         $('.popup-videos-move-button').click(function() {
@@ -403,7 +499,7 @@ $(function() {
         });
         return false;
     });
-
+*/
     /*
     * Make cover of album
     * */
