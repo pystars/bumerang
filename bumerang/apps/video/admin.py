@@ -14,12 +14,18 @@ class VideoAdmin(admin.ModelAdmin):
     list_editable = ['published_in_archive', 'is_in_broadcast_lists']
 
     def save_model(self, request, obj, form, change):
-        super(VideoAdmin, self).save_model(request, obj, form, change)
         if 'original_file' in form.changed_data:
+            obj.duration = video_duration(obj.original_file.file)
+            obj.status = obj.PENDING
+            obj.save()
             ConvertVideoTask.delay(obj)
         elif {'hq_file', 'mq_file', 'lq_file'} & set(form.changed_data):
-            obj.duration = video_duration(obj.best_quality_file.file)
+            obj.duration = video_duration(obj.best_quality_file().file)
+            obj.status = obj.PENDING
+            obj.save()
             MakeScreenShots.delay(obj)
+        else:
+            obj.save()
 
 
 class TitleSlugAdmin(admin.ModelAdmin):

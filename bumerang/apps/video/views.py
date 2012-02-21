@@ -11,11 +11,12 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
 
-from models import Video
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
+from models import Video
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
+from mediainfo import video_duration
 
 
 class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
@@ -34,8 +35,11 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
                     json.loads(form.cleaned_data['video_id'])))
             except ValueError:
                 return HttpResponseForbidden()
-        album = get_object_or_404(VideoAlbum, pk=form.cleaned_data['album_id'],
-            owner=self.request.user)
+        if 'album_id' in form.cleaned_data:
+            album = get_object_or_404(VideoAlbum,
+                pk=form.cleaned_data['album_id'], owner=self.request.user)
+        else:
+            album = None
         if self.get_queryset().filter(**kwargs).update(album=album):
             msg = u'Видео успешно перемещено'
         else:
@@ -67,6 +71,8 @@ class VideoCreateView(CreateView):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
         self.object.save()
+        self.object.duration = video_duration(self.object.original_file.file)
+        self.object.save()
         ConvertVideoTask.delay(self.object)
         return super(ModelFormMixin, self).form_valid(form)
 
@@ -88,6 +94,10 @@ class VideoUpdateView(OwnerMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
         if 'original_file' in form.changed_data:
+            self.object.duration = video_duration(
+                self.object.original_file.file)
+            self.object.status = self.object.PENDING
+            self.object.save()
             ConvertVideoTask.delay(self.object)
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
@@ -101,7 +111,7 @@ class VideoListView(ListView):
         Q(lq_file__isnull=False),
         published_in_archive=True,
     )
-    paginate_by = 25
+    paginate_by = 5
 
 
 #def save_upload( uploaded, filename, raw_data ):

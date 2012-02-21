@@ -66,7 +66,6 @@ class ConvertVideoTask(Task):
         logger.info("Starting Video Post conversion: %s" % video)
 
         self.original_file_path = video.original_file.path
-        video.duration = video_duration(video.original_file.file)
         video.status = video.CONVERTING
         video.save()
         for options in ConvertOptions.objects.all():

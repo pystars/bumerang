@@ -10,7 +10,7 @@ from django.db.models.deletion import ProtectedError
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, choices
 from validators import check_video_file
-from storages import VideoFilesStorage
+from bumerang.apps.utils.storages import RewritableFilesStorage
 
 
 class VideoCategory(models.Model, TitleUnicode):
@@ -65,6 +65,7 @@ class Video(models.Model, TitleUnicode):
     READY = 2
     ERROR = 3
     STATUS_CHOICES = choices(
+        (PENDING, u'ожидает очереди'),
         (CONVERTING, u'конвертируется'),
         (READY, u'обработано'),
         (ERROR, u'ошибка обработки')
@@ -79,15 +80,15 @@ class Video(models.Model, TitleUnicode):
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.FileField(u"Оригинальное видео",
         validators=[check_video_file], upload_to=original_upload_to,
-        storage=VideoFilesStorage(), null=True, blank=False)
+        storage=RewritableFilesStorage(), null=True, blank=False)
     hq_file = models.FileField(u'Видео высокого качества',
-        storage=VideoFilesStorage(), upload_to=hq_upload_to,
+        storage=RewritableFilesStorage(), upload_to=hq_upload_to,
         validators=[check_video_file], **nullable)
     mq_file = models.FileField(u'Видео среднего качества',
-        storage=VideoFilesStorage(), upload_to=mq_upload_to,
+        storage=RewritableFilesStorage(), upload_to=mq_upload_to,
         validators=[check_video_file], **nullable)
     lq_file = models.FileField(u'Видео низкого качества',
-        storage=VideoFilesStorage(), upload_to=lq_upload_to,
+        storage=RewritableFilesStorage(), upload_to=lq_upload_to,
         validators=[check_video_file], **nullable)
     duration = models.IntegerField(u'Длительность', default=0,
                                    editable=False, **nullable)
@@ -127,8 +128,8 @@ class Video(models.Model, TitleUnicode):
     def save(self, *args, **kwargs):
         super(Video, self).save(*args, **kwargs)
         if self.album:
-            if not self.album.cover and self.preview:
-                self.album.cover = self
+            if not self.album.preview and self.preview():
+                self.album.preview = self.preview()
                 self.album.save()
 
     def delete(self, **kwargs):
@@ -173,10 +174,10 @@ class Video(models.Model, TitleUnicode):
 
 
 def preview_upload_to(instance, filename):
-    return 'previews/{0}/{1}'.format(instance.owner.slug, filename)
+    return 'previews/video/{0}/{1}'.format(instance.owner.slug, filename)
 
 
 class Preview(models.Model):
     owner = models.ForeignKey(Video)
     image = models.ImageField(upload_to=preview_upload_to,
-        storage=VideoFilesStorage())
+        storage=RewritableFilesStorage())

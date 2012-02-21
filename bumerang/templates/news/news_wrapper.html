@@ -11,12 +11,13 @@
             {% block right_menu %}
                 <nav class="b-side-nav d-indent">
                     <ul>
-                        <li class="selected"><strong>Все новости</strong></li>
+                        <h4>Все новости</h4>
                         {% for category in news_categories %}
                             {% ifequal category current_category %}
                                 <li>{{ category.title }}</li>
                             {% else %}
-                                <li><a href="{% url news-list-category category.slug %}" title="{{ category.title }}">{{ category.title }}</a></li>
+                                <li><a href="{% url news-list-category category.slug %}"
+                                       title="{{ category.title }}">{{ category.title }}</a></li>
                             {% endifequal %}
                         {% endfor %}
                     </ul>
@@ -38,7 +39,8 @@
                     </p>
                 </section>
                 <p class="b-side-text">
-                    Несомненный интерес представляет и тот факт, что тактогенез продольно занимает межпластовый овилин, в то же время поднимаясь в пределах горстов до абсолютных высот 250 м.
+                    Несомненный интерес представляет и тот факт, что тактогенез продольно занимает межпластовый
+                    овилин, в то же время поднимаясь в пределах горстов до абсолютных высот 250 м.
                 </p>
             {% endblock %}
         </div></aside>
