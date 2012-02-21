@@ -3,7 +3,7 @@ pillow==1.7.6
 South==0.7.3
 django-debug-toolbar==0.9.4
 django-filebrowser==3.4.0
-django-grappelli==2.3.5
+https://github.com/btx/django-grappelli/zipball/django_1.4
 django-mptt==0.5.2
 django-sitetree==0.6
 django-tinymce==1.5.1b2
