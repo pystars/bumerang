@@ -31,11 +31,11 @@
                 </div>
             </header>
 
-            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui">
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="videos-container">
                 <header class="announs-head cleared">
                     {% if object.owner.id == request.user.id %}
                         <a class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
-                        <a class="b-button b-button_yellow b-button_small l-button-move popup-handle" rel="popup-move-video" id="move-video-button" style="display: none;">Переместить в альбом...</a>
+                        <a class="b-button b-button_yellow b-button_small l-button-move popup-handle" rel="popup-move-video" id="video-move-button" style="display: none;">Переместить в альбом...</a>
                     {% endif %}
                     <p class="smaller" id="videos-count">
                         Всего {{ object.video_set.count }} видео
@@ -55,107 +55,33 @@
 {% endblock %}
 
 {% block popup %}
-    <section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">
-        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
-            <header class="b-form__header">
-                <h4>
-                    Вы дйствительно хотите удалить видеозапись?
-                </h4>
-                <p>
-                    Видео будет удалено безвозвратно.
-                </p>
-            </header>
-            <footer class="b-form__footer cleared">
-                <a href="#" class="b-button b-button_yellow left cancel" id="del-popup-cancel">Отменить</a>
-                <a href="#" class="b-button b-button_red right videos_delete" id="del-popup-confirm">Удалить</a>
-            </footer>
-        </section><!--b-form-->
-        <div class="b-popup__tl"></div>
-        <div class="b-popup__tr"></div>
-        <div class="b-popup__br"></div>
-        <div class="b-popup__bl"></div>
-    </section><!--b-popup-->
+<section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+        <header class="b-form__header">
+            <h4>
+                Подтвердите действие
+            </h4>
+            <p id="dialog-text">
+                {= text }
+            </p>
+        </header>
+        <footer class="b-form__footer cleared">
+            <a href="#" class="b-button b-button_yellow left cancel" id="confirm-popup-cancel">Отменить</a>
+            <a href="#" class="b-button b-button_red right videos_delete" id="confirm-popup-ok">Удалить</a>
+        </footer>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
 
-    <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
-        <section class="b-form b-form_smaller b-form_popup">
-            <form action="{% url video-move %}" method="post">
-                {% csrf_token %}
-                <header class="b-form__header">
-                    <h3>
-                        Переместить в альбом
-                    </h3>
-                </header>
-                <div class="b-form__fields">
-                    <div class="b-form__field">
-                        {% for item in object.owner.videoalbum_set.all %}
-                            <div class="b-form__field b-form__field_radio">
-                                <div class="f-radio">
-                                    <div>
-                                        <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" />
-                                        <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
-                                            {{ item.title }}
-                                            {% if item == object %}(Текущий альбом){% endif %}
-                                        </label>
-                                    </div>
-                                    <div class="f-err"><span></span></div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <footer class="b-form__footer">
-                    <div class="wrap">
-                        <a href="#" class="b-button b-button_yellow popup-videos-move-button">Переместить</a>
-                    </div>
-                    <div class="clear"></div>
-                </footer>
-            </form>
-        </section><!--b-form-->
-        <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
-        <div class="b-popup__tl"></div>
-        <div class="b-popup__tr"></div>
-        <div class="b-popup__br"></div>
-        <div class="b-popup__bl"></div>
-    </section><!--b-popup-->
-{##}
-{#    <section class="b-popup" id="popup-edit-video" style="left:50%; top:100px;">#}
-{#        <section class="b-form b-form_smaller b-form_popup">#}
-{#            <header class="b-form__header">#}
-{#                <h3>#}
-{#                    Редактирование видео#}
-{#                </h3>#}
-{#            </header>#}
-{#            <div class="b-form__fields">#}
-{#                <div class="b-form__field">#}
-{#                    <label>#}
-{#                        <span class="f-title"><span>Название</span></span>#}
-{#					<span class="f-input">#}
-{#						<input type="text" value="" class="wide" />#}
-{#					</span>#}
-{#                    </label>#}
-{#                </div>#}
-{#                <div class="b-form__field">#}
-{#                    <label>#}
-{#                        <span class="f-title"><span>Описание</span></span>#}
-{#					<span class="f-textarea">#}
-{#						<textarea rows="5" cols="45" class="wide wide_descr3"></textarea>#}
-{#					</span>#}
-{#                    </label>#}
-{#                </div>#}
-{#            </div>#}
-{#            <footer class="b-form__footer">#}
-{#                <div class="wrap">#}
-{#                    <div class="hint"><small>Осталось заполнить: название</small></div>#}
-{#                    <a href="" class="b-button b-button_yellow disabled">Создать</a>#}
-{#                </div>#}
-{#                <span class="or">или <a href="" class="b-pseudolink">отменить</a> и вернуться к альбомам.</span>#}
-{#                <div class="clear"></div>#}
-{#            </footer>#}
-{#        </section><!--b-form-->#}
-{#        <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>#}
-{#        <div class="b-popup__tl"></div>#}
-{#        <div class="b-popup__tr"></div>#}
-{#        <div class="b-popup__br"></div>#}
-{#        <div class="b-popup__bl"></div>#}
-{#    </section><!--b-popup-->#}
+{# Шаблоны для JavaScript кода #}
+<div style="display: none;">
+    <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеороликов</strong>
+        <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+    </div>
+</div>
 {% endblock %}

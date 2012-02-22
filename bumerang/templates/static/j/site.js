@@ -426,6 +426,14 @@ var VideoAlbumsView = Backbone.View.extend({
         $('#video-delete-button').show(300, 'linear');
     },
     
+    hideVideoMoveButton: function() {
+        $('#video-move-button').hide(300, 'linear');
+    },
+    
+    showVideoMoveButton: function() {
+        $('#video-move-button').show(300, 'linear');
+    },
+    
     getAlbumsCount: function() {
         return $('form .videoalbum:visible').length;
     },
@@ -465,8 +473,10 @@ var VideoAlbumsView = Backbone.View.extend({
         
         if (this.selected_videos.length) {
             this.showVideoDeleteButton();
+            this.showVideoMoveButton();
         } else {
             this.hideVideoDeleteButton();
+            this.hideVideoMoveButton();
         }
         
         this.showAlbumsCount();
