@@ -62,6 +62,7 @@
         </div>
         {% include "snippets/videoalbums_list.html" %}
     </section>
+
     <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="videos-container">
         <header class="announs-head">
             <ul class="b-service-buttons">
@@ -111,9 +112,6 @@
 {% endblock %}
 
 {% block popup %}
-
-<div id='popups-dock' style="display: none;"></div>
-
 <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
     <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
         <header class="b-form__header">
@@ -135,26 +133,26 @@
     <div class="b-popup__bl"></div>
 </section><!--b-popup-->
 
-<section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">
-    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
-        <header class="b-form__header">
-            <h4>
-                Вы действительно хотите удалить видеозапись?
-            </h4>
-            <p>
-                Видео будет удалено безвозвратно.
-            </p>
-        </header>
-        <footer class="b-form__footer cleared">
-            <a href="#" class="b-button b-button_yellow left cancel" id="del-popup-cancel">Отменить</a>
-            <a href="#" class="b-button b-button_red right videos_delete" id="del-popup-confirm">Удалить</a>
-        </footer>
-    </section><!--b-form-->
-    <div class="b-popup__tl"></div>
-    <div class="b-popup__tr"></div>
-    <div class="b-popup__br"></div>
-    <div class="b-popup__bl"></div>
-</section><!--b-popup-->
+<!--<section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">-->
+    <!--<section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">-->
+        <!--<header class="b-form__header">-->
+            <!--<h4>-->
+                <!--Вы действительно хотите удалить видеозапись?-->
+            <!--</h4>-->
+            <!--<p>-->
+                <!--Видео будет удалено безвозвратно.-->
+            <!--</p>-->
+        <!--</header>-->
+        <!--<footer class="b-form__footer cleared">-->
+            <!--<a href="#" class="b-button b-button_yellow left cancel" id="del-popup-cancel">Отменить</a>-->
+            <!--<a href="#" class="b-button b-button_red right videos_delete" id="del-popup-confirm">Удалить</a>-->
+        <!--</footer>-->
+    <!--</section>&lt;!&ndash;b-form&ndash;&gt;-->
+    <!--<div class="b-popup__tl"></div>-->
+    <!--<div class="b-popup__tr"></div>-->
+    <!--<div class="b-popup__br"></div>-->
+    <!--<div class="b-popup__bl"></div>-->
+<!--</section>&lt;!&ndash;b-popup&ndash;&gt;-->
 
 {# Шаблоны для JavaScript кода #}
 <div style="display: none;">
@@ -164,6 +162,12 @@
         <div>
             <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
         </div>
+    </div>
+
+    <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеороликов</strong>
+        <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
     </div>
 </div>
 {% endblock %}

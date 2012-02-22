@@ -218,7 +218,8 @@ var VideoAlbumsView = Backbone.View.extend({
         'click #videoalbum-delete-button': 'clickAlbumDeleteButton',
         'click #video-delete-button': 'clickVideoDeleteButton',
         
-        'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete'
+        'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete',
+        'click a[id*=video-delete-]': 'clickSingleVideoDelete'
     },
 
     initialize: function() {
@@ -278,10 +279,7 @@ var VideoAlbumsView = Backbone.View.extend({
                     ids: JSON.stringify(view.selected_albums),
                 },
                 success: function(response) {
-                    //hide_videos_by_ids([id_to_move])
                     show_notification('success', response['message']);
-                    $('#popup-move-video').hide();
-                    $('#tint').hide();
                     
                     view.hideAlbums();
                     view.showAlbumsCount();
@@ -316,8 +314,6 @@ var VideoAlbumsView = Backbone.View.extend({
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
-                    $('#popup-move-video').hide();
-                    $('#tint').hide();
                     
                     view.hideAlbums();
                     view.showAlbumsCount();
@@ -348,8 +344,40 @@ var VideoAlbumsView = Backbone.View.extend({
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
-                    $('#popup-move-video').hide();
-                    $('#tint').hide();
+                    
+                    view.hideVideos();
+                    view.showVideosCount();
+                    view.selected_videos = [];
+                    view.updatePage();
+                }
+            });
+        });
+    },
+
+    clickSingleVideoDelete: function(e) {
+        e.preventDefault();
+        var el = e['srcElement'];
+        this.selected_videos.push(
+            parseInt(el.id.split('video-delete-')[1])
+        );
+        
+        if (this.selected_albums.length > 1) {
+            msg = 'Вы действительно хотите удалить выбранные видеоролики?';
+        } else {
+            msg = 'Вы действительно хотите удалить выбранный видеоролик?';
+        }
+        
+        var view = this;
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/video/videos-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_videos),
+                },
+                success: function(response) {
+                    show_notification('success', response['message']);
                     
                     view.hideVideos();
                     view.showVideosCount();
@@ -435,8 +463,6 @@ var VideoAlbumsView = Backbone.View.extend({
             this.hideAlbumDeleteButton();
         }
         
-        console.log(this.selected_albums.length);
-        
         if (this.selected_videos.length) {
             this.showVideoDeleteButton();
         } else {
@@ -448,6 +474,12 @@ var VideoAlbumsView = Backbone.View.extend({
         if (!this.getAlbumsCount() && !$('#videoalbum-empty-block').is(':visible')) {
             var empty_block_tpl = $('#videoalbum-empty-block-tpl');
             $('#videoalbums-container').append(empty_block_tpl);
+            empty_block_tpl.show(300, 'linear')
+        }
+        
+        if (!this.getVideosCount() && !$('#video-empty-block').is(':visible')) {
+            var empty_block_tpl = $('#video-empty-block-tpl');
+            $('#videos-container').append(empty_block_tpl);
             empty_block_tpl.show(300, 'linear')
         }
     }
