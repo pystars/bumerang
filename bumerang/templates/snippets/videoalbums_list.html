@@ -1,7 +1,7 @@
 <div class="b-gallery__items">
     <form name="videoalbums" action="{% url videoalbums-delete %}" method="post">
         {% for videoalbum in object.videoalbum_set.all %}
-        <figure class="b-gallery__item videoalbum" id="videoalbum-item-{{ videoalbum.id }}">
+        <figure class="b-gallery__item videoalbum" id="videoalbum-item-{{ videoalbum.id }}" data-videoalbum-id="{{ videoalbum.id }}">
             <a href="{% url video-album-detail videoalbum.id %}">
                 <span class="gi-img">
                     <span>

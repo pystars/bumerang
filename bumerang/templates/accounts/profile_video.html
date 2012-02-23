@@ -133,6 +133,48 @@
     <div class="b-popup__bl"></div>
 </section><!--b-popup-->
 
+<section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <form action="{% url video-move %}" method="post">
+            {% csrf_token %}
+            <header class="b-form__header">
+                <h3>
+                    Переместить в альбом
+                </h3>
+            </header>
+            <div class="b-form__fields">
+                <div class="b-form__field" id="albums-list">
+                    {% for item in object.owner.videoalbum_set.all %}
+                    <div class="b-form__field b-form__field_radio">
+                        <div class="f-radio">
+                            <div>
+                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" />
+                                <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
+                                {{ item.title }}
+                                {% if item == object %}(Текущий альбом){% endif %}
+                                </label>
+                            </div>
+                            <div class="f-err"><span></span></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow popup-videos-move-button">Переместить</a>
+                </div>
+                <div class="clear"></div>
+            </footer>
+        </form>
+    </section><!--b-form-->
+    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+
 <!--<section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">-->
     <!--<section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">-->
         <!--<header class="b-form__header">-->
@@ -168,6 +210,19 @@
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеороликов</strong>
         <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+    </div>
+    
+    <div id="move-dialog-list-item-tpl" class="b-form__field b-form__field_radio">
+        <div class="f-radio">
+            <div>
+                <input type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-id="{{ item.id }}" />
+                <label for="album{{ item.id }}" style="color: #666;">
+                {= title }
+                {= txt }
+                </label>
+            </div>
+            <div class="f-err"><span></span></div>
+        </div>
     </div>
 </div>
 {% endblock %}

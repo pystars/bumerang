@@ -197,6 +197,29 @@ function invokeConfirmDialog(text, callback) {
     popup.show();
 };
 
+function invokeMoveDialog(videoId, callback) {
+    var popup = $('#popup-move-video');
+    
+    var parentAlbumId = $('#video-item-'+videoId).attr('data-video-album');
+    console.log(parentAlbumId);
+    
+    var listItemTemplate = _.template($('#move-dialog-list-item-tpl').html());
+    
+    console.log(listItemTemplate({txt: 'asd'}));
+    
+    cancelButton.bind('click', function(e) {
+        popup.hide();
+        $('#tint').hide();
+    });
+    
+    okButton.bind('click', function(e) {
+        callback();
+        cancelButton.trigger('click');
+    });
+    
+    
+    
+}
 
 /******************************************************************************
  * 
@@ -209,6 +232,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     el: 'body',
     
+    albums: [],
     selected_albums: [],
     selected_videos: [],
     
@@ -465,6 +489,13 @@ var VideoAlbumsView = Backbone.View.extend({
      * в соответствии с логикой работы представления
      */
     updatePage: function() {
+        var view = this;
+        
+        view.albums = [];
+        $('figure[id*=videoalbum-item-]:visible').each(function() {
+            view.albums.push(this.getAttribute('data-videoalbum-id'));
+        });
+                
         if (this.selected_albums.length) {
             this.showAlbumDeleteButton();
         } else {
