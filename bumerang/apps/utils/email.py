@@ -2,6 +2,7 @@
 from django.template import loader, Context
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
+
 from bumerang.settings import EMAIL_NOREPLY_ADDR
 
 def send_single_email(template, context, subject, from_email, to_list):
@@ -17,8 +18,8 @@ def send_single_email(template, context, subject, from_email, to_list):
 
 def send_activation_link(link, to_addr):
     ctx = {
-        'subject': u'Активация аккаунта на сайте probumerang.tv',
-        'header': u'Активация аккаунта на сайте probumerang.tv.',
+        'subject': u'Активация аккаунта на сайте bumerang.tv',
+        'header': u'Активация аккаунта на сайте bumerang.tv.',
         'link': link,
     }
     send_single_email("email/activation_email.html", ctx, ctx['subject'],
@@ -26,7 +27,7 @@ def send_activation_link(link, to_addr):
 
 def send_activation_success(to_addr):
     ctx = {
-        'subject': u'Активация на сайте probumerang.tv подтверждена',
+        'subject': u'Активация на сайте bumerang.tv подтверждена',
         'header': u'Регистрация успешно подтверждена.'
         }
     send_single_email("email/activation_success.html", ctx, ctx['subject'],
@@ -34,8 +35,8 @@ def send_activation_success(to_addr):
 
 def send_new_password(password, to_addr):
     ctx = {
-        'subject': u'Восстановление пароля от сервиса probumerang.tv',
-        'header': u'Восстановление пароля от сервиса probumerang.tv.',
+        'subject': u'Восстановление пароля от сервиса bumerang.tv',
+        'header': u'Восстановление пароля от сервиса bumerang.tv.',
         'password': password
     }
     send_single_email("email/new_password.html", ctx, ctx['subject'],

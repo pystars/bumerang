@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+DEBUG = True
 import os
 
 from bumerang.local_settings import *
 
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -210,9 +210,9 @@ if DEBUG:
 #        INTERCEPT_REDIRECTS=False
 #    )
 
-    STATICFILES_DIRS += (os.path.join(PROJECT_ROOT, 'media'),)
+#    STATICFILES_DIRS += (os.path.join(PROJECT_ROOT, 'media'),)
 
-EMAIL_NOREPLY_ADDR = 'noreply@bumerangpro.com'
+EMAIL_NOREPLY_ADDR = 'noreply@bumerang.tv'
 
 import djcelery
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"

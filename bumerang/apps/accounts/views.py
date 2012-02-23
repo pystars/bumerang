@@ -2,18 +2,19 @@
 from __future__ import division
 import json
 import urlparse
-from PIL import Image
 from datetime import datetime, timedelta
-from django.db.models import F
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
-from bumerang.apps.utils.functions import random_string
+from uuid import uuid4
+from django.contrib.auth.models import User
 
 try:
     from cStringIO import StringIO
 except ImportError:
     import StringIO
 
+from PIL import Image
+from django.db.models import F
+from django.shortcuts import render_to_response
+from django.template.context import RequestContext
 from django.contrib.sites.models import Site, get_current_site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
@@ -26,25 +27,28 @@ from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.forms.models import inlineformset_factory
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 
-from bumerang.apps.accounts.forms import *
+from bumerang.apps.utils.functions import random_string
+from bumerang.apps.accounts.forms import (RegistrationForm,
+      PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
+      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.email import send_activation_success
-from bumerang.apps.utils.tasks import send_new_password_task, \
-    send_activation_link_task
+from bumerang.apps.utils.tasks import (send_new_password_task,
+    send_activation_link_task)
 
 # TODO: рефакторить нотификации
 
 def notify_success(request, message):
-    '''
+    u"""
     Выводит уведомление об успешном сохранении информации профиля
-    '''
+    """
     messages.add_message(request, messages.SUCCESS, message)
     return
 
 def notify_error(request, message):
-    '''
+    u"""
     Выводит уведомление об ошибке при сохранении информации профиля
-    '''
+    """
     messages.add_message(request, messages.ERROR, message)
     return
 
@@ -62,8 +66,8 @@ def login(request, template_name='registration/login.html',
         if form.is_valid():
             netloc = urlparse.urlparse(redirect_to)[1]
 
-            profile = Profile.objects.get(username=form.cleaned_data['username'])
-            name = profile.title
+            profile = Profile.objects.get(
+                username=form.cleaned_data['username'])
 
             message = u'''
             Вы авторизованы. Пожалуйста, заполните имя вашего профиля.
@@ -73,20 +77,20 @@ def login(request, template_name='registration/login.html',
                 name = profile.nickname or profile.title
                 if name:
                     message = u'''
-                    Добро пожаловать, %s. Вы авторизованы.
-                    ''' % (name)
+                    Добро пожаловать, {0}. Вы авторизованы.
+                    '''.format(name)
             if profile.type == 2:
                 if profile.title:
                     message = u'''
-                    Добро пожаловать. Вы авторизовались как школа «%s».
-                    ''' % (profile.title)
+                    Добро пожаловать. Вы авторизовались как школа «{0}».
+                    '''.format(profile.title)
             if profile.type == 3:
                 if profile.title:
                     message = u'''
-                    Добро пожаловать. Вы авторизовались как студия «%s».
-                    ''' % (profile.title)
+                    Добро пожаловать. Вы авторизовались как студия «{0}».
+                    '''.format(profile.title)
 
-            notify_success(request, message=message)
+            notify_success(request, message)
 
             # Use default setting if redirect_to is empty
             if not redirect_to:
@@ -106,12 +110,7 @@ def login(request, template_name='registration/login.html',
             return HttpResponseRedirect(redirect_to)
 
         else:
-            notify_error(
-                request,
-                message=u'''
-                Неправильный логин или пароль.
-                '''
-            )
+            notify_error(request, message=u'Неправильный логин или пароль.')
 
     else:
         form = authentication_form(request)
@@ -128,7 +127,7 @@ def login(request, template_name='registration/login.html',
         }
     context.update(extra_context or {})
     return render_to_response(template_name, context,
-                              context_instance=RequestContext(request, current_app=current_app))
+        context_instance=RequestContext(request, current_app=current_app))
 
 
 class RegistrationFormView(CreateView):
@@ -140,7 +139,6 @@ class RegistrationFormView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-#        self.object.email = form.cleaned_data['email']
         self.object.is_active = False
         self.object.activation_code = random_string(32)
 
@@ -154,24 +152,16 @@ class RegistrationFormView(CreateView):
         send_activation_link_task(full_activation_url,
                                   form.cleaned_data['username'])
 
-        notify_success(
-            self.request,
-            message=u'''
+        notify_success(self.request, message=u'''
             Регистрация прошла успешно. Вам была отправлена ссылка
             для активации аккаунта.
             Проверьте почту и активируйте ваш аккаунт.
-            '''
-        )
+        ''')
 
         return super(RegistrationFormView, self).form_valid(form)
 
     def form_invalid(self, form):
-        notify_error(
-            self.request,
-            message=u'''
-            При регистрации произошла ошибка.
-            '''
-        )
+        notify_error(self.request, message=u'При регистрации произошла ошибка.')
 
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -184,41 +174,32 @@ class AccountActivationView(TemplateView):
             if user.activation_code_expire < datetime.now():
                 user.delete()
 
-                notify_error(
-                    self.request,
-                    message=u'''
+                notify_error(self.request, message=u'''
                     С момента регистрации прошло больше суток и активационная
                     ссылка устарела.
-                    Пройдите процедуру <a href="%s">регистрации</a> заново.
-                    ''' % reverse('registration')
-                )
+                    Пройдите процедуру <a href="{0}">регистрации</a> заново.
+                '''.format(reverse('registration')))
 
                 return HttpResponseRedirect(reverse('BumerangIndexView'))
 
             user.is_active = True
             user.activation_code = ''
             user.save()
-            notify_success(
-                self.request,
-                message=u'''
+            notify_success(self.request, message=u'''
                 Ваш аккаунт успешно активирован.
-                Теперь вы можете <a href="%s">войти</a> в систему.
-                ''' % reverse('login')
-            )
+                Теперь вы можете <a href="{0}">войти</a> в систему.
+            '''.format(reverse('login')))
 
             send_activation_success(user.username)
 
             return HttpResponseRedirect(reverse('BumerangIndexView'))
 
-        except ObjectDoesNotExist:
-            notify_error(
-                self.request,
-                message=u'''
+        except Profile.DoesNotExist:
+            notify_error(self.request, message=u'''
                 При активации аккаунта произошла ошибка.
                 Возможно, аккаунт уже был активирован ранее,
                 либо срок действия ссылки истёк.
-                '''
-            )
+            ''')
 
             return HttpResponseRedirect(reverse('BumerangIndexView'))
 
@@ -238,14 +219,11 @@ class PasswordRecoveryView(FormView):
         profile.save()
 
         send_new_password_task.delay(new_password, receiver_email)
-        notify_success(
-            self.request,
-            message=u'''
-                Ваш новый пароль был отправлен на указанный вами e-mail.
-                После авторизации вы сможете его сменить в разделе
-                редактирования профиля.
-                '''
-        )
+        notify_success(self.request, message=u'''
+            Ваш новый пароль был отправлен на указанный вами e-mail.
+            После авторизации вы сможете его сменить в разделе
+            редактирования профиля.
+        ''')
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -323,22 +301,14 @@ class ProfileInfoEditView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        notify_success(
-            self.request,
-            message=u'''
-                Информация вашего профиля успешно обновлена.
-                '''
-        )
+        notify_success(self.request,
+            message=u'Информация вашего профиля успешно обновлена.')
 
         return super(ProfileInfoEditView, self).form_valid(form)
 
     def form_invalid(self, form):
-        notify_error(
-            self.request,
-            message=u'''
-                При обновлении данных профиля произошла ошибка.
-                '''
-        )
+        notify_error(self.request,
+            message=u'При обновлении данных профиля произошла ошибка.')
 
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -353,23 +323,16 @@ class ProfileUpdateView(UpdateView):
         return self.request.path
 
     def form_valid(self, form):
-        notify_success(
-            self.request,
-            message=u'''
-                Информация вашего профиля успешно обновлена.<br/>
-                <a href="{0}">Перейти к просмотру профиля</a>
-            '''.format(reverse("profile-detail", args=[self.get_object().id]))
-        )
+        notify_success(self.request, message=u'''
+            Информация вашего профиля успешно обновлена.<br/>
+            <a href="{0}">Перейти к просмотру профиля</a>
+        '''.format(reverse("profile-detail", args=[self.get_object().id])))
 
         return super(ProfileUpdateView, self).form_valid(form)
 
     def form_invalid(self, form):
-        notify_error(
-            self.request,
-            message=u'''
-                При обновлении данных профиля произошла ошибка.
-                '''
-        )
+        notify_error(self.request,
+            message=u'При обновлении данных профиля произошла ошибка.')
 
         return super(ProfileUpdateView, self).form_invalid(form)
 
@@ -415,23 +378,17 @@ class FormsetUpdateView(UpdateView):
 
         if formset.is_valid():
             formset.save()
-            notify_success(
-                self.request,
-                message=u'''
+            notify_success(self.request, message=u'''
                 Информация вашего профиля успешно обновлена.<br/>
                  <a href="{0}">Перейти к просмотру профиля</a>
-            '''.format(reverse("profile-detail", args=[self.get_object().id]))
-            )
+            '''.format(reverse("profile-detail", args=[self.get_object().id])))
 
             return HttpResponseRedirect(self.get_success_url())
         else:
             self.object = self.get_object()
-            notify_error(
-                self.request,
-                message=u'''
+            notify_error(self.request, message=u'''
                 При обновлении данных профиля произошла ошибка.
-                '''
-            )
+            ''')
 
             return self.render_to_response(self.get_context_data(formset=formset))
 
@@ -447,6 +404,13 @@ class ProfileAvatarEditView(UpdateView):
         return reverse('profile-edit-avatar')
 
     def form_valid(self, form):
+        u"""
+        MAX_WIDTH - Эта константа означает максимальную ширину изображения так
+        как будучи большим, оно может выйти за рамки шаблона. Если исходное
+        изображение шире этой константы, оно будет ужато для обеспечения
+        совместимости координат, переданных Crop'ом
+        """
+        MAX_WIDTH = 710
         try:
             coords = json.loads(form.cleaned_data['avatar_coords'])
         except ValueError:
@@ -456,22 +420,7 @@ class ProfileAvatarEditView(UpdateView):
                 'x2': 150,
                 'y2': 150,
             }
-        """
-        Эта константа зависит от шаблона страницы
-        и означает максимальную ширину изображения
-        так как будучи большим, оно может выйти за
-        рамки шаблона. Фактически, константа должна
-        быть тождественна свойству max-width картинки
-        с Crop'ом. Если исходное изображение шире этой
-        константы, оно будет ужато для обеспечения совместимости
-        координат, переданных Crop'ом
-        """
-        MAX_WIDTH = 710
-
-        '''
-        Загружен ли уже аватар и мы только должны
-        его обрезать?
-        '''
+        #Загружен ли уже аватар и мы только должны его обрезать?
         img = Image.open(self.request.FILES.get('avatar', self.object.avatar))
         # Если изображение слишком широкое, ужимаем
         if img.size[0] > MAX_WIDTH:
@@ -479,6 +428,7 @@ class ProfileAvatarEditView(UpdateView):
             new_height = int(round(img.size[1] / aspect))
             # Вот с этим изображением мы и будем работать
             img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
+
         # Иначе просто обрезаем
         cropped_image = img.crop((coords['x'],
                                   coords['y'],
@@ -496,24 +446,17 @@ class ProfileAvatarEditView(UpdateView):
         self.object.min_avatar.save('min.jpg', suf, save=False)
         form.save()
 
-        notify_success(
-            self.request,
-            message=u'''
-            Фотография профиля успешно обновлена.
-            '''
-        )
+        notify_success(self.request,
+            message=u'Фотография профиля успешно обновлена.')
 
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
-        notify_error(
-            self.request,
-            message=u'''
+        notify_error(self.request, message=u'''
             Произошла ошибка при обновлении фотографии профиля.
             Возможно, файл, который вы загрузили, поврежден
             или не является изображением.
-            '''
-        )
+        ''')
 
         return self.render_to_response(self.get_context_data(form=form))
 

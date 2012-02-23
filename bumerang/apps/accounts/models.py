@@ -12,15 +12,15 @@ def get_avatar_path(instance, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(instance.id))
     if not os.path.exists(path):
         os.makedirs(path)
-    return 'avatars/{0}/full{1}'.format(
-        str(instance.id), os.path.splitext(filename)[1])
+    ext = os.path.splitext(filename)[1]
+    return 'avatars/{0}/full{1}'.format(instance.id, ext)
 
 def get_mini_avatar_path(instance, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(instance.id))
     if not os.path.exists(path):
         os.makedirs(path)
-    return 'avatars/{0}/min{1}'.format(
-        str(instance.id), os.path.splitext(filename)[1])
+    ext = os.path.splitext(filename)[1]
+    return 'avatars/{0}/min{1}'.format(instance.id, ext)
 
 
 class Profile(User):

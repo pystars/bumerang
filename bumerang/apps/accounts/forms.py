@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-from uuid import uuid4
-import random
-
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -11,9 +8,9 @@ from bumerang.apps.accounts.models import Profile, Faculty, Service, Teammate
 
 
 class InfoEditFormsMixin(forms.ModelForm):
-    '''
+    u"""
     Миксин, добавляющий стилизацию полей формы
-    '''
+    """
     def __init__(self, *args, **kwargs):
         super(InfoEditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
@@ -32,9 +29,9 @@ class InfoEditFormsMixin(forms.ModelForm):
 
 
 class EditFormsMixin(forms.ModelForm):
-    '''
+    u"""
     Миксин, добавляющий стилизацию полей формы
-    '''
+    """
     def __init__(self, *args, **kwargs):
         super(EditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
@@ -77,16 +74,15 @@ class RegistrationForm(forms.ModelForm):
         return password2
 
     def clean_username(self, **kwargs):
-        '''
+        u"""
         По-хорошему, нужно переопределять error_messages для ошибки
         существующего пользователя. Но я не нашёл как этого сделать
         за адекватный срок. Поэтому так.
-        '''
-        try:
-            User.objects.get(username=self.cleaned_data['username'])
-            raise ValidationError(u'Пользователь с таким адресом уже существует')
-        except ObjectDoesNotExist:
-            return self.cleaned_data['username']
+        """
+        if User.objects.filter(username=self.cleaned_data['username']).exists():
+            raise ValidationError(
+                u'Пользователь с таким адресом уже существует')
+        return self.cleaned_data['username']
 
     def save(self, commit=True):
         profile = super(RegistrationForm, self).save(commit=False)
@@ -106,9 +102,7 @@ class PasswordRecoveryForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('email', None)
-        try:
-            profile = Profile.objects.get(email=email)
-        except ObjectDoesNotExist:
+        if not (email and Profile.objects.filter(email=email).exists()):
             raise ValidationError(u'Пользователь с таким адресом не существует')
 
 
@@ -154,11 +148,10 @@ class ProfileEmailEditForm(forms.ModelForm):
     username = forms.EmailField(required=True)
 
     def clean_username(self):
-        try:
-            Profile.objects.get(username=self.cleaned_data['username'])
+        if Profile.objects.filter(
+            username=self.cleaned_data['username']).exists():
             raise ValidationError(u'Адрес уже зарегистрирован в системе')
-        except ObjectDoesNotExist:
-            return self.cleaned_data['username']
+        return self.cleaned_data['username']
 
     class Meta:
         model = Profile
@@ -166,9 +159,9 @@ class ProfileEmailEditForm(forms.ModelForm):
 
 
 class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
-    '''
+    u"""
     Форма редактирования профиля пользователя
-    '''
+    """
     title = forms.CharField(max_length=255, label=u'Имя, фамилия')
     description = forms.CharField(label=u'О себе', required=False,
         widget=forms.Textarea)
@@ -187,9 +180,9 @@ class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
 
 
 class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
-    '''
+    u"""
     Форма редактирования профиля школы
-    '''
+    """
     title = forms.CharField(max_length=255, label=u'Название')
     description = forms.CharField(label=u'О себе', widget=forms.Textarea)
     class Meta:
@@ -200,18 +193,18 @@ class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
 
 
 class FacultyForm(EditFormsMixin, forms.ModelForm):
-    '''
+    u"""
     Форма редактирования одного факультета
-    '''
+    """
     class Meta:
         model = Faculty
         fields = ('title', 'description')
 
 
 class ServiceForm(EditFormsMixin, forms.ModelForm):
-    '''
+    u"""
     Форма редактирования одной услуги
-    '''
+    """
     class Meta:
         model = Service
         fields = ('title', 'description')
@@ -230,9 +223,9 @@ class TeacherForm(EditFormsMixin, forms.ModelForm):
 
 
 class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
-    '''
+    u"""
     Форма редактирования профиля студии
-    '''
+    """
     title = forms.CharField(max_length=255, label=u'Название')
     description = forms.CharField(widget=forms.Textarea, label=u'Описание')
     class Meta:
