@@ -144,11 +144,11 @@
             </header>
             <div class="b-form__fields">
                 <div class="b-form__field" id="albums-list">
-                    {% for item in object.owner.videoalbum_set.all %}
+                    {% for item in profile.videoalbum_set.all %}
                     <div class="b-form__field b-form__field_radio">
                         <div class="f-radio">
                             <div>
-                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" />
+                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
                                 <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
                                 {{ item.title }}
                                 {% if item == object %}(Текущий альбом){% endif %}
@@ -160,11 +160,9 @@
                     {% endfor %}
                 </div>
             </div>
-            <footer class="b-form__footer">
-                <div class="wrap">
-                    <a href="#" class="b-button b-button_yellow popup-videos-move-button">Переместить</a>
-                </div>
-                <div class="clear"></div>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow right videos_delete" id="confirm-popup-ok">Переместить</a>
+                <a href="#" class="b-button b-button_red left cancel" id="confirm-popup-cancel">Отменить</a>
             </footer>
         </form>
     </section><!--b-form-->
@@ -214,14 +212,22 @@
     
     <div id="move-dialog-list-item-tpl" class="b-form__field b-form__field_radio">
         <div class="f-radio">
+            <!--
             <div>
                 <input type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-id="{{ item.id }}" />
-                <label for="album{{ item.id }}" style="color: #666;">
-                {= title }
-                {= txt }
+                    <label for="album{{ item.id }}" style="color: #666;">
                 </label>
             </div>
             <div class="f-err"><span></span></div>
+            -->
+            {% for album in profile.videoalbum_set.all %}
+                <div>
+                    <input type="radio" name="album" value="{{ album.id }}" id="album{{ album.id }}" data-album-id="{{ album.id }}" />
+                    <label for="album{{ album.id }}">{{ album.title }}</label>
+                </div>
+                <div class="f-err"><span></span></div>
+            {% endfor %}
+            
         </div>
     </div>
 </div>

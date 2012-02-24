@@ -200,12 +200,8 @@ function invokeConfirmDialog(text, callback) {
 function invokeMoveDialog(videoId, callback) {
     var popup = $('#popup-move-video');
     
-    var parentAlbumId = $('#video-item-'+videoId).attr('data-video-album');
-    console.log(parentAlbumId);
-    
-    var listItemTemplate = _.template($('#move-dialog-list-item-tpl').html());
-    
-    console.log(listItemTemplate({txt: 'asd'}));
+    var cancelButton = $('#' + popup.attr('id') + ' #confirm-popup-cancel');
+    var okButton = $('#' + popup.attr('id') + ' #confirm-popup-ok');
     
     cancelButton.bind('click', function(e) {
         popup.hide();
@@ -217,7 +213,14 @@ function invokeMoveDialog(videoId, callback) {
         cancelButton.trigger('click');
     });
     
+    $('#' + popup.attr('id') + ' input[id*=album]').click(function(e) {
+        
+    });
     
+    popup.css('margin-left', - popup.width() / 2 + 'px');
+    popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
+    $('#tint').show();
+    popup.show();    
     
 }
 

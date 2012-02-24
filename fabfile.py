@@ -6,15 +6,15 @@ from bumerang.local_settings import get_sudo_pwd
 
 #__all__ = ['test']
 env.hosts = [u"web@62.76.179.205:22"]
-env.passwords = { u"web@62.76.179.205:22" : get_sudo_pwd() } 
+env.passwords = { u"web@62.76.179.205:22" : get_sudo_pwd() }
 
 def syncdb():
-	'''
-	Makes local syncdb and load fixtures
-	'''
-	local('python ./manage.py reset_db --noinput --router=default')
-	local('python ./manage.py syncdb --noinput --migrate')
-	local('python ./manage.py loaddata fixtures/*.json')
+        	'''
+        	Makes local syncdb and load fixtures
+        	'''
+        	local('python ./manage.py reset_db --noinput --router=default')
+        	local('python ./manage.py syncdb --noinput --migrate')
+        	local('python ./manage.py loaddata fixtures/*.json')
 
 def makemedia():
     '''
@@ -34,8 +34,8 @@ def collectstatic():
 
 def remote_syncdb():
     '''
-	Makes remote syncdb and load fixtures
-	'''
+    Makes remote syncdb and load fixtures
+    '''
     with cd('/web/bumerang'):
         run('/home/web/.virtualenvs/bumerang/bin/python ./manage.py reset_db --noinput --router=default')
         run('/home/web/.virtualenvs/bumerang/bin/python ./manage.py syncdb --noinput --migrate')
@@ -68,7 +68,7 @@ def fullsync(branch):
 	#sync()
 	remote_syncdb()
 	reload()
-	
+
 
 # def getvideo():
 # 	with cd('/web/bumerang'):
