@@ -29,6 +29,9 @@ def makemedia():
     local('mkdir ./bumerang/media/teams')
     local('mkdir ./bumerang/media/videos')
 
+def collectstatic():
+    run('/home/web/.virtualenvs/bumerang/bin/python /web/bumerang/manage.py collectstatic  -l --traceback --noinput')
+
 def remote_syncdb():
     '''
 	Makes remote syncdb and load fixtures
