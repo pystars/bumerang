@@ -5,6 +5,7 @@ import urlparse
 from datetime import datetime, timedelta
 from uuid import uuid4
 from django.contrib.auth.models import User
+from django.forms.util import ErrorList
 
 try:
     from cStringIO import StringIO
@@ -410,31 +411,45 @@ class ProfileAvatarEditView(UpdateView):
         изображение шире этой константы, оно будет ужато для обеспечения
         совместимости координат, переданных Crop'ом
         """
-        MAX_WIDTH = 710
+        MAX_WIDTH = 500
         try:
             coords = json.loads(form.cleaned_data['avatar_coords'])
         except ValueError:
             coords = {
                 'x': 0,
                 'y': 0,
-                'x2': 150,
-                'y2': 150,
+                'x2': 175,
+                'y2': 175,
             }
-        #Загружен ли уже аватар и мы только должны его обрезать?
+        # Загружен ли уже аватар и мы только должны его обрезать?
         img = Image.open(self.request.FILES.get('avatar', self.object.avatar))
+        img = img.convert('RGB')
+
+        # Если загружаемый аватар слишком маленький
+        if img.size[0] < 175 or img.size[1] < 175:
+            form_errors = form._errors.setdefault('avatar', ErrorList())
+            form_errors.append(
+            u'Размер изображения должен быть больше 175x175 пикселей.')
+
+            notify_error(self.request, message=u'''
+            Произошла ошибка при обновлении фотографии профиля.
+            Размер изображения должен быть больше 175x175 пикселей.
+            ''')
+            return self.render_to_response(self.get_context_data(form=form))
+
         # Если изображение слишком широкое, ужимаем
         if img.size[0] > MAX_WIDTH:
             aspect = img.size[0] / img.size[1]
             new_height = int(round(img.size[1] / aspect))
             # Вот с этим изображением мы и будем работать
-            img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
+            img = img.resize((MAX_WIDTH, new_height), Image.ADAPTIVE)
 
         # Иначе просто обрезаем
         cropped_image = img.crop((coords['x'],
                                   coords['y'],
                                   coords['x2'],
                                   coords['y2']))
-        cropped_image.thumbnail((180, 180), Image.ANTIALIAS)
+        cropped_image.thumbnail((175, 175), Image.ADAPTIVE)
 
         temp_handle = StringIO()
         cropped_image.save(temp_handle, 'jpeg')

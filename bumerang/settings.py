@@ -42,10 +42,10 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 MEDIA_URL = 'http://62.76.179.205/media/'
 
 FILE_UPLOAD_TEMP_DIR = os.path.join(MEDIA_ROOT, 'tmp')
-FILE_UPLOAD_PERMISSIONS = 777
+FILE_UPLOAD_PERMISSIONS = 0644
 
 if LOCALHOST:
-    MEDIA_URL = 'http://localhost:8000/media/'
+    MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 

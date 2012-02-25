@@ -125,7 +125,7 @@ class ProfileAvatarEditForm(forms.ModelForm):
     avatar_coords = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Profile
-        fields = ('avatar', 'avatar_coords',)
+        fields = ('avatar',)
 
 
 class ProfileResumeEditForm(forms.ModelForm):

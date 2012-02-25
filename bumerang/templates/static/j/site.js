@@ -788,8 +788,8 @@ $(function() {
             },
             bgColor:     'black',
             bgOpacity:   .5,
-            minSize: [150, 150],
-            setSelect: crop_initial_coords(),
+            minSize: [175, 175],
+            setSelect: [0, 0, 175, 175],
             aspectRatio: 1
         });
     }

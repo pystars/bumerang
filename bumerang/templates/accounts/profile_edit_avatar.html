@@ -40,18 +40,18 @@
                 <div class="b-form__txt">
                     Загрузите фотографию и выберите область, которая будет использована для юзерпика.
 {#                    <div><a href="#" class="b-button b-button_small b-button_file">Выберите файл...</a></div>#}
-                    <span class="f-input">
-                        <input type="file" name="avatar" id="id_avatar" style="margin-top: 8px;" />
-                        <input type="hidden" name="avatar_coords" value="{{ form.avatar_coords.value|default:'' }}" id="id_avatar_coords" />
-                    </span>
+                        <span class="f-input">
+                            <input type="file" name="avatar" id="id_avatar" style="margin-top: 8px;" />
+                            <input type="hidden" name="avatar_coords" value='{"x":0,"y":0,"x2":175,"y2":175,"w":175,"h":175}' id="id_avatar_coords" />
+                        </span>
                     {% if form.avatar.errors %}
                         <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.avatar.errors }}</span></div>
                     {% endif %}
                 </div>
                 <div class="clear" style="height: 18px;"></div>
 
-                {% if user.profile.avatar %}
-                    <img src="{{ user.profile.avatar.url }}" id="current_avatar" style="max-width: 710px;" />
+                {% if user.profile.avatar and not form.avatar.errors %}
+                    <img src="{{ user.profile.avatar.url }}" id="current_avatar" style="max-width: 500px;" />
                 {% endif %}
             </fieldset>
 
