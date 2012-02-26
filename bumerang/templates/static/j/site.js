@@ -652,7 +652,7 @@ $(function() {
         interpolate : /\{=(.+?)\}/g
     };
 
-    var vav = new VideoAlbumsView();
+    //var vav = new VideoAlbumsView();
 
 /*
 * Video objects handlers
