@@ -811,7 +811,7 @@ $(function() {
     * */
     $(document).keypress(function(e) {
         if (e.keyCode == 13) {
-            if ($('#popup-login').is(':visible')) {
+            if ($('#popup-login').is(':visible') && !$('.modal.notification').is(':visible')) {
                 $('form[name=login_form]').submit();
             } else {
                 $('form[name=loginform]').submit();
