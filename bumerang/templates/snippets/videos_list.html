@@ -41,9 +41,9 @@
                                         <span class="b-dropdown__arr"></span>
                                         <a href="#" class="b-dropdown__link" id="video-delete-{{ video.id }}">Удалить</a>
                                         <a href="{% url video-edit video.id %}" class="b-dropdown__link {% if not videoalbum %}last{% endif %}">Редактировать</a>
+                                        <a href="#" class="b-dropdown__link" id="move-video-{{ video.id }}">Переместить...</a>
                                         {% if videoalbum %}
-                                            <a href="#" class="b-dropdown__link popup-handle" rel="popup-move-video" id="move-video-{{ video.id }}"> Переместить...</a>
-                                            <a href="#" class="b-dropdown__link last" id="make-cover-{{ video.id }}">Сделать обложкой</a>
+                                            <a href="#" class="b-dropdown__link last" id="make-cover-{{ video.id }}" data-album-id="{{ videoalbum.id }}" data-video-id="{{ video.id }}">Сделать обложкой</a>
                                         {% endif %}
                                     </span>
                                 </span>

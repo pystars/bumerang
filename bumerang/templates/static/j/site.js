@@ -256,7 +256,10 @@ var VideoAlbumsView = Backbone.View.extend({
         'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete',
         'click a[id*=video-delete-]': 'clickSingleVideoDelete',
 
-        'click #video-move-button': 'clickVideoMoveButton'
+        'click #video-move-button': 'clickVideoMoveButton',
+        'click a[id*=move-video-]': 'clickSingleVideoMove',
+
+        'click a[id*=make-cover-]': 'clickMakeCover'
     },
 
     initialize: function() {
@@ -297,10 +300,72 @@ var VideoAlbumsView = Backbone.View.extend({
         this.updatePage();
     },
 
+    clickMakeCover: function(e) {
+        e.preventDefault();
+
+        var el = e['srcElement'];
+
+        var album_id = el.getAttribute('data-album-id');
+        var video_id = el.getAttribute('data-video-id');
+
+        console.log(album_id);
+
+        $.ajax({
+            type: 'post',
+            url: '/video/album'+album_id+'/set-cover/',
+            data: {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                cover: video_id
+            },
+            success: function() {
+                window.location.reload();
+            },
+            error: function() {
+                window.location.reload();
+            }
+        });
+    },
+
     clickVideoMoveButton: function(e) {
         e.preventDefault();
 
-        console.log('move clicked');
+        if (this.selected_albums.length > 1) {
+            var msg = 'Вы действительно хотите переместить выбранные видеоролики?';
+        } else {
+            var msg = 'Вы действительно хотите переместить выбранный видеоролик?';
+        }
+
+        var view = this;
+        invokeMoveDialog(function(id) {
+            if (id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/video/video-move/',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        video_id: JSON.stringify(view.selected_videos),
+                        album_id: id
+                    },
+                    success: function(response) {
+                        show_notification('success', response['message']);
+
+                        view.hideVideos();
+                        view.showVideosCount();
+                        view.selected_videos = [];
+                        view.updatePage();
+                    }
+                });
+            }
+
+        });
+    },
+
+    clickSingleVideoMove: function(e) {
+        e.preventDefault();
+        var el = e['srcElement'];
+        this.selected_videos.push(
+            parseInt(el.id.split('move-video-')[1])
+        );
 
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите переместить выбранные видеоролики?';

@@ -13,7 +13,7 @@ class VideoSetCoverView(UpdateView):
     form_class = VideoAlbumCoverForm
 
     def form_valid(self, form):
-        form.preview = form.cover.preview()
+        #form.preview = form.cover.preview()
         super(VideoSetCoverView, self).form_valid(form)
 
     def get_success_url(self):
