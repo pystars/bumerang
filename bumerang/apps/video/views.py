@@ -4,7 +4,7 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q, F
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
@@ -74,13 +74,21 @@ class VideoCreateView(CreateView):
         self.object.duration = video_duration(self.object.original_file.path)
         self.object.save()
         ConvertVideoTask.delay(self.object)
+        messages.add_message(
+            self.request, messages.SUCCESS, u"""
+            Видео успешно загружено и находится в обработке.
+            Пожалуйста заполните поля с описанием вашей работы.""")
         return super(ModelFormMixin, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.add_message(
-            self.request, messages.ERROR, u'Ошибка при загрузке видео')
+            self.request, messages.ERROR, u"""
+            Во время загрузки произошла непредвиденная ошибка.
+            Техническая поддержка уже вкурсе""")
         return super(VideoCreateView, self).form_invalid(form)
 
+    def get_success_url(self):
+        return reverse('video-edit', kwargs={'pk': self.object.id})
 
 class VideoUpdateView(OwnerMixin, UpdateView):
     model = Video
@@ -89,7 +97,7 @@ class VideoUpdateView(OwnerMixin, UpdateView):
         return VideoForm(self.request.user, **self.get_form_kwargs())
 
     def get_success_url(self):
-        return reverse('video-edit', kwargs={'pk': self.kwargs['pk']})
+        return reverse('video-edit', kwargs={'pk': self.object.id})
 
     def form_valid(self, form):
         self.object = form.save()
@@ -101,7 +109,7 @@ class VideoUpdateView(OwnerMixin, UpdateView):
             ConvertVideoTask.delay(self.object)
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
-        return super(VideoUpdateView, self).form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class VideoListView(ListView):
