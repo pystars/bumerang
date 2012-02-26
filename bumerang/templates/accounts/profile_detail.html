@@ -68,7 +68,7 @@
                 </ul>
                 {% if object.description %}
                 <p class="smaller">
-                    {{ object.description }}
+                    {{ object.description|linebreaks }}
                 </p>
                 {% endif %}
             </div>

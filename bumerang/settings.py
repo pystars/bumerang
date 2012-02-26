@@ -98,8 +98,6 @@ if DEBUG:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
         'bumerang.apps.utils.middleware.ProfilerMiddleware',)
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-
 # Keep me logged settings
 KEEP_LOGGED_KEY = 'keep_me_logged'
 KEEP_LOGGED_DURATION = 30  # in days
@@ -155,6 +153,8 @@ INSTALLED_APPS = (
     'djcelery',
     'djkombu',
 )
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
 TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
 TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
