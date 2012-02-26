@@ -137,7 +137,7 @@ class Video(models.Model, TitleUnicode):
         for field in self._meta.fields:
             if issubclass(field.__class__, models.FileField):
                 file_field = getattr(self, field.name)
-                if 'path' in file_field:
+                if file_field and 'path' in file_field:
                     if os.path.isfile(file_field.path):
                         paths.append(file_field.path)
         try:
