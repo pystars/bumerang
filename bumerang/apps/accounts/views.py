@@ -43,6 +43,8 @@ def notify_success(request, message):
     u"""
     Выводит уведомление об успешном сохранении информации профиля
     """
+    storage = messages.get_messages(request)
+    storage.used = True
     messages.add_message(request, messages.SUCCESS, message)
     return
 
@@ -50,6 +52,8 @@ def notify_error(request, message):
     u"""
     Выводит уведомление об ошибке при сохранении информации профиля
     """
+    storage = messages.get_messages(request)
+    storage.used = True
     messages.add_message(request, messages.ERROR, message)
     return
 
