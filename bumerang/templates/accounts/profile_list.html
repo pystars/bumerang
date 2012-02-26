@@ -9,24 +9,23 @@
     </header>
     <section class="b-participants">
         {% for profile in object_list %}
-{#            {% if profile.is_active and profile.title %}#}
             <div class="b-tag d-rounded d-rounded_r10 d-sh">
                 <div class="b-tag__i">
                     <section class="b-participants__item cleared">
                         <div class="b-ava">
-									<span>
-                                        {% if profile.min_avatar %}
-                                            <img src="{{ profile.min_avatar.url }}" width="100" height="100" alt="" />
-                                        {% else %}
-                                            {% if profile.type == 1 %}
-                                                <img src="{{ STATIC_URL }}i/noava-b.jpg" width="100" height="100" alt="" />
-                                            {% endif %}{% if profile.type == 2 %}
-                                                <img src="{{ STATIC_URL }}i/noava-school-b.png" width="100" height="100" alt="" />
-                                            {% endif %}{% if profile.type == 3 %}
-                                                <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="100" height="100" alt="" />
-                                            {% endif %}
-                                        {% endif %}
-									</span>
+                            <span>
+                                {% if profile.min_avatar %}
+                                    <img src="{{ profile.min_avatar.url }}" width="100" height="100" alt="" />
+                                {% else %}
+                                    {% if profile.type == 1 %}
+                                        <img src="{{ STATIC_URL }}i/noava-b.jpg" width="100" height="100" alt="" />
+                                    {% endif %}{% if profile.type == 2 %}
+                                        <img src="{{ STATIC_URL }}i/noava-school-b.png" width="100" height="100" alt="" />
+                                    {% endif %}{% if profile.type == 3 %}
+                                        <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="100" height="100" alt="" />
+                                    {% endif %}
+                                {% endif %}
+                            </span>
                             <i class="b-ava__sh"></i>
                             {% if profile.type == 1 %}
                                 <div class="b-ava__caption b-ava__caption_participant">Участник</div>

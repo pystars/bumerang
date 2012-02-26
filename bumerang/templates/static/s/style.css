@@ -3258,6 +3258,9 @@ textarea {
 	margin-top:.4em;
 }
 
+.b-side-nav h4 a {
+    color:#b47c00;
+}
 .b-side-nav ul {
 	margin:.4em 0 1.3em 0;
 }
