@@ -5,6 +5,7 @@ import subprocess
 
 from django.conf import settings
 from celery.task import Task
+from bumerang.apps.video.models import Video
 
 from models import Preview
 from converting.models import ConvertOptions
@@ -18,8 +19,7 @@ class MakeScreenShots(Task):
         logger = self.get_logger(**kwargs)
         logger.info("Starting Video Post conversion: %s" % video)
 
-        video.status = video.CONVERTING
-        video.save()
+        Video.objects.filter(pk=video.id).update(status=video.CONVERTING)
         for preview in video.preview_set.all():
             os.remove(preview.image.path)
             preview.delete()
@@ -55,8 +55,7 @@ class MakeScreenShots(Task):
                 preview.save()
             offset += step
             counter += 1
-        video.status = video.READY
-        video.save()
+        Video.objects.filter(pk=video.id).update(status=video.READY)
         return "Ready"
 
     def get_commandline(self, path, offset, size, output):
@@ -90,6 +89,7 @@ class ConvertVideoTask(Task):
             setattr(video, file_field_name, None)
             video.save()
             process = subprocess.call(self.get_commandline(), shell=False)
+            video = Video.objects.get(pk=video.id)
             if process:
                 video.status = video.ERROR
             else:

@@ -8,7 +8,7 @@ from bumerang.apps.accounts.models import Faculty, Service, Teammate, Teacher
 from bumerang.apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
-     AccountActivationView, FormsetUpdateView, )
+     AccountActivationView, FormsetUpdateView, ProfileVideoView)
 
 
 urlpatterns = patterns('',
@@ -136,7 +136,7 @@ url(r'^edit-team/$',
         name='profile-detail'
     ),
     url(r'^(?P<pk>[\d]+)/video/$',
-        ProfileView.as_view(template_name_suffix='_video'),
+        ProfileVideoView.as_view(template_name_suffix='_video'),
         name='profile-video-detail'
     ),
 )

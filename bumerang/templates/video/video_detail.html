@@ -1,5 +1,5 @@
 {% extends "video/video_wrapper.html" %}
-{% load sitetree videotags %}
+{% load sitetree videotags rupluralize %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
@@ -79,7 +79,7 @@
                 </div>
                 <div class="viewed">
                     <i class="b-ico b-ico_eye2"><i></i></i>
-                    5 765 просмотров
+                    {{ object.views_count }} {{ object.views_count|rupluralize:"просмотр,просмотра,просмотров" }}
                 </div>
             </div>
             <article class="js-toggle2-block" style="">

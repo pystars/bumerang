@@ -11,7 +11,7 @@
             {% block right_menu %}
                 <nav class="b-side-nav d-indent">
                     <ul>
-                        <h4>Все участники</h4>
+                        <h4>{% if current_type %}<a href="{% url users-list %}">Все участники</a>{% else %}Все участники{% endif %}</h4>
                         {% ifequal current_type 1 %}
                             <li>Независимые участники</li>
                         {% else %}

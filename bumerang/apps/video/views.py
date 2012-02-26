@@ -50,9 +50,14 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
 class VideoDetailView(DetailView):
     model = Video
 
+    def get_queryset(self):
+        return super(VideoDetailView, self).get_queryset().filter(
+            status=self.model.READY)
+
     def get(self, request, **kwargs):
         response = super(VideoDetailView, self).get(request, **kwargs)
-        self.get_queryset().update(views_count=F('views_count') + 1)
+        self.get_queryset().filter(pk=self.object.id).update(
+            views_count=F('views_count') + 1)
         return response
 
 
@@ -118,6 +123,7 @@ class VideoListView(ListView):
         Q(mq_file__isnull=False) |
         Q(lq_file__isnull=False),
         published_in_archive=True,
+        status=Video.READY
     )
     paginate_by = 5
 
