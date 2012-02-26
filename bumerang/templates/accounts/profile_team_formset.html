@@ -30,14 +30,25 @@
                         <table>
                             <tr>
                                 <td rowspan="2" width="20%">
-                                    {% if form.photo.value %}
-                                        <img src='{{ MEDIA_URL }}{{ form.photo.value }}' style="max-width: 150px; display: block;">
+                                    {% if not form.errors %}
+                                        {% if form.photo.value %}
+                                            <img src='{{ MEDIA_URL }}{{ form.photo.value }}' style="max-width: 150px; display: block;">
+                                        {% else %}
+                                            <img src='{{ STATIC_URL }}i/add-user-foto.png' style="max-width: 150px; display: block;">
+                                        {% endif %}
                                     {% endif %}
+
                                     {{ form.photo }}
+                                    {% if form.photo.errors %}
+                                    <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.photo.errors }}</span></div>
+                                    {% endif %}
                                 </td>
                                 <td width="80%">
                                     {{ form.name.label }}
                                     {{ form.name }}
+                                    {% if form.name.errors %}
+                                    <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.name.errors }}</span></div>
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
@@ -47,6 +58,10 @@
 
                                     {{ form.id }}
                                     {{ form.owner }}
+
+                                    {% if form.description.errors %}
+                                        <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.description.errors }}</span></div>
+                                    {% endif %}
 
                                     Удалить: {{ form.DELETE }}
                                 </td>

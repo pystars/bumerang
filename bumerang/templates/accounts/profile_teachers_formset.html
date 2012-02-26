@@ -33,6 +33,8 @@
                                     {% if not form.errors %}
                                         {% if form.photo.value %}
                                             <img src='{{ MEDIA_URL }}{{ form.photo.value }}' style="max-width: 150px; display: block;">
+                                        {% else %}
+                                            <img src='{{ STATIC_URL }}i/add-user-foto.png' style="max-width: 150px; display: block;">
                                         {% endif %}
                                     {% endif %}
 
