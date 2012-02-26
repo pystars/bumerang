@@ -240,14 +240,7 @@ class ProfileView(DetailView):
     def get(self, request, **kwargs):
         response = super(ProfileView, self).get(request, **kwargs)
 
-        try:
-            user_id = request.user.profile.id
-        except AttributeError:
-            user_id = None
-
-        if self.get_object().id == user_id:
-            return response
-        else:
+        if not self.get_object() == getattr(request.user, 'profile', None):
             Profile.objects.filter(pk=self.get_object().id).update(
                 views_count=F('views_count') + 1)
 
