@@ -154,7 +154,7 @@ INSTALLED_APPS = (
     'djkombu',
 )
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
 TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
