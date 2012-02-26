@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import random
 import subprocess
 
 from django.conf import settings
@@ -36,7 +37,7 @@ class MakeScreenShots(Task):
             previews_count = screenable_duration = 1
         elif screenable_duration < previews_count:
             previews_count = screenable_duration
-        step = screenable_duration / (previews_count - 1)
+        step = screenable_duration / previews_count
         counter = 0
         while counter < previews_count:
             preview = Preview(owner=video)
@@ -46,7 +47,8 @@ class MakeScreenShots(Task):
             parent_path = os.path.split(output)[0]
             if not os.path.exists(parent_path):
                 os.makedirs(parent_path)
-            cmd = self.get_commandline(source_path, offset, size, output)
+            cmd = self.get_commandline(source_path,
+                random.choice(range(offset, offset+step)), size, output)
             process = subprocess.call(cmd, shell=False)
             if not process:
                 preview.image = upload_to

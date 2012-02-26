@@ -17,7 +17,7 @@
         // To use express install, set to playerProductInstall.swf, otherwise the empty string.
         var xiSwfUrlStr = "{{ STATIC_URL }}flashplayer/playerProductInstall.swf";
         var flashvars = {XMLurl:"{% url video-xml object.pk %}"};
-        var params = {};
+        var params = {wmode:"opaque"};
         params.quality = "high";
         params.bgcolor = "#000000";
         params.allowscriptaccess = "sameDomain";
