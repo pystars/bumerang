@@ -30,9 +30,12 @@
                         <table>
                             <tr>
                                 <td rowspan="2" width="20%">
-                                    {% if form.photo.value %}
-                                        <img src='{{ MEDIA_URL }}{{ form.photo.value }}' style="max-width: 150px; display: block;">
+                                    {% if not form.errors %}
+                                        {% if form.photo.value %}
+                                            <img src='{{ MEDIA_URL }}{{ form.photo.value }}' style="max-width: 150px; display: block;">
+                                        {% endif %}
                                     {% endif %}
+
                                     {{ form.photo }}
                                     {% if form.photo.errors %}
                                         <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.photo.errors }}</span></div>
