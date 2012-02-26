@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
-from django.views.generic.detail import DetailView
 
 from bumerang.apps.utils.views import XMLDetailView, ObjectsDeleteView
+from bumerang.apps.video.albums.views import VideoAlbumDetailView
 from models import Video
 from albums.models import VideoAlbum
 from views import (VideoListView, VideoCreateView, VideoDetailView,
@@ -22,7 +22,7 @@ urlpatterns = patterns('',
         name='album-video-add'
     ),
     url(r'^album(?P<pk>[\d]+)/$',
-        DetailView.as_view(model=VideoAlbum),
+        VideoAlbumDetailView.as_view(),
         name='video-album-detail'
     ),
     url(r'^album(?P<pk>[\d]+)/edit/$',

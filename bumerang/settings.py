@@ -39,7 +39,7 @@ USE_L10N = True
 
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
-MEDIA_URL = 'http://62.76.179.205/media/'
+MEDIA_URL = 'http://bumerang.tv/media/'
 
 FILE_UPLOAD_TEMP_DIR = os.path.join(MEDIA_ROOT, 'tmp')
 FILE_UPLOAD_PERMISSIONS = 0644
@@ -54,15 +54,15 @@ STATIC_URL = '/static/'
 #ADMIN_MEDIA_PREFIX = '/static/admin/'
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'templates/static'),
-)
+]
 
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
+]
 
 SECRET_KEY = 'c=2wrnal@-sxi&8^^a*zp4x!k!q@nr(*p__dw4*==lgfvvp@_f'
 
@@ -72,7 +72,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
+TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
@@ -81,9 +81,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
 
     'bumerang.apps.accounts.context_processors.global_login_form',
-)
+]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,11 +92,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'bumerang.apps.accounts.middleware.KeepLoggedInMiddleware',
-)
+    ]
 
 if DEBUG:
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
-        'bumerang.apps.utils.middleware.ProfilerMiddleware',)
+    MIDDLEWARE_CLASSES += ['bumerang.apps.utils.middleware.ProfilerMiddleware']
 
 # Keep me logged settings
 KEEP_LOGGED_KEY = 'keep_me_logged'
@@ -113,13 +112,13 @@ KEEP_LOGGED_DURATION = 30  # in days
 
 ROOT_URLCONF = 'bumerang.urls'
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = [
     os.path.join(PROJECT_ROOT, 'templates'),
-)
+]
 
 AUTH_PROFILE_MODULE = 'bumerang.apps.accounts.models.Profile'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -152,7 +151,7 @@ INSTALLED_APPS = (
     'tinymce',
     'djcelery',
     'djkombu',
-)
+]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -209,8 +208,6 @@ if DEBUG:
 #    DEBUG_TOOLBAR_CONFIG = dict(
 #        INTERCEPT_REDIRECTS=False
 #    )
-
-#    STATICFILES_DIRS += (os.path.join(PROJECT_ROOT, 'media'),)
 
 EMAIL_NOREPLY_ADDR = 'noreply@bumerang.tv'
 

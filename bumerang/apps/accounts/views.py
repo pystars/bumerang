@@ -29,6 +29,7 @@ from django.forms.models import inlineformset_factory
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 
 from bumerang.apps.utils.functions import random_string
+from bumerang.apps.video.models import Video
 from bumerang.apps.accounts.forms import (RegistrationForm,
       PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
       UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm)
@@ -241,8 +242,8 @@ class ProfileView(DetailView):
 
     def get(self, request, **kwargs):
         response = super(ProfileView, self).get(request, **kwargs)
-        if not self.get_object().id == getattr(request.user, 'id', None):
-            Profile.objects.filter(pk=self.get_object().id).update(
+        if not self.object.id == getattr(request.user, 'id', None):
+            Profile.objects.filter(pk=self.object.id).update(
                 views_count=F('views_count') + 1)
 
         return response
@@ -252,9 +253,11 @@ class ProfileVideoView(DetailView):
     model = Profile
 
     def get_context_data(self, **kwargs):
+        videos = self.object.videos_without_album()
+        if not self.request.user.id == self.object.id:
+            videos = videos.filter(status=Video.READY)
         ctx = super(ProfileVideoView, self).get_context_data(**kwargs)
-        ctx.update({'video_albums': self.object.videoalbum_set.all()})
-        ctx.update({'videos': self.object.video_set.all()})
+        ctx['videos'] = videos
         return ctx
 
 

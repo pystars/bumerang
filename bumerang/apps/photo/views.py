@@ -47,7 +47,8 @@ class PhotoDetailView(DetailView):
 
     def get(self, request, **kwargs):
         response = super(PhotoDetailView, self).get(request, **kwargs)
-        self.get_queryset().update(views_count=self.object.views_count + 1)
+        self.get_queryset().filter(pk=self.object.id).update(
+            views_count=self.object.views_count + 1)
         return response
 
 
