@@ -20,7 +20,7 @@ class VideoAdmin(admin.ModelAdmin):
             obj.save()
             ConvertVideoTask.delay(obj)
         elif {'hq_file', 'mq_file', 'lq_file'} & set(form.changed_data):
-            obj.duration = video_duration(obj.best_quality_file().file)
+            obj.duration = video_duration(obj.best_quality_file().path)
             obj.status = obj.PENDING
             obj.save()
             MakeScreenShots.delay(obj)

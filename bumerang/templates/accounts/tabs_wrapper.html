@@ -69,7 +69,7 @@
     {% endblock %}
         {% if form %}
         <dt class="last">
-            <a href="{% url profile-self %}">Просмотр профиля</a>
+            <a href="{% url profile-detail object.id %}">Просмотр профиля</a>
         </dt>
         {% endif %}
     </dl>

@@ -71,7 +71,7 @@ class VideoCreateView(CreateView):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
         self.object.save()
-        self.object.duration = video_duration(self.object.original_file.file)
+        self.object.duration = video_duration(self.object.original_file.path)
         self.object.save()
         ConvertVideoTask.delay(self.object)
         return super(ModelFormMixin, self).form_valid(form)
@@ -95,7 +95,7 @@ class VideoUpdateView(OwnerMixin, UpdateView):
         self.object = form.save()
         if 'original_file' in form.changed_data:
             self.object.duration = video_duration(
-                self.object.original_file.file)
+                self.object.original_file.path)
             self.object.status = self.object.PENDING
             self.object.save()
             ConvertVideoTask.delay(self.object)
