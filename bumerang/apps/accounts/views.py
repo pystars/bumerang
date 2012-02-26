@@ -239,12 +239,9 @@ class ProfileView(DetailView):
 
     def get(self, request, **kwargs):
         response = super(ProfileView, self).get(request, **kwargs)
-        try:
-            if not self.get_object() == getattr(request.user, 'profile', None):
-                Profile.objects.filter(pk=self.get_object().id).update(
-                    views_count=F('views_count') + 1)
-        except Profile.DoesNotExist:
-            pass
+        if not self.get_object().id == getattr(request.user, 'id', None):
+            Profile.objects.filter(pk=self.get_object().id).update(
+                views_count=F('views_count') + 1)
 
         return response
 

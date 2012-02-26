@@ -12,7 +12,7 @@
                             {% else %}
                                 <img src="{{ STATIC_URL }}i/nophoto.png" width="190" height="123" alt="{{ video.title }}" />
                             {% endif %}
-                            <span class="time">{{ object.duration|default_if_none:0|to_hms }}</span>
+                            <span class="time">{{ video.duration|default_if_none:0|to_hms }}</span>
                         </span>
                         <i class="b-ico b-ico_play"><i></i></i>
                     </a>

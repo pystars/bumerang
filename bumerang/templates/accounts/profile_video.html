@@ -1,6 +1,5 @@
 {% extends "accounts/tabs_wrapper.html" %}
-{% load sitetree %}
-{% load rupluralize %}
+{% load sitetree rupluralize %}
 
 {% block title %}
     {% if object.id == user.id %}
@@ -62,17 +61,17 @@
         </div>
         {% include "snippets/videoalbums_list.html" %}
     </section>
-
+    {% if profile.id == request.user.id and not profile.video_set.count %}
     <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="videos-container">
         <header class="announs-head">
+            {% if profile.id == request.user.id %}
             <ul class="b-service-buttons">
-                {% if profile.id == request.user.id %}
                 <li class="addvideo">
                     <i></i>
                     <a href="{% url video-add %}">Добавить видео</a>
                 </li>
-                {% endif %}
             </ul>
+            {% endif %}
             <h3>Видеоролики без альбомов</h3>
             <div class="clear"></div>
             {% if profile.video_set.count %}
@@ -95,28 +94,33 @@
 {#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
 {#            </div>#}
         </header>
-
         <div id="video-empty-block" class="b-empty b-empty_video" {% if profile.videoalbum_set.count %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет видеороликов</strong>
-            <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+            {% if profile.id == request.user.id %}
+                <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+            {% endif %}
         </div>
         {% with profile.videos_without_album as videos %}
             {% include "snippets/videos_list.html" %}
         {% endwith %}
     </section>
-    </div></dd>
+    {% endif %}
+    </div>
+    </dd>
 
-    {% csrf_token %}
-
+{% if profile.id == request.user.id %}
+{% csrf_token %}
 <script type="text/javascript">
     $(function() {
         var vav = new VideoAlbumsView();
     });
 </script>
+{% endif %}
 {% endblock %}
 
 {% block popup %}
+    {% if profile.id == request.user.id %}
 <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
     <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
         <header class="b-form__header">
@@ -177,7 +181,7 @@
     <div class="b-popup__br"></div>
     <div class="b-popup__bl"></div>
 </section><!--b-popup-->
-
+{% endif %}
 <!--<section class="b-popup" id="popup-del-video" style="left:50%; top:100px;">-->
     <!--<section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">-->
         <!--<header class="b-form__header">-->
@@ -204,17 +208,23 @@
     <div id="videoalbum-empty-block-tpl" class="b-empty b-empty_video-album" style="display: none;">
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеоальбомов</strong>
+        {% if profile.id == request.user.id %}
         <div>
             <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
         </div>
+        {% endif %}
     </div>
 
+    {% if profile.id == request.user.id and not profile.video_set.count %}
     <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеороликов</strong>
+        {% if profile.id == request.user.id %}
         <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+        {% endif %}
     </div>
-    
+    {% endif %}
+    {% if profile.id == request.user.id %}
     <div id="move-dialog-list-item-tpl" class="b-form__field b-form__field_radio">
         <div class="f-radio">
             <!--
@@ -232,8 +242,8 @@
                 </div>
                 <div class="f-err"><span></span></div>
             {% endfor %}
-            
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
