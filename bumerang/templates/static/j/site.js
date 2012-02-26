@@ -268,7 +268,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickAlbumCheckbox: function(e) {
         // Получаем jQuery-объект кликнутого чекбокса альбома
-        var el = e['srcElement'];
+        var el = e.target;
         // Если он отмечен - добавляем в массив видеоальбомов
         if (el.checked) {
             this.selected_albums.push(
@@ -285,7 +285,7 @@ var VideoAlbumsView = Backbone.View.extend({
     },
     
     clickVideoCheckbox: function(e) {
-        var el = e['srcElement'];
+        var el = e.srcElement || e.target;
         if (el.checked) {
             this.selected_videos.push(
                 parseInt(el.id.split('checkbox-')[1])
@@ -360,7 +360,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleVideoMove: function(e) {
         e.preventDefault();
-        var el = e['srcElement'];
+        var el = e.target || e.srcElement;
         this.selected_videos.push(
             parseInt(el.id.split('move-video-')[1])
         );
@@ -428,11 +428,12 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleAlbumDelete: function(e) {
         e.preventDefault();
-        var el = e['srcElement'];
-        this.selected_albums.push(
-            parseInt(el.id.split('videoalbum-delete-')[1])
+        var el = e.target || e.srcElement;
+
+        this.selected_videos.push(
+            parseInt(el.id.split('video-delete-')[1])
         );
-        
+
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
         } else {
@@ -492,7 +493,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleVideoDelete: function(e) {
         e.preventDefault();
-        var el = e['srcElement'];
+        var el = e.target || e.srcElement;
         this.selected_videos.push(
             parseInt(el.id.split('video-delete-')[1])
         );
