@@ -5,7 +5,6 @@ import subprocess
 from django.conf import settings
 from celery.task import Task
 
-from mediainfo import video_duration
 from models import Preview
 from converting.models import ConvertOptions
 
@@ -25,10 +24,21 @@ class MakeScreenShots(Task):
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
-        offset = step = video.seconds_duration() / settings.PREVIEWS_COUNT
-        offset -= 1
         source_path = video.best_quality_file().path
-        while offset < video.seconds_duration():
+        duration = video.seconds_duration()
+        if duration > 30:
+            offset = 10
+        else:
+            offset = 1
+        screenable_duration = duration - offset * 2
+        previews_count = settings.PREVIEWS_COUNT
+        if screenable_duration < 1:
+            previews_count = screenable_duration = 1
+        elif screenable_duration < previews_count:
+            previews_count = screenable_duration
+        step = screenable_duration / (previews_count - 1)
+        counter = 0
+        while counter < previews_count:
             preview = Preview(owner=video)
             upload_to = preview.image.field.upload_to(
                 preview, '{0}.jpg'.format(offset))
@@ -42,6 +52,7 @@ class MakeScreenShots(Task):
                 preview.image = upload_to
                 preview.save()
             offset += step
+            counter += 1
         video.status = video.READY
         video.save()
         return "Ready"
