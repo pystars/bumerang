@@ -9,12 +9,12 @@ env.hosts = [u"web@62.76.179.205:22"]
 env.passwords = { u"web@62.76.179.205:22" : get_sudo_pwd() }
 
 def syncdb():
-        	'''
-        	Makes local syncdb and load fixtures
-        	'''
-        	local('python ./manage.py reset_db --noinput --router=default')
-        	local('python ./manage.py syncdb --noinput --migrate')
-        	local('python ./manage.py loaddata fixtures/*.json')
+    '''
+    Makes local syncdb and load fixtures
+    '''
+    local('python ./manage.py reset_db --noinput --router=default')
+    local('python ./manage.py syncdb --noinput --migrate')
+    local('python ./manage.py loaddata fixtures/*.json')
 
 def makemedia():
     '''

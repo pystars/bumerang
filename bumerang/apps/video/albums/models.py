@@ -15,7 +15,8 @@ class VideoAlbum(models.Model, TitleUnicode):
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание', **nullable)
     preview = models.ImageField(u'Обложка',
-        upload_to=video_album_preview_upload_to, storage=RewritableFilesStorage)
+        upload_to=video_album_preview_upload_to, storage=RewritableFilesStorage,
+        **nullable)
     cover = models.OneToOneField(Video, on_delete=models.SET_NULL, **nullable)
 
     class Meta:

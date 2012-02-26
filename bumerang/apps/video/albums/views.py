@@ -3,23 +3,26 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
 
-from bumerang.apps.utils.views import OwnerMixin
+from bumerang.apps.utils.views import OwnerMixin, AjaxView
 from forms import VideoAlbumForm, VideoAlbumCoverForm
 from models import VideoAlbum
 
 
-class VideoSetCoverView(UpdateView):
+class VideoSetCoverView(AjaxView, OwnerMixin, UpdateView):
     model = VideoAlbum
     form_class = VideoAlbumCoverForm
 
     def form_valid(self, form):
-        #form.preview = form.cover.preview()
-        super(VideoSetCoverView, self).form_valid(form)
+        cover = form.cleaned_data['cover']
+        self.object = form.save(commit=False)
+        if (self.object.owner == getattr(cover, 'owner', None)
+                == self.request.user):
+            self.object.preview = cover.preview()
+            self.object.save()
+        return self.render_to_response(result=True)
 
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS, u'Обложка видеоальбома обновлена')
-        return reverse('video-album-detail', args=[self.object.id])
+    def form_invalid(self, form):
+        return self.render_to_response(result=False)
 
 
 class VideoAlbumUpdateView(OwnerMixin, UpdateView):

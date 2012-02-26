@@ -4,8 +4,6 @@ import json
 import urlparse
 from datetime import datetime, timedelta
 from uuid import uuid4
-from django.contrib.auth.models import User
-from django.forms.util import ErrorList
 
 try:
     from cStringIO import StringIO
@@ -13,6 +11,8 @@ except ImportError:
     import StringIO
 
 from PIL import Image
+from django.contrib.auth.models import User
+from django.forms.util import ErrorList
 from django.db.models import F
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext

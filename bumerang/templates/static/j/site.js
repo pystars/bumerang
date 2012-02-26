@@ -308,8 +308,6 @@ var VideoAlbumsView = Backbone.View.extend({
         var album_id = el.getAttribute('data-album-id');
         var video_id = el.getAttribute('data-video-id');
 
-        console.log(album_id);
-
         $.ajax({
             type: 'post',
             url: '/video/album'+album_id+'/set-cover/',
@@ -317,11 +315,11 @@ var VideoAlbumsView = Backbone.View.extend({
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                 cover: video_id
             },
-            success: function() {
-                window.location.reload();
+            success: function(data) {
+                if (data['result']) {show_notification('success', 'Обложка успешно изменена');}
             },
-            error: function() {
-                window.location.reload();
+            error: function(data) {
+                if (!data['result']) {show_notification('error', 'Невозможно изменить обложку');}
             }
         });
     },
