@@ -206,17 +206,16 @@ function invokeMoveDialog(callback) {
     var popup = $('#popup-move-video');
 
     popup.find('*').unbind();
-    
+
     var cancelButton = $('#' + popup.attr('id') + ' #confirm-popup-cancel');
     var okButton = $('#' + popup.attr('id') + ' #confirm-popup-ok');
-    
+
     cancelButton.click(function(e) {
         e.preventDefault();
         popup.hide();
         $('#tint').hide();
-        return;
     });
-    
+
     okButton.click(function(e) {
         e.preventDefault();
         var id = popup.find('input:radio:checked').attr('data-album-to-move');
@@ -224,7 +223,6 @@ function invokeMoveDialog(callback) {
             callback(id);
         }
         cancelButton.trigger('click');
-        return;
     });
 
     popup.css('margin-left', - popup.width() / 2 + 'px');
@@ -258,7 +256,7 @@ var VideoAlbumsView = Backbone.View.extend({
         'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete',
         'click a[id*=video-delete-]': 'clickSingleVideoDelete',
 
-        'click a[id=video-move-button]': 'clickVideoMoveButton'
+        'click #video-move-button': 'clickVideoMoveButton'
     },
 
     initialize: function() {
@@ -301,6 +299,8 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickVideoMoveButton: function(e) {
         e.preventDefault();
+
+        console.log('move clicked');
 
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите переместить выбранные видеоролики?';
