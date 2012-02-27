@@ -17,7 +17,7 @@ class VideoAlbum(models.Model, TitleUnicode):
     preview = models.ImageField(u'Обложка',
         upload_to=video_album_preview_upload_to, storage=RewritableFilesStorage,
         **nullable)
-    cover = models.OneToOneField(Video, on_delete=models.SET_NULL, **nullable)
+    cover = models.ForeignKey(Video, on_delete=models.SET_NULL, **nullable)
 
     class Meta:
         verbose_name = u'Видеоальбом'
