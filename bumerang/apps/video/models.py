@@ -155,6 +155,9 @@ class Video(models.Model, TitleUnicode):
     def best_quality_file(self):
         return self.hq_file or self.mq_file or self.lq_file or None
 
+    def any_file(self):
+        return self.best_quality_file() or self.original_file or None
+
     def seconds_duration(self):
         return (self.duration or 0) / 1000
 

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib import admin
-from bumerang.apps.video.mediainfo import video_duration
+import os
+import shutil
 
+from django.contrib import admin
+from django.contrib.admin.actions import delete_selected as _delete_selected
+
+from bumerang.apps.video.mediainfo import video_duration
 from bumerang.apps.video.models import Video, VideoCategory, VideoGenre
 from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
 
@@ -12,6 +16,7 @@ class VideoAdmin(admin.ModelAdmin):
     list_display = ['title', 'category', 'created', 'owner',
                     'published_in_archive', 'is_in_broadcast_lists']
     list_editable = ['published_in_archive', 'is_in_broadcast_lists']
+    actions = ['delete_selected']
 
     def save_model(self, request, obj, form, change):
         if 'original_file' in form.changed_data:
@@ -26,6 +31,19 @@ class VideoAdmin(admin.ModelAdmin):
             MakeScreenShots.delay(obj)
         else:
             obj.save()
+
+    def delete_selected(self, request, queryset):
+        if request.POST.get('post'):
+            folders = [os.path.split(video.any_file().path)[0]
+                for video in queryset.all()
+                if video.any_file()
+            ]
+        result = _delete_selected(self, request, queryset)
+        if request.POST.get('post'):
+            for folder in folders:
+                shutil.rmtree(folder)
+        return result
+    delete_selected.short_description = u'Удалить вместе с файлами'
 
 
 class TitleSlugAdmin(admin.ModelAdmin):

@@ -5,9 +5,8 @@ import subprocess
 
 from django.conf import settings
 from celery.task import Task
-from bumerang.apps.video.models import Video
 
-from models import Preview
+from models import Preview, Video
 from converting.models import ConvertOptions
 
 
@@ -74,6 +73,8 @@ class ConvertVideoTask(Task):
         """
         Converts the Video and creates the related files.
         """
+        #TODO: what if video will be deleted during converting?
+        #what if user update videofile during converting
         logger = self.get_logger(**kwargs)
         logger.info("Starting Video Post conversion: %s" % video)
 
