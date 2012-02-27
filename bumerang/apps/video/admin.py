@@ -11,16 +11,16 @@ from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
 
 
 class VideoAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("title",)}
-    readonly_fields = ['original_file', 'created']
-    list_display = ['title', 'category', 'created', 'owner',
+    readonly_fields = ['original_file', 'created', 'slug']
+    list_display = ['title', 'category', 'created', 'owner', 'status', 'slug',
                     'published_in_archive', 'is_in_broadcast_lists']
-    list_editable = ['published_in_archive', 'is_in_broadcast_lists']
+    list_editable = ['published_in_archive', 'is_in_broadcast_lists',  'status']
     actions = ['delete_selected']
 
     def save_model(self, request, obj, form, change):
+        obj.save()
         if 'original_file' in form.changed_data:
-            obj.duration = video_duration(obj.original_file.file)
+            obj.duration = video_duration(obj.original_file.path)
             obj.status = obj.PENDING
             obj.save()
             ConvertVideoTask.delay(obj)
@@ -29,8 +29,6 @@ class VideoAdmin(admin.ModelAdmin):
             obj.status = obj.PENDING
             obj.save()
             MakeScreenShots.delay(obj)
-        else:
-            obj.save()
 
     def delete_selected(self, request, queryset):
         if request.POST.get('post'):

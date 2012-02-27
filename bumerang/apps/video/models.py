@@ -65,7 +65,7 @@ class Video(models.Model, TitleUnicode):
     CONVERTING = 1
     READY = 2
     ERROR = 3
-    STATUS_CHOICES = choices(
+    STATUS_CHOICES = (
         (PENDING, u'ожидает очереди'),
         (CONVERTING, u'конвертируется'),
         (READY, u'обработано'),
@@ -114,7 +114,7 @@ class Video(models.Model, TitleUnicode):
     views_count = models.IntegerField(u'Количество просмотров видео', default=0,
                                       editable=False, **nullable)
     status = models.IntegerField(u'статус', choices=STATUS_CHOICES,
-        default=PENDING, editable=False)
+        default=PENDING)
 
     class Meta:
         verbose_name = u'Видео'

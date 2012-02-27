@@ -54,7 +54,9 @@ class MakeScreenShots(Task):
                 preview.save()
             offset += step
             counter += 1
-        Video.objects.filter(pk=video.id).update(status=video.READY)
+        video = Video.objects.get(pk=video.id)
+        video.status = Video.READY
+        video.save()
         return "Ready"
 
     def get_commandline(self, path, offset, size, output):
