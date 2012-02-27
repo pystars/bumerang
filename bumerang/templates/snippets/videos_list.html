@@ -4,18 +4,23 @@
         {% for video in videos %}
             <article class="announ-item video" id="video-item-{{ video.id }}" data-video-id="{{ video.id }}" data-video-album="{{ video.album_id|default:'' }}">
                 <div class="ai-img d-sh">
+                    {% if video.status == video.READY %}
                     <a href="{% url video-detail video.id %}">
                         <span>
-                            <img src="{% spaceless %}{% if not video.status == video.READY %}{{ STATIC_URL }}i/processing.png
-                            {% elif video.preview %}{{ video.preview.url }}
-                            {% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}{% endspaceless %}" width="190" height="123" alt="{{ video.title }}" />
-                            {% if video.status == video.READY %}<span class="time">{{ video.duration|default_if_none:0|to_hms }}</span>{% endif %}
+                            <img src="{% if video.preview %}{{ video.preview.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}"
+                                 width="190" height="123" alt="{{ video.title }}" />
+                            <span class="time">{{ video.duration|default_if_none:0|to_hms }}</span>
                         </span>
                         <i class="b-ico b-ico_play"><i></i></i>
                     </a>
+                    {% else %}
+                        <span>
+                            <img src="{{ STATIC_URL }}i/processing.png" width="190" height="123" alt="{{ video.title }}" />
+                        </span>
+                    {% endif %}
                 </div>
                 <header class="ai-head">
-                    <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
+                    <h3>{% if video.status == video.READY %}<a href="{% url video-detail video.id %}">{{ video.title }}</a>{% else %}{{ video.title }}{% endif %}</h3>
                 </header>
                 <footer class="ai-foot">
                     <time class="date">{{ video.created|date:'j.m.Y, G:i' }}</time>
