@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import random
+import shutil
 import subprocess
 
 from django.conf import settings
@@ -49,20 +50,24 @@ class MakeScreenShots(Task):
             cmd = self.get_commandline(source_path,
                 random.choice(range(offset, offset+step)), size, output)
             process = subprocess.call(cmd, shell=False)
-            if not process:
-                preview.image = upload_to
-                preview.save()
+            if process:
+                return "Stop Making screenshots - video is deleted"
+            preview.image = upload_to
+            preview.save()
             offset += step
             counter += 1
-        video = Video.objects.get(pk=video.id)
+        try:
+            video = Video.objects.get(pk=video.id)
+        except Video.DoesNotExist:
+            return "Stop Making screenshots - video is deleted"
         video.status = Video.READY
         video.save()
         return "Ready"
 
     def get_commandline(self, path, offset, size, output):
         return ['ffmpeg', '-itsoffset', '-{0}'.format(offset), '-i', path,
-                '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
-                '-s', size, output]
+            '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
+            '-s', size, output]
 
 
 class ConvertVideoTask(Task):
@@ -92,11 +97,17 @@ class ConvertVideoTask(Task):
             setattr(video, file_field_name, None)
             video.save()
             process = subprocess.call(self.get_commandline(), shell=False)
-            video = Video.objects.get(pk=video.id)
+            try:
+                video = Video.objects.get(pk=video.id)
+            except Video.DoesNotExist:
+                shutil.rmtree(os.path.split(upload_to)[0], ignore_errors=True)
+                return "Stop Convert - video is deleted"
             if process:
                 video.status = video.ERROR
             else:
                 setattr(video, file_field_name, upload_to)
             video.save()
+
         MakeScreenShots.delay(video)
         return "Ready"
+
