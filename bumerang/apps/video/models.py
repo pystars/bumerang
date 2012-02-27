@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import shutil
 from datetime import datetime
 
 from django.db import models
@@ -133,20 +134,12 @@ class Video(models.Model, TitleUnicode):
                 self.album.save()
 
     def delete(self, **kwargs):
-        paths = []
-        for field in self._meta.fields:
-            if issubclass(field.__class__, models.FileField):
-                file_field = getattr(self, field.name)
-                if file_field and 'path' in file_field:
-                    if os.path.isfile(file_field.path):
-                        paths.append(file_field.path)
+        any_file = self.best_quality_file() or self.original_file
         try:
             super(Video, self).delete(**kwargs)
-            for path in paths:
-                try:
-                    os.remove(path)
-                except OSError:
-                    print 'failed remove the file'
+            if any_file:
+                parent_path = os.path.split(any_file.path)[0]
+                shutil.rmtree(parent_path, ignore_errors=True)
         except ProtectedError:
             pass #TODO: raise delete error, say it to user
 

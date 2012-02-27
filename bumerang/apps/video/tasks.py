@@ -94,6 +94,6 @@ class ConvertVideoTask(Task):
                 video.status = video.ERROR
             else:
                 setattr(video, file_field_name, upload_to)
-                video.save()
+            video.save()
         MakeScreenShots.delay(video)
         return "Ready"
