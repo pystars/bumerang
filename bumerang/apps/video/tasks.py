@@ -65,7 +65,7 @@ class MakeScreenShots(Task):
         return "Ready"
 
     def get_commandline(self, path, offset, size, output):
-        return ['ffmpeg', '-itsoffset', '-{0}'.format(offset), '-i', path,
+        return ['ffmpeg', '-y', '-itsoffset', '-{0}'.format(offset), '-i', path,
             '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
             '-s', size, output]
 
@@ -73,16 +73,18 @@ class MakeScreenShots(Task):
 class ConvertVideoTask(Task):
 
     def get_commandline(self):
-        return (['HandBrakeCLI', '-O', '-C', '2', '-i', self.original_file_path]
+        return (['HandBrakeCLI', '-v3', '-O', '-C', '2', '-i',
+            self.original_file_path]
             + self.convert_options + ['-o', self.result_file])
 
     def run(self, video, **kwargs):
         """
         Converts the Video and creates the related files.
         """
-        #TODO: what if video will be deleted during converting?
-        #what if user update videofile during converting
+        #TODO: what if user update videofile during converting
         logger = self.get_logger(**kwargs)
+        print 'logfile:', self.request.logfile
+        print 'kwargs:', kwargs
         logger.info("Starting Video Post conversion: %s" % video)
 
         self.original_file_path = video.original_file.path
@@ -103,6 +105,9 @@ class ConvertVideoTask(Task):
                 shutil.rmtree(os.path.split(upload_to)[0], ignore_errors=True)
                 return "Stop Convert - video is deleted"
             if process:
+                stdout, stderr = process.communicate()
+                print 'stdout:', stdout
+                print 'stderr:', stderr
                 video.status = video.ERROR
             else:
                 setattr(video, file_field_name, upload_to)
