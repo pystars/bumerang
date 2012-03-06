@@ -50,20 +50,20 @@ class Photo(models.Model, TitleUnicode):
         (FOR_ME_ONLY, u'Только мне'),
     )
 
-    CONVERTING = 1
-    READY = 2
-    ERROR = 3
-    STATUS_CHOICES = choices(
-        (CONVERTING, u'конвертируется'),
-        (READY, u'обработано'),
-        (ERROR, u'ошибка обработки')
-    )
+#    CONVERTING = 1
+#    READY = 2
+#    ERROR = 3
+#    STATUS_CHOICES = choices(
+#        (CONVERTING, u'конвертируется'),
+#        (READY, u'обработано'),
+#        (ERROR, u'ошибка обработки')
+#    )
 
     slug = models.SlugField(u'Метка', max_length=SLUG_LENGTH, editable=False)
-    published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве',
+    published_in_archive = models.BooleanField(u'Опубликовано в фотогалерее',
         default=False)
-    is_in_broadcast_lists = models.BooleanField(u'Списки вещания',
-        default=False)
+#    is_in_broadcast_lists = models.BooleanField(u'Списки вещания',
+#        default=False)
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.ImageField(u"Оригинальное фото",
@@ -83,12 +83,12 @@ class Photo(models.Model, TitleUnicode):
     teachers = models.CharField(u'Педагоги', max_length=255, **nullable)
     manager = models.CharField(u'Руководитель', max_length=255, **nullable)
     festivals = models.TextField(u'Фестивали', **nullable)
-    access = models.IntegerField(u'Кому доступно видео',
+    access = models.IntegerField(u'Кому доступно фото',
         choices=ACCESS_FLAGS_CHOICES, default=1, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
-    views_count = models.IntegerField(u'Количество просмотров видео', default=0,
+    views_count = models.IntegerField(u'Количество просмотров фото', default=0,
                                       editable=False, **nullable)
-    status = models.IntegerField(u'статус', choices=STATUS_CHOICES)
+#    status = models.IntegerField(u'статус', choices=STATUS_CHOICES)
 
     class Meta:
         verbose_name = u'Фото'
@@ -126,7 +126,7 @@ class Photo(models.Model, TitleUnicode):
             pass #TODO: raise delete error, say it to user
 
     def get_absolute_url(self):
-        return reverse('video-detail', kwargs={'pk': self.pk})
+        return reverse('photo-detail', kwargs={'pk': self.pk})
 
     @classmethod
     def get_slug(cls):

@@ -1,0 +1,216 @@
+{% extends "accounts/tabs_wrapper.html" %}
+{% load sitetree rupluralize %}
+
+{% block title %}
+    {% if object.id == user.id %}
+        Ваши фотографии
+    {% else %}
+        {% if object.title %}
+            {% if object.type != 1 %}
+                Фото: {{ object.get_type_display }} &laquo;{{ object.title }}&raquo;
+            {% endif %}
+        {% else %}
+            {{ "Заполните имя профиля" }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block profile_photo_tab %}
+    <dt class="selected">
+        <span>Фото</span>
+        <small>{{ profile.photo_set.count }}</small>
+        <i class="l"></i>
+        <i class="r"></i>
+    </dt>
+    <dd class="selected"><div class="b-tabs__tab-content">
+    {% include "snippets/section_profile.html" %}
+    <div class="b-hr">
+        <hr />
+    </div>
+    <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v" id="photoalbums-container">
+        <header class="b-gallery__head">
+            <ul class="b-service-buttons">
+                {% if profile.id == request.user.id %}
+                    <li class="addphotoalbum">
+                        <i></i>
+                        <a href="{% url photo-album-add %}">Добавить альбом</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <h3>Фотоальбомы</h3>
+            <div class="clear"></div>
+            {% if profile.photoalbum_set.count %}
+                {% if profile.id == request.user.id %}
+                    <a href="#" id="photoalbum-delete-button" class="b-button b-button_red b-button_small l-button-del" style="display: none;">Удалить</a>
+                {% endif %}
+                <p class="smaller" id="albums-count">
+                        Всего {{ profile.photoalbum_set.count }} {{ profile.photoalbum_set.count|rupluralize:"альбом,альбома,альбомов" }}
+                <div id="photoalbums-plurals" style="display: none;">альбом,альбома,альбомов</div>
+                </p>
+            {% endif %}
+        </header>
+
+        <div id="photoalbum-empty-block" class="b-empty b-empty_photo-album" {% if profile.photoalbum_set.count %}style="display: none;"{% endif %}>
+            <div class="b-empty__pic"></div>
+            <strong class="b-empty__text">Нет фотоальбомов</strong>
+            {% if profile.id == request.user.id %}
+                <div>
+                    <a href="{% url photo-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+                </div>
+            {% endif %}
+        </div>
+        {% include "snippets/photoalbums_list.html" %}
+    </section>
+        {% if profile.id == request.user.id or videos.count %}
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container">
+        <header class="announs-head">
+            {% if profile.id == request.user.id %}
+                <ul class="b-service-buttons">
+                <li class="addphoto">
+                    <i></i>
+                    <a href="{% url photo-add %}">Добавить фото</a>
+                </li>
+            </ul>
+            {% endif %}
+            <h3>Фотографии без альбомов</h3>
+            <div class="clear"></div>
+            {% if photos.count %}
+                {% if profile.id == request.user.id %}
+                    <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
+                    <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="video-move-button" style="display: none;">Переместить в альбом...</a>
+                {% endif %}
+                <p class="smaller" id="videos-count">
+                    Всего {{ videos.count }} видео
+                <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
+                </p>
+            {% endif %}
+            {#            <div class="b-sort">#}
+{#                <div class="b-sort__title">Сортировка</div>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort1" />#}
+{#                <label class="b-sort__handle" for="sort1"><span>по просмотрам</span></label>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort2" />#}
+{#                <label class="b-sort__handle" for="sort2"><span>по оценкам</span></label>#}
+{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort3" />#}
+{#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
+{#            </div>#}
+        </header>
+        <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.count %}style="display: none;"{% endif %}>
+            <div class="b-empty__pic"></div>
+            <strong class="b-empty__text">Нет фотографий</strong>
+            {% if profile.id == request.user.id %}
+                <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить фото</a></div>
+            {% endif %}
+        </div>
+        {% include "snippets/photos_list.html" %}
+    </section>
+        {% endif %}
+    </div>
+    </dd>
+
+    {% csrf_token %}
+    <script type="text/javascript">
+        $(function() {
+            //var vav = new VideoAlbumsView();
+        });
+    </script>
+{% endblock %}
+
+{% block popup %}
+    {% if profile.id == request.user.id %}
+        <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+        <header class="b-form__header">
+            <h4>
+                Подтвердите действие
+            </h4>
+            <p id="dialog-text">
+                {= text }
+            </p>
+        </header>
+        <footer class="b-form__footer cleared">
+            <a href="#" class="b-button b-button_yellow left cancel" id="confirm-popup-cancel">Отменить</a>
+            <a href="#" class="b-button b-button_red right videos_delete" id="confirm-popup-ok">Удалить</a>
+        </footer>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+
+        <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <form action="{% url video-move %}" method="post">
+            {% csrf_token %}
+            <header class="b-form__header">
+                <h3>
+                    Переместить в альбом
+                </h3>
+            </header>
+            <div class="b-form__fields">
+                <div class="b-form__field" id="albums-list">
+                    {% for item in profile.videoalbum_set.all %}
+                        <div class="b-form__field b-form__field_radio">
+                        <div class="f-radio">
+                            <div>
+                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
+                                <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
+                                {{ item.title }}
+                                    {% if item == object %}(Текущий альбом){% endif %}
+                                </label>
+                            </div>
+                            <div class="f-err"><span></span></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow right videos_delete" id="confirm-popup-ok">Переместить</a>
+                <a href="#" class="b-button b-button_red left cancel" id="confirm-popup-cancel">Отменить</a>
+            </footer>
+        </form>
+    </section><!--b-form-->
+    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+    {% endif %}
+    {# Шаблоны для JavaScript кода #}
+    <div style="display: none;">
+    <div id="videoalbum-empty-block-tpl" class="b-empty b-empty_video-album" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеоальбомов</strong>
+        {% if profile.id == request.user.id %}
+            <div>
+            <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+        </div>
+        {% endif %}
+    </div>
+
+        {% if profile.id == request.user.id and not videos.count %}
+            <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеороликов</strong>
+                {% if profile.id == request.user.id %}
+                    <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+                {% endif %}
+    </div>
+        {% endif %}
+        {% if profile.id == request.user.id %}
+            <div id="move-dialog-list-item-tpl" class="b-form__field b-form__field_radio">
+        <div class="f-radio">
+            {% for album in profile.videoalbum_set.all %}
+                <div>
+                    <input type="radio" name="album" value="{{ album.id }}" id="album{{ album.id }}" data-album-id="{{ album.id }}" />
+                    <label for="album{{ album.id }}">{{ album.title }}</label>
+                </div>
+                <div class="f-err"><span></span></div>
+            {% endfor %}
+        </div>
+    </div>
+        {% endif %}
+</div>
+{% endblock %}

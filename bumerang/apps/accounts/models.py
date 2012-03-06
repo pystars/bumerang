@@ -136,6 +136,8 @@ class Profile(User):
     def videos_without_album(self):
         return self.video_set.filter(album__isnull=True)
 
+    def photos_without_album(self):
+        return self.photo_set.filter(album__isnull=True)
 
 class Faculty(models.Model):
     title = models.CharField(u'Название', max_length=255, blank=False)

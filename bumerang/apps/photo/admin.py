@@ -8,8 +8,8 @@ class PhotoAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     readonly_fields = ['original_file', 'created']
     list_display = ['title', 'category', 'created', 'owner',
-                    'published_in_archive', 'is_in_broadcast_lists']
-    list_editable = ['published_in_archive', 'is_in_broadcast_lists']
+                    'published_in_archive']
+    list_editable = ['published_in_archive']
 
 
 class TitleSlugAdmin(admin.ModelAdmin):

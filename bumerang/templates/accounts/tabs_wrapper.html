@@ -53,11 +53,11 @@
     {% block profile_photo_tab %}
         <dt>
             {% spaceless %}
-            <a href="#">
+            <a href="{% url profile-photo-detail object.id %}">
                 <span>Фото</span>
             </a>
             {% endspaceless %}
-            <small>0</small>
+            <small>{{ profile.photo_set.count }}</small>
             <i class="l"></i>
             <i class="r"></i>
         </dt>

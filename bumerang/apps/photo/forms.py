@@ -14,7 +14,7 @@ class BasePhotoForm(forms.ModelForm):
 
 
 class PhotoCreateForm(BasePhotoForm):
-    original_file = forms.FileField(label=u"Оригинальное видео")
+    original_file = forms.FileField(label=u"Оригинальное фото")
 
     class Meta:
         model = Photo

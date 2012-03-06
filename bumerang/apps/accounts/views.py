@@ -261,6 +261,18 @@ class ProfileVideoView(DetailView):
         return ctx
 
 
+class ProfilePhotoView(DetailView):
+    model = Profile
+
+    def get_context_data(self, **kwargs):
+        photos = self.object.photos_without_album()
+        if not self.request.user.id == self.object.id:
+            photos = photos.filter(status=Video.READY)
+        ctx = super(ProfilePhotoView, self).get_context_data(**kwargs)
+        ctx['photos'] = photos
+        return ctx
+
+
 class UsersListView(ListView):
     model = Profile
     paginate_by = 25

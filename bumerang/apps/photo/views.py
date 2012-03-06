@@ -14,7 +14,7 @@ from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import PhotoAlbum
 from models import Photo
 from forms import (PhotoForm, PhotoUpdateAlbumForm, PhotoCreateForm,
-    AlbumPhotoCreateForm)
+                   AlbumPhotoCreateForm)
 
 
 class PhotoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
@@ -36,9 +36,9 @@ class PhotoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
         album = get_object_or_404(PhotoAlbum, pk=form.cleaned_data['album_id'],
             owner=self.request.user)
         if self.get_queryset().filter(**kwargs).update(album=album):
-            msg = u'Видео успешно перемещено'
+            msg = u'Фото успешно перемещено'
         else:
-            msg = u'Ошибка перемещения видео'
+            msg = u'Ошибка перемещения фото'
         return super(PhotoMoveView, self).render_to_response(message=msg)
 
 
@@ -57,7 +57,7 @@ class PhotoCreateView(CreateView):
 
     def get_form(self, form_class):
         if self.album():
-            return AlbumPhotoCreateForm(**self.get_form_kwargs())
+            return AlbumPhotoCreateForm(self.request.user, **self.get_form_kwargs())
         return PhotoCreateForm(self.request.user, **self.get_form_kwargs())
 
     def album(self):
@@ -79,7 +79,7 @@ class PhotoCreateView(CreateView):
 
     def form_invalid(self, form):
         messages.add_message(
-            self.request, messages.ERROR, u'Ошибка при загрузке видео')
+            self.request, messages.ERROR, u'Ошибка при загрузке фото')
         return super(PhotoCreateView, self).form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -103,7 +103,7 @@ class PhotoUpdateView(OwnerMixin, UpdateView):
                 form.cleaned_data['original_file'].temporary_file_path())
         self.object = form.save()
         messages.add_message(self.request, messages.SUCCESS,
-            u'Информация о видео успешно обновлена')
+            u'Информация о фото успешно обновлена')
         return super(PhotoUpdateView, self).form_valid(form)
 
 
