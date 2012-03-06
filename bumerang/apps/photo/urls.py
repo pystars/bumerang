@@ -3,7 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
 
-from bumerang.apps.utils.views import XMLDetailView, ObjectsDeleteView
+from bumerang.apps.utils.views import ObjectsDeleteView
 from models import Photo
 from albums.models import PhotoAlbum
 from views import (PhotoListView, PhotoCreateView, PhotoDetailView,
@@ -57,10 +57,6 @@ urlpatterns = patterns('',
         login_required(PhotoMoveView.as_view()),
         name='photo-move'
     ),
-#    url(r'^delete/(?P<pk>\w+)/$',
-#        login_required(PhotoDeleteView.as_view()),
-#        name='photo-delete'
-#    ),
     url(r'^(?P<pk>\w+)/$',
         PhotoDetailView.as_view(),
         name='photo-detail'

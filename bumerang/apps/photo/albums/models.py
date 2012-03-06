@@ -13,8 +13,8 @@ class PhotoAlbum(models.Model, TitleUnicode):
     cover = models.OneToOneField(Photo, on_delete=models.SET_NULL, **nullable)
 
     class Meta:
-        verbose_name = u'Видеоальбом'
-        verbose_name_plural = u'Видеоальбомы'
+        verbose_name = u'Фотоальбом'
+        verbose_name_plural = u'Фотоальбомы'
 
     def preview(self):
         if self.cover:

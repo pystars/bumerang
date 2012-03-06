@@ -57,10 +57,6 @@ urlpatterns = patterns('',
         login_required(VideoMoveView.as_view()),
         name='video-move'
     ),
-#    url(r'^delete/(?P<pk>\w+)/$',
-#        login_required(VideoDeleteView.as_view()),
-#        name='video-delete'
-#    ),
     url(r'^(?P<pk>\w+)/$',
         VideoDetailView.as_view(),
         name='video-detail'

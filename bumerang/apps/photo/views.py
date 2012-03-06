@@ -3,6 +3,7 @@ import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models.expressions import F
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
@@ -48,7 +49,7 @@ class PhotoDetailView(DetailView):
     def get(self, request, **kwargs):
         response = super(PhotoDetailView, self).get(request, **kwargs)
         self.get_queryset().filter(pk=self.object.id).update(
-            views_count=self.object.views_count + 1)
+            views_count=F('views_count') + 1)
         return response
 
 
@@ -57,7 +58,8 @@ class PhotoCreateView(CreateView):
 
     def get_form(self, form_class):
         if self.album():
-            return AlbumPhotoCreateForm(self.request.user, **self.get_form_kwargs())
+            return AlbumPhotoCreateForm(
+                self.request.user, **self.get_form_kwargs())
         return PhotoCreateForm(self.request.user, **self.get_form_kwargs())
 
     def album(self):
@@ -98,10 +100,6 @@ class PhotoUpdateView(OwnerMixin, UpdateView):
         return reverse('photo-edit', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        if 'original_file' in form.changed_data:
-            self.object.duration = photo_duration(
-                form.cleaned_data['original_file'].temporary_file_path())
-        self.object = form.save()
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о фото успешно обновлена')
         return super(PhotoUpdateView, self).form_valid(form)

@@ -134,7 +134,7 @@ class Video(models.Model, TitleUnicode):
                 self.album.save()
 
     def delete(self, **kwargs):
-        any_file = self.best_quality_file() or self.original_file
+        any_file = self.any_file()
         try:
             super(Video, self).delete(**kwargs)
             if any_file:

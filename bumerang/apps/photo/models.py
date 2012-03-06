@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
+import shutil
 from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.deletion import ProtectedError
 
 from bumerang.apps.utils.functions import random_string
-from bumerang.apps.utils.models import TitleUnicode, nullable, choices
+from bumerang.apps.utils.models import TitleUnicode, nullable
 
 
 class PhotoCategory(models.Model, TitleUnicode):
@@ -50,20 +50,9 @@ class Photo(models.Model, TitleUnicode):
         (FOR_ME_ONLY, u'Только мне'),
     )
 
-#    CONVERTING = 1
-#    READY = 2
-#    ERROR = 3
-#    STATUS_CHOICES = choices(
-#        (CONVERTING, u'конвертируется'),
-#        (READY, u'обработано'),
-#        (ERROR, u'ошибка обработки')
-#    )
-
     slug = models.SlugField(u'Метка', max_length=SLUG_LENGTH, editable=False)
     published_in_archive = models.BooleanField(u'Опубликовано в фотогалерее',
         default=False)
-#    is_in_broadcast_lists = models.BooleanField(u'Списки вещания',
-#        default=False)
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.ImageField(u"Оригинальное фото",
@@ -88,7 +77,6 @@ class Photo(models.Model, TitleUnicode):
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
     views_count = models.IntegerField(u'Количество просмотров фото', default=0,
                                       editable=False, **nullable)
-#    status = models.IntegerField(u'статус', choices=STATUS_CHOICES)
 
     class Meta:
         verbose_name = u'Фото'
@@ -108,22 +96,11 @@ class Photo(models.Model, TitleUnicode):
                 self.album.save()
 
     def delete(self, **kwargs):
-        paths = []
-        for field in self._meta.fields:
-            if issubclass(field.__class__, models.FileField):
-                file_field = getattr(self, field.name)
-                if 'path' in file_field:
-                    if os.path.isfile(file_field.path):
-                        paths.append(file_field.path)
-        try:
-            super(Photo, self).delete(**kwargs)
-            for path in paths:
-                try:
-                    os.remove(path)
-                except OSError:
-                    print 'failed remove the file'
-        except ProtectedError:
-            pass #TODO: raise delete error, say it to user
+        original_file = self.original_file
+        super(Photo, self).delete(**kwargs)
+        if original_file:
+            parent_path = os.path.split(original_file.path)[0]
+            shutil.rmtree(parent_path, ignore_errors=True)
 
     def get_absolute_url(self):
         return reverse('photo-detail', kwargs={'pk': self.pk})
