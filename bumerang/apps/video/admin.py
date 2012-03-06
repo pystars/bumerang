@@ -11,7 +11,7 @@ from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
 
 
 class VideoAdmin(admin.ModelAdmin):
-    readonly_fields = ['original_file', 'created', 'slug']
+    readonly_fields = ['created', 'slug']
     list_display = ['title', 'category', 'created', 'owner', 'status', 'slug',
                     'published_in_archive', 'is_in_broadcast_lists']
     list_editable = ['published_in_archive', 'is_in_broadcast_lists',  'status']

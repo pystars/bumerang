@@ -53,5 +53,8 @@ class PlayList(models.Model):
         ordering = ['rotate_till', 'id']
 
     def __unicode__(self):
-        return u'{0}:{1}-{2}'.format(
-            self.channel.title, self.rotate_from, self.rotate_till)
+        try:
+            return u'{0}:{1}-{2}'.format(
+                self.channel.title, self.rotate_from, self.rotate_till)
+        except Channel.DoesNotExist:
+            return None

@@ -1,16 +1,31 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 
+from django.forms.models import BaseInlineFormSet
 from django.contrib import admin
 
 from models import PlayList, PlayListItem, Channel
+from bumerang.apps.video.models import Video
+
+
+class PlayListItemFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        if not kwargs['instance'].pk:
+            kwargs['initial'] = [{'video': video}
+                for video in Video.objects.filter(is_in_broadcast_lists=True)]
+        super(PlayListItemFormSet, self).__init__(*args, **kwargs)
 
 
 class PlayListItemAdmin(admin.TabularInline):
     model = PlayListItem
+    formset = PlayListItemFormSet
     readonly_fields = ['play_from', 'play_till', 'offset']
     ordering = ['sort_order', 'id']
-    extra = 1
+
+    def __init__(self, parent_model, admin_site):
+        super(PlayListItemAdmin, self).__init__(parent_model, admin_site)
+        self.extra = Video.objects.filter(is_in_broadcast_lists=True).count()
+
 
 class PlayListAdmin(admin.ModelAdmin):
 
