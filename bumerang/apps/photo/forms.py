@@ -14,12 +14,13 @@ class BasePhotoForm(forms.ModelForm):
 
 
 class PhotoCreateForm(BasePhotoForm):
-    original_file = forms.FileField(label=u"Оригинальное фото")
+#    original_file = forms.ImageField(label=u"Оригинальное фото")
 
     class Meta:
         model = Photo
         fields = (
             'title',
+            'original_file',
             'album',
             'category',
             'description'
@@ -32,6 +33,7 @@ class PhotoCreateForm(BasePhotoForm):
 
 
 class AlbumPhotoCreateForm(BasePhotoForm):
+
     class Meta:
         model = Photo
         fields = (

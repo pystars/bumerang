@@ -2,6 +2,7 @@
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
+from bumerang.apps.photo.albums.views import PhotoAlbumDetailView
 
 from bumerang.apps.utils.views import ObjectsDeleteView
 from models import Photo
@@ -22,7 +23,7 @@ urlpatterns = patterns('',
         name='album-photo-add'
     ),
     url(r'^album(?P<pk>[\d]+)/$',
-        DetailView.as_view(model=PhotoAlbum),
+        PhotoAlbumDetailView.as_view(),
         name='photo-album-detail'
     ),
     url(r'^album(?P<pk>[\d]+)/edit/$',

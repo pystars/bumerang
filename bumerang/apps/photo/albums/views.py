@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
+from django.views.generic.detail import DetailView
 
 from bumerang.apps.utils.views import OwnerMixin
 from forms import PhotoAlbumForm, PhotoAlbumCoverForm
@@ -39,3 +40,13 @@ class PhotoAlbumCreateView(CreateView):
     def get_success_url(self):
         return reverse('album-photo-add',
             kwargs={'photo_album_id': self.object.id})
+
+
+class PhotoAlbumDetailView(DetailView):
+    model = PhotoAlbum
+
+    def get_context_data(self, **kwargs):
+        photos = self.object.photo_set.all()
+        ctx = super(PhotoAlbumDetailView, self).get_context_data(**kwargs)
+        ctx['photos'] = photos
+        return ctx

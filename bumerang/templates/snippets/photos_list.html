@@ -1,25 +1,17 @@
 {% load videotags %}
 <div class="announs-items">
     <form name="videos" action="{% url photos-delete %}" method="post">
-        {% for photo in photos %}
+        {% for photo in photoalbum.photo_set.all %}
             <article class="announ-item photo" id="photo-item-{{ photo.id }}" data-photo-id="{{ photo.id }}" data-photo-album="{{ photo.album_id|default:'' }}">
                 <div class="ai-img d-sh">
-                    {% if photo.status == photo.READY %}
-                        <a href="{% url photo-detail video.id %}">
+                    <a href="{% url photo-detail photo.id %}">
                         <span>
-                            <img src="{% if photo.preview %}{{ photo.preview.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="{{ photo.title }}" />
-                            <span class="time">{{ photo.duration|default_if_none:0|to_hms }}</span>
+                            <img src="{{ photo.original_file.url }}" width="190" height="123" alt="{{ photo.title }}" />
                         </span>
-                        <i class="b-ico b-ico_play"><i></i></i>
                     </a>
-                    {% else %}
-                        <span>
-                            <img src="{{ STATIC_URL }}i/processing.png" width="190" height="123" alt="{{ photo.title }}" />
-                        </span>
-                    {% endif %}
                 </div>
                 <header class="ai-head">
-                    <h3>{% if photo.status == photo.READY %}<a href="{% url photo-detail photo.id %}">{{ photo.title }}</a>{% else %}{{ photo.title }}{% endif %}</h3>
+                    <h3><a href="{% url photo-detail photo.id %}">{{ photo.title }}</a></h3>
                 </header>
                 <footer class="ai-foot">
                     <time class="date">{{ photo.created|date:'j.m.Y, G:i' }}</time>
@@ -40,7 +32,7 @@
                                     <span class="b-dropdown__popup__i__i">
                                         <span class="b-dropdown__arr"></span>
                                         <a href="#" class="b-dropdown__link" id="photo-delete-{{ photo.id }}">Удалить</a>
-                                        <a href="{% url photo-edit video.id %}" class="b-dropdown__link {% if not photoalbum %}last{% endif %}">Редактировать</a>
+                                        <a href="{% url photo-edit photo.id %}" class="b-dropdown__link {% if not photoalbum %}last{% endif %}">Редактировать</a>
                                         <a href="#" class="b-dropdown__link" id="move-photo-{{ photo.id }}">Переместить...</a>
                                         {% if photoalbum %}
                                             <a href="#" class="b-dropdown__link last" id="make-cover-{{ photo.id }}" data-album-id="{{ photoalbum.id }}" data-photo-id="{{ photo.id }}">Сделать обложкой</a>
