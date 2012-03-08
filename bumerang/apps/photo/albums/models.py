@@ -21,7 +21,7 @@ class PhotoAlbum(models.Model, TitleUnicode):
             return self.cover
         return None
 
-    def prview_url(self):
+    def preview_url(self):
         if self.cover:
             try:
                 return self.cover.original_file.url

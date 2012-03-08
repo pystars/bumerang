@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('bumerang.apps.accounts.urls')),
     url(r'^advices/', include('bumerang.apps.advices.urls')),
     url(r'^video/', include('bumerang.apps.video.urls')),
+    url(r'^photo/', include('bumerang.apps.photo.urls')),
     url(r'^accounts/', include('bumerang.apps.accounts.urls')),
 )
 

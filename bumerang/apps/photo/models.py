@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 import os
 import shutil
 from datetime import datetime
@@ -91,7 +92,12 @@ class Photo(models.Model, TitleUnicode):
     def save(self, *args, **kwargs):
         super(Photo, self).save(*args, **kwargs)
         if self.album:
-            if not self.album.cover:
+#            if not self.album.cover:
+#                self.album.cover = self
+#                self.album.save()
+            try:
+                self.album.cover
+            except ObjectDoesNotExist:
                 self.album.cover = self
                 self.album.save()
 
