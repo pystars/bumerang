@@ -27,7 +27,7 @@ class PhotoCreateForm(BasePhotoForm):
         )
 
     def __init__(self, user, *args, **kwargs):
-        super(PhotoCreateForm, self).__init__(*args, **kwargs)
+        super(PhotoCreateForm, self).__init__(user, *args, **kwargs)
         self.fields['album'].queryset = self.fields['album'].queryset.filter(
             owner=user)
 

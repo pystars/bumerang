@@ -76,12 +76,12 @@
             <div class="clear"></div>
             {% if photos.count %}
                 {% if profile.id == request.user.id %}
-                    <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
-                    <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="video-move-button" style="display: none;">Переместить в альбом...</a>
+                    <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="photo-delete-button" style="display: none;">Удалить</a>
+                    <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="photo-move-button" style="display: none;">Переместить в альбом...</a>
                 {% endif %}
                 <p class="smaller" id="videos-count">
-                    Всего {{ videos.count }} видео
-                <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
+                    Всего {{ photos.count }} фото
+                <div id="videos-plurals" style="display: none;">фото,фото,фото</div>
                 </p>
             {% endif %}
             {#            <div class="b-sort">#}
@@ -94,11 +94,11 @@
 {#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
 {#            </div>#}
         </header>
-        <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.count %}style="display: none;"{% endif %}>
+        <div id="photo-empty-block" class="b-empty b-empty_video" {% if photos.count %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет фотографий</strong>
             {% if profile.id == request.user.id %}
-                <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить фото</a></div>
+                <div><a href="{% url photo-add %}" class="b-button b-button_yellow">Загрузить фото</a></div>
             {% endif %}
         </div>
         {% include "snippets/photos_list.html" %}
@@ -110,7 +110,7 @@
     {% csrf_token %}
     <script type="text/javascript">
         $(function() {
-            //var vav = new VideoAlbumsView();
+            var pav = new PhotoAlbumsView();
         });
     </script>
 {% endblock %}

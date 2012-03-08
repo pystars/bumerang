@@ -1,7 +1,6 @@
-{% load videotags %}
 <div class="announs-items">
-    <form name="videos" action="{% url photos-delete %}" method="post">
-        {% for photo in photoalbum.photo_set.all %}
+    <form name="photos" action="{% url photos-delete %}" method="post">
+        {% for photo in photos %}
             <article class="announ-item photo" id="photo-item-{{ photo.id }}" data-photo-id="{{ photo.id }}" data-photo-album="{{ photo.album_id|default:'' }}">
                 <div class="ai-img d-sh">
                     <a href="{% url photo-detail photo.id %}">

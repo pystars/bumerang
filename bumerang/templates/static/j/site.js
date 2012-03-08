@@ -71,109 +71,6 @@ function get_videos_count() {
     return $('form[name=videos] .announ-item:visible').length;
 };
 
-/*
-* Returns selected items from formname
-* */
-/*
-function get_selected_items(formname) {
-    var checkboxes = [];
-    $.each($('form[name='+formname+'] input[type=checkbox]:checked'), function(i, v) {
-        checkboxes.push(parseInt($(v).attr('value')));
-    });
-    return checkboxes;
-};
-
-function show_albums_count() {
-    var count = get_albums_count();
-    if (count != 0) {
-        $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#videoalbums-plurals').text()));
-    } else {
-        $('#albums-count').text('Нет ни одного альбома');
-    };
-};
-
-function show_videos_count() {
-    var count = get_videos_count();
-    if (count != 0) {
-        $('#videos-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#videos-plurals').text()));
-    } else {
-        $('#videos-count').text('Нет ни одного видео');
-        $('#video-delete-button').hide();
-        $('#move-video-button').hide();
-    };
-};
-
-function hide_videoalbums_by_ids(ids) {
-    $.each(ids, function(i, val) {
-        $('#videoalbum-item-'+val).hide(300, function() {
-            if (get_albums_count() == 0) {
-                $('#videoalbum-empty-block').show();
-            };
-            show_albums_count();
-        });
-    });
-};
-
-function hide_videos_by_ids(ids) {
-    $.each(ids, function(i, val) {
-        $('#video-item-'+val).hide(300, function() {
-            console.log($(this).val());
-            if (get_videos_count() == 0) {
-                $('#video-empty-block').show();
-            };
-            show_videos_count();
-        });
-    });
-};
-
-function delete_video(ids) {
-    var url = $('form[name=videos]').attr('action');
-
-    $.ajax({
-        type: 'post',
-        url: url,
-        data: {
-            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-            ids: JSON.stringify(ids)
-        },
-        success: function(response) {
-            show_notification('success', response['message']);
-            hide_videos_by_ids(ids);
-            show_videos_count();
-        }
-    })
-};
-
-function delete_albums(ids) {
-    var url = $('form[name=videoalbums]').attr('action');
-
-    $.ajax({
-        type: 'post',
-        url: url,
-        data: {
-            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-            ids: JSON.stringify(ids)
-        },
-        success: function(response) {
-            show_notification('success', response['message']);
-            hide_videoalbums_by_ids(ids);
-            show_albums_count();
-        }
-    })
-};
-
-
-function show_popup_notification(popup_id) {
-    var popup = $("#" + popup_id);
-    $('#tint').show();
-    popup.css('margin-left', - pop.width() / 2 + 'px');
-    popup.css("top", (($(window).height() - pop.outerHeight()) / 2) + $(window).scrollTop() + "px");
-    popup.show();
-}
-
-*/
-
-
 function invokeConfirmDialog(text, callback) {
     var popup = $('#popup-confirm-video');
 
@@ -640,6 +537,38 @@ var VideoAlbumsView = Backbone.View.extend({
     
 });
 
+
+var PhotoAlbumsView = Backbone.View.extend({
+
+    el: 'body',
+
+    albums: [],
+    selected_albums: [],
+    selected_videos: [],
+
+    events: {
+        'click figure[id*=videoalbum-item-]': 'clickAlbumCheckbox',
+        'click article[id*=video-item-]': 'clickVideoCheckbox',
+
+        'click #videoalbum-delete-button': 'clickAlbumDeleteButton',
+        'click #video-delete-button': 'clickVideoDeleteButton',
+        'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete',
+        'click a[id*=video-delete-]': 'clickSingleVideoDelete',
+
+        'click #video-move-button': 'clickVideoMoveButton',
+        'click a[id*=move-video-]': 'clickSingleVideoMove',
+
+        'click a[id*=make-cover-]': 'clickMakeCover'
+    },
+
+    initialize: function() {
+        this.updatePage();
+    },
+
+    updatePage: function() {
+
+    }
+});
 /******************************************************************************/
 
 
@@ -653,139 +582,6 @@ $(function() {
         interpolate : /\{=(.+?)\}/g
     };
 
-    //var vav = new VideoAlbumsView();
-
-/*
-* Video objects handlers
-* */
-
-
-    /*
-    * Close button popup video delete handler
-    * */
-    /*
-     $('#del-popup-cancel').click(function() {
-        $('#popup-del-video').hide();
-        $('#tint').hide();
-     });
-*/
-    /*
-     * Single videoalbum delete handler
-     * */
-     /*
-    $('.b-dropdown__link[id*=videoalbum-delete-]').click(function() {
-        var id = parseInt($(this).attr('id').split('videoalbum-delete-')[1]);
-        delete_albums([id]);
-        return false;
-    });
-    * */
-/*
-    $('input[name=videoalbums]:checkbox').click(function() {
-        if ($('input[name=videoalbums]:checkbox').filter(':checked').length) {
-            $('#videoalbum-delete-buton').show();
-        } else {
-            $('#videoalbum-delete-buton').hide();
-        };
-    });
-
-    $('input[name=videos]:checkbox').click(function() {
-        if ($('input[name=videos]:checkbox').filter(':checked').length) {
-            $('#video-delete-button').show();
-            $('#move-video-button').show();
-        } else {
-            $('#video-delete-button').hide();
-            $('#move-video-button').hide();
-        };
-    });
-*/
-    /*
-    * Selected videoalbums delete handler
-    * */
-    /*
-    $('#videoalbum-delete-buton').click(function() {
-        delete_albums(get_selected_items('videoalbums'));
-        return false;
-    });
-    */
-    /*
-    * Single video delete handler
-    * */
-    /*
-    $('.b-dropdown__link[id*=video-delete-]').click(function() {
-        delete_video([parseInt($(this).attr('id').split('video-delete-')[1])]);
-        return false;
-    });
-*/
-    /*
-     * Selected videos delete handler
-     * */
-     /*
-    $('#video-delete-button').click(function() {
-        var ids = get_selected_items('videos');
-        if (ids.length) {
-            getPopup($(this), $(this).attr('rel'));
-            $('#del-popup-confirm').click(function() {
-                delete_video(ids);
-                $('#popup-del-video').hide();
-                $('#tint').hide();
-                return false;
-            });
-            return false;
-        }
-        return false;
-    });
-*/
-    /*
-    * Single video move handler
-    * */
-    /*
-    $('.b-dropdown__link[id*=move-video-]').click(function() {
-        var id_to_move = parseInt($(this).attr('id').split('move-video-')[1]);
-        $('.popup-videos-move-button').click(function() {
-            $.ajax({
-                type: 'POST',
-                url: $('#popup-move-video form').attr('action'),
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    //album_id: $('#popup-move-video input[name=album]:checked').attr('value'),
-                    video_id: id_to_move
-                },
-                success: function(response) {
-                    hide_videos_by_ids([id_to_move])
-                    show_notification('success', response['message']);
-                    $('#popup-move-video').hide();
-                    $('#tint').hide();
-                }
-            });
-        });
-    })
-*/
-    /*
-    * Selected videos move
-    * */
-    /*
-    $('#move-video-button').click(function() {
-        var ids_to_move = get_selected_items('videos');
-        $('.popup-videos-move-button').click(function() {
-            $.ajax({
-                type: 'POST',
-                url: $('#popup-move-video form').attr('action'),
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    album_id: $('#popup-move-video input[name=album]:checked').attr('value'),
-                    video_id: ids_to_move
-                },
-                success: function(response) {
-                    hide_videos_by_ids(ids_to_move)
-                    show_notification('success', response['message']);
-                    $('#popup-move-video').hide();
-                    $('#tint').hide();
-                }
-            });
-        });
-        return false;
-    });
-*/
     /*
     * Make cover of album
     * */
@@ -861,7 +657,6 @@ $(function() {
             return [0, 0, 150, 150];
         }
     }
-
 
     /*
     * Хэндлер уведомлений
