@@ -22,14 +22,17 @@ class PlayListItemAdmin(admin.TabularInline):
     readonly_fields = ['play_from', 'play_till', 'offset']
     ordering = ['sort_order', 'id']
 
+
     def __init__(self, parent_model, admin_site):
         super(PlayListItemAdmin, self).__init__(parent_model, admin_site)
         self.extra = Video.objects.filter(is_in_broadcast_lists=True).count()
 
 
 class PlayListAdmin(admin.ModelAdmin):
-
     inlines = [PlayListItemAdmin,]
+
+    class Media:
+        js = ["j/jquery-1.7.1.min.js", "j/jquery-ui.min.js", "j/admin.js"]
 
     def save_formset(self, request, form, formset, change):
         formset.save()
