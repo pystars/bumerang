@@ -60,17 +60,6 @@ function show_notification(status, text) {
 };
 
 
-/*
-* Video functions
-* */
-function get_albums_count() {
-    return $('form[name=videoalbums] .b-gallery__item:visible').length;
-};
-
-function get_videos_count() {
-    return $('form[name=videos] .announ-item:visible').length;
-};
-
 function invokeConfirmDialog(text, callback) {
     var popup = $('#popup-confirm-video');
 
@@ -182,7 +171,7 @@ var VideoAlbumsView = Backbone.View.extend({
     },
     
     clickVideoCheckbox: function(e) {
-        var el = e.srcElement || e.target || e.srcElement;
+        var el = e.srcElement || e.target;
         if (el.checked) {
             this.selected_videos.push(
                 parseInt(el.id.split('checkbox-')[1])
@@ -325,7 +314,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleAlbumDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement || e.srcElement;
+        var el = e.target || e.srcElement;
 
         this.selected_videos.push(
             parseInt(el.id.split('video-delete-')[1])
@@ -390,7 +379,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleVideoDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement || e.srcElement;
+        var el = e.target || e.srcElement;
         this.selected_videos.push(
             parseInt(el.id.split('video-delete-')[1])
         );
@@ -553,7 +542,7 @@ var PhotoAlbumsView = Backbone.View.extend({
         'click #photoalbum-delete-button': 'clickAlbumDeleteButton',
         'click #photo-delete-button': 'clickPhotoDeleteButton',
         'click a[id*=photoalbum-delete-]': 'clickSingleAlbumDelete',
-        'click a[id*=photo-delete-]': 'clickSinglePhotoDelete',
+        'click a[id*=photo-del-]': 'clickSinglePhotoDelete',
 
         'click #photo-move-button': 'clickPhotoMoveButton',
         'click a[id*=move-photo-]': 'clickSinglePhotoMove',
@@ -584,7 +573,7 @@ var PhotoAlbumsView = Backbone.View.extend({
         if (el.checked) {
             this.selected_photos.push($(el).attr('data-photo-id'));
         } else {
-            this.selected_videos = _.without(
+            this.selected_photos = _.without(
                 this.selected_photos,
                 $(el).attr('data-photo-id')
             );
@@ -700,7 +689,8 @@ var PhotoAlbumsView = Backbone.View.extend({
     clickSinglePhotoDelete: function(e) {
         e.preventDefault();
         var el = e.target || e.srcElement;
-        this.selected_photos.push($(el).attr('data-photoalbum-id'));
+        this.selected_photos.push($(el).attr('data-photo-id'));
+        this.selected_photos = _.uniq(this.selected_photos);
 
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные фотографии?';
@@ -709,13 +699,14 @@ var PhotoAlbumsView = Backbone.View.extend({
         }
 
         var view = this;
+        var stringified_ids = JSON.stringify(this.selected_photos);
         invokeConfirmDialog(msg, function() {
             $.ajax({
                 type: 'POST',
                 url: '/photo/photos-delete/',
                 data: {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_photos)
+                    ids: stringified_ids
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
@@ -770,15 +761,15 @@ var PhotoAlbumsView = Backbone.View.extend({
                     url: '/photo/photo-move/',
                     data: {
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        video_id: JSON.stringify(view.selected_videos),
+                        photo_id: JSON.stringify(view.selected_photos),
                         album_id: id
                     },
                     success: function(response) {
                         show_notification('success', response['message']);
 
-                        view.hideVideos();
-                        view.showVideosCount();
-                        view.selected_videos = [];
+                        view.hidePhotos();
+                        view.showPhotosCount();
+                        view.selected_photos = [];
                         view.updatePage();
                     }
                 });
@@ -905,6 +896,20 @@ var PhotoAlbumsView = Backbone.View.extend({
         } else {
             this.hidePhotoDeleteButton();
             this.hidePhotoMoveButton();
+        }
+
+        this.showAlbumsCount();
+
+        if (!this.getAlbumsCount() && !$('#photoalbum-empty-block').is(':visible')) {
+            var empty_block_tpl = $('#photoalbum-empty-block-tpl');
+            $('#photoalbums-container').append(empty_block_tpl);
+            empty_block_tpl.show(300, 'linear')
+        }
+
+        if (!this.getPhotosCount() && !$('#photo-empty-block').is(':visible')) {
+            var empty_block_tpl = $('#photo-empty-block-tpl');
+            $('#photos-container').append(empty_block_tpl);
+            empty_block_tpl.show(300, 'linear')
         }
     }
 });

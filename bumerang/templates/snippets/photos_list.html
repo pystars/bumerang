@@ -31,7 +31,7 @@
                                 <span class="b-dropdown__popup__i">
                                     <span class="b-dropdown__popup__i__i">
                                         <span class="b-dropdown__arr"></span>
-                                        <a href="#" class="b-dropdown__link" id="photo-delete-{{ photo.id }}">Удалить</a>
+                                        <a href="#" class="b-dropdown__link" id="photo-del-{{ photo.id }}" data-photo-id="{{ photo.id }}">Удалить</a>
                                         <a href="{% url photo-edit photo.id %}" class="b-dropdown__link {% if not photoalbum %}last{% endif %}">Редактировать</a>
                                         <a href="#" class="b-dropdown__link" id="move-photo-{{ photo.id }}">Переместить...</a>
                                         {% if photoalbum %}
