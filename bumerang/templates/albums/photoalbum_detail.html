@@ -95,7 +95,7 @@
         // Initialize Advanced Galleriffic Gallery
         var gallery = $('#thumbs').galleriffic({
             delay:                     2500,
-            numThumbs:                 10,
+            numThumbs:                 12,
             preloadAhead:              15,
             enableTopPager:            false,
             enableBottomPager:         false,
@@ -171,6 +171,7 @@
             if(hash) {
                 $.galleriffic.gotoImage(hash);
 
+                $("body").css("overflow", "hidden");
                 $('#tint').show();
                 $('.gallery-modal-wrapper').show();
 
@@ -199,44 +200,55 @@
 
 {% block popup %}
 
-    <div class="fog"></div>
+{#    <div class="fog"></div>#}
 
     <div class="gallery-modal-wrapper">
         <div class="gallery-modal">
             <div class="content">
-                <a href="#" id="gallery-close" class="close" style="font-size: 32px;">×</a>
+                <a href="#" id="gallery-close" class="close">×</a>
                 <script type="text/javascript">
                     $(function() {
                         $('#gallery-close').click(function(e) {
                             e.preventDefault();
+                            $("body").css("overflow", "auto");
                             $('.gallery-modal-wrapper').hide();
                             $('#tint').hide();
-                        })
+                        });
+
+                        $(document).keydown(function(e) {
+                            if (e.keyCode == 27 && $('#gallery-close').is(':visible')) {
+                                $('#gallery-close').trigger('click');
+                            }
+                        });
                     });
                 </script>
-                <div class="navigation-container">
-                    <div id="thumbs" class="navigation">
-                        <a class="pageLink prev" style="visibility: hidden;" href="#" title="Previous Page"></a>
 
-                        <ul class="thumbs noscript">
-                            {% for photo in photos %}
-                                <li>
-                                    <a class="thumb" id="prev{{ photo.id }}" href="{{ photo.original_file.url }}" title="{{ photo.title }}">
-                                        <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" />
-                                    </a>
-                                    <div class="caption">
-                                        <h5>{{ photo.title }}</h5>
-                                        <p>
-                                            {{ photo.description }}
-                                        </p>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                <div class="navigation-wrapper">
+                    <div class="navigation-container">
+                        <div id="thumbs" class="navigation">
+                            <a class="pageLink prev" style="visibility: hidden;" href="#" title="Previous Page"></a>
 
-                        <a class="pageLink next" style="visibility: hidden;" href="#" title="Next Page"></a>
+                            <ul class="thumbs noscript">
+                                {% for photo in photos %}
+                                    <li>
+                                        <a class="thumb" id="prev{{ photo.id }}" href="{{ photo.original_file.url }}" title="{{ photo.title }}">
+                                            <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" />
+                                        </a>
+                                        <div class="caption">
+                                            <h5>{{ photo.title }}</h5>
+                                            <p>
+                                                {{ photo.description }}
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <a class="pageLink next" style="visibility: hidden;" href="#" title="Next Page"></a>
+                        </div>
                     </div>
                 </div>
+
                 <div class="hr"></div>
                 <div class="gallery-content">
                     <div class="slideshow-container">
@@ -251,40 +263,6 @@
             </div>
         </div>
     </div>
-
-{#    <div id="gallery-modal" class="gallery-modal" style="display: none;">#}
-{#        <div id="container">#}
-{#            <div class="navigation-container">#}
-{#                <div id="thumbs" class="navigation">#}
-{#                    <a class="pageLink prev" style="visibility: hidden;" href="#" title="Previous Page"></a>#}
-{##}
-{#                    <ul class="thumbs noscript">#}
-{#                        {% for photo in photos %}#}
-{#                            <li>#}
-{#                                <a class="thumb" href="{{ photo.original_file.url }}" title="{{ photo.title }}">#}
-{#                                    <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" />#}
-{#                                </a>#}
-{#                            </li>#}
-{#                        {% endfor %}#}
-{#                    </ul>#}
-{##}
-{#                    <a class="pageLink next" style="visibility: hidden;" href="#" title="Next Page"></a>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <div class="content">#}
-{#                <div class="slideshow-container">#}
-{#                    <div id="loading" class="loader"></div>#}
-{#                    <div id="slideshow" class="slideshow"></div>#}
-{#                </div>#}
-{#                <div id="caption" class="caption-container">#}
-{#                    <div class="photo-index"></div>#}
-{#                </div>#}
-{#            </div>#}
-{#            <!-- End Gallery Html Containers -->#}
-{#            <div style="clear: both;"></div>#}
-{#        </div>#}
-{#    </div>#}
 
     <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
         <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">

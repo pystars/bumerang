@@ -48,6 +48,26 @@
     background-color: #ffffff;
 }
 
+#gallery-close {
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 18px;
+    color: black;
+    text-shadow: 0 1px 0 white;
+    opacity: 0.2;
+    filter: alpha(opacity=20);
+    text-decoration: none;
+}
+
+#gallery-close:hover {
+    color: #000000;
+    text-decoration: none;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+    cursor: pointer;
+}
+
 div.content a, div.navigation a {
     text-decoration: none;
 }
@@ -56,8 +76,8 @@ div.content a:hover, div.content a:active {
 }
 
 div.navigation a.pageLink {
-    height: 77px;
-    line-height: 77px;
+    height: 40px;
+    line-height: 40px;
 }
 
 ul.thumbs {
@@ -82,13 +102,22 @@ a.thumb:focus {
 ul.thumbs img {
     border: none;
     display: block;
-    max-width: 75px;
+    /*max-width: 75px;*/
+    max-height: 40px;
 }
 div.navigation {
     float: left;
     position: relative;
     left: -50%;
 }
+
+div.navigation-wrapper {
+    float: left;
+    width: 960px;
+    margin: 0 auto;
+    margin-bottom: 12px;
+}
+
 div.navigation-container {
     float: left;
     position: relative;
