@@ -75,9 +75,6 @@ class PhotoCreateView(CreateView):
         self.object = form.save(commit=False)
         if self.album():
             self.object.album = self.album()
-#            if not self.object.album.cover:
-#                self.object.album.cover = self.object
-#                self.object.album.save()
 
         self.object.owner = self.request.user
         self.object.save()
@@ -92,6 +89,9 @@ class PhotoCreateView(CreateView):
         ctx = super(PhotoCreateView, self).get_context_data(**kwargs)
         ctx.update({'photo_album': self.album()})
         return ctx
+
+    def get_success_url(self):
+        return reverse('photo-album-detail', args=[self.kwargs['photo_album_id']])
 
 
 class PhotoUpdateView(OwnerMixin, UpdateView):
