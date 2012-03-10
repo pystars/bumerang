@@ -121,6 +121,9 @@
                 this.find('ul.thumbs').children()
                         .eq(prevIndex).fadeTo('fast', onMouseOutOpacity).end()
                         .eq(nextIndex).fadeTo('fast', 1.0);
+
+                $('#vk_comments').html('');
+                VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});
             },
             onPageTransitionOut:       function(callback) {
                 this.fadeTo('fast', 0.0, callback);
@@ -246,7 +249,7 @@
                 </div>
                 <div id="vk_comments"></div>
                 <script type="text/javascript">
-                    VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});
+//                    VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});
                 </script>
             </div>
         </div>
