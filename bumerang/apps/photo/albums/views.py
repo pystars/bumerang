@@ -4,14 +4,18 @@ from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
 from django.views.generic.detail import DetailView
 
-from bumerang.apps.utils.views import OwnerMixin
+from bumerang.apps.utils.views import OwnerMixin, AjaxView
 from forms import PhotoAlbumForm, PhotoAlbumCoverForm
 from models import PhotoAlbum
 
 
-class PhotoSetCoverView(UpdateView):
+class PhotoSetCoverView(AjaxView, UpdateView):
     model = PhotoAlbum
     form_class = PhotoAlbumCoverForm
+
+    def form_valid(self, form):
+        msg = u'Обложка альбома изменена'
+        return super(PhotoSetCoverView, self).render_to_response(message=msg)
 
     def get_success_url(self):
         messages.add_message(

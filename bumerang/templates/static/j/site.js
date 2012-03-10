@@ -726,17 +726,19 @@ var PhotoAlbumsView = Backbone.View.extend({
         var el = e.target || e.srcElement;
 
         var album_id = el.getAttribute('data-album-id');
-        var photo_id = el.getAttribute('data-video-id');
+        var photo_id = el.getAttribute('data-photo-id');
+
+        console.log(album_id, photo_id)
 
         $.ajax({
-            type: 'post',
+            type: 'POST',
             url: '/photo/album'+album_id+'/set-cover/',
             data: {
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                 cover: photo_id
             },
-            success: function(data) {
-                if (data['result']) {show_notification('success', 'Обложка успешно изменена');}
+            success: function(response) {
+                show_notification('success', response['message']);
             },
             error: function(data) {
                 if (!data['result']) {show_notification('error', 'Невозможно изменить обложку');}
@@ -930,22 +932,22 @@ $(function() {
     /*
     * Make cover of album
     * */
-    $('.b-dropdown__link[id*=make-cover-]').click(function() {
-        var aid = parseInt($('div[id*=videoalbum-id-]').attr('id').split('videoalbum-id-')[1]);
-        var vid = parseInt($(this).attr('id').split('make-cover-')[1]);
-
-        $.ajax({
-            type: 'post',
-            url: '/video/album'+aid+'/set-cover/',
-            data: {
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                cover: vid
-            },
-            success: function() {
-//                window.location.reload();
-            }
-        });
-    });
+//    $('.b-dropdown__link[id*=make-cover-]').click(function() {
+//        var aid = parseInt($('div[id*=videoalbum-id-]').attr('id').split('videoalbum-id-')[1]);
+//        var vid = parseInt($(this).attr('id').split('make-cover-')[1]);
+//
+//        $.ajax({
+//            type: 'post',
+//            url: '/video/album'+aid+'/set-cover/',
+//            data: {
+//                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+//                cover: vid
+//            },
+//            success: function() {
+////                window.location.reload();
+//            }
+//        });
+//    });
 
 
     /*
