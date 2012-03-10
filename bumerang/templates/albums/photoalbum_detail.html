@@ -11,6 +11,12 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.galleriffic.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.history.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.opacityrollover.js"></script>
+
+
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
+    <script type="text/javascript">
+      VK.init({apiId: 2847509, onlyWidgets: true});
+    </script>
 {% endblock %}
 
 {% block profile_photo_tab %}
@@ -58,6 +64,12 @@
                     <div><a href="{% url album-photo-add object.id %}" class="b-button b-button_yellow">Загрузить фото</a></div>
                 </div>
                 {% include "snippets/photos_list.html" %}
+
+                <div id="vk_comments"></div>
+                <script type="text/javascript">
+                    VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});
+                </script>
+
             </section>
         </div></dd>
 
