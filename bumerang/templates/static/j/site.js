@@ -165,7 +165,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickAlbumCheckbox: function(e) {
         // Получаем jQuery-объект кликнутого чекбокса альбома
-        var el = e.target;
+        var el = e.target || e.srcElement;
         // Если он отмечен - добавляем в массив видеоальбомов
         if (el.checked) {
             this.selected_albums.push(
@@ -182,7 +182,7 @@ var VideoAlbumsView = Backbone.View.extend({
     },
     
     clickVideoCheckbox: function(e) {
-        var el = e.srcElement || e.target;
+        var el = e.srcElement || e.target || e.srcElement;
         if (el.checked) {
             this.selected_videos.push(
                 parseInt(el.id.split('checkbox-')[1])
@@ -200,7 +200,7 @@ var VideoAlbumsView = Backbone.View.extend({
     clickMakeCover: function(e) {
         e.preventDefault();
 
-        var el = e['srcElement'];
+        var el = e.target || e.srcElement;
 
         var album_id = el.getAttribute('data-album-id');
         var video_id = el.getAttribute('data-video-id');
@@ -325,7 +325,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleAlbumDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
+        var el = e.target || e.srcElement || e.srcElement;
 
         this.selected_videos.push(
             parseInt(el.id.split('video-delete-')[1])
@@ -390,7 +390,7 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleVideoDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
+        var el = e.target || e.srcElement || e.srcElement;
         this.selected_videos.push(
             parseInt(el.id.split('video-delete-')[1])
         );
@@ -551,12 +551,12 @@ var PhotoAlbumsView = Backbone.View.extend({
         'click article[id*=photo-item-]': 'clickPhotoCheckbox',
 
         'click #photoalbum-delete-button': 'clickAlbumDeleteButton',
-        'click #photo-delete-button': 'clickVideoDeleteButton',
+        'click #photo-delete-button': 'clickPhotoDeleteButton',
         'click a[id*=photoalbum-delete-]': 'clickSingleAlbumDelete',
-        'click a[id*=photo-delete-]': 'clickSingleVideoDelete',
+        'click a[id*=photo-delete-]': 'clickSinglePhotoDelete',
 
-        'click #photo-move-button': 'clickVideoMoveButton',
-        'click a[id*=move-photo-]': 'clickSingleVideoMove',
+        'click #photo-move-button': 'clickPhotoMoveButton',
+        'click a[id*=move-photo-]': 'clickSinglePhotoMove',
 
         'click a[id*=make-cover-]': 'clickMakeCover'
     },
@@ -566,7 +566,7 @@ var PhotoAlbumsView = Backbone.View.extend({
     },
 
     clickAlbumCheckbox: function(e) {
-        var el = e.target;
+        var el = e.target || e.srcElement;
         if (el.checked) {
             this.selected_albums.push($(el).attr('data-photoalbum-id'));
         } else {
@@ -580,7 +580,7 @@ var PhotoAlbumsView = Backbone.View.extend({
     },
 
     clickPhotoCheckbox: function(e) {
-        var el = e.target;
+        var el = e.target || e.srcElement;
         if (el.checked) {
             this.selected_photos.push($(el).attr('data-photo-id'));
         } else {
@@ -633,6 +633,197 @@ var PhotoAlbumsView = Backbone.View.extend({
             });
         });
     },
+    
+    clickSingleAlbumDelete: function(e) {
+        e.preventDefault();
+        var el = e.target || e.srcElement;
+
+        this.selected_photos.push($(el).attr('data-photoalbum-id'));
+
+        if (this.selected_albums.length > 1) {
+            var msg = 'Вы действительно хотите удалить выбранные фотоальбомы?';
+        } else {
+            var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
+        }
+        
+        var view = this;
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/photo/albums-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_albums)
+                },
+                success: function(response) {
+                    show_notification('success', response['message']);
+                    
+                    view.hideAlbums();
+                    view.showAlbumsCount();
+                    view.selected_albums = [];
+                    view.updatePage();
+                }
+            });
+        });
+    },
+
+    clickPhotoDeleteButton: function(e) {
+        e.preventDefault();
+
+        if (this.selected_photos.length > 1) {
+            var msg = 'Вы действительно хотите удалить выбранные фотографии?';
+        } else {
+            var msg = 'Вы действительно хотите удалить выбранную фотографию?';
+        }
+
+        var view = this;
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/photo/photos-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_photos)
+                },
+                success: function(response) {
+                    show_notification('success', response['message']);
+
+                    view.hidePhotos();
+                    view.showPhotosCount();
+                    view.selected_photos = [];
+                    view.updatePage();
+                }
+            });
+        });
+    },
+
+    clickSinglePhotoDelete: function(e) {
+        e.preventDefault();
+        var el = e.target || e.srcElement;
+        this.selected_photos.push($(el).attr('data-photoalbum-id'));
+
+        if (this.selected_albums.length > 1) {
+            var msg = 'Вы действительно хотите удалить выбранные фотографии?';
+        } else {
+            var msg = 'Вы действительно хотите удалить выбранную фотографию?';
+        }
+
+        var view = this;
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/photo/photos-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_photos)
+                },
+                success: function(response) {
+                    show_notification('success', response['message']);
+
+                    view.hidePhotos();
+                    view.showPhotosCount();
+                    view.selected_photos = [];
+                    view.updatePage();
+                }
+            });
+        });
+    },
+
+    clickMakeCover: function(e) {
+        e.preventDefault();
+
+        var el = e.target || e.srcElement;
+
+        var album_id = el.getAttribute('data-album-id');
+        var photo_id = el.getAttribute('data-video-id');
+
+        $.ajax({
+            type: 'post',
+            url: '/photo/album'+album_id+'/set-cover/',
+            data: {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                cover: photo_id
+            },
+            success: function(data) {
+                if (data['result']) {show_notification('success', 'Обложка успешно изменена');}
+            },
+            error: function(data) {
+                if (!data['result']) {show_notification('error', 'Невозможно изменить обложку');}
+            }
+        });
+    },
+
+    clickPhotoMoveButton: function(e) {
+        e.preventDefault();
+
+        if (this.selected_albums.length > 1) {
+            var msg = 'Вы действительно хотите переместить выбранные фотографии?';
+        } else {
+            var msg = 'Вы действительно хотите переместить выбранную фотографию?';
+        }
+
+        var view = this;
+        invokeMoveDialog(function(id) {
+            if (id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/photo/photo-move/',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        video_id: JSON.stringify(view.selected_videos),
+                        album_id: id
+                    },
+                    success: function(response) {
+                        show_notification('success', response['message']);
+
+                        view.hideVideos();
+                        view.showVideosCount();
+                        view.selected_videos = [];
+                        view.updatePage();
+                    }
+                });
+            }
+
+        });
+    },
+
+    clickSinglePhotoMove: function(e) {
+        e.preventDefault();
+        var el = e.target || e.srcElement;
+        this.selected_photos.push(
+            parseInt(el.id.split('move-video-')[1])
+        );
+
+        if (this.selected_albums.length > 1) {
+            var msg = 'Вы действительно хотите переместить выбранные фотографии?';
+        } else {
+            var msg = 'Вы действительно хотите переместить выбранную фотографию?';
+        }
+
+        var view = this;
+        invokeMoveDialog(function(id) {
+            if (id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/photo/photo-move/',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        video_id: JSON.stringify(view.selected_photos),
+                        album_id: id
+                    },
+                    success: function(response) {
+                        show_notification('success', response['message']);
+
+                        view.hidePhotos();
+                        view.showPhotosCount();
+                        view.selected_photos = [];
+                        view.updatePage();
+                    }
+                });
+            }
+
+        });
+    },
 
     hideAlbumDeleteButton: function() {
         $('#photoalbum-delete-button').hide(300, 'linear');
@@ -672,6 +863,26 @@ var PhotoAlbumsView = Backbone.View.extend({
             $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#photoalbums-plurals').text()));
         } else {
             $('#albums-count').text('Нет ни одного альбома');
+        };
+    },
+
+    hidePhotos: function() {
+        var view = this;
+        this.selected_photos.forEach(function(e, i, a) {
+            var el = $('#photo-item-' + e);
+            el.hide(function() {
+                el.remove();
+                view.updatePage();
+            });
+        });
+    },
+
+    showPhotosCount: function() {
+        var count = this.getPhotosCount();
+        if (count != 0) {
+            $('#photos-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#photos-plurals').text()));
+        } else {
+            $('#photos-count').text('Нет ни одного видеоролика');
         };
     },
 
