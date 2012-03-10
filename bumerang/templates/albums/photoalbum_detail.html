@@ -160,7 +160,7 @@
             if(hash) {
                 $.galleriffic.gotoImage(hash);
 
-                $('.fog').show();
+                $('#tint').show();
                 $('.gallery-modal-wrapper').show();
 
             } else {
@@ -199,7 +199,8 @@
                         $('#gallery-close').click(function(e) {
                             e.preventDefault();
                             $('.gallery-modal-wrapper').hide();
-                            $('.fog').hide();
+                            $('#tint').hide();
+//                            window.location.href="#";
                         })
                     });
                 </script>
