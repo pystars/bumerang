@@ -21,11 +21,14 @@ class PlayListItemAdmin(admin.TabularInline):
     formset = PlayListItemFormSet
     readonly_fields = ['play_from', 'play_till', 'offset']
     ordering = ['sort_order', 'id']
+    extra = 0
 
-
-    def __init__(self, parent_model, admin_site):
-        super(PlayListItemAdmin, self).__init__(parent_model, admin_site)
-        self.extra = Video.objects.filter(is_in_broadcast_lists=True).count()
+    def get_formset(self, request, obj=None, **kwargs):
+        if not obj:
+            self.extra = Video.objects.filter(
+                is_in_broadcast_lists=True).count()
+        return super(
+            PlayListItemAdmin, self).get_formset(request, obj=obj, **kwargs)
 
 
 class PlayListAdmin(admin.ModelAdmin):
