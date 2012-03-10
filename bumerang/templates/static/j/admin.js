@@ -1,14 +1,28 @@
-$(function() {
-    $("#playlistitem_set-group .module.table.dynamic-form").sortable({
-        items: "div.tbody",
-        placeholder: "ui-state-highlight",
-        stop: function(event, ui) {
-            $("#playlistitem_set-group .module.table.dynamic-form div.tbody [name$='sort_order']").each(
-                function(index) {
-                    $(this).attr('value', index + 1);
-                }
-            )
+function playlistitem_set_stop_sorting() {
+    var i = 0;
+    $.each($("#playlistitem_set-group .module.table.dynamic-form div.tbody.dynamic-form"),
+        function(index, elem)
+    {
+        if ($(elem).find("[name$='video']").attr('value')) {
+            $(elem).find("[name$='sort_order']").attr('value', index);
+        } else {
+            $(elem).find("[name$='sort_order']").attr('value', '');
         }
+        $.each($(elem).find("[name^='playlistitem_set']"), function(j, obj){
+            $(obj).attr("id", $(obj).attr("id").replace(/[0-9]+/g, i))
+            $(obj).attr("name", $(obj).attr("name").replace(/[0-9]+/g, i))
+        });
+        i++;
     });
-    $( "#playlistitem_set-group .module.table.dynamic-form" ).disableSelection();
+}
+
+$(function() {
+    $("#playlist_form #playlistitem_set-group .module.table.dynamic-form").sortable({
+        items: "div.tbody.dynamic-form",
+        placeholder: "ui-state-highlight",
+        stop: playlistitem_set_stop_sorting
+    });
+    $("#playlistitem_set-group .module.table.dynamic-form" ).disableSelection();
+    $("#playlist_form #playlistitem_set-group [name$='video']").change(playlistitem_set_stop_sorting);
+    $("#playlist_form #playlistitem_set-group .remove-handler").click(playlistitem_set_stop_sorting);
 });
