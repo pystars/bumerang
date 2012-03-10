@@ -123,7 +123,7 @@
                         .eq(nextIndex).fadeTo('fast', 1.0);
 
                 $('#vk_comments').html('');
-                VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});
+                VK.Widgets.Comments("vk_comments", {pageUrl: window.location.href, limit: 10, width: "496", attach: "*"});
             },
             onPageTransitionOut:       function(callback) {
                 this.fadeTo('fast', 0.0, callback);
