@@ -3,7 +3,8 @@
         {% for photo in photos %}
             <article class="announ-item photo" id="photo-item-{{ photo.id }}" data-photo-id="{{ photo.id }}" data-photo-album="{{ photo.album_id|default:'' }}">
                 <div class="ai-img d-sh">
-                    <a href="{% url photo-detail photo.id %}">
+{#                    <a class="thumb" href="{% url photo-detail photo.id %}">#}
+                    <a class="thumb" href="#{{ forloop.counter }}" title="{{ photo.title }}" rel="history">
                         <span>
                             <img src="{{ photo.original_file.url }}" width="190" height="123" alt="{{ photo.title }}" />
                         </span>
@@ -20,7 +21,7 @@
                 </footer>
                 {% if request.user.profile.id == photo.owner_id %}
                     <div class="ui-checkbox">
-                        <input type="checkbox" name="videos" value="{{ photo.id }}" id="checkbox-{{ photo.id }}" />
+                        <input type="checkbox" name="videos" value="{{ photo.id }}" id="checkbox-{{ photo.id }}" data-photo-id="{{ photo.id }}" />
                         <label for="checkbox-{{ photo.id }}"></label>
                     </div>
                     <div class="ui-menu">
@@ -46,3 +47,4 @@
         {% endfor %}
     </form>
 </div>
+

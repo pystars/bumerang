@@ -75,6 +75,10 @@ class PhotoCreateView(CreateView):
         self.object = form.save(commit=False)
         if self.album():
             self.object.album = self.album()
+#            if not self.object.album.cover:
+#                self.object.album.cover = self.object
+#                self.object.album.save()
+
         self.object.owner = self.request.user
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)

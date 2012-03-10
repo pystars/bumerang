@@ -544,19 +544,19 @@ var PhotoAlbumsView = Backbone.View.extend({
 
     albums: [],
     selected_albums: [],
-    selected_videos: [],
+    selected_photos: [],
 
     events: {
-        'click figure[id*=videoalbum-item-]': 'clickAlbumCheckbox',
-        'click article[id*=video-item-]': 'clickVideoCheckbox',
+        'click figure[id*=photoalbums-item-]': 'clickAlbumCheckbox',
+        'click article[id*=photo-item-]': 'clickPhotoCheckbox',
 
-        'click #videoalbum-delete-button': 'clickAlbumDeleteButton',
-        'click #video-delete-button': 'clickVideoDeleteButton',
-        'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete',
-        'click a[id*=video-delete-]': 'clickSingleVideoDelete',
+        'click #photoalbum-delete-button': 'clickAlbumDeleteButton',
+        'click #photo-delete-button': 'clickVideoDeleteButton',
+        'click a[id*=photoalbum-delete-]': 'clickSingleAlbumDelete',
+        'click a[id*=photo-delete-]': 'clickSingleVideoDelete',
 
-        'click #video-move-button': 'clickVideoMoveButton',
-        'click a[id*=move-video-]': 'clickSingleVideoMove',
+        'click #photo-move-button': 'clickVideoMoveButton',
+        'click a[id*=move-photo-]': 'clickSingleVideoMove',
 
         'click a[id*=make-cover-]': 'clickMakeCover'
     },
@@ -565,10 +565,139 @@ var PhotoAlbumsView = Backbone.View.extend({
         this.updatePage();
     },
 
-    updatePage: function() {
+    clickAlbumCheckbox: function(e) {
+        var el = e.target;
+        if (el.checked) {
+            this.selected_albums.push($(el).attr('data-photoalbum-id'));
+        } else {
+            this.selected_albums = _.without(
+                this.selected_albums,
+                $(el).attr('data-photoalbum-id')
+            );
+        }
+        
+        this.updatePage();
+    },
 
+    clickPhotoCheckbox: function(e) {
+        var el = e.target;
+        if (el.checked) {
+            this.selected_photos.push($(el).attr('data-photo-id'));
+        } else {
+            this.selected_videos = _.without(
+                this.selected_photos,
+                $(el).attr('data-photo-id')
+            );
+        }
+
+        this.updatePage();
+    },
+
+    hideAlbums: function() {
+        var view = this;
+        this.selected_albums.forEach(function(e, i) {
+            var el = $('#photoalbum-item-' + e);
+            el.hide(function() {
+                el.remove();
+                view.updatePage();
+            });
+        });
+    },
+
+    clickAlbumDeleteButton: function(e) {
+        e.preventDefault();
+
+        if (this.selected_albums.length > 1) {
+            var msg = 'Вы действительно хотите удалить выбранные фотоальбомы?';
+        } else {
+            var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
+        }
+
+        var view = this;
+        invokeConfirmDialog(msg, function() {
+            $.ajax({
+                type: 'POST',
+                url: '/photo/albums-delete/',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    ids: JSON.stringify(view.selected_albums)
+                },
+                success: function(response) {
+                    show_notification('success', response['message']);
+
+                    view.hideAlbums();
+                    view.showAlbumsCount();
+                    view.selected_albums = [];
+                    view.updatePage();
+                }
+            });
+        });
+    },
+
+    hideAlbumDeleteButton: function() {
+        $('#photoalbum-delete-button').hide(300, 'linear');
+    },
+
+    showAlbumDeleteButton: function() {
+        $('#photoalbum-delete-button').show(300, 'linear');
+    },
+
+    hidePhotoDeleteButton: function() {
+        $('#photo-delete-button').hide(300, 'linear');
+    },
+
+    showPhotoDeleteButton: function() {
+        $('#photo-delete-button').show(300, 'linear');
+    },
+
+    hidePhotoMoveButton: function() {
+        $('#photo-move-button').hide(300, 'linear');
+    },
+
+    showPhotoMoveButton: function() {
+        $('#photo-move-button').show(300, 'linear');
+    },
+
+    getAlbumsCount: function() {
+        return $('form .photoalbum:visible').length;
+    },
+
+    getPhotosCount: function() {
+        return $('form .photo:visible').length;
+    },
+
+    showAlbumsCount: function() {
+        var count = this.getAlbumsCount();
+        if (count != 0) {
+            $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#photoalbums-plurals').text()));
+        } else {
+            $('#albums-count').text('Нет ни одного альбома');
+        };
+    },
+
+    updatePage: function() {
+        var view = this;
+        view.albums = [];
+        $('figure[id*=photoalbum-item-]:visible').each(function() {
+            view.albums.push(this.getAttribute('data-photoalbum-id'));
+        });
+
+        if (this.selected_albums.length) {
+            this.showAlbumDeleteButton();
+        } else {
+            this.hideAlbumDeleteButton();
+        }
+
+        if (this.selected_photos.length) {
+            this.showPhotoDeleteButton();
+            this.showPhotoMoveButton();
+        } else {
+            this.hidePhotoDeleteButton();
+            this.hidePhotoMoveButton();
+        }
     }
 });
+
 /******************************************************************************/
 
 

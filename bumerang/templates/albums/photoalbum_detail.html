@@ -3,6 +3,16 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/gallery.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.galleriffic.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.history.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.opacityrollover.js"></script>
+{% endblock %}
+
 {% block profile_photo_tab %}
     <dt class="selected">
             <span>Фото</span>
@@ -53,33 +63,237 @@
 
     <script type="text/javascript">
     $(function() {
+
+//        $(".l-page").css("overflow", "hidden");
+//        $(".fog").css("height", $(document).height());
+//        $('.fog').show();
+//        $('.gallery-modal-wrapper').show();
         //var vav = new VideoAlbumsView();
+
+        // We only want these styles applied when javascript is enabled
+//        $('div.navigation').css({'width' : '300px', 'float' : 'left'});
+//        $('div.content').css('display', 'block');
+
+        // Initially set opacity on thumbs and add
+        // additional styling for hover effect on thumbs
+        var onMouseOutOpacity = 0.67;
+        $('#thumbs ul.thumbs li, div.navigation a.pageLink').opacityrollover({
+            mouseOutOpacity:   onMouseOutOpacity,
+            mouseOverOpacity:  1.0,
+            fadeSpeed:         'fast',
+            exemptionSelector: '.selected'
+        });
+
+
+        // Initialize Advanced Galleriffic Gallery
+        var gallery = $('#thumbs').galleriffic({
+            delay:                     2500,
+            numThumbs:                 10,
+            preloadAhead:              15,
+            enableTopPager:            false,
+            enableBottomPager:         false,
+            maxPagesToShow:            7,
+            imageContainerSel:         '#slideshow',
+            controlsContainerSel:      '',
+            captionContainerSel:       '#caption',
+            loadingContainerSel:       '#loading',
+            renderSSControls:          true,
+            renderNavControls:         true,
+            playLinkText:              'Play Slideshow',
+            pauseLinkText:             'Pause Slideshow',
+            prevLinkText:              '&lsaquo; Previous Photo',
+            nextLinkText:              'Next Photo &rsaquo;',
+            nextPageLinkText:          'Next &rsaquo;',
+            prevPageLinkText:          '&lsaquo; Prev',
+            enableHistory:             true,
+            autoStart:                 false,
+            syncTransitions:           true,
+            defaultTransitionDuration: 0,
+            onSlideChange:             function(prevIndex, nextIndex) {
+                // 'this' refers to the gallery, which is an extension of $('#thumbs')
+                this.find('ul.thumbs').children()
+                        .eq(prevIndex).fadeTo('fast', onMouseOutOpacity).end()
+                        .eq(nextIndex).fadeTo('fast', 1.0);
+            },
+            onPageTransitionOut:       function(callback) {
+                this.fadeTo('fast', 0.0, callback);
+            },
+
+            onPageTransitionIn:        function() {
+                var prevPageLink = this.find('a.prev').css('visibility', 'hidden');
+                var nextPageLink = this.find('a.next').css('visibility', 'hidden');
+
+                // Show appropriate next / prev page links
+                if (this.displayedPage > 0)
+                    prevPageLink.css('visibility', 'visible');
+
+                var lastPage = this.getNumPages() - 1;
+                if (this.displayedPage < lastPage)
+                    nextPageLink.css('visibility', 'visible');
+
+                this.fadeTo('fast', 1.0);
+            }
+
+        });
+
+        gallery.find('a.prev').click(function(e) {
+            gallery.previousPage();
+            e.preventDefault();
+        });
+
+        gallery.find('a.next').click(function(e) {
+            gallery.nextPage();
+            e.preventDefault();
+        });
+
+
+        /**** Functions to support integration of galleriffic with the jquery.history plugin ****/
+
+            // PageLoad function
+            // This function is called when:
+            // 1. after calling $.historyInit();
+            // 2. after calling $.historyLoad();
+            // 3. after pushing "Go Back" button of a browser
+        function pageload(hash) {
+            // alert("pageload: " + hash);
+            // hash doesn't contain the first # character.
+            if(hash) {
+                $.galleriffic.gotoImage(hash);
+
+                $('.fog').show();
+                $('.gallery-modal-wrapper').show();
+
+            } else {
+                gallery.gotoIndex(0);
+            }
+        }
+
+        $.historyInit(pageload, "advanced.html");
+
+        $("a[rel='history']").live('click', function(e) {
+            if (e.button != 0) return true;
+
+            var hash = this.href;
+            hash = hash.replace(/^.*#/, '');
+
+            $.historyLoad(hash);
+
+            return false;
+        });
+
     });
 </script>
 
 {% endblock %}
 
 {% block popup %}
+
+    <div class="fog"></div>
+
+    <div class="gallery-modal-wrapper">
+        <div class="gallery-modal">
+            <div class="content">
+                <a href="#" id="gallery-close" class="close" style="font-size: 32px;">×</a>
+                <script type="text/javascript">
+                    $(function() {
+                        $('#gallery-close').click(function(e) {
+                            e.preventDefault();
+                            $('.gallery-modal-wrapper').hide();
+                            $('.fog').hide();
+                        })
+                    });
+                </script>
+                <div class="navigation-container">
+                    <div id="thumbs" class="navigation">
+                        <a class="pageLink prev" style="visibility: hidden;" href="#" title="Previous Page"></a>
+
+                        <ul class="thumbs noscript">
+                            {% for photo in photos %}
+                                <li>
+                                    <a class="thumb" id="prev{{ photo.id }}" href="{{ photo.original_file.url }}" title="{{ photo.title }}">
+                                        <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" />
+                                    </a>
+                                    <div class="caption">
+                                        <h5>{{ photo.title }}</h5>
+                                        <p>
+                                            {{ photo.description }}
+                                        </p>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <a class="pageLink next" style="visibility: hidden;" href="#" title="Next Page"></a>
+                    </div>
+                </div>
+                <div class="hr"></div>
+                <div class="gallery-content">
+                    <div class="slideshow-container">
+                        <div id="loading" class="loader"></div>
+                        <div id="slideshow" class="slideshow"></div>
+                    </div>
+                    <div id="caption" class="caption-container">
+                        <div class="photo-index"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{#    <div id="gallery-modal" class="gallery-modal" style="display: none;">#}
+{#        <div id="container">#}
+{#            <div class="navigation-container">#}
+{#                <div id="thumbs" class="navigation">#}
+{#                    <a class="pageLink prev" style="visibility: hidden;" href="#" title="Previous Page"></a>#}
+{##}
+{#                    <ul class="thumbs noscript">#}
+{#                        {% for photo in photos %}#}
+{#                            <li>#}
+{#                                <a class="thumb" href="{{ photo.original_file.url }}" title="{{ photo.title }}">#}
+{#                                    <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" />#}
+{#                                </a>#}
+{#                            </li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{##}
+{#                    <a class="pageLink next" style="visibility: hidden;" href="#" title="Next Page"></a>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            <div class="content">#}
+{#                <div class="slideshow-container">#}
+{#                    <div id="loading" class="loader"></div>#}
+{#                    <div id="slideshow" class="slideshow"></div>#}
+{#                </div>#}
+{#                <div id="caption" class="caption-container">#}
+{#                    <div class="photo-index"></div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <!-- End Gallery Html Containers -->#}
+{#            <div style="clear: both;"></div>#}
+{#        </div>#}
+{#    </div>#}
+
     <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
-    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
-        <header class="b-form__header">
-            <h4>
-                Подтвердите действие
-            </h4>
-            <p id="dialog-text">
-                {= text }
-            </p>
-        </header>
-        <footer class="b-form__footer cleared">
-            <a href="#" class="b-button b-button_yellow left cancel" id="confirm-popup-cancel">Отменить</a>
-            <a href="#" class="b-button b-button_red right videos_delete" id="confirm-popup-ok">Удалить</a>
-        </footer>
-    </section><!--b-form-->
-    <div class="b-popup__tl"></div>
-    <div class="b-popup__tr"></div>
-    <div class="b-popup__br"></div>
-    <div class="b-popup__bl"></div>
-</section><!--b-popup-->
+        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+            <header class="b-form__header">
+                <h4>
+                    Подтвердите действие
+                </h4>
+                <p id="dialog-text">
+                    {= text }
+                </p>
+            </header>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow left cancel" id="confirm-popup-cancel">Отменить</a>
+                <a href="#" class="b-button b-button_red right videos_delete" id="confirm-popup-ok">Удалить</a>
+            </footer>
+        </section><!--b-form-->
+        <div class="b-popup__tl"></div>
+        <div class="b-popup__tr"></div>
+        <div class="b-popup__br"></div>
+        <div class="b-popup__bl"></div>
+    </section><!--b-popup-->
 
     <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
     <section class="b-form b-form_smaller b-form_popup">

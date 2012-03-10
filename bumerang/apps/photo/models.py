@@ -32,7 +32,7 @@ class PhotoGenre(models.Model, TitleUnicode):
 
 def original_upload_to(instance, filename):
     name, ext = os.path.splitext(filename)
-    return 'photos/{0}.{1}'.format(instance.slug, ext)
+    return 'photos/{0}{1}'.format(instance.slug, ext)
 
 
 class Photo(models.Model, TitleUnicode):
@@ -92,12 +92,7 @@ class Photo(models.Model, TitleUnicode):
     def save(self, *args, **kwargs):
         super(Photo, self).save(*args, **kwargs)
         if self.album:
-#            if not self.album.cover:
-#                self.album.cover = self
-#                self.album.save()
-            try:
-                self.album.cover
-            except ObjectDoesNotExist:
+            if not self.album.cover:
                 self.album.cover = self
                 self.album.save()
 

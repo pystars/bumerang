@@ -19,7 +19,7 @@
             </figcaption>
                 {% if request.user.profile.id == photoalbum.owner_id %}
                     <div class="ui-checkbox">
-                    <input type="checkbox" name="photoalbums" value="{{ photoalbum.id }}" id="checkbox-{{ photoalbum.id }}" />
+                    <input type="checkbox" name="photoalbums" value="{{ photoalbum.id }}" id="checkbox-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}" />
                     <label for="checkbox-{{ photoalbum.id }}"></label>
                 </div>
                     <div class="ui-menu">
