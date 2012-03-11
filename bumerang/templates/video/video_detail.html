@@ -3,9 +3,9 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 
-{% block head_css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flashplayer/history/history.css" />
-{% endblock %}
+{#{% block head_css %}#}
+{#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flashplayer/history/history.css" />#}
+{#{% endblock %}#}
 
 {% block head_js %}
 {#    <script type="text/javascript" src="{{ STATIC_URL }}flashplayer/history/history.js"></script>#}
@@ -67,7 +67,7 @@
                 <script type="text/javascript">
                     var flashvars = {
                         "comment":"Бумер (широкоэкранник 2.1)",
-                        "st":"http://localhost:8000/static/uppod/video113-881.txt",
+                        "st":"http://bumerang.tv/static/uppod/video113-881.txt",
                         "file":"{{ object.best_quality_file.url }}"
                     };
                     var params = {
@@ -78,7 +78,7 @@
                         id:"videoplayer"
                     };
                     new swfobject.embedSWF(
-                            "http://localhost:8000/static/uppod/player.swf",
+                            "http://bumerang.tv/static/uppod/player.swf",
                             "videoplayer",
                             "780",
                             "420",
