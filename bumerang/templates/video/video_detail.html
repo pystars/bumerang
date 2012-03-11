@@ -1,5 +1,7 @@
 {% extends "video/video_wrapper.html" %}
 {% load sitetree videotags rupluralize %}
+{% load ratings %}
+{% load ratingsutils %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
@@ -100,9 +102,77 @@
             </div>
             <div class="b-movie__panel cleared">
                 <div class="b-vote">
-                    <a href="#" class="b-vote__like"><i class="b-ico b-ico_heart"><i></i></i><span>нравится</span></a>
-                    <span class="b-vote__rating"><span>67</span></span>
-                    <a href="#" class="b-vote__notlike" title="не нравится"><i class="b-ico b-ico_heart2"><i></i></i></a>
+                    <div class="wrap">
+                        {% rating_by_user request.user on object.rating as vote %}
+
+                        <ul class="star-rate" data-total-rate="{{ object.rating.get_rating }}" data-item-id="{{ object.id }}">
+                            {{ object.rating|render_rating }}
+                        </ul>
+
+                        <script type="text/javascript">
+                            $(function() {
+                                $('.star-rate a').hover(function(e){
+                                    var el = $(e.target || e.srcElement);
+                                    var star_num = parseInt(el.attr('data-rate'));
+
+                                    $('.star-rate a').each(function(i, e){
+                                        var el = $(e);
+                                        var el_num = el.attr('data-rate');
+                                        if (el_num < star_num) {
+                                            el.addClass('active');
+                                        } else {
+                                            el.removeClass('active');
+                                        }
+                                    });
+
+                                }, function(e) {
+                                    //var el = $(e.target || e.srcElement);
+                                    var star_num = parseInt($('.star-rate').attr('data-total-rate'));
+                                    $('.star-rate a').each(function(i, e){
+                                        var el = $(e);
+                                        var el_num = el.attr('data-rate');
+                                        if (el_num <= star_num) {
+                                            el.addClass('active');
+                                        } else {
+                                            el.removeClass('active');
+                                        }
+                                    });
+                                });
+
+                                function setNewRateStars(count) {
+                                    var count = parseInt(count);
+                                    $('.star-rate a').each(function(i, e){
+                                        var el = $(e);
+                                        var el_num = el.attr('data-rate');
+                                        if (el_num <= count) {
+                                            el.addClass('active');
+                                        } else {
+                                            el.removeClass('active');
+                                        }
+                                    });
+                                }
+
+                                $('.star-rate a').on('click', function(e){
+                                    e.preventDefault();
+                                    var item_id = $('.star-rate').attr('data-item-id');
+                                    var rate = $(e.target || e.srcElement).attr('data-rate');
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/video/rate/'+item_id+'/'+rate+'/',
+                                        success: function() {
+                                            setNewRateStars(rate);
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
+                    </div>
+
+
+{#                    <a href="#" class="b-vote__like"><i class="b-ico b-ico_heart"><i></i></i><span>нравится</span></a>#}
+{#                    <span class="b-vote__rating"><span>67</span></span>#}
+{#                    <a href="#" class="b-vote__notlike" title="не нравится"><i class="b-ico b-ico_heart2"><i></i></i></a>#}
                 </div>
                 <div class="viewed">
                     <i class="b-ico b-ico_eye2"><i></i></i>

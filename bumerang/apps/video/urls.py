@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
+from djangoratings.views import AddRatingFromModel
 
-from bumerang.apps.utils.views import XMLDetailView, ObjectsDeleteView
+from bumerang.apps.utils.views import XMLDetailView, ObjectsDeleteView, AjaxRatingView
 from bumerang.apps.video.albums.views import VideoAlbumDetailView
 from models import Video
 from albums.models import VideoAlbum
@@ -65,5 +66,14 @@ urlpatterns = patterns('',
         XMLDetailView.as_view(
             model=Video, template_name_suffix='_xml'),
         name='video-xml'
+    ),
+
+    # Ratings
+    url(r'^rate/(?P<object_id>\d+)/(?P<score>\d+)/$', login_required(AjaxRatingView()), {
+            'app_label': 'video',
+            'model': 'video',
+            'field_name': 'rating',
+        },
+        name='video-rate'
     ),
 )

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from djangoratings import RatingField
 import os
 import shutil
 from datetime import datetime
@@ -115,6 +116,8 @@ class Video(models.Model, TitleUnicode):
                                       editable=False, **nullable)
     status = models.IntegerField(u'статус', choices=STATUS_CHOICES,
         default=PENDING)
+
+    rating = RatingField(range=10, can_change_vote=True)
 
     class Meta:
         verbose_name = u'Видео'

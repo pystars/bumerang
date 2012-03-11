@@ -5208,3 +5208,39 @@ h3.title+.b-form_edit_login-pass {
     /*-moz-border-radius:5px;*/
     /*border-radius:5px;*/
 /*}*/
+
+
+.b-vote .star-rate {
+    list-style: none;
+    margin: 4px 0;
+    padding: 0;
+    float: left;
+}
+
+.b-vote .star-rate li {
+    margin: 0 2px 0 0;
+    float: left;
+}
+
+.b-vote .star-rate a {
+    background: url(../i/star.gif) no-repeat;
+    width: 14px;
+    height: 14px;
+    text-indent: -9999px;
+    overflow: hidden;
+    display: block;
+}
+
+.b-vote .star-rate li a {
+    background-position: 0 0;
+}
+
+.b-vote .star-rate li a.active {
+    background-position: 0 -14px;
+}
+
+.b-vote .star-rate li a:hover {
+    background-position: 0 -14px;
+    left: 0;
+    z-index: 2;
+}

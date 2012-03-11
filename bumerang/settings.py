@@ -151,6 +151,7 @@ INSTALLED_APPS = [
     'tinymce',
     'djcelery',
     'djkombu',
+    'djangoratings',
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
