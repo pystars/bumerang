@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^video/', include('bumerang.apps.video.urls')),
     url(r'^photo/', include('bumerang.apps.photo.urls')),
     url(r'^accounts/', include('bumerang.apps.accounts.urls')),
+    url(r'^playlists/', include('bumerang.apps.video.playlists.urls')),
 )
 
 #if settings.DEBUG:

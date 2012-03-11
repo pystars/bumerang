@@ -42,19 +42,24 @@ class PlayListItem(models.Model, TitleUnicode):
 
 class PlayList(models.Model):
     channel = models.ForeignKey(Channel)
-    rotate_from = models.DateTimeField(u'Время начала ротации')
-    rotate_till = models.DateTimeField(u'Время окончания ротации')
+    rotate_from_date = models.DateField(u'Время начала ротации')
     created = models.DateTimeField(u'Дата создания',
         default=datetime.now, editable=False)
 
     class Meta:
         verbose_name = u'Список воспроизведения'
         verbose_name = u'Списки воспроизведения'
-        ordering = ['rotate_till', 'id']
+        ordering = ['rotate_from_date', 'id']
+        unique_together = ['channel', 'rotate_from_date']
 
     def __unicode__(self):
         try:
-            return u'{0}:{1}-{2}'.format(
-                self.channel.title, self.rotate_from, self.rotate_till)
+            return u'{0}:{1}'.format(
+                self.channel.title, self.rotate_from)
         except Channel.DoesNotExist:
             return None
+
+    @property
+    def rotate_from(self):
+        year, month, day = self.rotate_from_date.timetuple()[0:3]
+        return datetime(year, month, day, 3)
