@@ -22,9 +22,9 @@ def makemedia():
     '''
     local('mkdir ./bumerang/media/tmp')
     local('mkdir ./bumerang/media/uploads')
-    local('mkdir ./bumerang/media/prewiews')
-    local('mkdir ./bumerang/media/prewiews/video')
-    local('mkdir ./bumerang/media/prewiews/video-album')
+    local('mkdir ./bumerang/media/previews')
+    local('mkdir ./bumerang/media/previews/video')
+    local('mkdir ./bumerang/media/previews/video-album')
     local('mkdir ./bumerang/media/teachers')
     local('mkdir ./bumerang/media/teams')
     local('mkdir ./bumerang/media/videos')
