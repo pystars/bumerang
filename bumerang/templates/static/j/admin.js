@@ -1,4 +1,4 @@
-function playlistitem_set_stop_sorting() {
+function playlistitem_set_sorting() {
     var i = 0;
     $.each($("#playlistitem_set-group .module.table.dynamic-form div.tbody.dynamic-form"),
         function(index, elem)
@@ -20,9 +20,9 @@ $(function() {
     $("#playlist_form #playlistitem_set-group .module.table.dynamic-form").sortable({
         items: "div.tbody.dynamic-form",
         placeholder: "ui-state-highlight",
-        stop: playlistitem_set_stop_sorting
+        stop: playlistitem_set_sorting
     });
     $("#playlistitem_set-group .module.table.dynamic-form" ).disableSelection();
-    $("#playlist_form #playlistitem_set-group [name$='video']").change(playlistitem_set_stop_sorting);
-    $("#playlist_form #playlistitem_set-group .remove-handler").click(playlistitem_set_stop_sorting);
+    $("#playlist_form #playlistitem_set-group [name$='video']").live("change", playlistitem_set_sorting);
+    $("#playlist_form #playlistitem_set-group .remove-handler").live("click", playlistitem_set_sorting);
 });
