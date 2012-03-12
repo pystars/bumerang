@@ -1,13 +1,3 @@
-.fog {
-    width: 100%;
-    background-color: #000;
-    opacity: 0.4;
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
 .gallery-modal-wrapper {
     text-align: left;
     overflow-y: auto;
@@ -26,7 +16,7 @@
 
 .gallery-modal {
     position: relative;
-    width: 1000px;
+    width: 938px;
     margin: 0px auto;
     padding: 10px;
 
@@ -52,7 +42,7 @@
     float: right;
     font-size: 32px;
     font-weight: bold;
-    line-height: 18px;
+    line-height: 12px;
     color: black;
     text-shadow: 0 1px 0 white;
     opacity: 0.2;
@@ -92,11 +82,11 @@ ul.thumbs li {
     margin: 2px;
     list-style: none;
 }
-a.thumb {
+.gallery-modal a.thumb {
     padding: 1px;
     display: block;
 }
-a.thumb:focus {
+.gallery-modal a.thumb:focus {
     outline: none;
 }
 ul.thumbs img {
@@ -113,9 +103,9 @@ div.navigation {
 
 div.navigation-wrapper {
     float: left;
-    width: 960px;
+    width: 938px;
     margin: 0 auto;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
 }
 
 div.navigation-container {
@@ -125,7 +115,7 @@ div.navigation-container {
 }
 
 .slideshow img {
-    max-width: 960px;
+    max-width: 938px;
 }
 
 .image-wrapper a {
@@ -173,6 +163,180 @@ div.hr {
 }
 
 .caption-container {
-    width: 960px;
+    width: 938px;
     margin: 0 auto;
 }
+
+
+/*Full window viewer*/
+
+#wall {
+    display: none;
+}
+
+#wall-container {
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    z-index: 2000;
+}
+
+#wall-container a {
+    text-decoration:none;
+}
+
+#wall-loading{
+    width:100%;
+    height:100%;
+    z-index:101;
+    background:#000 url(jmFullWall/loading.gif) center no-repeat;
+    opacity:0.9;
+    position:absolute;
+    visibility: hidden;
+}
+
+#wall-detail{
+    width:100%;
+    height:100%;
+    z-index:100;
+    /*background: url(jmFullWall/overlay.png);*/
+    background: #000;
+    display:none;
+    position:absolute;
+}
+
+
+.wall-detail-controls{
+    width:100%;
+    height:100%;
+    position:relative;
+}
+
+
+.wall-detail-info{
+    position:fixed;
+    right:20px;
+    bottom:-420px;
+    background:url(jmFullWall/overlay.png);
+    color:#fff;
+    padding:10px 35px;
+    font-size:32px;
+    font-family: 'News Cycle', sans-serif;
+    z-index:99;
+}
+
+#wall-items{
+    float:left;
+}
+
+.wall-item{
+    float:left;
+    color:#fff;
+    font-size:24px;
+    font-weight:bold;
+    overflow:hidden;
+    background-position:center;
+    background-repeat:no-repeat;
+    display:none;
+    position:relative;
+}
+
+.wall-item .hide{
+    display:none;
+}
+
+.wall-item a{
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    text-indent:-9999px;
+}
+
+.wall-item:hover a{
+    background:url(jmFullWall/overlay.png);
+}
+
+.wall-item .title{
+    position:absolute;
+    font-size:22px;
+    color:#fff;
+    bottom:10px;
+    right:10px;
+    text-align:right;
+    display:none;
+    font-family: 'News Cycle', sans-serif;
+}
+
+.jmFullWall-next{
+    position:absolute;
+    right:20px;
+    top:45%;
+    width:48px;
+    height:48px;
+    z-index:1;
+    background:url(jmFullWall/next.png) center right no-repeat;
+}
+
+.jmFullWall-next:hover{
+}
+
+
+.jmFullWall-prev{
+    position:absolute;
+    left:20px;
+    top:45%;
+    width:48px;
+    height:48px;
+    z-index:1;
+    background:url(jmFullWall/prev.png) center left no-repeat;
+}
+
+.jmFullWall-prev:hover{
+}
+
+
+.jmFullWall-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:url(jmFullWall/close.png);
+    width:48px;
+    height:48px;
+    z-index:1;
+}
+
+.jmFullWall-ZoomIn{
+    width:48px;
+    height:48px;
+    top:78px;
+    right:20px;
+    background:#000;
+    position:absolute;
+    z-index:999;
+    cursor:pointer;
+    color:#fff;
+    text-align:center;
+    font-weight:bold;
+    line-height:48px;
+    font-size:36px;
+}
+
+.jmFullWall-ZoomOut{
+    width:48px;
+    height:48px;
+    top:136px;
+    right:20px;
+    background:#000;
+    position:absolute;
+    z-index:999;
+    cursor:pointer;
+    color:#fff;
+    text-align:center;
+    font-weight:bold;
+    line-height:44px;
+    font-size:36px;
+}
+
+

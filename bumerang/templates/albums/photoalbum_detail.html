@@ -12,6 +12,9 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.history.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.opacityrollover.js"></script>
 
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jmFullWall/jquery.imgpreload.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jmFullWall/jquery.imagepanner.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jmFullWall/jquery.fullWall.js"></script>
 
     <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
     <script type="text/javascript">
@@ -71,18 +74,8 @@
     $(function() {
         var pav = new PhotoAlbumsView();
 
-//        $(".l-page").css("overflow", "hidden");
-//        $(".fog").css("height", $(document).height());
-//        $('.fog').show();
-//        $('.gallery-modal-wrapper').show();
-        //var vav = new VideoAlbumsView();
+        $('#wall').fullWall();
 
-        // We only want these styles applied when javascript is enabled
-//        $('div.navigation').css({'width' : '300px', 'float' : 'left'});
-//        $('div.content').css('display', 'block');
-
-        // Initially set opacity on thumbs and add
-        // additional styling for hover effect on thumbs
         var onMouseOutOpacity = 0.67;
         $('#thumbs ul.thumbs li, div.navigation a.pageLink').opacityrollover({
             mouseOutOpacity:   onMouseOutOpacity,
@@ -125,6 +118,14 @@
                 $('#vk_comments').html('');
                 var current_url = window.location.href;
                 VK.Widgets.Comments("vk_comments", {pageUrl: current_url, limit: 10, width: "600", attach: "*"});
+
+                console.log(nextIndex);
+
+                $('#show-full-screen').click(function() {
+                    $('#wall').data('fullWall').showItem(nextIndex);
+                });
+
+                //$('#wall').jmFullWall({ showItem: nextIndex-prevIndex });
             },
             onPageTransitionOut:       function(callback) {
                 this.fadeTo('fast', 0.0, callback);
@@ -202,6 +203,27 @@
 
 {#    <div class="fog"></div>#}
 
+{#    <div id="wall-top">#}
+{#        <h1>jmFullZoom Website</h1>#}
+{#        <a href="index.html">&lt; Back to documentation</a>#}
+{#    </div>#}
+    <div id="wall-container">
+        <div id="wall-loading"></div>
+        <div id="wall-detail"></div>
+        <div id="wall">
+            <div id="wall-items">
+                {% for photo in photos %}
+                <div class="wall-item" data-item-id="{{ forloop.counter0 }}">
+                    <span class="bg hide">{{ photo.original_file.url }}</span>
+                    <span class="img_detail hide">{{ photo.original_file.url }}</span>
+                    <span class="tooltip hide">{{ photo.title }}</span>
+                    <a href="#"><span class="title">{{ photo.title }}</span></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     <div class="gallery-modal-wrapper">
         <div class="gallery-modal">
             <div class="content">
@@ -258,6 +280,7 @@
                     <div id="caption" class="caption-container">
                         <div class="photo-index"></div>
                     </div>
+                    <a href="#" id="show-full-screen">На весь экран</a>
                 </div>
                 <div id="vk_comments" style="margin: 0 auto;"></div>
             </div>

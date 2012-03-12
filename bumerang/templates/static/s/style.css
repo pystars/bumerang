@@ -5212,20 +5212,20 @@ h3.title+.b-form_edit_login-pass {
 
 .b-vote .star-rate {
     list-style: none;
-    margin: 4px 0;
+    margin: 2px 0;
     padding: 0;
     float: left;
 }
 
 .b-vote .star-rate li {
-    margin: 0 2px 0 0;
+    margin: 0;
     float: left;
 }
 
 .b-vote .star-rate a {
-    background: url(../i/star.gif) no-repeat;
-    width: 14px;
-    height: 14px;
+    background: url(../i/star.png) no-repeat;
+    width: 24px;
+    height: 24px;
     text-indent: -9999px;
     overflow: hidden;
     display: block;
@@ -5236,11 +5236,11 @@ h3.title+.b-form_edit_login-pass {
 }
 
 .b-vote .star-rate li a.active {
-    background-position: 0 -15px;
+    background-position: 0 -24px;
 }
 
 .b-vote .star-rate li a:hover {
-    background-position: 0 -15px;
+    background-position: 0 -24px;
     left: 0;
     z-index: 2;
 }
