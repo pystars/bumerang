@@ -12,11 +12,13 @@
                     <div class="b-plenka">
                         <h2 class="b-plenka__i">
                             <span class="b-plenka__title">Сейчас в эфире:</span>
-                            <a href="">Самый быстрый способ сделать монтаж дома</a>
+                            <a href="#">
+                                {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
+                            </a>
                         </h2>
                     </div>
                     <p class="now-brief" id="now-brief">
-                        Мега видео ПРО участников бумеранга, Всегда вместе и рядом, Про бумеранг
+                        {{ current_item.video.description|truncatewords:18 }}
                     </p>
                 </div>
                 <div class="b-close-lnk">
@@ -24,7 +26,6 @@
                     <span class="b-pseudolink js-toggle2-lnk"><span class="js-toggle2-text">Скрыть программу передач</span></span>
                 </div>
             </header><!--b-tv__head-->
-
             <div class="b-tv__body js-toggle2-block"><div class="b-tv__body__i">
                 <div class="l-cols l-cols_tv"><div class="l-cols__i cleared">
                     <section class="l-cols__section"><div class="l-cols__section__i">
@@ -36,7 +37,7 @@
                                         <span class="ch-month">{% now "E" %}</span>
                                     </h2>
                                     {% for year, month, day in next_days %}
-                                        <a href="javascript:window.open('{% url playlist-detail playlist.channel.slug year month day %}','popUpWindow','height=700,width=800,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes,directories=no,status=yes')"
+                                        <a href="javascript:window.open('{% url playlist-detail playlist.channel.slug year month day %}','popUpWindow','height=700,width=980,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes,directories=no,status=yes')"
                                            class="cal-day{% if forloop.counter <= 3 %} cal-day{{ forloop.counter }}{% endif %}">
                                             {{ day }}</a>
                                     {% endfor %}
@@ -109,53 +110,9 @@
                     <video id="movie" width="100%" height="380" preload controls style="background:url({{ STATIC_URL }}i/fake/video.jpg) repeat-x;">
                         <img src="{{ STATIC_URL }}i/fake/video.jpg" width="100%" height="380" />
                     </video>
-                    <article class="js-toggle2-block">
-                        <p>
-                            В случае если какое-то поле не было заполнено в информации о сюжете, то оно не выводится.
-                            В окне описания к сюжету разрешается добавлять много текста. Если контент не умещается,
-                            то правее появляется ползунок прокрутки.
-                        </p>
-                        <ul class="b-opts">
-                            <li>
-                                <strong>Жанр:</strong>
-                                <span>социальный ролик</span>
-                            </li>
-                            <li>
-                                <strong>Город:</strong>
-                                <span>Волжский</span>
-                            </li>
-                            <li>
-                                <strong>Страна:</strong>
-                                <span>Россия</span>
-                            </li>
-                            <li>
-                                <strong>Учреждение:</strong>
-                                <span>студия Мультимедии и Анимации &laquo;Первые ласточки&raquo;</span>
-                            </li>
-                            <li>
-                                <strong>Продолжительность:</strong>
-                                <span>1 минута 11 секунд</span>
-                            </li>
-                            <li>
-                                <strong>Авторы:</strong>
-                                <span>Алексей Задубровский, Ярослав Симкин, Александр Рубан, Ирина Патрина, Елена Макарова, Светлана Узлова, Сергей Диденко</span>
-                            </li>
-                            <li>
-                                <strong>Год:</strong>
-                                <span>2011</span>
-                            </li>
-                            <li>
-                                <strong>Участие в фестивалях:</strong>
-                                <span>3 конкурс детского телевизионного творчества &laquo;ДЕТВора 2011&raquo;.</span>
-                            </li>
-                        </ul>
-                    </article>
-                    <footer class="b-movie__foot">
-                        <div class="b-close-lnk">
-                            <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>
-                            <span class="b-pseudolink js-toggle2-lnk"><span><span class="js-toggle2-text">Скрыть</span> описание ролика</span></span>
-                        </div>
-                    </footer>
+                    {% if current_item %}
+                        {% include 'snippets/video_description.html' with object=current_item.video %}
+                    {% endif %}
                 </section><!--b-movie-->
             </div></section>
             <aside class="l-cols__side"><div class="l-cols__side__i">

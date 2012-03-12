@@ -5236,11 +5236,11 @@ h3.title+.b-form_edit_login-pass {
 }
 
 .b-vote .star-rate li a.active {
-    background-position: 0 -14px;
+    background-position: 0 -15px;
 }
 
 .b-vote .star-rate li a:hover {
-    background-position: 0 -14px;
+    background-position: 0 -15px;
     left: 0;
     z-index: 2;
 }

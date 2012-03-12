@@ -1,29 +1,41 @@
+{% extends "base.html" %}
 {% load videotags %}
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-{% if not playlist.playlistitem_set %}
-    <p>
-        Трансляции не запланированы
-    </p>
-{% else %}
-    {% for item in playlist.playlistitem_set.all %}
-        <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
-            <time>{{ item|to_hm }}</time>
-            {{ item.video.title }}
-        </p>
-        {% if forloop.last %}
-            <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %}">
-                <time>{{ item|to_hm:'True' }}</time>
-                Конец эфира
-            </p>
-        {% endif %}
-    {% endfor %}
-{% endif %}
+{% block content %}
+    <div class="b-main-box d-rounded d-rounded_r10 d-sh">
+        <header class="b-article__head">
+            <h2>Афиша канала {{ playlist.channel }} на {{ playlist.rotate_from_date }}</h2>
+        </header><!--b-tv__head-->
+    <div class="b-tv__body js-toggle2-block"><div class="b-tv__body__i">
+    <div class="l-cols l-cols_tv"><div class="l-cols__i cleared">
+    <section class="l-cols__section"><div class="l-cols__section__i">
+    <article class="b-tv-programs">
 
-</body>
-</html>
+    <div class="tp-items">
+    {% if not playlist.playlistitem_set %}
+        <p>
+            Трансляции не запланированы
+        </p>
+    {% else %}
+        {% for item in playlist.playlistitem_set.all %}
+            <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
+                <time>{{ item|to_hm }}</time>
+                {{ item.video.title }}
+            </p>
+            {% if forloop.last %}
+                <p class="tp-item {% if item|is_future %}item_future{% else %}tp-item_past{% endif %}">
+                    <time>{{ item|to_hm:'True' }}</time>
+                    Конец эфира
+                </p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    </div>
+    </article>
+    </div>
+    </section>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}

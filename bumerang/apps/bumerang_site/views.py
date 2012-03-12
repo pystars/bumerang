@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from django.db.models.aggregates import Min
 
 from django.views.generic.base import TemplateView
@@ -17,6 +17,7 @@ class BumerangIndexView(TemplateView):
         ctx = super(BumerangIndexView, self).get_context_data(**kwargs)
         main_channel = Channel.objects.get(slug='main')
         today = date.today()
+        current_item = None
         try:
             playlist = PlayList.objects.filter(
                 channel=main_channel, rotate_from_date__lte=today)[0]
@@ -36,5 +37,13 @@ class BumerangIndexView(TemplateView):
                 min_day = SHEDULE_RANGE
         next_days = [(today + timedelta(days=i)).timetuple()[0:3]
                      for i in xrange(min_day, SHEDULE_RANGE)]
-        ctx.update({'playlist': playlist, 'next_days': next_days})
+        now = datetime.now()
+        for item in playlist.playlistitem_set.all():
+            if item.play_from() < now < item.play_till():
+                current_item = item
+        ctx.update(
+            playlist = playlist,
+            next_days = next_days,
+            current_item = current_item
+        )
         return ctx

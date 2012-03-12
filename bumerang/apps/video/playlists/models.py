@@ -22,8 +22,8 @@ class PlayListItem(models.Model, TitleUnicode):
         limit_choices_to={'is_in_broadcast_lists': True},
         on_delete=models.PROTECT)
     playlist = models.ForeignKey('PlayList')
-    offset = models.IntegerField(
-        u'Отсрочка со времени начала воспроизведения плейлиста', null=True)
+    offset = models.IntegerField(u'Отсрочка воспроизведения', null=True,
+        help_text=u'в миллисекундах')
     sort_order = models.IntegerField(u'порядок сортировки', **nullable)
 
     class Meta:
@@ -42,8 +42,8 @@ class PlayListItem(models.Model, TitleUnicode):
 
 class PlayList(models.Model):
     channel = models.ForeignKey(Channel)
-    rotate_from_date = models.DateField(u'Время начала ротации')
-    created = models.DateTimeField(u'Дата создания',
+    rotate_from_date = models.DateField(u'Дата начала ротации')
+    created = models.DateTimeField(u'Время создания',
         default=datetime.now, editable=False)
 
     class Meta:
