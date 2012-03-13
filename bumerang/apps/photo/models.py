@@ -100,8 +100,7 @@ class Photo(models.Model, TitleUnicode):
         original_file = self.original_file
         super(Photo, self).delete(**kwargs)
         if original_file:
-            parent_path = os.path.split(original_file.path)[0]
-            shutil.rmtree(parent_path, ignore_errors=True)
+            shutil.rmtree(original_file, ignore_errors=True)
 
     def get_absolute_url(self):
         return reverse('photo-detail', kwargs={'pk': self.pk})
