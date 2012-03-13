@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 from bumerang.apps.video.playlists.models import PlayList, Channel
 
 
-SHEDULE_RANGE = 7
+SCHEDULE_RANGE = 7
 
 class BumerangIndexView(TemplateView):
     template_name = "index.html"
@@ -29,14 +29,14 @@ class BumerangIndexView(TemplateView):
         else:
             date_min = PlayList.objects.filter(
                 channel=main_channel,
-                rotate_from_date__lte=today + timedelta(days=SHEDULE_RANGE)
+                rotate_from_date__lte=today + timedelta(days=SCHEDULE_RANGE)
             ).aggregate(date_min=Min('rotate_from_date'))['date_min']
             if date_min:
                 min_day = (date_min - today).days
             else:
-                min_day = SHEDULE_RANGE
+                min_day = SCHEDULE_RANGE
         next_days = [(today + timedelta(days=i)).timetuple()[0:3]
-                     for i in xrange(min_day, SHEDULE_RANGE)]
+                     for i in xrange(min_day, SCHEDULE_RANGE)]
         if playlist:
             now = datetime.now()
             for item in playlist.playlistitem_set.all():
