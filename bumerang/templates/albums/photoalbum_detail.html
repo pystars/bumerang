@@ -115,17 +115,14 @@
                         .eq(prevIndex).fadeTo('fast', onMouseOutOpacity).end()
                         .eq(nextIndex).fadeTo('fast', 1.0);
 
-                $('#vk_comments').html('');
-                var current_url = window.location.href;
-                VK.Widgets.Comments("vk_comments", {pageUrl: current_url, limit: 10, width: "600", attach: "*"});
-
-                console.log(nextIndex);
-
-                $('#show-full-screen').click(function() {
+                $('#show-full-screen').click(function(e) {
+                    e.preventDefault();
                     $('#wall').data('fullWall').showItem(nextIndex);
                 });
 
-                //$('#wall').jmFullWall({ showItem: nextIndex-prevIndex });
+                $('#vk_comments').empty();
+                var current_url = window.location.href;
+                VK.Widgets.Comments("vk_comments", {pageUrl: current_url, limit: 10, width: "600", attach: "*"});
             },
             onPageTransitionOut:       function(callback) {
                 this.fadeTo('fast', 0.0, callback);
@@ -146,6 +143,10 @@
                 this.fadeTo('fast', 1.0);
             }
 
+        });
+
+        $(document).on('fullWallCurrent', document, function(e) {
+            gallery.gotoIndex(e.position);
         });
 
         gallery.find('a.prev').click(function(e) {

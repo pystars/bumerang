@@ -164,6 +164,10 @@
                 
                 var position = $(wall_items).find("a").index(this)+1;
                 
+                var event = jQuery.Event("fullWallCurrent");
+                event.position = position-1;
+                $(document).trigger(event);
+                
                 (position >= wall_items_count) ? next_item = 0 : next_item = position;
                 
                 position = position-2;
