@@ -37,10 +37,11 @@ class BumerangIndexView(TemplateView):
                 min_day = SHEDULE_RANGE
         next_days = [(today + timedelta(days=i)).timetuple()[0:3]
                      for i in xrange(min_day, SHEDULE_RANGE)]
-        now = datetime.now()
-        for item in playlist.playlistitem_set.all():
-            if item.play_from() < now < item.play_till():
-                current_item = item
+        if playlist:
+            now = datetime.now()
+            for item in playlist.playlistitem_set.all():
+                if item.play_from() < now < item.play_till():
+                    current_item = item
         ctx.update(
             playlist = playlist,
             next_days = next_days,
