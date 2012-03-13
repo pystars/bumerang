@@ -45,9 +45,7 @@
             </dt>
             <dd class="selected">
                 <div class="b-tabs__tab-content">
-                    {% with request.user.profile as profile %}
-                        {% include "snippets/section_profile.html" %}
-                    {% endwith %}
+                    {% include "snippets/section_profile.html" with profile=request.user.profile %}
                     <div class="b-hr">
                         <hr/>
                     </div>

@@ -11,9 +11,7 @@
             <i class="r"></i>
         </dt>
         <dd class="selected"><div class="b-tabs__tab-content" id="videoalbum-id-{{ object.id }}">
-            {% with object.owner.profile as profile %}
-            {% include "snippets/section_profile.html" %}
-            {% endwith %}
+            {% include "snippets/section_profile.html" with profile=object.owner.profile %}
             <div class="b-hr"><hr /></div>
             <header class="b-head cleared">
                 {% if user.id == object.owner.id %}
