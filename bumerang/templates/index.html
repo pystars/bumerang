@@ -34,11 +34,13 @@
                                         <span class="ch-day">{% now "d" %}</span>
                                         <span class="ch-month">{% now "E" %}</span>
                                     </h2>
+                                    {% if playlist %}
                                     {% for year, month, day in next_days %}
                                         <a href="javascript:window.open('{% url playlist-detail playlist.channel.slug year month day %}','popUpWindow','height=700,width=980,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes,directories=no,status=yes');"
                                            class="cal-day{% if forloop.counter <= 3 %} cal-day{{ forloop.counter }}{% endif %}">
                                             {{ day }}</a>
                                     {% endfor %}
+                                    {% endif %}
                                 </nav>
                                 <h3 class="tp-day">{% now "l" %}</h3>
                                 <ul class="tp-ctrls">
