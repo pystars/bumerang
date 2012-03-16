@@ -109,7 +109,7 @@ def reply(request, message_id, form_class=ComposeForm,
     
     if request.method == "POST":
         sender = request.user
-        form = form_class(request.POST, recipient_filter=recipient_filter)
+        form = form_class(request.POST)
         if form.is_valid():
             form.save(sender=request.user, parent_msg=parent)
             messages.info(request, _(u"Message successfully sent."))
@@ -120,7 +120,7 @@ def reply(request, message_id, form_class=ComposeForm,
         form = form_class(initial={
             'body': quote_helper(parent.sender, parent.body),
             'subject': _(u"Re: %(subject)s") % {'subject': parent.subject},
-            'recipient': [parent.sender,]
+            'recipient': parent.sender.id
             })
     return render_to_response(template_name, {
         'form': form,

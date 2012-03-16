@@ -26,8 +26,11 @@
                     <i class="b-ava__sh"></i>
                 </div>
                 <ul class="b-opts b-opts_prof2">
-                    <li><strong>Просмотров</strong> <span>{{ object.views_count }}</span></li>
+{#                    <li><strong>Просмотров</strong> <span>{{ object.views_count }}</span></li>#}
                     <li><strong>Друзей</strong> <span>{{ object.friends_count }}</span></li>
+                    {% if request.user.id != object.id %}
+                    <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="b-profile__txt">
