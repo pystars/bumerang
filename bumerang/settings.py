@@ -81,6 +81,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.contrib.messages.context_processors.messages',
 
     'bumerang.apps.accounts.context_processors.global_login_form',
+    'bumerang.apps.messages.context_processors.inbox',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -144,6 +145,7 @@ INSTALLED_APPS = [
     'bumerang.apps.photo.albums',
     'bumerang.apps.accounts',
     'bumerang.apps.utils',
+    'bumerang.apps.messages',
 
     # external
     'south',

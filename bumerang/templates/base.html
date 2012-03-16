@@ -1,4 +1,5 @@
 {% load sitetree %}
+{% load inbox %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -115,8 +116,8 @@
                                         {% endif %}
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
-                                    <a href="#" class="b-dropdown2__link">Сообщения</a>
-                                    <small class="b-dropdown2__count">1678</small>
+                                    <a href="{% url messages_inbox %}" class="b-dropdown2__link">Сообщения</a>
+                                    <small class="b-dropdown2__count">{{ messages_inbox_count }}</small>
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
                                     <a href="#" class="b-dropdown2__link">Друзья</a>

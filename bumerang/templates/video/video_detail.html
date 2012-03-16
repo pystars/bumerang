@@ -101,8 +101,6 @@
             <div class="b-movie__panel cleared">
                 <div class="b-vote">
                     <div class="wrap">
-                        {% rating_by_user request.user on object.rating as vote %}
-
                         <ul class="star-rate" data-total-rate="{{ object.rating.get_rating }}" data-item-id="{{ object.id }}">
                             {{ object.rating|render_rating }}
                         </ul>

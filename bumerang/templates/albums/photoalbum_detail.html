@@ -120,8 +120,31 @@
 
                 $('#vk_comments').empty();
                 var current_url = window.location.href;
-                VK.Widgets.Comments("vk_comments", {pageUrl: current_url, limit: 10, width: "600", attach: "*"});
+                VK.Widgets.Comments("vk_comments", {
+                    pageUrl: current_url,
+                    limit: 10,
+                    width: "600",
+                    attach: "*" }
+                );
             },
+
+            onTransitionIn: function() {
+                if ($('.gallery-modal').is(':visible')) {
+                    var index = gallery.currentImage.index;
+                    var photo_id = $($('#thumbs').find('a.thumb').get(index)).attr('data-photo-id');
+
+                    // make request for adding 1 view
+                    $.ajax({
+                        method: 'GET',
+                        url: '/photo/'+ photo_id +'/update-count/',
+                        success: function() {
+
+                        }
+                    })
+
+                };
+            },
+
             onPageTransitionOut:       function(callback) {
                 this.fadeTo('fast', 0.0, callback);
             },
@@ -252,8 +275,8 @@
                             <ul class="thumbs noscript">
                                 {% for photo in photos %}
                                     <li>
-                                        <a class="thumb" id="prev{{ photo.id }}" href="{{ photo.original_file.url }}" title="{{ photo.title }}">
-                                            <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" />
+                                        <a class="thumb" id="prev{{ photo.id }}" href="{{ photo.original_file.url }}" title="{{ photo.title }}" data-photo-id="{{ photo.id }}">
+                                            <img src="{{ photo.original_file.url }}" alt="{{ photo.title }}" data-photo-id="{{ photo.id }}" />
                                         </a>
                                         <div class="caption">
                                             <h5>{{ photo.title }}</h5>

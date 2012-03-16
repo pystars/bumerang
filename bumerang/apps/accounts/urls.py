@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
 
 from bumerang.apps.accounts.forms import (ProfileResumeEditForm, FacultyForm,
@@ -143,4 +143,6 @@ url(r'^edit-team/$',
         ProfilePhotoView.as_view(template_name_suffix='_photo'),
         name='profile-photo-detail'
     ),
+
+    (r'^messages/', include('bumerang.apps.messages.urls')),
 )

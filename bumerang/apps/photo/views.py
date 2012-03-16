@@ -4,7 +4,7 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models.expressions import F
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
@@ -51,6 +51,19 @@ class PhotoDetailView(DetailView):
         self.get_queryset().filter(pk=self.object.id).update(
             views_count=F('views_count') + 1)
         return response
+
+
+def increase_views_count(request, pk):
+    if request.method == 'GET':
+        photo = Photo.objects.filter(pk=pk)
+        photo.update(views_count=F('views_count') + 1)
+
+        photo_object = photo[0]
+
+        return HttpResponse(json.dumps(
+                {'error': False,
+                 'views_count': photo_object.views_count}
+        ), status=200)
 
 
 class PhotoCreateView(CreateView):

@@ -3,6 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
 from bumerang.apps.photo.albums.views import PhotoAlbumDetailView
+from bumerang.apps.photo.views import increase_views_count
 
 from bumerang.apps.utils.views import ObjectsDeleteView
 from models import Photo
@@ -62,4 +63,9 @@ urlpatterns = patterns('',
         PhotoDetailView.as_view(),
         name='photo-detail'
     ),
+
+    url(r'^(?P<pk>[\d]+)/update-count/$',
+        increase_views_count,
+        name='photo-update-count'
+    )
 )
