@@ -104,8 +104,11 @@ class PhotoCreateView(CreateView):
         return ctx
 
     def get_success_url(self):
-        return reverse('photo-album-detail', args=[self.kwargs['photo_album_id']])
-
+        if 'photo_album_id' in self.kwargs:
+            return reverse('photo-album-detail',
+            args=[self.kwargs['photo_album_id']])
+        else:
+            return reverse('profile-photo-detail', args=[self.request.user.profile.id])
 
 class PhotoUpdateView(OwnerMixin, UpdateView):
     model = Photo
