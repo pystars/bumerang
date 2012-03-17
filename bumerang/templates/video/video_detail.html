@@ -102,7 +102,11 @@
                 <div class="b-vote">
                     <div class="wrap">
                         <ul class="star-rate" data-total-rate="{{ object.rating.get_rating }}" data-item-id="{{ object.id }}">
-                            {{ object.rating|render_rating }}
+                            {% if request.user.id %}
+                                {{ object.rating|render_rating }}
+                            {% else %}
+                                {{ object.rating|render_inactive_rating }}
+                            {% endif %}
                         </ul>
 
                         <script type="text/javascript">

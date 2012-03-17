@@ -5222,7 +5222,8 @@ h3.title+.b-form_edit_login-pass {
     float: left;
 }
 
-.b-vote .star-rate a {
+.b-vote .star-rate a,
+.b-vote .star-rate b {
     background: url(../i/star.png) no-repeat;
     width: 24px;
     height: 24px;
@@ -5235,7 +5236,8 @@ h3.title+.b-form_edit_login-pass {
     background-position: 0 0;
 }
 
-.b-vote .star-rate li a.active {
+.b-vote .star-rate li a.active,
+.b-vote .star-rate li b.active {
     background-position: 0 -24px;
 }
 
@@ -5243,4 +5245,38 @@ h3.title+.b-form_edit_login-pass {
     background-position: 0 -24px;
     left: 0;
     z-index: 2;
+}
+
+
+/* Messages */
+.messages .b-tag {
+    margin:0 0 6px 0;
+    padding:1px 0;
+}
+
+.message .b-ava {
+    float:left;
+    margin:3px -100px 0 0;
+    width:58px;
+    height: 58px;
+    overflow:hidden;
+}
+
+.message .b-ava img {
+    width: 58px;
+    height: 58px;
+}
+
+.message .pi-head,
+.message .pi-foot {
+    margin-left:65px;
+}
+
+.message .pi-head h3 {
+    margin:0 0 .33em 0;
+}
+
+.message  .pi-head div {
+    font-size:.875em;
+    margin:.25em 0;
 }

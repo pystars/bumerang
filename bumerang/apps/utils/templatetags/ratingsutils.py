@@ -18,7 +18,20 @@ def render_rating(rating):
     for i in range(1, rating.field.range+1):
         tpl += item_tpl.format(i, "active" if i <= rating_integer else "")
 
+    return safe(tpl)
 
+@register.filter()
+def render_inactive_rating(rating):
 
+    item_tpl = u'''
+        <li>
+            <b class="{1}">&nbsp;</b>
+        </li>'''
+
+    tpl = ""
+    rating_integer = int(rating.instance.rating.get_rating())
+
+    for i in range(1, rating.field.range+1):
+        tpl += item_tpl.format(i, "active" if i <= rating_integer else "")
 
     return safe(tpl)

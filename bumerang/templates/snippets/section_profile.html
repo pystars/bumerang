@@ -13,11 +13,13 @@
             </div>
         </a>
         <div class="b-profile__txt">
-            {% if request.user.id == profile.id %}
-                <ul class="b-service-buttons">
-                    <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
-                </ul>
-            {% endif %}
+            <ul class="b-service-buttons">
+                {% if request.user.id == profile.id %}
+                <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
+                {% else %}
+                <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
+                {% endif %}
+            </ul>
             <a href="{% url profile-detail profile.id %}">
                 <h4>{{ profile.title }}</h4>
             </a>
