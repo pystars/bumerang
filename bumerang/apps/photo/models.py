@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import shutil
 from datetime import datetime
 
@@ -101,12 +100,6 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
             if not self.album.cover:
                 self.album.cover = self
                 self.album.save()
-
-    def delete(self, **kwargs):
-        original_file = self.original_file
-        super(Photo, self).delete(**kwargs)
-        if original_file:
-            shutil.rmtree(original_file.path, ignore_errors=True)
 
     def get_absolute_url(self):
         return reverse('photo-detail', kwargs={'pk': self.pk})

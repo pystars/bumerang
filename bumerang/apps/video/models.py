@@ -157,5 +157,3 @@ class Preview(FileModelMixin, models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_upload_to,
         storage=s3storage)
     icon = models.ImageField(upload_to=icon_upload_to, storage=s3storage)
-
-    #TODO: remove previews from s3
