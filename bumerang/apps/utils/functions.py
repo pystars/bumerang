@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-from cStringIO import StringIO
-from exceptions import TypeError
 import random
 import string
-import PIL.Image
+from cStringIO import StringIO
+from exceptions import TypeError
+
+from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from bumerang.apps.photo.utils import image_width_height
 
 def random_string(length, letters=string.ascii_letters+string.digits):
     return u''.join(random.choice(letters) for i in xrange(length))
-
 
 def thumb_img(img, width=None, height=None):
     io = StringIO()
