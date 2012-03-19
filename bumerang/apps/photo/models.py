@@ -106,7 +106,7 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
         original_file = self.original_file
         super(Photo, self).delete(**kwargs)
         if original_file:
-            shutil.rmtree(original_file, ignore_errors=True)
+            shutil.rmtree(original_file.path, ignore_errors=True)
 
     def get_absolute_url(self):
         return reverse('photo-detail', kwargs={'pk': self.pk})

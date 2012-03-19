@@ -1,21 +1,72 @@
 {% extends "django_messages/base.html" %} 
-{% load i18n %} 
-{% block content %}
-<h1>{% trans "View Message" %}</h1>
-<dl class="message-headers">
-    <dt>{% trans "Subject" %}</dt>
-    <dd><strong>{{ message.subject }}</strong></dd>
-    <dt>{% trans "Sender" %}</dt>
-    <dd>{{ message.sender }}</dd>
-    <dt>{% trans "Date" %} </dt>
-    <dd>{{ message.sent_at|date:_("DATETIME_FORMAT")}}</dd>
-    <dt>{% trans "Recipient" %}</dt>
-    <dd>{{ message.recipient }}</dd>
-</dl>
-{{ message.body|linebreaksbr }}<br /><br />
+{% load i18n %}
 
-{% ifequal message.recipient.pk user.pk %}
-<a href="{% url messages_reply message.id %}">{% trans "Reply" %}</a>
-{% endifequal %}
-<a href="{% url messages_delete message.id %}">{% trans "Delete" %}</a>
+{% block title %}Новое сообщение{% endblock %}
+
+{#{% block content %}#}
+{#    <nav>#}
+{#        <a href="{% url messages_redirect %}" title="Сообщения">Сообщения</a>#}
+{#        <span class="b-crumbs__sep">/</span>#}
+{#        <span>Новое сообщение</span>#}
+{#    </nav>#}
+{##}
+{#<h1>{% trans "View Message" %}</h1>#}
+{#<dl class="message-headers">#}
+{#    <dt>{% trans "Subject" %}</dt>#}
+{#    <dd><strong>{{ message.subject }}</strong></dd>#}
+{#    <dt>{% trans "Sender" %}</dt>#}
+{#    <dd>{{ message.sender }}</dd>#}
+{#    <dt>{% trans "Date" %} </dt>#}
+{#    <dd>{{ message.sent_at|date:_("DATETIME_FORMAT")}}</dd>#}
+{#    <dt>{% trans "Recipient" %}</dt>#}
+{#    <dd>{{ message.recipient }}</dd>#}
+{#</dl>#}
+{##}
+{#{{ message.body|linebreaksbr }}<br /><br />#}
+{##}
+{#{% ifequal message.recipient.pk user.pk %}#}
+{#<a href="{% url messages_reply message.id %}">{% trans "Reply" %}</a>#}
+{#{% endifequal %}#}
+{#<a href="{% url messages_delete message.id %}">{% trans "Delete" %}</a>#}
+{#{% endblock %}#}
+
+{% block messages_content %}
+    <section class="b-profile">
+            <section class="messages">
+                <div class="b-resume__person cleared">
+                    <div class="rp__pic">
+                        <div class="b-ava">
+                            {% if message.sender.profile.min_avatar %}
+                                <img src="{{ message.sender.profile.min_avatar.url }}" alt="{{ message.sender.profile.title }}" width="60" height="60" />
+                            {% else %}
+                                <img src="{{ STATIC_URL }}i/noava-b.jpg" alt="{{ message.sender.profile.title }}" width="60" height="60" />
+                            {% endif %}
+                            <i class="b-ava__sh"></i>
+                        </div>
+                    </div>
+                    <div class="rp__txt">
+{#                        <h4>{{ message.sender.profile.name }}</h4>#}
+{#                        <p>{{ message.sender.profile.description|linebreaksbr }}</p>#}
+
+                        <h4>
+                            <a href="{% url profile-detail message.sender.profile.id %}">{{ message.sender.profile.title|default:message.sender.profile.username }}</a>
+                            <span>{{ message.sent_at|date:"j.m.Y в G:i" }}</span>
+                        </h4>
+                        <h5>
+                            {% if message.new %}<strong>{% endif %}
+                            {% if message.replied %}<em>{% endif %}
+                            <a href="{{message.get_absolute_url }}">{{ message.subject }}</a>
+                            {% if message.replied %}</em>{% endif %}
+                            {% if message.new %}</strong>{% endif %}
+                        </h5>
+                        <p>{{ message.body|linebreaksbr }}</p>
+                        <br />
+                        {% ifequal message.recipient.pk user.pk %}
+                        <a href="{% url messages_reply message.id %}">{% trans "Reply" %}</a>
+                        {% endifequal %}
+                        <a href="{% url messages_delete message.id %}">{% trans "Delete" %}</a>
+                    </div>
+                </div>
+            </section>
+    </section>
 {% endblock %}

@@ -1,4 +1,8 @@
+from django import template
 from django.template import Library, Node, TemplateSyntaxError
+
+register = template.Library()
+
 
 class InboxOutput(Node):
     def __init__(self, varname=None):
@@ -43,3 +47,26 @@ def do_print_inbox_count(parser, token):
 
 register = Library()     
 register.tag('inbox_count', do_print_inbox_count)
+
+
+class InboxAllOutput(Node):
+    def __init__(self, varname=None):
+        self.varname = varname
+
+    def render(self, context):
+        try:
+            user = context['user']
+            count = user.received_messages.filter(recipient_deleted_at__isnull=True).count()
+        except (KeyError, AttributeError):
+            count = ''
+        if self.varname is not None:
+            context[self.varname] = count
+            return ""
+        else:
+            return "%s" % (count)
+
+
+def do_print_all_inbox_count(parser, token):
+    return InboxAllOutput()
+
+register.tag('inbox_all_count', do_print_all_inbox_count)

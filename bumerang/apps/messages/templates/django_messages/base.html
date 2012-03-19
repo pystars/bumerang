@@ -1,13 +1,67 @@
-{% extends "base.html" %}
-{% load i18n %}  
-{% block bodyclass %}about{% endblock %}
-{% block content %}  
-{% endblock %}
-{% block sidebar %}
-<ul class="subnavilist">
-    <li><a href="{% url messages_inbox %} ">&raquo;&nbsp;{% trans "Inbox" %}</a></li>
-    <li><a href="{% url messages_outbox %} ">&raquo;&nbsp;{% trans "Sent Messages" %}</a></li>
-    <li><a href="{% url messages_compose %} ">&raquo;&nbsp;{% trans "New Message" %}</a></li>
-    <li><a href="{% url messages_trash %} ">&raquo;&nbsp;{% trans "Trash" %}</a></li>
-</ul>
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+    <dl>
+
+        <dt class="first">
+            <a href="{% url profile-detail request.user.profile.id %}">
+                <span>Профиль</span>
+            </a>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+        <dt>
+            {% spaceless %}
+                <a href="{% url profile-video-detail request.user.profile.id %}">
+                <span>Видео</span>
+            </a>
+            {% endspaceless %}
+                <small>{{ profile.video_set.count }}</small>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+        <dt>
+            {% spaceless %}
+                <a href="{% url profile-photo-detail request.user.profile.id %}">
+                <span>Фото</span>
+            </a>
+            {% endspaceless %}
+                <small>{{ profile.photo_set.count }}</small>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+
+        <dt class="selected">
+            {% spaceless %}
+                <a href="{% url messages_redirect %}">
+                    <span>Сообщения</span>
+                </a>
+            {% endspaceless %}
+            <small>{{ messages_inbox_count }}</small>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+        <dd class="selected"><div class="b-tabs__tab-content">
+            {% with request.user.profile as profile %}
+                {% include "snippets/section_profile.html" %}
+            {% endwith %}
+            {% block messages_bar %}
+{#            <div class="b-hr">#}
+{#                <hr />#}
+{#            </div>#}
+            {% endblock %}
+            <div class="tab-container">
+                <div class="b-hr"><hr /></div>
+                <div class="tab-block">
+                    <section class="b-messages">
+                        {% block messages_content %}{% endblock %}
+                    </section>
+                </div>
+            </div>
+
+        </div></dd>
+    </dl>
+</div>
 {% endblock %}
