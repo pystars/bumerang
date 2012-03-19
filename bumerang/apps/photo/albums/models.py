@@ -10,7 +10,7 @@ class PhotoAlbum(models.Model, TitleUnicode):
     owner = models.ForeignKey(User)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание', **nullable)
-    cover = models.OneToOneField(Photo, on_delete=models.SET_NULL, **nullable)
+    cover = models.ForeignKey(Photo, on_delete=models.SET_NULL, **nullable)
 
     class Meta:
         verbose_name = u'Фотоальбом'
@@ -19,12 +19,4 @@ class PhotoAlbum(models.Model, TitleUnicode):
     def preview(self):
         if self.cover:
             return self.cover
-        return None
-
-    def preview_url(self):
-        if self.cover:
-            try:
-                return self.cover.original_file.url
-            except ValueError:
-                return None
         return None

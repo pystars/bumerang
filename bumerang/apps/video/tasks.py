@@ -3,10 +3,13 @@ import os
 import random
 import shutil
 import subprocess
+import tempfile
 
+from PIL import Image
 from django.conf import settings
 from celery.task import Task
 
+from bumerang.apps.utils.functions import thumb_img
 from models import Preview, Video
 from converting.models import ConvertOptions
 
@@ -21,7 +24,7 @@ class MakeScreenShots(Task):
 
         Video.objects.filter(pk=video.id).update(status=video.CONVERTING)
         for preview in video.preview_set.all():
-            os.remove(preview.image.path)
+#            os.remove(preview.image.path)
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
@@ -40,22 +43,22 @@ class MakeScreenShots(Task):
         step = screenable_duration / previews_count
         counter = 0
         while counter < previews_count:
+            tmp_file = tempfile.NamedTemporaryFile()
             preview = Preview(owner=video)
-            upload_to = preview.image.field.upload_to(
-                preview, '{0}.jpg'.format(offset))
-            output = preview.image.field.storage.path(upload_to)
-            parent_path = os.path.split(output)[0]
-            if not os.path.exists(parent_path):
-                os.makedirs(parent_path)
             cmd = self.get_commandline(source_path,
-                random.choice(range(offset, offset+step)), size, output)
+                random.choice(range(offset, offset+step)), size, tmp_file.name)
             process = subprocess.call(cmd, shell=False)
             if process:
                 return "Stop Making screenshots - video is deleted"
-            preview.image = upload_to
+            img = Image.open(tmp_file.name).copy()
+            tmp_file.close()
+            preview.image = thumb_img(img)
+            preview.thumbnail = thumb_img(img)
+            preview.icon = thumb_img(img)
             preview.save()
             offset += step
             counter += 1
+
         try:
             video = Video.objects.get(pk=video.id)
         except Video.DoesNotExist:

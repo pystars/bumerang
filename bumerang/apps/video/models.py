@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
-from djangoratings import RatingField
-import os
-import shutil
 from datetime import datetime
 
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.deletion import ProtectedError
+from djangoratings import RatingField
+from storages.backends.s3boto import S3BotoStorage
 
 from bumerang.apps.utils.functions import random_string
-from bumerang.apps.utils.models import TitleUnicode, nullable, choices
+from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
 from validators import check_video_file
-from bumerang.apps.utils.storages import RewritableFilesStorage
+from utils import (original_upload_to, hq_upload_to, mq_upload_to, lq_upload_to,
+    screenshot_upload_to, thumbnail_upload_to, icon_upload_to)
+
+s3storage = S3BotoStorage(bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME)
 
 
 class VideoCategory(models.Model, TitleUnicode):
@@ -32,21 +34,8 @@ class VideoGenre(models.Model, TitleUnicode):
         verbose_name = u'Жанр видео'
         verbose_name_plural = u'Жанры видео'
 
-def original_upload_to(instance, filename):
-    name, ext = os.path.splitext(filename)
-    return 'videos/{0}/original{1}'.format(instance.slug, ext)
 
-def hq_upload_to(instance, filename):
-    return 'videos/{0}/hq_file.mp4'.format(instance.slug)
-
-def mq_upload_to(instance, filename):
-    return 'videos/{0}/mq_file.mp4'.format(instance.slug)
-
-def lq_upload_to(instance, filename):
-    return 'videos/{0}/lq_file.mp4'.format(instance.slug)
-
-
-class Video(models.Model, TitleUnicode):
+class Video(FileModelMixin, models.Model, TitleUnicode):
     SLUG_LENGTH = 12
 
     FREE_FOR_ALL = 1
@@ -82,15 +71,15 @@ class Video(models.Model, TitleUnicode):
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.FileField(u"Оригинальное видео",
         validators=[check_video_file], upload_to=original_upload_to,
-        storage=RewritableFilesStorage(), null=True, blank=False)
+        storage=s3storage, null=True, blank=False)
     hq_file = models.FileField(u'Видео высокого качества',
-        storage=RewritableFilesStorage(), upload_to=hq_upload_to,
+        upload_to=hq_upload_to, storage=s3storage,
         validators=[check_video_file], **nullable)
     mq_file = models.FileField(u'Видео среднего качества',
-        storage=RewritableFilesStorage(), upload_to=mq_upload_to,
+        upload_to=mq_upload_to,storage=s3storage,
         validators=[check_video_file], **nullable)
     lq_file = models.FileField(u'Видео низкого качества',
-        storage=RewritableFilesStorage(), upload_to=lq_upload_to,
+        upload_to=lq_upload_to,storage=s3storage,
         validators=[check_video_file], **nullable)
     duration = models.IntegerField(u'Длительность', default=0,
                                    editable=False, **nullable)
@@ -114,7 +103,7 @@ class Video(models.Model, TitleUnicode):
     created = models.DateTimeField(u'Дата добавления', default=datetime.now)
     views_count = models.IntegerField(u'Количество просмотров видео', default=0,
                                       editable=False, **nullable)
-    status = models.IntegerField(u'статус', choices=STATUS_CHOICES,
+    status = models.IntegerField(u'статус', choices=STATUS_CHOICES,#TODO: remove
         default=PENDING)
 
     rating = RatingField(range=10, can_change_vote=True)
@@ -136,22 +125,12 @@ class Video(models.Model, TitleUnicode):
                 self.album.preview = self.preview()
                 self.album.save()
 
-    def delete(self, **kwargs):
-        any_file = self.any_file()
-        try:
-            super(Video, self).delete(**kwargs)
-            if any_file:
-                parent_path = os.path.split(any_file.path)[0]
-                shutil.rmtree(parent_path, ignore_errors=True)
-        except ProtectedError:
-            pass #TODO: raise delete error, say it to user
-
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
 
     def preview(self):
         try:
-            return self.preview_set.all()[0].image
+            return self.preview_set.all()[0]
         except IndexError:
             return None
 
@@ -172,11 +151,11 @@ class Video(models.Model, TitleUnicode):
                 return slug
 
 
-def preview_upload_to(instance, filename):
-    return 'previews/video/{0}/{1}'.format(instance.owner.slug, filename)
-
-
-class Preview(models.Model):
+class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)
-    image = models.ImageField(upload_to=preview_upload_to,
-        storage=RewritableFilesStorage())
+    image = models.ImageField(upload_to=screenshot_upload_to, storage=s3storage)
+    thumbnail = models.ImageField(upload_to=thumbnail_upload_to,
+        storage=s3storage)
+    icon = models.ImageField(upload_to=icon_upload_to, storage=s3storage)
+
+    #TODO: remove previews from s3

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
 
+from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.db import models
+from storages.backends.s3boto import S3BotoStorage
 
-import bumerang.settings as settings
+from bumerang.apps.utils.models import FileModelMixin
 
+
+s3storage = S3BotoStorage(bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME)
 nullable = dict(null=True, blank=True)
 
 def get_avatar_path(instance, filename):
@@ -23,7 +27,7 @@ def get_mini_avatar_path(instance, filename):
     return 'avatars/{0}/min{1}'.format(instance.id, ext)
 
 
-class Profile(User):
+class Profile(FileModelMixin, User):
     ACCOUNT_TYPES = (
         (1, u'Независимый участник'),
         (2, u'Школа'),
@@ -47,7 +51,7 @@ class Profile(User):
     avatar = models.ImageField(u'Фотография профиля',
         upload_to=get_avatar_path, **nullable)
     min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
-        upload_to=get_mini_avatar_path, **nullable)
+        upload_to=get_mini_avatar_path, storage=s3storage, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
 #    place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
@@ -157,8 +161,9 @@ class Service(models.Model):
         return self.title
 
 
-class Teammate(models.Model):
-    photo = models.ImageField(u'Фотография', upload_to='teams')
+class Teammate(FileModelMixin, models.Model):
+    photo = models.ImageField(u'Фотография', storage=s3storage,
+        upload_to='teams')
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
@@ -167,8 +172,9 @@ class Teammate(models.Model):
         return self.name
 
 
-class Teacher(models.Model):
-    photo = models.ImageField(u'Фотография', upload_to='teachers')
+class Teacher(FileModelMixin, models.Model):
+    photo = models.ImageField(u'Фотография', storage=s3storage,
+        upload_to='teachers')
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Команда',)

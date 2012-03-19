@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 
+from PIL import Image
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models.expressions import F
@@ -11,6 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
 
+from bumerang.apps.utils.functions import thumb_img
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import PhotoAlbum
 from models import Photo
@@ -66,7 +68,17 @@ def increase_views_count(request, pk):
         ), status=200)
 
 
-class PhotoCreateView(CreateView):
+class PhotoEditMixin(object):
+    def make_thumbs(self):
+        img = Image.open(self.object.original_file.file).copy()
+        self.object.original_file.file.seek(0)
+        self.object.image = thumb_img(img, 938)
+        self.object.thumbnail = thumb_img(img, 190)
+        self.object.icon = thumb_img(img, 60)
+        self.object.save()
+
+
+class PhotoCreateView(CreateView, PhotoEditMixin):
     model = Photo
 
     def get_form(self, form_class):
@@ -88,9 +100,8 @@ class PhotoCreateView(CreateView):
         self.object = form.save(commit=False)
         if self.album():
             self.object.album = self.album()
-
         self.object.owner = self.request.user
-        self.object.save()
+        self.make_thumbs()
         return super(ModelFormMixin, self).form_valid(form)
 
     def form_invalid(self, form):
@@ -110,7 +121,7 @@ class PhotoCreateView(CreateView):
         else:
             return reverse('profile-photo-detail', args=[self.request.user.profile.id])
 
-class PhotoUpdateView(OwnerMixin, UpdateView):
+class PhotoUpdateView(OwnerMixin, UpdateView, PhotoEditMixin):
     model = Photo
 
     def get_form(self, form_class):
@@ -120,9 +131,14 @@ class PhotoUpdateView(OwnerMixin, UpdateView):
         return reverse('photo-edit', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
+        if 'original_file' in form.changed_data:
+            self.object = form.save(commit=False)
+            self.make_thumbs()
+        else:
+            self.object = form.save()
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о фото успешно обновлена')
-        return super(PhotoUpdateView, self).form_valid(form)
+        return super(ModelFormMixin, self).form_valid(form)
 
 
 class PhotoListView(ListView):

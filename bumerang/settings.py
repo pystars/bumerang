@@ -2,7 +2,10 @@
 DEBUG = True
 import os
 
-from bumerang.local_settings import *
+try:
+    from bumerang.local_settings import *
+except ImportError:
+    pass
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -26,30 +29,25 @@ DATABASES = {
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
-
 TIME_ZONE = 'Europe/Moscow'
-
 LANGUAGE_CODE = 'ru-RU'
-
 SITE_ID = 1
-
 USE_I18N = True
-
 USE_L10N = True
 
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-
-MEDIA_URL = 'http://bumerang.tv/media/'
-
-FILE_UPLOAD_TEMP_DIR = os.path.join(MEDIA_ROOT, 'tmp')
+#Storage settings
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+MEDIA_ROOT = ''
+AWS_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
+AWS_MEDIA_STORAGE_BUCKET_NAME = 'media.probumerang.tv'
+AWS_S3_SECURE_URLS = False
+AWS_PRELOAD_METADATA = True
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
-
-if LOCALHOST:
-    MEDIA_URL = '/media/'
-
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
-
-STATIC_URL = '/static/'
+STATIC_ROOT = ''
+STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
 
 #ADMIN_MEDIA_PREFIX = '/static/admin/'
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
@@ -129,10 +127,17 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
     'grappelli',
-    'filebrowser',
+#    'filebrowser',
     'django.contrib.admin',
     'django.contrib.admindocs',
-
+    # external
+    'south',
+    'mptt',
+    'tinymce',
+    'djcelery',
+    'storages',
+    #    'djkombu',
+    'djangoratings',
     # internal
     'bumerang.apps.bumerang_site',
     'bumerang.apps.news',
@@ -147,19 +152,12 @@ INSTALLED_APPS = [
     'bumerang.apps.utils',
     'bumerang.apps.messages',
 
-    # external
-    'south',
-    'mptt',
-    'tinymce',
-    'djcelery',
-    'djkombu',
-    'djangoratings',
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
-TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
+#TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
+#TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
 
 TINYMCE_PLUGINS = [
     'safari',
@@ -212,10 +210,15 @@ if DEBUG:
 #        INTERCEPT_REDIRECTS=False
 #    )
 
-EMAIL_NOREPLY_ADDR = 'noreply@bumerang.tv'
+EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
 
 import djcelery
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
-BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+BROKER_TRANSPORT = 'sqs'
+BROKER_TRANSPORT_OPTIONS = {
+    'region': 'eu-west-1',
+}
+BROKER_USER = AWS_ACCESS_KEY_ID
+BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
 BROKER_POOL_LIMIT = 10
 djcelery.setup_loader()

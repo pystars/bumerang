@@ -6,7 +6,7 @@
 {#                    <a class="thumb" href="{% url photo-detail photo.id %}">#}
                     <a class="thumb" href="#{{ forloop.counter }}" title="{{ photo.title }}" rel="history">
                         <span>
-                            <img src="{{ photo.original_file.url }}" width="190" height="123" alt="{{ photo.title }}" />
+                            <img src="{{ photo.thumbnail.url }}" width="190" height="123" alt="{{ photo.title }}" />
                         </span>
                     </a>
                 </div>
