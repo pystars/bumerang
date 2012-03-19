@@ -1,6 +1,9 @@
+from time import sleep
+
 from fabric.api import *
 from fabric.context_managers import lcd, hide, cd
 from fabric.operations import local, abort, put, sudo
+from boto.ec2 import connect_to_region
 
 from bumerang.local_settings import get_sudo_pwd
 
@@ -68,6 +71,37 @@ def fullsync(branch):
 	#sync()
 	remote_syncdb()
 	reload()
+
+
+env.key_filename = '/home/goodfellow/.ssh/dev_amazon_eu.pub'
+
+def create_instance(connection):
+    print 'start creating instance'
+    reservation = connection.run_instances('ami-895069fd',
+        key_name='devkeypair', security_groups=['dev api'],
+        instance_type='c1.xlarge')
+    print 'created reservation ', reservation
+    instance = reservation.instances[0]
+    while not instance.dns_name:
+        sleep(1)
+        instance.update()
+    print 'instance runned, dns is {0}'.format(instance.dns_name)
+    print 'wait while ssh is up... about 15 seconds'
+    sleep(15)
+    env.host_string = 'ubuntu@{0}:22'.format(instance.dns_name)
+    for line in open('install.sh'):
+        if not line.startswith('#'):
+            sudo(line)
+    return instance
+
+def create_image():
+    connection = connect_to_region('eu-west-1')
+    instance = create_instance(connection)
+    print 'creating image from instance {0}'.format(instance)
+    image_id = connection.create_image(instance.id, 'testimage')
+    print 'image {0} created'.format(image_id)
+
+
 
 
 # def getvideo():
