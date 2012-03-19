@@ -1,16 +1,18 @@
 -e svn+http://code.djangoproject.com/svn/django/trunk/#egg=django-trunk
-pillow==1.7.6
-South==0.7.3
-django-debug-toolbar==0.9.4
+pillow
+South
+django-debug-toolbar
 django-filebrowser==3.4.0
 https://github.com/btx/django-grappelli/zipball/django_1.4
-django-mptt==0.5.2
+django-mptt
 django-sitetree==0.6
 django-tinymce==1.5.1b2
 wsgiref==0.1.2
 django-extensions
-django-celery==2.4.2
-django-kombu==0.9.4
+django-celery
 django-ratings==0.3.6
 celery
 fabric
+boto
+django-storages
+ipython
