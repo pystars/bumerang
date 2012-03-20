@@ -95,23 +95,23 @@
             
             link = $(wall_items).find("a").get(id);
             
-            var $img_detail = $(link).parent(wall_items).find("span.img_detail").html();
+            var $img_detail = $(link).parent(wall_items).find("span.img_detail").text();
             var $text = $(link).parent(wall_items).find("span.tooltip").html();
-            
+
             //$(wall_loading).fadeIn();
-            
+
             var position = $(wall_items).find("a").index(id);
-            
+
             (position >= wall_items_count) ? next_item = 0 : next_item = position;
-            
+
             position = position-2;
             (position < 0) ? prev_item = (wall_items_count-1) : prev_item = position;
-            
+
             var scope = this;
-            $.imgpreload($img_detail, function(){
+            $.imgpreload($img_detail, function() {
                 var $img = new Image();
                 $img.src = $img_detail;
-                
+
                 ht = '';
                 ht += '<div class="'+wall_detail_controls_container+'">';
                 ht += '<a href="#" rel="'+prev_item+'" class="'+options.itemsBtnClose+'"><\/a>';
@@ -134,7 +134,7 @@
                         $options={$pancontainer:$this, pos:$imgOrient, curzoom:1, canzoom:$imgZoom, wrappersize:[$this.width(), $this.height()]};
                         $img.imgmover($options);
                     }
-                
+
                     $(wall_loading).fadeOut(200, function() {
                         if(options.showTooltip)
                         {
@@ -157,8 +157,8 @@
             });
             
             var scope = this;
-            links.bind('click', function(){
-                var $img_detail = $(this).parent(wall_items).find("span.img_detail").html();
+            links.bind('click', function() {
+                var $img_detail = $(this).parent(wall_items).find("span.img_detail").text();
                 var $text = $(this).parent(wall_items).find("span.tooltip").html();
                 $(wall_loading).fadeIn();
                 
@@ -167,16 +167,16 @@
                 var event = jQuery.Event("fullWallCurrent");
                 event.position = position-1;
                 $(document).trigger(event);
-                
+
                 (position >= wall_items_count) ? next_item = 0 : next_item = position;
                 
                 position = position-2;
                 (position < 0) ? prev_item = (wall_items_count-1) : prev_item = position;
-                
+
                 $.imgpreload($img_detail, function(){
                     var $img = new Image();
                     $img.src = $img_detail;
-                    
+
                     ht = '';
                     ht += '<div class="'+wall_detail_controls_container+'">';
                     ht += '<a href="#" rel="'+prev_item+'" class="'+options.itemsBtnClose+'"><\/a>';
@@ -187,7 +187,7 @@
                     ht += '<div class="'+wall_detail_image_container+'">';
                     ht += scope.setBgImage($img.src, $img.width, $img.height);
                     ht += '<\/div>';
-                    
+
                     $(wall_detail).empty().html(ht).fadeIn(options.detailTransitionInSpeed, function() {
                         if(options.imgPanning) {
                             (options.imgPanningCenter) ? $imgOrient = 'center' : $imgOrient = 'top';
@@ -199,7 +199,7 @@
                             $options={$pancontainer:$this, pos:$imgOrient, curzoom:1, canzoom:$imgZoom, wrappersize:[$this.width(), $this.height()]};
                             $img.imgmover($options);
                         }
-                    
+
                         $(wall_loading).fadeOut(200, function() {
                             if(options.showTooltip)
                             {

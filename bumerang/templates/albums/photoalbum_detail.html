@@ -234,8 +234,8 @@
             <div id="wall-items">
                 {% for photo in photos %}
                 <div class="wall-item" data-item-id="{{ forloop.counter0 }}">
-                    <span class="bg hide">{{ photo.image.url }}</span>
-                    <span class="img_detail hide">{{ photo.original_file.url }}</span>
+                    <span class="bg hide">{% autoescape off %}{{ photo.image.url }}{% endautoescape %}</span>
+                    <span class="img_detail hide">{% autoescape off %}{{ photo.original_file.url }}{% endautoescape %}</span>
                     <span class="tooltip hide">{{ photo.title }}</span>
                     <a href="#"><span class="title">{{ photo.title }}</span></a>
                 </div>
@@ -273,8 +273,8 @@
                             <ul class="thumbs noscript">
                                 {% for photo in photos %}
                                     <li>
-                                        <a class="thumb" id="prev{{ photo.id }}" href="{{ photo.image.url }}" title="{{ photo.title }}" data-photo-id="{{ photo.id }}">
-                                            <img src="{{ photo.icon.url }}" alt="{{ photo.title }}" data-photo-id="{{ photo.id }}" />
+                                        <a class="thumb" id="prev{{ photo.id }}" href="{% autoescape off %}{{ photo.image.url }}{% endautoescape %}" title="{{ photo.title }}" data-photo-id="{{ photo.id }}">
+                                            <img src="{% autoescape off %}{{ photo.icon.url }}{% endautoescape %}" alt="{{ photo.title }}" data-photo-id="{{ photo.id }}" />
                                         </a>
                                         <div class="caption">
                                             <h5>{{ photo.title }}</h5>

@@ -48,6 +48,8 @@ FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
 STATIC_ROOT = ''
 STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+if LOCALHOST:
+    STATIC_URL = '/static/'
 
 #ADMIN_MEDIA_PREFIX = '/static/admin/'
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
