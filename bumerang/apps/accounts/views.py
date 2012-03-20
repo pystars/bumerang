@@ -153,7 +153,7 @@ class RegistrationFormView(CreateView):
         self.object.activation_code_expire = datetime.now() + timedelta(days=1)
         self.object.save()
 
-        send_activation_link_task(full_activation_url,
+        send_activation_link_task.delay(full_activation_url,
                                   form.cleaned_data['username'])
 
         notify_success(self.request, message=u'''

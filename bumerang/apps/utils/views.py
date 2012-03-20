@@ -36,6 +36,7 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin)
 
     def form_valid(self, form):
         ids = json.loads(form.cleaned_data['ids'])
+        ids = [i for i in ids if i]
         objects = self.get_queryset(id__in=ids)
         if objects.count() > 1:
             msg = u'{0} успешно удалены'.format(

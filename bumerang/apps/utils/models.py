@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.db.models.base import Model
 from django.db.models.deletion import ProtectedError
 from django.db.models.fields.files import FileField
 
@@ -14,9 +15,9 @@ class TitleUnicode(object):
 
 class FileModelMixin(object):
 
-    def delete(self, **kwargs):
+    def delete(self, *args, **kwargs):
         try:
-            super(self.__class__, self).delete(**kwargs)
+            super(FileModelMixin, self).delete(*args, **kwargs)
             for field in self._meta.fields:
                 if isinstance(field, FileField) and getattr(self, field.name):
                     getattr(self, field.name).delete()

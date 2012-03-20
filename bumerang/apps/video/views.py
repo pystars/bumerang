@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import tempfile
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -75,10 +76,15 @@ class VideoCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
+        temp_file = tempfile.NamedTemporaryFile()
+        temp_file.write(self.object.original_file.file.read())
+        print temp_file.name
+        self.object.duration = video_duration(temp_file.name)
+        print self.object.duration
+        self.object.original_file.open()
+        temp_file.close()
         self.object.save()
-        self.object.duration = video_duration(self.object.original_file.path)
-        self.object.save()
-        ConvertVideoTask.delay(self.object)
+        ConvertVideoTask.delay(self.object.id)
         messages.add_message(
             self.request, messages.SUCCESS, u"""
             Видео успешно загружено и находится в обработке.
