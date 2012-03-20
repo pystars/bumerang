@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.db.models.base import Model
 from django.db.models.deletion import ProtectedError
 from django.db.models.fields.files import FileField
 

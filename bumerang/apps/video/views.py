@@ -62,7 +62,15 @@ class VideoDetailView(DetailView):
         return response
 
 
-class VideoCreateView(CreateView):
+class VideoEditMixin(object):
+    def set_duration(self):
+        temp_file = tempfile.NamedTemporaryFile()
+        temp_file.write(self.object.original_file.file.read())
+        self.object.duration = video_duration(temp_file.name)
+        self.object.original_file.open()
+        temp_file.close()
+
+class VideoCreateView(CreateView, VideoEditMixin):
     model = Video
 
     def get_form(self, form_class):
@@ -76,13 +84,7 @@ class VideoCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
-        temp_file = tempfile.NamedTemporaryFile()
-        temp_file.write(self.object.original_file.file.read())
-        print temp_file.name
-        self.object.duration = video_duration(temp_file.name)
-        print self.object.duration
-        self.object.original_file.open()
-        temp_file.close()
+        self.set_duration()
         self.object.save()
         ConvertVideoTask.delay(self.object.id)
         messages.add_message(
@@ -101,7 +103,7 @@ class VideoCreateView(CreateView):
     def get_success_url(self):
         return reverse('video-edit', kwargs={'pk': self.object.id})
 
-class VideoUpdateView(OwnerMixin, UpdateView):
+class VideoUpdateView(OwnerMixin, UpdateView, VideoEditMixin):
     model = Video
 
     def get_form(self, form_class):
@@ -113,11 +115,10 @@ class VideoUpdateView(OwnerMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
         if 'original_file' in form.changed_data:
-            self.object.duration = video_duration(
-                self.object.original_file.path)
+            self.set_duration()
             self.object.status = self.object.PENDING
             self.object.save()
-            ConvertVideoTask.delay(self.object)
+            ConvertVideoTask.delay(self.object.id)
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
         return HttpResponseRedirect(self.get_success_url())
