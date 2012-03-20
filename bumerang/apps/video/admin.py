@@ -24,7 +24,8 @@ class VideoAdmin(admin.ModelAdmin):
             obj.duration = video_duration(obj.original_file.path)
             obj.status = obj.PENDING
             obj.save()
-            ConvertVideoTask.delay(obj)
+            ConvertVideoTask.apply_async(args=[obj],
+                routing_key="video.convert")
         elif {'hq_file', 'mq_file', 'lq_file'} & set(form.changed_data):
             obj.duration = video_duration(obj.best_quality_file().path)
             obj.status = obj.PENDING

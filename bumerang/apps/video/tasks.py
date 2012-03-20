@@ -21,7 +21,7 @@ class MakeScreenShots(Task):
         """
         logger = self.get_logger(**kwargs)
         logger.info("Starting Video Post conversion: %s" % video)
-
+        #TODO: get file from s3 one time, make screen shots
         Video.objects.filter(pk=video.id).update(status=video.CONVERTING)
         for preview in video.preview_set.all():
 #            os.remove(preview.image.path)
@@ -58,7 +58,6 @@ class MakeScreenShots(Task):
             preview.save()
             offset += step
             counter += 1
-
         try:
             video = Video.objects.get(pk=video.id)
         except Video.DoesNotExist:
@@ -85,6 +84,7 @@ class ConvertVideoTask(Task):
         Converts the Video and creates the related files.
         """
         #TODO: what if user update videofile during converting
+        #TODO: rewrite it to work with s3
         logger = self.get_logger(**kwargs)
         print 'logfile:', self.request.logfile
         print 'kwargs:', kwargs

@@ -14,7 +14,5 @@ chown -R www-data:adm /var/log/uwsgi
 chmod -R 750 /var/log/uwsgi
 chown -R www-data:adm /var/run/uwsgi
 chmod -R 750 /var/run/uwsgi
-chown -R www-data:www-data /etc/nginx/ssl
-chmod -R 700 /etc/nginx/ssl
 chown -R ubuntu:ubuntu /home/ubuntu/baltoapi
-ln -s /home/ubuntu/bumerang/nginx.production.conf /etc/nginx/sites-enabled/bumerang.conf
+ln -s /home/ubuntu/bumerang/nginx.conf /etc/nginx/sites-enabled/bumerang.conf

@@ -8,8 +8,8 @@ from boto.ec2 import connect_to_region
 from bumerang.local_settings import get_sudo_pwd
 
 #__all__ = ['test']
-env.hosts = [u"web@62.76.179.205:22"]
-env.passwords = { u"web@62.76.179.205:22" : get_sudo_pwd() }
+#env.hosts = [u"web@62.76.179.205:22"]
+#env.passwords = { u"web@62.76.179.205:22" : get_sudo_pwd() }
 
 def syncdb():
     '''
@@ -51,12 +51,12 @@ def celeryd():
     local('python ./manage.py celeryd -v 0')
 
 def update(branch):
-	'''
-	 Makes git pull
-	'''
-	with cd('/web/bumerang'):
-		run('git reset --hard HEAD')
-		run('git pull origin {0}'.format(branch))
+    '''
+     Makes git pull
+    '''
+    with cd('/web/bumerang'):
+        run('git reset --hard HEAD')
+        run('git pull origin {0}'.format(branch))
 
 #def sync():
 #	put('./bumerang.db', '/web/bumerang/')
@@ -67,19 +67,26 @@ def reload():
     sudo('service nginx restart')
 
 def fullsync(branch):
-	update(branch)
-	#sync()
-	remote_syncdb()
-	reload()
+    update(branch)
+    #sync()
+    remote_syncdb()
+    reload()
 
+env.key_filename = '/home/goodfellow/.ssh/bumer_amazon_eu.pub'
+ami_instance = 'ami-af5069db'
 
-env.key_filename = '/home/goodfellow/.ssh/dev_amazon_eu.pub'
-
-def create_instance(connection):
+def create_instance(connection, server_type):
     print 'start creating instance'
-    reservation = connection.run_instances('ami-895069fd',
-        key_name='devkeypair', security_groups=['dev api'],
-        instance_type='c1.xlarge')
+    if server_type=='converter':
+        instance_type = 'c1.medium'
+    elif server_type=='streamer':
+        instance_type = 'm1.medium'
+    else:
+        instance_type = 'm1.medium'
+    security_groups = ['bumerang-{0}'.format(server_type)]
+    reservation = connection.run_instances(ami_instance,
+        key_name='pystars-keypair', security_groups=security_groups,
+        instance_type=instance_type, placement='eu-west-1c')
     print 'created reservation ', reservation
     instance = reservation.instances[0]
     while not instance.dns_name:
@@ -89,17 +96,17 @@ def create_instance(connection):
     print 'wait while ssh is up... about 15 seconds'
     sleep(15)
     env.host_string = 'ubuntu@{0}:22'.format(instance.dns_name)
-    for line in open('install.sh'):
+    for line in open('install_{0}.sh'.format(server_type)):
         if not line.startswith('#'):
             sudo(line)
     return instance
 
-def create_image():
+def create_www():
     connection = connect_to_region('eu-west-1')
-    instance = create_instance(connection)
-    print 'creating image from instance {0}'.format(instance)
-    image_id = connection.create_image(instance.id, 'testimage')
-    print 'image {0} created'.format(image_id)
+    instance = create_instance(connection, 'web')
+#    print 'creating image from instance {0}'.format(instance)
+#    image_id = connection.create_image(instance.id, 'testimage')
+#    print 'image {0} created'.format(image_id)
 
 
 

@@ -78,7 +78,8 @@ class VideoCreateView(CreateView):
         self.object.save()
         self.object.duration = video_duration(self.object.original_file.path)
         self.object.save()
-        ConvertVideoTask.delay(self.object)
+        ConvertVideoTask.apply_async(args=[self.object],
+                                    routing_key="video.convert")
         messages.add_message(
             self.request, messages.SUCCESS, u"""
             Видео успешно загружено и находится в обработке.
@@ -111,7 +112,8 @@ class VideoUpdateView(OwnerMixin, UpdateView):
                 self.object.original_file.path)
             self.object.status = self.object.PENDING
             self.object.save()
-            ConvertVideoTask.delay(self.object)
+            ConvertVideoTask.apply_async(args=[self.object],
+                routing_key="video.convert")
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
         return HttpResponseRedirect(self.get_success_url())
