@@ -215,7 +215,6 @@ if DEBUG:
 EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
 
 import djcelery
-CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 BROKER_TRANSPORT = 'sqs'
 BROKER_TRANSPORT_OPTIONS = {
     'region': 'eu-west-1',
@@ -223,4 +222,17 @@ BROKER_TRANSPORT_OPTIONS = {
 BROKER_USER = AWS_ACCESS_KEY_ID
 BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
 BROKER_POOL_LIMIT = 10
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERY_DISABLE_RATE_LIMITS = True
+CELERY_SEND_TASK_ERROR_EMAILS = True
+CELERY_DEFAULT_QUEUE = 'celery'
+CELERY_QUEUES = {
+    CELERY_DEFAULT_QUEUE : {
+        'binding_key': CELERY_DEFAULT_QUEUE
+    },
+    'video': {
+        'binding_key': 'video'
+    }
+}
+
 djcelery.setup_loader()

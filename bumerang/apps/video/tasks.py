@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import random
-import shutil
 import subprocess
 import tempfile
 
 from PIL import Image
 from django.conf import settings
 from celery.task import Task
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from bumerang.apps.utils.functions import thumb_img
 from models import Preview, Video
@@ -15,6 +15,8 @@ from converting.models import ConvertOptions
 
 
 class MakeScreenShots(Task):
+    queue = 'celery'
+
     def run(self, video, **kwargs):
         """
         Converts the Video and creates the related files.
@@ -24,7 +26,6 @@ class MakeScreenShots(Task):
         #TODO: get file from s3 one time, make screen shots
         Video.objects.filter(pk=video.id).update(status=video.CONVERTING)
         for preview in video.preview_set.all():
-#            os.remove(preview.image.path)
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
@@ -73,6 +74,7 @@ class MakeScreenShots(Task):
 
 
 class ConvertVideoTask(Task):
+    queue = 'video'
 
     def get_commandline(self):
         return (['HandBrakeCLI', '-v3', '-O', '-C', '2', '-i',
@@ -84,20 +86,19 @@ class ConvertVideoTask(Task):
         Converts the Video and creates the related files.
         """
         #TODO: what if user update videofile during converting
-        #TODO: rewrite it to work with s3
         logger = self.get_logger(**kwargs)
         print 'logfile:', self.request.logfile
         print 'kwargs:', kwargs
         logger.info("Starting Video Post conversion: %s" % video)
-
-        self.original_file_path = video.original_file.path
+        original_file = tempfile.NamedTemporaryFile()
+        original_file.write(video.original_file.read())
+        self.original_file_path = video.original_file.name
         video.status = video.CONVERTING
         video.save()
         for options in ConvertOptions.objects.all():
             file_field_name = options.title
-            field = getattr(video, file_field_name).field
-            upload_to = field.upload_to(video, '')
-            self.result_file = field.storage.path(upload_to)
+            temp_file = tempfile.NamedTemporaryFile()
+            self.result_file = temp_file.name
             self.convert_options = options.as_commandline()
             setattr(video, file_field_name, None)
             video.save()
@@ -105,7 +106,8 @@ class ConvertVideoTask(Task):
             try:
                 video = Video.objects.get(pk=video.id)
             except Video.DoesNotExist:
-                shutil.rmtree(os.path.split(upload_to)[0], ignore_errors=True)
+                original_file.close()
+                temp_file.close()
                 return "Stop Convert - video is deleted"
             if process:
                 stdout, stderr = process.communicate()
@@ -113,9 +115,13 @@ class ConvertVideoTask(Task):
                 print 'stderr:', stderr
                 video.status = video.ERROR
             else:
-                setattr(video, file_field_name, upload_to)
+                size = os.path.getsize(temp_file.name)
+                converted_file = InMemoryUploadedFile(temp_file, None,
+                    '{0}.mp4'.format(options.title), 'video/mp4', size, None)
+                setattr(video, file_field_name, converted_file)
+                temp_file.close()
             video.save()
-
+        original_file.close()
         MakeScreenShots.delay(video)
         return "Ready"
 
