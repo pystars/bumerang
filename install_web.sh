@@ -10,7 +10,7 @@ subversion virtualenvwrapper nginx yasm build-essential autoconf libtool\
    libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev checkinstall \
     libfaac-dev libjack-jackd2-dev libmp3lame-dev libopencore-amrnb-dev\
      libopencore-amrwb-dev libsdl1.2-dev libtheora-dev libva-dev libvdpau-dev \
-     libvorbis-dev libx11-dev libxfixes-dev texi2html
+     libvorbis-dev libx11-dev libxfixes-dev texi2html libmysqlclient-dev
 apt-get remove ffmpeg x264 libx264-dev
 cd /opt
 git clone git://git.videolan.org/x264
@@ -45,5 +45,5 @@ chown -R www-data:adm /var/log/uwsgi
 chmod -R 750 /var/log/uwsgi
 chown -R www-data:adm /var/run/uwsgi
 chmod -R 750 /var/run/uwsgi
-chown -R ubuntu:ubuntu /home/ubuntu/baltoapi
+chown -R ubuntu:ubuntu /home/ubuntu/bumerang
 ln -s /home/ubuntu/bumerang/nginx.conf /etc/nginx/sites-enabled/bumerang.conf

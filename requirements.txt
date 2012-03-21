@@ -16,3 +16,4 @@ fabric
 boto
 django-storages
 ipython
+mysql-python

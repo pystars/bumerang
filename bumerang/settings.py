@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 DEBUG = True
 import os
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'bumerang.db',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+        }
+}
 
 try:
     from bumerang.local_settings import *
@@ -16,17 +26,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'bumerang.db',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 TIME_ZONE = 'Europe/Moscow'
