@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from djangoratings import RatingField
-from storages.backends.s3boto import S3BotoStorage
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
+from bumerang.apps.utils.storages import media_storage
 from validators import check_video_file
 from utils import (original_upload_to, hq_upload_to, mq_upload_to, lq_upload_to,
     screenshot_upload_to, thumbnail_upload_to, icon_upload_to)
-
-s3storage = S3BotoStorage(bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME)
 
 
 class VideoCategory(models.Model, TitleUnicode):
@@ -71,15 +68,15 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.FileField(u"Оригинальное видео",
         validators=[check_video_file], upload_to=original_upload_to,
-        storage=s3storage, null=True, blank=False)
+        storage=media_storage, null=True, blank=False)
     hq_file = models.FileField(u'Видео высокого качества',
-        upload_to=hq_upload_to, storage=s3storage,
+        upload_to=hq_upload_to, storage=media_storage,
         validators=[check_video_file], **nullable)
     mq_file = models.FileField(u'Видео среднего качества',
-        upload_to=mq_upload_to,storage=s3storage,
+        upload_to=mq_upload_to,storage=media_storage,
         validators=[check_video_file], **nullable)
     lq_file = models.FileField(u'Видео низкого качества',
-        upload_to=lq_upload_to,storage=s3storage,
+        upload_to=lq_upload_to,storage=media_storage,
         validators=[check_video_file], **nullable)
     duration = models.IntegerField(u'Длительность', default=0,
                                    editable=False, **nullable)
@@ -153,7 +150,8 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
 
 class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)
-    image = models.ImageField(upload_to=screenshot_upload_to, storage=s3storage)
+    image = models.ImageField(upload_to=screenshot_upload_to,
+        storage=media_storage)
     thumbnail = models.ImageField(upload_to=thumbnail_upload_to,
         storage=s3storage)
-    icon = models.ImageField(upload_to=icon_upload_to, storage=s3storage)
+    icon = models.ImageField(upload_to=icon_upload_to, storage=media_storage)

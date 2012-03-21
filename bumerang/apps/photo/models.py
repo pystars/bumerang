@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
-import shutil
 from datetime import datetime
 
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from storages.backends.s3boto import S3BotoStorage
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
 from utils import (original_upload_to, image_upload_to, thumbnail_upload_to,
     icon_upload_to)
-
-s3storage = S3BotoStorage(bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME)
+from bumerang.apps.utils.storages import media_storage
 
 
 class PhotoCategory(models.Model, TitleUnicode):
@@ -56,13 +52,13 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.ImageField(u"Оригинальное фото",
-        upload_to=original_upload_to, storage=s3storage, **nullable)
+        upload_to=original_upload_to, storage=media_storage, **nullable)
     image = models.ImageField(u"Фото",
-        upload_to=image_upload_to, storage=s3storage, **nullable)
+        upload_to=image_upload_to, storage=media_storage, **nullable)
     thumbnail = models.ImageField(u"Превью",
-        upload_to=thumbnail_upload_to, storage=s3storage, **nullable)
+        upload_to=thumbnail_upload_to, storage=media_storage, **nullable)
     icon = models.ImageField(u"Иконка",
-        upload_to=icon_upload_to, storage=s3storage, **nullable)
+        upload_to=icon_upload_to, storage=media_storage, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
     album = models.ForeignKey('albums.PhotoAlbum', verbose_name=u'Альбом',
         max_length=255, **nullable)

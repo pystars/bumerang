@@ -35,22 +35,25 @@ USE_I18N = True
 USE_L10N = True
 
 #Storage settings
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-MEDIA_ROOT = ''
-AWS_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
-AWS_MEDIA_STORAGE_BUCKET_NAME = 'media.probumerang.tv'
-AWS_S3_SECURE_URLS = False
-AWS_PRELOAD_METADATA = True
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
-FILE_UPLOAD_TEMP_DIR = '/tmp'
-FILE_UPLOAD_PERMISSIONS = 0644
-STATIC_ROOT = ''
-STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
 if LOCALHOST:
     STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL)
+    MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL)
+else:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    MEDIA_ROOT = ''
+    AWS_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
+    AWS_MEDIA_STORAGE_BUCKET_NAME = 'media.probumerang.tv'
+    AWS_S3_SECURE_URLS = False
+    AWS_PRELOAD_METADATA = True
+    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+    STATIC_ROOT = ''
+    STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
 
-#ADMIN_MEDIA_PREFIX = '/static/admin/'
+FILE_UPLOAD_TEMP_DIR = '/tmp'
+FILE_UPLOAD_PERMISSIONS = 0644
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 
 STATICFILES_DIRS = [
@@ -63,7 +66,6 @@ STATICFILES_FINDERS = [
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 ]
 
-SECRET_KEY = 'c=2wrnal@-sxi&8^^a*zp4x!k!q@nr(*p__dw4*==lgfvvp@_f'
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -78,7 +80,6 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-
     'bumerang.apps.accounts.context_processors.global_login_form',
     'bumerang.apps.messages.context_processors.inbox',
 ]
@@ -92,7 +93,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'bumerang.apps.accounts.middleware.KeepLoggedInMiddleware',
-    ]
+]
 
 if DEBUG:
     MIDDLEWARE_CLASSES += ['bumerang.apps.utils.middleware.ProfilerMiddleware']
@@ -100,7 +101,6 @@ if DEBUG:
 # Keep me logged settings
 KEEP_LOGGED_KEY = 'keep_me_logged'
 KEEP_LOGGED_DURATION = 30  # in days
-
 
 # used this component:
 # https://github.com/martinrusev/django-redis-sessions
@@ -137,7 +137,7 @@ INSTALLED_APPS = [
     'tinymce',
     'djcelery',
     'storages',
-    #    'djkombu',
+    'djkombu',
     'djangoratings',
     'django_ses',
     # internal
@@ -153,7 +153,6 @@ INSTALLED_APPS = [
     'bumerang.apps.accounts',
     'bumerang.apps.utils',
     'bumerang.apps.messages',
-
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -218,12 +217,16 @@ AWS_SES_REGION_NAME = 'eu-west-1'
 AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
 
 import djcelery
-BROKER_TRANSPORT = 'sqs'
-BROKER_TRANSPORT_OPTIONS = {
-    'region': 'eu-west-1',
-}
-BROKER_USER = AWS_ACCESS_KEY_ID
-BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
+
+if LOCALHOST:
+    BROKER_TRANSPORT = 'djkombu.transport.DatabaseTransport'
+else:
+    BROKER_TRANSPORT = 'sqs'
+    BROKER_TRANSPORT_OPTIONS = {
+        'region': 'eu-west-1',
+    }
+    BROKER_USER = AWS_ACCESS_KEY_ID
+    BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
 BROKER_POOL_LIMIT = 10
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 CELERY_DISABLE_RATE_LIMITS = True

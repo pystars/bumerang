@@ -4,12 +4,10 @@ import os
 from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.db import models
-from storages.backends.s3boto import S3BotoStorage
 
 from bumerang.apps.utils.models import FileModelMixin
+from bumerang.apps.utils.storages import media_storage
 
-
-s3storage = S3BotoStorage(bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME)
 nullable = dict(null=True, blank=True)
 
 def get_avatar_path(instance, filename):
@@ -51,7 +49,7 @@ class Profile(FileModelMixin, User):
     avatar = models.ImageField(u'Фотография профиля',
         upload_to=get_avatar_path, **nullable)
     min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
-        upload_to=get_mini_avatar_path, storage=s3storage, **nullable)
+        upload_to=get_mini_avatar_path, storage=media_storage, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
 #    place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
@@ -162,7 +160,7 @@ class Service(models.Model):
 
 
 class Teammate(FileModelMixin, models.Model):
-    photo = models.ImageField(u'Фотография', storage=s3storage,
+    photo = models.ImageField(u'Фотография', storage=media_storage,
         upload_to='teams')
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
@@ -173,7 +171,7 @@ class Teammate(FileModelMixin, models.Model):
 
 
 class Teacher(FileModelMixin, models.Model):
-    photo = models.ImageField(u'Фотография', storage=s3storage,
+    photo = models.ImageField(u'Фотография', storage=media_storage,
         upload_to='teachers')
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
