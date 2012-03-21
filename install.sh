@@ -1,6 +1,12 @@
 #!/bin/bash -x
 add-apt-repository -y ppa:shiki/mediainfo
 add-apt-repository -y ppa:stebbins/handbrake-snapshots
+echo """
+deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric multiverse
+deb-src http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric multiverse
+deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric-updates multiverse
+deb-src http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric-updates multiverse
+""" >> /etc/apt/sources.list
 apt-get update
 apt-get upgrade -y
 apt-get install -y gcc g++ python-dev libxml2-dev libpq-dev mercurial git \

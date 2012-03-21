@@ -139,6 +139,7 @@ INSTALLED_APPS = [
     'storages',
     #    'djkombu',
     'djangoratings',
+    'django_ses',
     # internal
     'bumerang.apps.bumerang_site',
     'bumerang.apps.news',
@@ -212,6 +213,9 @@ if DEBUG:
 #    )
 
 EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
+EMAIL_BACKEND = 'django_ses.SESBackend'
+AWS_SES_REGION_NAME = 'eu-west-1'
+AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
 
 import djcelery
 BROKER_TRANSPORT = 'sqs'

@@ -17,3 +17,6 @@ boto
 django-storages
 ipython
 mysql-python
+django-ses
+pydkim
+pytz
