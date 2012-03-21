@@ -1,0 +1,192 @@
+{% extends "video/video_wrapper.html" %}
+{% load ratingsutils ratings sitetree rupluralize %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{#{% block head_css %}#}
+{#    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flashplayer/history/history.css" />#}
+{#{% endblock %}#}
+
+{% block head_js %}
+{#    <script type="text/javascript" src="{{ STATIC_URL }}flashplayer/history/history.js"></script>#}
+    <!-- END Browser History required section -->
+    <script type="text/javascript" src="{{ STATIC_URL }}j/swfobject.js"></script>
+{#    <script type="text/javascript">#}
+{#        // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.#}
+{#        var swfVersionStr = "10.2.0";#}
+{#        // To use express install, set to playerProductInstall.swf, otherwise the empty string.#}
+{#        var xiSwfUrlStr = "{{ STATIC_URL }}flashplayer/playerProductInstall.swf";#}
+{#        var flashvars = {XMLurl:"{% url video-xml object.pk %}"};#}
+{#        var params = {wmode:"opaque"};#}
+{#        params.quality = "high";#}
+{#        params.bgcolor = "#000000";#}
+{#        params.allowscriptaccess = "sameDomain";#}
+{#        params.allowfullscreen = "true";#}
+{#        var attributes = {};#}
+{#        attributes.id = "BumerangVideoPlayer";#}
+{#        attributes.name = "BumerangVideoPlayer";#}
+{#        attributes.align = "middle";#}
+{#        swfobject.embedSWF(#}
+{#                "{{ STATIC_URL }}flashplayer/BumerangVideoPlayer.swf", "flashContent",#}
+{#                "100%", "100%",#}
+{#                swfVersionStr, xiSwfUrlStr,#}
+{#                flashvars, params, attributes);#}
+{#        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.#}
+{#        swfobject.createCSS("#flashContent", "display:block;text-align:left;");#}
+{#    </script>#}
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
+    <script type="text/javascript">
+      VK.init({apiId: 2847509, onlyWidgets: true});
+    </script>
+{% endblock %}
+
+{#{% block breadcrumbs %}#}
+{#<header class="b-page-head">#}
+{#    <nav class="b-crumbs">#}
+{#        <a href="">Участники</a>#}
+{#        <span class="b-crumbs__sep">/</span>#}
+{#        <a href="">Константин Константинопольский</a>#}
+{#    </nav>#}
+{##}
+{#</header>#}
+{#{% endblock %}#}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <nav class="b-crumbs">
+            <a href="{% url users-list %}" class="return-to-previous-page">Вернуться на предыдущую страницу</a>
+            <span class="b-crumbs__sep">/</span>
+            <a href="{% url profile-detail object.owner.id %}">{{ object.owner.profile.title }}</a>
+        </nav>
+        <h1>{{ object.title }}</h1>
+    </header>
+    <div class="b-main-box d-rounded d-rounded_r10 d-sh cleared">
+        <section class="b-movie js-toggle2-container">
+            <div class="flash-content-wrapper">
+                <div id="videoplayer"></div>
+                <script type="text/javascript">
+                    var flashvars = {
+                        "comment":"Бумер (широкоэкранник 2.1)",
+                        "st":"http://bumerang.tv/static/uppod/video113-881.txt",
+                        "file":"{{ object.best_quality_file.url }}"
+                    };
+                    var params = {
+                        bgcolor:"#ffffff",
+                        wmode:"opaque",
+                        allowFullScreen:"true",
+                        allowScriptAccess:"always",
+                        id:"videoplayer"
+                    };
+                    new swfobject.embedSWF(
+                            "http://bumerang.tv/static/uppod/player.swf",
+                            "videoplayer",
+                            "780",
+                            "420",
+                            "9.0.115.0",
+                            false,
+                            flashvars,
+                            params);
+                </script>
+{#                <div id="flashContent">#}
+{#                    <p>#}
+{#                        To view this page ensure that Adobe Flash Player version#}
+{#                        10.2.0 or greater is installed.#}
+{#                    </p>#}
+{#                    <script type="text/javascript">#}
+{#                        var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");#}
+{#                        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"#}
+{#                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );#}
+{#//                    </script>#}
+            </div>
+            <div class="b-movie__panel cleared">
+                <div class="b-vote">
+                    <div class="wrap">
+                        <ul class="star-rate" data-total-rate="{{ object.rating.get_rating }}" data-item-id="{{ object.id }}">
+                            {% if request.user.id %}
+                                {{ object.rating|render_rating }}
+                            {% else %}
+                                {{ object.rating|render_inactive_rating }}
+                            {% endif %}
+                        </ul>
+
+                        <script type="text/javascript">
+                            $(function() {
+                                $('.star-rate a').hover(function(e){
+                                    var el = $(e.target || e.srcElement);
+                                    var star_num = parseInt(el.attr('data-rate'));
+
+                                    $('.star-rate a').each(function(i, e){
+                                        var el = $(e);
+                                        var el_num = el.attr('data-rate');
+                                        if (el_num < star_num) {
+                                            el.addClass('active');
+                                        } else {
+                                            el.removeClass('active');
+                                        }
+                                    });
+
+                                }, function(e) {
+                                    //var el = $(e.target || e.srcElement);
+                                    var star_num = parseInt($('.star-rate').attr('data-total-rate'));
+                                    $('.star-rate a').each(function(i, e){
+                                        var el = $(e);
+                                        var el_num = el.attr('data-rate');
+                                        if (el_num <= star_num) {
+                                            el.addClass('active');
+                                        } else {
+                                            el.removeClass('active');
+                                        }
+                                    });
+                                });
+
+                                function setNewRateStars(count) {
+                                    var count = parseInt(count);
+                                    $('.star-rate a').each(function(i, e){
+                                        var el = $(e);
+                                        var el_num = el.attr('data-rate');
+                                        if (el_num <= count) {
+                                            el.addClass('active');
+                                        } else {
+                                            el.removeClass('active');
+                                        }
+                                    });
+                                }
+
+                                $('.star-rate a').on('click', function(e){
+                                    e.preventDefault();
+                                    var item_id = $('.star-rate').attr('data-item-id');
+                                    var rate = $(e.target || e.srcElement).attr('data-rate');
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/video/rate/'+item_id+'/'+rate+'/',
+                                        success: function() {
+                                            setNewRateStars(rate);
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
+                    </div>
+
+
+{#                    <a href="#" class="b-vote__like"><i class="b-ico b-ico_heart"><i></i></i><span>нравится</span></a>#}
+{#                    <span class="b-vote__rating"><span>67</span></span>#}
+{#                    <a href="#" class="b-vote__notlike" title="не нравится"><i class="b-ico b-ico_heart2"><i></i></i></a>#}
+                </div>
+                <div class="viewed">
+                    <i class="b-ico b-ico_eye2"><i></i></i>
+                    {{ object.views_count }} {{ object.views_count|rupluralize:"просмотр,просмотра,просмотров" }}
+                </div>
+            </div>
+            {% include 'snippets/video_description.html' %}
+            <div id="vk_comments" style="margin: 0 auto;"></div>
+            <script type="text/javascript">
+                $(function() {
+                    VK.Widgets.Comments("vk_comments", {limit: 10, width: "600", attach: "*"});
+                });
+            </script>
+
+        </section><!--b-movie-->
+    </div>
+{% endblock %}

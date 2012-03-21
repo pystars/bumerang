@@ -1,0 +1,52 @@
+<div class="announs-items">
+    <form name="photos" action="{% url photos-delete %}" method="post">
+        {% for photo in photos %}
+            <article class="announ-item photo" id="photo-item-{{ photo.id }}" data-photo-id="{{ photo.id }}" data-photo-album="{{ photo.album_id|default:'' }}">
+                <div class="ai-img d-sh">
+{#                    <a class="thumb" href="{% url photo-detail photo.id %}">#}
+                    <a class="thumb" href="#{{ forloop.counter }}" title="{{ photo.title }}" rel="history">
+                        <span>
+                            {% autoescape off %}
+                            <img src="{{ photo.thumbnail.url }}" width="190" height="123" alt="{{ photo.title }}" />
+                            {% endautoescape %}
+                        </span>
+                    </a>
+                </div>
+                <header class="ai-head">
+                    <h3><a href="{% url photo-detail photo.id %}">{{ photo.title }}</a></h3>
+                </header>
+                <footer class="ai-foot">
+                    <time class="date">{{ photo.created|date:'j.m.Y, G:i' }}</time>
+                    <ul class="b-stat">
+                        <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>{{ photo.views_count }}</span></li>
+                    </ul>
+                </footer>
+                {% if request.user.profile.id == photo.owner_id %}
+                    <div class="ui-checkbox">
+                        <input type="checkbox" name="videos" value="{{ photo.id }}" id="checkbox-{{ photo.id }}" data-photo-id="{{ photo.id }}" />
+                        <label for="checkbox-{{ photo.id }}"></label>
+                    </div>
+                    <div class="ui-menu">
+                        <span class="b-dropdown">
+                            <label class="b-menu-button b-dropdown__handle" ></label>
+                            <span class="b-dropdown__popup">
+                                <span class="b-dropdown__popup__i">
+                                    <span class="b-dropdown__popup__i__i">
+                                        <span class="b-dropdown__arr"></span>
+                                        <a href="#" class="b-dropdown__link" id="photo-del-{{ photo.id }}" data-photo-id="{{ photo.id }}">Удалить</a>
+                                        <a href="{% url photo-edit photo.id %}" class="b-dropdown__link {% if not photoalbum %}last{% endif %}">Редактировать</a>
+                                        <a href="#" class="b-dropdown__link" id="move-photo-{{ photo.id }}">Переместить...</a>
+                                        {% if photoalbum %}
+                                            <a href="#" class="b-dropdown__link last" id="make-cover-{{ photo.id }}" data-album-id="{{ photoalbum.id }}" data-photo-id="{{ photo.id }}">Сделать обложкой</a>
+                                        {% endif %}
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </div>
+                {% endif %}
+            </article>
+        {% endfor %}
+    </form>
+</div>
+

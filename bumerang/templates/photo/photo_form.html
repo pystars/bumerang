@@ -1,0 +1,113 @@
+{% extends "video/video_wrapper.html" %}
+{% load sitetree rupluralize %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Редактирование фото &laquo;{{ form.instance.title }}&raquo;
+    {% else %}
+        Создание фото
+    {% endif %}
+{% endblock %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+        <dl>
+            <dt class="first">
+                <a href="{% url profile-detail request.user.profile.id %}">
+                    <span>Профиль</span>
+                </a>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd>
+                <div class="b-tabs__tab-content">
+                </div>
+            </dd>
+            <dt>
+                {% spaceless %}
+                    <a href="">
+                        <span>Видео</span>
+                    </a>
+                {% endspaceless %}
+                <small>{{ request.user.profile.video_set.count }}</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd>
+                <div class="b-tabs__tab-content">
+                </div>
+            </dd>
+            <dt class="selected">
+                <span>Фото</span>
+                <small>{{ request.user.profile.photo_set.count }}</small>
+                <i class="l"></i>
+                <i class="r"></i>
+            </dt>
+            <dd class="selected">
+                <div class="b-tabs__tab-content">
+                    {% include "snippets/section_profile.html" with profile=request.user.profile %}
+                    <div class="b-hr">
+                        <hr/>
+                    </div>
+                    <header class="b-head cleared">
+{#                        <ul class="b-service-buttons">#}
+{#                            <li class="addvideo"><i></i><a#}
+{#                                    href="{% url video-add %}">Добавить#}
+{#                                видео</a>#}
+{#                            </li>#}
+{#                            <li class="edit"><i></i><a href="#">Редактировать альбом</a>#}
+{#                            </li>#}
+{#                        </ul>#}
+                        <a href="{% url profile-photo-detail request.user.profile.id %}"
+                           class="b-button-prev"><span>Все альбомы</span></a>
+                        <h3>
+                            {% if form.instance.pk %}
+                                Редактирование фото &laquo;{{ form.instance.title }}&raquo;
+                            {% else %}
+                                Создание фото
+                            {% endif %}
+                        </h3>
+                    </header>
+                    <section class="b-form b-form_album b-form_edit b-form_smaller">
+                        <form name="editform" action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="b-form__fields">
+                                {% for item in form %}
+                                    <fieldset>
+                                        <div class="b-form__field">
+                                            <label>
+                                <span class="f-title">
+                                    <span>{{ item.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ item }}
+                                </span>
+                                            </label>
+                                            {% if item.errors %}
+                                                <div class="f-err">
+                                                    <span>{{ item.errors }}</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </fieldset>
+                                {% endfor %}
+                            </div>
+                            <footer class="b-form__footer">
+                                <div class="wrap">
+                                    <a href="#"
+                                       class="b-button b-button_yellow button-submit">
+                                        {% if form.instance.pk %}
+                                            Сохранить
+                                        {% else %}
+                                            Создать
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            </footer>
+                        </form>
+                    </section>
+                </div>
+            </dd>
+        </dl>
+    </div>
+{% endblock %}

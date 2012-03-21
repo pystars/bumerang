@@ -1,0 +1,83 @@
+{% extends "accounts/tabs_wrapper.html" %}
+{% load sitetree %}
+
+{% block profile_tab %}
+<dt class="first selected">
+    <span>Профиль</span>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd class="selected"><div class="b-tabs__tab-content">
+    <section class="b-profile">
+        <header class="b-profile__head cleared">
+            <div class="b-profile__pic">
+                <div class="b-ava b-ava_big">
+                    {% if object.min_avatar %}
+                        <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
+                    {% else %}
+                        {% if object.type == 1 %}
+                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
+                        {% endif %}{% if object.type == 2 %}
+                            <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="" />
+                        {% endif %}{% if object.type == 3 %}
+                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
+                        {% endif %}
+                    {% endif %}
+                    <i class="b-ava__sh"></i>
+                </div>
+                <ul class="b-opts b-opts_prof2">
+{#                    <li><strong>Просмотров</strong> <span>{{ object.views_count }}</span></li>#}
+{#                    <li><strong>Друзей</strong> <span>{{ object.friends_count }}</span></li>#}
+                    {% if request.user.id != object.id %}
+                    <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="b-profile__txt">
+                {% include "accounts/service_buttons.html" %}
+
+                {% if object.title %}
+                    {% if object.type != 1 %}
+                        <h2>{{ object.get_type_display }} &laquo;{{ object.title }}&raquo;</h2>
+                    {% else %}
+                        <h2>{{ object.title }}</h2>
+                    {% endif %}
+                {% endif %}
+
+                {% if not object.title %}
+                    {% if object.id == request.user.profile_id %}
+                        Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
+                        Заполните его в разделе &laquo;<a href="{% url profile-edit %}">редактирования</a>&raquo;
+                    {% else %}
+                        Пользователь ещё не заполнил свой профиль
+                    {% endif %}
+                {% endif %}
+
+                <ul class="b-opts b-opts_prof1">
+                    {% if object.get_locality %}
+                        <li>
+                            <strong>Откуда</strong>
+                            <span>{{ object.get_locality }}</span>
+                        </li>
+                    {% endif %}
+
+                    {% if object.birthday %}
+                    <li><strong>День рождения</strong> <span>{{ object.birthday|date:"d E, Y" }}</span></li>
+                    {% endif %}
+                    {% if object.nickname %}
+                    <li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
+                    {% endif %}
+                </ul>
+                {% if object.description %}
+                <p class="smaller">
+                    {{ object.description|linebreaks }}
+                </p>
+                {% endif %}
+            </div>
+        </header>
+    </section>
+
+    {% include "accounts/snippets/resume_roll.html" %}
+
+</div></dd>
+{% endblock %}

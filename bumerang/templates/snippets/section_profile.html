@@ -1,0 +1,29 @@
+<section class="b-profile">
+    <header class="b-profile__head b-profile__head_small cleared">
+        <a href="{% url profile-detail profile.id %}">
+            <div class="b-profile__pic">
+                <div class="b-ava b-ava_small">
+                    {% if profile.min_avatar %}
+                        <img src="{{ profile.min_avatar.url }}" width="60" height="60" alt=""/>
+                    {% else %}
+                        <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt=""/>
+                    {% endif %}
+                    <i class="b-ava__sh"></i>
+                </div>
+            </div>
+        </a>
+        <div class="b-profile__txt">
+            <ul class="b-service-buttons">
+                {% if request.user.id == profile.id %}
+                <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
+                {% else %}
+                <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
+                {% endif %}
+            </ul>
+            <a href="{% url profile-detail profile.id %}">
+                <h4>{{ profile.title }}</h4>
+            </a>
+            <p>{{ profile.place }}</p>
+        </div>
+    </header>
+</section>

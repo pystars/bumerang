@@ -1,0 +1,379 @@
+{% extends "video/tabs_wrapper.html" %}
+{% load sitetree rupluralize videotags %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/gallery.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.galleriffic.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.history.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.opacityrollover.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jmFullWall/jquery.imgpreload.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jmFullWall/jquery.imagepanner.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jmFullWall/jquery.fullWall.js"></script>
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
+    <script type="text/javascript">
+      VK.init({apiId: 2847509, onlyWidgets: true});
+    </script>
+{% endblock %}
+
+{% block profile_photo_tab %}
+    <dt class="selected">
+            <span>Фото</span>
+            <small>{{ object.owner.profile.photo_set.count }}</small>
+            <i class="l"></i>
+            <i class="r"></i>
+        </dt>
+    <dd class="selected"><div class="b-tabs__tab-content" id="photoalbum-id-{{ object.id }}">
+        {% include "snippets/section_profile.html" with profile=object.owner.profile %}
+        <div class="b-hr"><hr /></div>
+            <header class="b-head cleared">
+                {% if user.id == object.owner.id %}
+                    <ul class="b-service-buttons">
+                    <li class="addphoto"><i></i><a href="{% url album-photo-add object.id %}">Добавить фото</a></li>
+                    <li class="edit"><i></i><a href="{% url photo-album-edit object.id %}">Редактировать альбом</a></li>
+                </ul>
+                {% endif %}
+                <a href="{% url profile-photo-detail object.owner_id %}" class="b-button-prev"><span>Все альбомы</span></a>
+                <h3>
+                    {{ object.title }}
+                </h3>
+                <div class="b-head__descr d-rounded d-rounded_r5">
+                    {{ object.description|linebreaksbr }}
+                </div>
+            </header>
+
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container">
+                <header class="announs-head cleared">
+                    {% if object.owner.id == request.user.id %}
+                        <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-photo" id="photo-delete-button" style="display: none;">Удалить</a>
+                        <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-photo" id="photo-move-button" style="display: none;">Переместить в альбом...</a>
+                    {% endif %}
+                    <p class="smaller" id="photos-count">
+                        Всего {{ photos.count }} фото
+                        <div id="photos-plurals" style="display: none;">фото,фото,фото</div>
+                    </p>
+                </header>
+                <div id="photo-empty-block" class="b-empty b-empty_photo" {% if photos.count %}style="display: none;"{% endif %}>
+                    <div class="b-empty__pic"></div>
+                    <strong class="b-empty__text">Нет фотографий</strong>
+                    <div><a href="{% url album-photo-add object.id %}" class="b-button b-button_yellow">Загрузить фото</a></div>
+                </div>
+                {% include "snippets/photos_list.html" %}
+            </section>
+        </div></dd>
+
+    <script type="text/javascript">
+    $(function() {
+        var pav = new PhotoAlbumsView();
+
+        $('#wall').fullWall();
+
+        var onMouseOutOpacity = 0.67;
+        $('#thumbs ul.thumbs li, div.navigation a.pageLink').opacityrollover({
+            mouseOutOpacity:   onMouseOutOpacity,
+            mouseOverOpacity:  1.0,
+            fadeSpeed:         'fast',
+            exemptionSelector: '.selected'
+        });
+
+
+        // Initialize Advanced Galleriffic Gallery
+        var gallery = $('#thumbs').galleriffic({
+            delay:                     2500,
+            numThumbs:                 12,
+            preloadAhead:              15,
+            enableTopPager:            false,
+            enableBottomPager:         false,
+            maxPagesToShow:            7,
+            imageContainerSel:         '#slideshow',
+            controlsContainerSel:      '',
+            captionContainerSel:       '#caption',
+            loadingContainerSel:       '#loading',
+            renderSSControls:          true,
+            renderNavControls:         true,
+            playLinkText:              'Play Slideshow',
+            pauseLinkText:             'Pause Slideshow',
+            prevLinkText:              '&lsaquo; Previous Photo',
+            nextLinkText:              'Next Photo &rsaquo;',
+            nextPageLinkText:          'Next &rsaquo;',
+            prevPageLinkText:          '&lsaquo; Prev',
+            enableHistory:             true,
+            autoStart:                 false,
+            syncTransitions:           true,
+            defaultTransitionDuration: 0,
+            onSlideChange:             function(prevIndex, nextIndex) {
+                // 'this' refers to the gallery, which is an extension of $('#thumbs')
+                this.find('ul.thumbs').children()
+                        .eq(prevIndex).fadeTo('fast', onMouseOutOpacity).end()
+                        .eq(nextIndex).fadeTo('fast', 1.0);
+
+                $('#show-full-screen').click(function(e) {
+                    e.preventDefault();
+                    $('#wall').data('fullWall').showItem(nextIndex);
+                });
+
+                $('#vk_comments').empty();
+                var current_url = window.location.href;
+                VK.Widgets.Comments("vk_comments", {
+                    pageUrl: current_url,
+                    limit: 10,
+                    width: "600",
+                    attach: "*" }
+                );
+            },
+
+            onTransitionIn: function() {
+                if ($('.gallery-modal').is(':visible')) {
+                    var index = gallery.currentImage.index;
+                    var photo_id = $($('#thumbs').find('a.thumb').get(index)).attr('data-photo-id');
+
+                    // make request for adding 1 view
+                    $.ajax({
+                        method: 'GET',
+                        url: '/photo/'+ photo_id +'/update-count/',
+                        success: function() {
+
+                        }
+                    })
+
+                };
+            },
+
+            onPageTransitionOut:       function(callback) {
+                this.fadeTo('fast', 0.0, callback);
+            },
+
+            onPageTransitionIn:        function() {
+                var prevPageLink = this.find('a.prev').css('visibility', 'hidden');
+                var nextPageLink = this.find('a.next').css('visibility', 'hidden');
+
+                // Show appropriate next / prev page links
+                if (this.displayedPage > 0)
+                    prevPageLink.css('visibility', 'visible');
+
+                var lastPage = this.getNumPages() - 1;
+                if (this.displayedPage < lastPage)
+                    nextPageLink.css('visibility', 'visible');
+
+                this.fadeTo('fast', 1.0);
+            }
+
+        });
+
+        $(document).on('fullWallCurrent', document, function(e) {
+            gallery.gotoIndex(e.position);
+        });
+
+        gallery.find('a.prev').click(function(e) {
+            gallery.previousPage();
+            e.preventDefault();
+        });
+
+        gallery.find('a.next').click(function(e) {
+            gallery.nextPage();
+            e.preventDefault();
+        });
+
+
+        /**** Functions to support integration of galleriffic with the jquery.history plugin ****/
+
+            // PageLoad function
+            // This function is called when:
+            // 1. after calling $.historyInit();
+            // 2. after calling $.historyLoad();
+            // 3. after pushing "Go Back" button of a browser
+        function pageload(hash) {
+            // alert("pageload: " + hash);
+            // hash doesn't contain the first # character.
+            if(hash) {
+                $.galleriffic.gotoImage(hash);
+
+                $("body").css("overflow", "hidden");
+                $('#tint').show();
+                $('.gallery-modal-wrapper').show();
+
+            } else {
+                gallery.gotoIndex(0);
+            }
+        }
+
+        $.historyInit(pageload, "advanced.html");
+
+        $("a[rel='history']").live('click', function(e) {
+            if (e.button != 0) return true;
+
+            var hash = this.href;
+            hash = hash.replace(/^.*#/, '');
+
+            $.historyLoad(hash);
+
+            return false;
+        });
+
+    });
+</script>
+
+{% endblock %}
+
+{% block popup %}
+
+{#    <div class="fog"></div>#}
+
+{#    <div id="wall-top">#}
+{#        <h1>jmFullZoom Website</h1>#}
+{#        <a href="index.html">&lt; Back to documentation</a>#}
+{#    </div>#}
+    <div id="wall-container">
+        <div id="wall-loading"></div>
+        <div id="wall-detail"></div>
+        <div id="wall">
+            <div id="wall-items">
+                {% for photo in photos %}
+                <div class="wall-item" data-item-id="{{ forloop.counter0 }}">
+                    <span class="bg hide">{% autoescape off %}{{ photo.image.url }}{% endautoescape %}</span>
+                    <span class="img_detail hide">{% autoescape off %}{{ photo.original_file.url }}{% endautoescape %}</span>
+                    <span class="tooltip hide">{{ photo.title }}</span>
+                    <a href="#"><span class="title">{{ photo.title }}</span></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-modal-wrapper">
+        <div class="gallery-modal">
+            <div class="content">
+                <a href="#" id="gallery-close" class="close">×</a>
+                <script type="text/javascript">
+                    $(function() {
+                        $('#gallery-close').click(function(e) {
+                            e.preventDefault();
+                            $("body").css("overflow", "auto");
+                            $('.gallery-modal-wrapper').hide();
+                            $('#tint').hide();
+                        });
+
+                        $(document).keydown(function(e) {
+                            if (e.keyCode == 27 && $('#gallery-close').is(':visible')) {
+                                $('#gallery-close').trigger('click');
+                            }
+                        });
+                    });
+                </script>
+
+                <div class="navigation-wrapper">
+                    <div class="navigation-container">
+                        <div id="thumbs" class="navigation">
+                            <a class="pageLink prev" style="visibility: hidden;" href="#" title="Previous Page"></a>
+
+                            <ul class="thumbs noscript">
+                                {% for photo in photos %}
+                                    <li>
+                                        <a class="thumb" id="prev{{ photo.id }}" href="{% autoescape off %}{{ photo.image.url }}{% endautoescape %}" title="{{ photo.title }}" data-photo-id="{{ photo.id }}">
+                                            <img src="{% autoescape off %}{{ photo.icon.url }}{% endautoescape %}" alt="{{ photo.title }}" data-photo-id="{{ photo.id }}" />
+                                        </a>
+                                        <div class="caption">
+                                            <h5>{{ photo.title }}</h5>
+                                            <p>
+                                                {{ photo.description }}
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <a class="pageLink next" style="visibility: hidden;" href="#" title="Next Page"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hr"></div>
+                <div class="gallery-content">
+                    <div class="slideshow-container">
+                        <div id="loading" class="loader"></div>
+                        <div id="slideshow" class="slideshow"></div>
+                    </div>
+                    <div id="caption" class="caption-container">
+                        <div class="photo-index"></div>
+                    </div>
+                    <a href="#" id="show-full-screen">На весь экран</a>
+                </div>
+                <div id="vk_comments" style="margin: 0 auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
+        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+            <header class="b-form__header">
+                <h4>
+                    Подтвердите действие
+                </h4>
+                <p id="dialog-text">
+                    {= text }
+                </p>
+            </header>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow left cancel" id="confirm-popup-cancel">Отменить</a>
+                <a href="#" class="b-button b-button_red right videos_delete" id="confirm-popup-ok">Удалить</a>
+            </footer>
+        </section><!--b-form-->
+        <div class="b-popup__tl"></div>
+        <div class="b-popup__tr"></div>
+        <div class="b-popup__br"></div>
+        <div class="b-popup__bl"></div>
+    </section><!--b-popup-->
+
+    <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <form action="{% url video-move %}" method="post">
+            {% csrf_token %}
+            <header class="b-form__header">
+                <h3>
+                    Переместить в альбом
+                </h3>
+            </header>
+            <div class="b-form__fields">
+                <div class="b-form__field" id="albums-list">
+                    {% for item in object.owner.profile.videoalbum_set.all %}
+                        <div class="b-form__field b-form__field_radio">
+                        <div class="f-radio">
+                            <div>
+                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
+                                <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
+                                {{ item.title }}
+                                    {% if item == object %}(Текущий альбом){% endif %}
+                                </label>
+                            </div>
+                            <div class="f-err"><span></span></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow right videos_delete" id="confirm-popup-ok">Переместить</a>
+                <a href="#" class="b-button b-button_red left cancel" id="confirm-popup-cancel">Отменить</a>
+            </footer>
+        </form>
+    </section><!--b-form-->
+    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+
+    {# Шаблоны для JavaScript кода #}
+    <div style="display: none;">
+    <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеороликов</strong>
+        <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+    </div>
+</div>
+{% endblock %}

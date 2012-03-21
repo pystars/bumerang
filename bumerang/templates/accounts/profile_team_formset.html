@@ -1,0 +1,91 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Редактироване профиля{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+    <section class="b-form b-form_smaller b-form_edit b-form_left">
+        <form name="editform" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <h3 class="title">
+                    {% if user.profile.type == 1 %}
+                        {% sitetree_page_title from "user_edit_menu" %}
+                    {% endif %}{% if user.profile.type == 2 %}
+                        {% sitetree_page_title from "school_edit_menu" %}
+                    {% endif %}{% if user.profile.type == 3 %}
+                        {% sitetree_page_title from "studio_edit_menu" %}
+                    {% endif %}
+                </h3>
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                    <fieldset id="{{ form.prefix }}-row">
+
+
+                        <table>
+                            <tr>
+                                <td rowspan="2" width="20%">
+                                    {% if not form.errors %}
+                                        {% if form.photo.value %}
+                                            <img src='{{ MEDIA_URL }}{{ form.photo.value }}' style="max-width: 150px; display: block;">
+                                        {% else %}
+                                            <img src='{{ STATIC_URL }}i/add-user-foto.png' style="max-width: 150px; display: block;">
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {{ form.photo }}
+                                    {% if form.photo.errors %}
+                                    <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.photo.errors }}</span></div>
+                                    {% endif %}
+                                </td>
+                                <td width="80%">
+                                    {{ form.name.label }}
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                    <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.name.errors }}</span></div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ form.description.label }}
+                                    {{ form.description }}
+
+                                    {{ form.id }}
+                                    {{ form.owner }}
+
+                                    {% if form.description.errors %}
+                                        <div class="f-err" style="margin: 8px 0 0;"><span style="color: #DC291E;">{{ form.description.errors }}</span></div>
+                                    {% endif %}
+
+                                    Удалить: {{ form.DELETE }}
+                                </td>
+                            </tr>
+                        </table>
+
+                    </fieldset>
+                {% endfor %}
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+    </section>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form fieldset').formset({
+                prefix: 'teammate_set',
+                addText: 'Новый участник'
+            })
+        })
+    </script>
+{% endblock %}
+
