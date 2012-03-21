@@ -14,6 +14,8 @@ class PhotoSetCoverView(AjaxView, UpdateView):
     form_class = PhotoAlbumCoverForm
 
     def form_valid(self, form):
+        album = form.save()
+        album.save()
         msg = u'Обложка альбома изменена'
         return super(PhotoSetCoverView, self).render_to_response(message=msg)
 

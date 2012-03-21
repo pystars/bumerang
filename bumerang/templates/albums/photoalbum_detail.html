@@ -330,7 +330,7 @@
 
     <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
     <section class="b-form b-form_smaller b-form_popup">
-        <form action="{% url video-move %}" method="post">
+        <form action="{% url photo-move %}" method="post">
             {% csrf_token %}
             <header class="b-form__header">
                 <h3>
@@ -339,7 +339,7 @@
             </header>
             <div class="b-form__fields">
                 <div class="b-form__field" id="albums-list">
-                    {% for item in object.owner.profile.videoalbum_set.all %}
+                    {% for item in object.owner.profile.photoalbum_set.all %}
                         <div class="b-form__field b-form__field_radio">
                         <div class="f-radio">
                             <div>

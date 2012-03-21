@@ -784,7 +784,7 @@ var PhotoAlbumsView = Backbone.View.extend({
         e.preventDefault();
         var el = e.target || e.srcElement;
         this.selected_photos.push(
-            parseInt(el.id.split('move-video-')[1])
+            parseInt(el.id.split('move-photo-')[1])
         );
 
         if (this.selected_albums.length > 1) {
@@ -801,7 +801,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                     url: '/photo/photo-move/',
                     data: {
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        video_id: JSON.stringify(view.selected_photos),
+                        photo_id: JSON.stringify(view.selected_photos),
                         album_id: id
                     },
                     success: function(response) {
