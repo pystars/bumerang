@@ -5,7 +5,8 @@ from fabric.context_managers import lcd, hide, cd
 from fabric.operations import local, abort, put, sudo
 from boto.ec2 import connect_to_region
 
-from bumerang.local_settings import get_sudo_pwd
+from bumerang.local_settings import (get_sudo_pwd, AWS_ACCESS_KEY_ID,
+                                     AWS_SECRET_ACCESS_KEY)
 
 #__all__ = ['test']
 #env.hosts = [u"web@62.76.179.205:22"]
@@ -72,7 +73,7 @@ def fullsync(branch):
     remote_syncdb()
     reload()
 
-env.key_filename = '/home/goodfellow/.ssh/bumer_amazon_eu.pub'
+env.key_filename = '/Users/goodfellow/.ssh/eu-bumerang'
 ami_instance = 'ami-af5069db'
 
 def create_instance(connection, server_type):
@@ -101,10 +102,12 @@ def create_instance(connection, server_type):
             sudo(line)
     return instance
 
-def create_www():
-    connection = connect_to_region('eu-west-1')
+def create_web():
+    connection = connect_to_region('eu-west-1',
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
     instance = create_instance(connection, 'web')
-#    print 'creating image from instance {0}'.format(instance)
+    print 'creating image from instance {0}'.format(instance)
 #    image_id = connection.create_image(instance.id, 'testimage')
 #    print 'image {0} created'.format(image_id)
 
