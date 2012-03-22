@@ -34,7 +34,7 @@ from bumerang.apps.accounts.forms import (RegistrationForm,
       PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
       UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
-from bumerang.apps.utils.email import send_activation_success
+from bumerang.apps.utils.email import send_activation_success, send_activation_link, send_new_password
 from bumerang.apps.utils.tasks import (send_new_password_task,
     send_activation_link_task)
 
@@ -153,8 +153,10 @@ class RegistrationFormView(CreateView):
         self.object.activation_code_expire = datetime.now() + timedelta(days=1)
         self.object.save()
 
-        send_activation_link_task.delay(full_activation_url,
-                                  form.cleaned_data['username'])
+#        send_activation_link_task.delay(full_activation_url,
+#                                  form.cleaned_data['username'])
+
+        send_activation_link(full_activation_url, form.cleaned_data['username'])
 
         notify_success(self.request, message=u'''
             Регистрация прошла успешно. Вам была отправлена ссылка
@@ -222,7 +224,9 @@ class PasswordRecoveryView(FormView):
         profile.set_password(new_password)
         profile.save()
 
-        send_new_password_task.delay(new_password, receiver_email)
+#        send_new_password_task.delay(new_password, receiver_email)
+
+        send_new_password(new_password, receiver_email)
         notify_success(self.request, message=u'''
             Ваш новый пароль был отправлен на указанный вами e-mail.
             После авторизации вы сможете его сменить в разделе

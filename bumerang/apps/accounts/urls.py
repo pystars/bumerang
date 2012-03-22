@@ -108,22 +108,22 @@ url(r'^login/$',
 #            form_class=StudioProfileServicesForm)),
 #        name='profile-edit-services'
 #    ),
-url(r'^edit-teachers/$',
-    login_required(FormsetUpdateView.as_view(
-        model=Teacher,
-        form=TeacherForm,
-        template_name="accounts/profile_teachers_formset.html"
+    url(r'^edit-teachers/$',
+        login_required(FormsetUpdateView.as_view(
+            model=Teacher,
+            form=TeacherForm,
+            template_name="accounts/profile_teachers_formset.html"
+            )),
+        name='profile-edit-teachers'
+    ),
+    url(r'^edit-team/$',
+        login_required(FormsetUpdateView.as_view(
+            model=Teammate,
+            form=TeammateForm,
+            template_name="accounts/profile_team_formset.html"
         )),
-    name='profile-edit-teachers'
-),
-url(r'^edit-team/$',
-    login_required(FormsetUpdateView.as_view(
-        model=Teammate,
-        form=TeammateForm,
-        template_name="accounts/profile_team_formset.html"
-    )),
-    name='profile-edit-team'
-),
+        name='profile-edit-team'
+    ),
     url(r'^edit-services/$',
         login_required(FormsetUpdateView.as_view(
             model=Service,

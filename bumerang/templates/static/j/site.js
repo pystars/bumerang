@@ -59,6 +59,13 @@ function show_notification(status, text) {
     $('.alert-message').delay(delay_time).hide(300);
 };
 
+function invokeUploadMessage() {
+    var popup = $('#popup-upload');
+    popup.css('margin-left', - popup.width() / 2 + 'px');
+    popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
+    $('#tint').show();
+    popup.show();
+};
 
 function invokeConfirmDialog(text, callback) {
     var popup = $('#popup-confirm-video');
@@ -1032,6 +1039,11 @@ $(function() {
                 close.trigger('click');
             }
         });
+    });
+
+    $('.button-upload').bind('click', function(e) {
+        e.preventDefault();
+        invokeUploadMessage();
     });
 
     /*

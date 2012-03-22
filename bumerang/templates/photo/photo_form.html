@@ -94,14 +94,15 @@
                             </div>
                             <footer class="b-form__footer">
                                 <div class="wrap">
-                                    <a href="#"
-                                       class="b-button b-button_yellow button-submit">
-                                        {% if form.instance.pk %}
-                                            Сохранить
-                                        {% else %}
-                                            Создать
-                                        {% endif %}
+                                    {% if form.instance.pk %}
+                                    <a href="#" class="b-button b-button_yellow button-submit">
+                                        Сохранить
                                     </a>
+                                    {% else %}
+                                    <a href="#" class="b-button b-button_yellow button-submit button-upload">
+                                        Создать
+                                    </a>
+                                    {% endif %}
                                 </div>
                             </footer>
                         </form>
@@ -110,4 +111,21 @@
             </dd>
         </dl>
     </div>
+{% endblock %}
+
+{% block popup %}
+<section class="b-popup" id="popup-upload" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <h3>Идёт загрузка</h3>
+        <p>
+            Пожалуйста, не закрывайте и не перезагружайте страницу до её окончания.
+            <p style="text-align: center; margin-top: 20px;">
+                <img src="{{ STATIC_URL }}i/ajax-loader.gif" alt="Идёт загрузка">
+            </p>
+        </p>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
 {% endblock %}
