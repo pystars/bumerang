@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, UserManager
 from django.db import models
 
 from bumerang.apps.utils.models import FileModelMixin
-from bumerang.apps.utils.storages import media_storage
+from bumerang.apps.utils.media_storage import media_storage
 
 nullable = dict(null=True, blank=True)
 

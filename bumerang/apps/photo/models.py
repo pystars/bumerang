@@ -9,7 +9,7 @@ from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
 from utils import (original_upload_to, image_upload_to, thumbnail_upload_to,
     icon_upload_to)
-from bumerang.apps.utils.storages import media_storage
+from bumerang.apps.utils.media_storage import media_storage
 
 
 class PhotoCategory(models.Model, TitleUnicode):

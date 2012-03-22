@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
-from bumerang.apps.utils.storages import media_storage
+from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.video.models import Video
 
 def video_album_preview_upload_to(instance, filename):

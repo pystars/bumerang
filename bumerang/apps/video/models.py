@@ -8,7 +8,7 @@ from djangoratings import RatingField
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
-from bumerang.apps.utils.storages import media_storage
+from bumerang.apps.utils.media_storage import media_storage
 from validators import check_video_file
 from utils import (original_upload_to, hq_upload_to, mq_upload_to, lq_upload_to,
     screenshot_upload_to, thumbnail_upload_to, icon_upload_to)
@@ -153,5 +153,5 @@ class Preview(FileModelMixin, models.Model):
     image = models.ImageField(upload_to=screenshot_upload_to,
         storage=media_storage)
     thumbnail = models.ImageField(upload_to=thumbnail_upload_to,
-        storage=s3storage)
+        storage=media_storage)
     icon = models.ImageField(upload_to=icon_upload_to, storage=media_storage)
