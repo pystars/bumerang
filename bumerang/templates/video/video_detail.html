@@ -102,7 +102,7 @@
                 <div class="b-vote">
                     <div class="wrap">
                         <ul class="star-rate" data-total-rate="{{ object.rating.get_rating }}" data-item-id="{{ object.id }}">
-                            {% if request.user.id %}
+                            {% if perms.dajangoratings.add_vote %}
                                 {{ object.rating|render_rating }}
                             {% else %}
                                 {{ object.rating|render_inactive_rating }}

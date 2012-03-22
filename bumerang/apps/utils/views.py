@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 
 from django.http import HttpResponse, HttpResponseForbidden, Http404
@@ -80,3 +81,7 @@ class AjaxRatingView(AddRatingView):
             msg = {'error': True}
 
         return HttpResponse(json.dumps(msg), mimetype="application/json")
+
+    @permission_required('djangoratings.add_vote')
+    def dispatch(self, *args, **kwargs):
+        return super(AjaxRatingView, self).dispatch(*args, **kwargs)
