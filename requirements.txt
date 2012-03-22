@@ -21,4 +21,4 @@ django-ses
 pydkim
 pytz
 dnspython
-djkombu
+django-kombu
