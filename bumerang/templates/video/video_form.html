@@ -54,10 +54,8 @@
                             {% endif %}
                         </h3>
                     </header>
-                    <section
-                            class="b-form b-form_album b-form_edit b-form_smaller">
-                        <form name="editform" action="" method="post"
-                              enctype="multipart/form-data">
+                    <section class="b-form b-form_album b-form_edit b-form_smaller">
+                        <form id="video-upload-form" name="editform" action="" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="b-form__fields">
                                 {% for item in form %}
@@ -87,7 +85,7 @@
                                             Сохранить
                                         </a>
                                     {% else %}
-                                        <a href="#" class="b-button b-button_yellow button-submit button-upload">
+                                        <a href="#" class="b-button b-button_yellow button-upload">
                                             Создать
                                         </a>
                                     {% endif %}

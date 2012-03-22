@@ -1043,7 +1043,24 @@ $(function() {
 
     $('.button-upload').bind('click', function(e) {
         e.preventDefault();
-        invokeUploadMessage();
+
+        var filename = $("#video-upload-form input[name=original_file]").val();
+        if(filename != '')
+        {
+            var valid_extensions = /(.m1v|.mpeg|.mov|.qt|.mpa|.mpg|.mpe|.avi|.movie|.mp4)$/i;
+            if(!valid_extensions.test(filename))
+            {
+                $('#popup-upload').hide();
+                $('#tint').hide();
+                show_notification('error',
+                    'Неверный формат видеофайла'
+                );
+                return false;
+            } else {
+                invokeUploadMessage();
+                $('#video-upload-form').submit();
+            }
+        }
     });
 
     /*
