@@ -66,10 +66,6 @@
                         <span>{{ object.agency }}</span>
                     </li>
                     {% endif %}
-                    <li>
-                        <strong>Длительность (сек):</strong>
-                        <span>{{ object.duration|default_if_none:0|to_hms }}</span>
-                    </li>
                     {% if object.authors %}
                         <li>
                             <strong>Авторы:</strong>
