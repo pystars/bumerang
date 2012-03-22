@@ -78,7 +78,7 @@
         </div>
         {% include "snippets/photoalbums_list.html" %}
     </section>
-        {% if profile.id == request.user.id or videos.count %}
+        {% if profile.id == request.user.id or photos.count %}
             <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container">
         <header class="announs-head">
             {% if profile.id == request.user.id %}
