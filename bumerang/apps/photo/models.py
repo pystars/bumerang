@@ -52,7 +52,8 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.ImageField(u"Оригинальное фото",
-        upload_to=original_upload_to, storage=media_storage, **nullable)
+        upload_to=original_upload_to, storage=media_storage,
+        null=True, blank=False)
     image = models.ImageField(u"Фото",
         upload_to=image_upload_to, storage=media_storage, **nullable)
     thumbnail = models.ImageField(u"Превью",
