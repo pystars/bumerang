@@ -1,5 +1,5 @@
 -e svn+http://code.djangoproject.com/svn/django/trunk/#egg=django-trunk
-pillow
+Pillow==1.7.6
 South
 django-debug-toolbar
 django-filebrowser==3.4.0
@@ -9,11 +9,11 @@ django-sitetree==0.6
 django-tinymce==1.5.1b2
 wsgiref==0.1.2
 django-extensions
-django-celery
+django-celery==2.5.1
 django-ratings==0.3.6
 celery
 fabric
-boto
+boto==2.3.0
 django-storages
 ipython
 mysql-python
@@ -21,4 +21,4 @@ django-ses
 pydkim
 pytz
 dnspython
-django-kombu
+django-kombu=0.9.4
