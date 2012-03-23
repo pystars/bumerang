@@ -87,7 +87,11 @@
   opacity: 0.4;
 }
 .alert-message {
-  position: relative;
+    display: block;
+    position: fixed;
+    z-index: 5000;
+    left: 0;
+    width: 100%;
   padding: 7px 15px;
   margin-bottom: 0px;
   color: #404040;

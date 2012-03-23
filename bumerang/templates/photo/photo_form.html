@@ -58,8 +58,7 @@
 {#                            <li class="edit"><i></i><a href="#">Редактировать альбом</a>#}
 {#                            </li>#}
 {#                        </ul>#}
-                        <a href="{% url profile-photo-detail request.user.profile.id %}"
-                           class="b-button-prev"><span>Все альбомы</span></a>
+                        <a href="{% url profile-photo-detail request.user.profile.id %}" class="b-button-prev"><span>Все альбомы</span></a>
                         <h3>
                             {% if form.instance.pk %}
                                 Редактирование фото &laquo;{{ form.instance.title }}&raquo;
@@ -69,7 +68,7 @@
                         </h3>
                     </header>
                     <section class="b-form b-form_album b-form_edit b-form_smaller">
-                        <form name="editform" action="" method="post" enctype="multipart/form-data">
+                        <form id="photo-upload-form" name="editform" action="" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="b-form__fields">
                                 {% for item in form %}
@@ -99,7 +98,7 @@
                                         Сохранить
                                     </a>
                                     {% else %}
-                                    <a href="#" class="b-button b-button_yellow button-submit button-upload">
+                                    <a href="#" class="b-button b-button_yellow button-photo-upload">
                                         Создать
                                     </a>
                                     {% endif %}
@@ -114,5 +113,5 @@
 {% endblock %}
 
 {% block popup %}
-{% include "snippets/popup_file_upload.html" %}
+    {% include "snippets/popup_file_upload.html" %}
 {% endblock %}

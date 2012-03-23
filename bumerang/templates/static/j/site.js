@@ -1041,7 +1041,7 @@ $(function() {
         });
     });
 
-    $('.button-upload').bind('click', function(e) {
+    $('.button-video-upload').bind('click', function(e) {
         e.preventDefault();
 
         var filename = $("#video-upload-form input[name=original_file]").val();
@@ -1060,6 +1060,34 @@ $(function() {
                 invokeUploadMessage();
                 $('#video-upload-form').submit();
             }
+        }
+    });
+
+    $('.button-photo-upload').bind('click', function(e) {
+        console.log(e);
+        e.preventDefault();
+
+        var filename = $("#photo-upload-form input[name=original_file]").val();
+        console.log(filename);
+        if(filename != '')
+        {
+            var valid_extensions = /(.jpg|.jpeg|.png)$/i;
+            if(!valid_extensions.test(filename))
+            {
+                $('#popup-upload').hide();
+                $('#tint').hide();
+                show_notification('error',
+                    'Неверный формат изображения'
+                );
+                return false;
+            } else {
+                invokeUploadMessage();
+                $('#photo-upload-form').submit();
+            }
+        } else {
+            show_notification('error',
+                'Выберите изображение'
+            );
         }
     });
 
