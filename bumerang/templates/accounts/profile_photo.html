@@ -185,8 +185,10 @@
                 );
             },
 
-            onTransitionIn: function() {
+            onTransitionIn: function(newSlide, newCaption, isSync) {
                 if ($('.gallery-modal').is(':visible')) {
+                    // Fix for FF browser
+                    newSlide.css('opacity', '1');
                     var index = gallery.currentImage.index;
                     var photo_id = $($('#thumbs').find('a.thumb').get(index)).attr('data-photo-id');
 

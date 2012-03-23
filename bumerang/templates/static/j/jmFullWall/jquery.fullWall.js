@@ -92,6 +92,8 @@
             
             $(wall_container).css('display', 'block');
             $(wall).css('display', 'block');
+
+            $('.image-wrapper.current').css('opacity', 1);
             
             link = $(wall_items).find("a").get(id);
             
@@ -161,7 +163,9 @@
                 var $img_detail = $(this).parent(wall_items).find("span.img_detail").text();
                 var $text = $(this).parent(wall_items).find("span.tooltip").html();
                 $(wall_loading).fadeIn();
-                
+
+                $('.image-wrapper.current').css('opacity', 1);
+
                 var position = $(wall_items).find("a").index(this)+1;
                 
                 var event = jQuery.Event("fullWallCurrent");
