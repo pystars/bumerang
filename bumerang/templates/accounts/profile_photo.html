@@ -308,6 +308,10 @@
                             $("body").css("overflow", "auto");
                             $('.gallery-modal-wrapper').hide();
                             $('#tint').hide();
+
+                            window.lastPos = $(window).scrollTop();
+                            console.log(window.lastPosition);
+                            location.hash = '';
                         });
 
                         $(document).keydown(function(e) {
