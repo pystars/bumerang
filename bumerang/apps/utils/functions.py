@@ -10,14 +10,14 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 def random_string(length, letters=string.ascii_letters+string.digits):
     return u''.join(random.choice(letters) for i in xrange(length))
 
-def thumb_img(img, width=None, height=None):
+def thumb_img(img, width=None, height=None, name='thumb.jpg'):
     io = StringIO()
     thumb = img.copy()
     thumb.thumbnail(image_width_height(img, width, height), Image.ANTIALIAS)
     thumb.save(io, format='JPEG')
     size = io.tell()
     io.seek(0)
-    return InMemoryUploadedFile(io, None, 'thumb.jpg', 'tmp/jpeg', size, None)
+    return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)
 
 
 def image_width_height(img, width=None, height=None):

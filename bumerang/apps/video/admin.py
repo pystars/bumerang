@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #import os
 #import shutil
+import tempfile
 
 from django.contrib import admin
 #from django.contrib.admin.actions import delete_selected as _delete_selected
-import tempfile
 
 from bumerang.apps.video.mediainfo import video_duration
 from bumerang.apps.video.models import Video, VideoCategory, VideoGenre
@@ -23,22 +23,25 @@ class VideoAdmin(admin.ModelAdmin):
         temp_file = tempfile.NamedTemporaryFile()
         temp_file.write(field.file.read())
         duration = video_duration(temp_file.name)
-        field.open()
         temp_file.close()
         return duration
 
     def save_model(self, request, obj, form, change):
-        obj.save()
         if 'original_file' in form.changed_data:
-            obj.duration = self.get_duration(obj.original_file)
             obj.status = obj.PENDING
             obj.save()
             ConvertVideoTask.delay(obj.id)
         elif {'hq_file', 'mq_file', 'lq_file'} & set(form.changed_data):
             obj.duration = self.get_duration(obj.best_quality_file())
-            obj.status = obj.PENDING
+            if obj.duration:
+                obj.status = Video.PENDING
+                obj.save()
+                MakeScreenShots.delay(obj.id)
+            else:
+                obj.status = Video.ERROR
+                obj.save()
+        else:
             obj.save()
-            MakeScreenShots.delay(obj.id)
 
 #TODO: repair mass deleting
 #    def delete_selected(self, request, queryset):

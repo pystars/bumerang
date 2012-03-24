@@ -3,6 +3,7 @@ import os
 import random
 import subprocess
 import tempfile
+from tempfile import NamedTemporaryFile, mktemp
 
 from PIL import Image
 from django.conf import settings
@@ -10,6 +11,7 @@ from celery.task import Task
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from bumerang.apps.utils.functions import thumb_img
+from bumerang.apps.video.mediainfo import video_duration
 from models import Preview, Video
 from converting.models import ConvertOptions
 
@@ -27,15 +29,14 @@ class MakeScreenShots(Task):
             video = Video.objects.get(pk=video_id)
         except Video.DoesNotExist:
             return 'Video was deleted'
-        logger.info("Starting Video Post conversion: %s" % video)
-        #TODO: get file from s3 one time, make screen shots
+        logger.info("Starting screen shoots of video %s" % video.pk)
         for preview in video.preview_set.all():
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
-        source_file = tempfile.NamedTemporaryFile()
+        source_file = tempfile.NamedTemporaryFile(delete=False)
         source_file.write(video.best_quality_file().read())
-        source_file.seek(0)
+        source_file.close()
         video.best_quality_file().open()
         duration = video.seconds_duration()
         if duration > 30:
@@ -49,23 +50,22 @@ class MakeScreenShots(Task):
         elif screenable_duration < previews_count:
             previews_count = screenable_duration
         step = screenable_duration / previews_count
-        counter = 0
-        while counter < previews_count:
+        for offset in (offset+step for i in xrange(previews_count)):
             result_file = tempfile.NamedTemporaryFile()
             preview = Preview(owner=video)
             cmd = self.get_commandline(source_file.name, random.choice(
                 range(offset, offset+step)), size, result_file.name)
             process = subprocess.call(cmd, shell=False)
             if process:
-                return "Stop Making screenshots - video is deleted"
+                return "Stop making screen shoots - video is deleted"
             img = Image.open(result_file.name).copy()
             result_file.close()
-            preview.image = thumb_img(img)
-            preview.thumbnail = thumb_img(img)
-            preview.icon = thumb_img(img)
+            preview_name = '{0}.jpg'.format(offset)
+            preview.image = thumb_img(img, name=preview_name)
+            preview.thumbnail = thumb_img(img, name=preview_name)
+            preview.icon = thumb_img(img, name=preview_name)
             preview.save()
-            offset += step
-            counter += 1
+        os.unlink(source_file.name)
         Video.objects.filter(pk=video_id).update(status=Video.READY)
         return "Ready"
 
@@ -80,8 +80,8 @@ class ConvertVideoTask(Task):
 
     def get_commandline(self):
         return (['HandBrakeCLI', '-v3', '-O', '-C', '2', '-i',
-            self.temporarily_original_copy.name]
-            + self.convert_options + ['-o', self.temporarily_result_file.name])
+            self.original_copy.name]
+            + self.convert_options + ['-o', self.result_file_name])
 
     def run(self, video_id, **kwargs):
         """
@@ -89,20 +89,26 @@ class ConvertVideoTask(Task):
         """
         #TODO: what if user update videofile during converting
         logger = self.get_logger(**kwargs)
-        print 'logfile:', self.request.logfile
-        print 'kwargs:', kwargs
         try:
             video = Video.objects.get(pk=video_id)
         except Video.DoesNotExist:
             return "Stop Convert - video is deleted"
         logger.info("Starting Video Post conversion: %s" % video)
-        self.temporarily_original_copy = tempfile.NamedTemporaryFile()
-        self.temporarily_original_copy.write(video.original_file.read())
+        ext = os.path.splitext(video.original_file.name)[1]
+        self.original_copy = NamedTemporaryFile(delete=False, suffix=ext)
+        self.original_copy.write(video.original_file.file.read())
+        video.original_file.open()
+        video.duration = video_duration(self.original_copy.name)
+        self.original_copy.close()
+        if not video.duration:
+            video.status = Video.ERROR
+            video.save()
+            return "Stop Convert - bad original file"
         video.status = Video.CONVERTING
-        Video.objects.filter(pk=video_id).update(status=Video.CONVERTING)
+        video.save()
         for options in ConvertOptions.objects.all():
             file_field_name = options.title
-            self.temporarily_result_file = tempfile.NamedTemporaryFile()
+            self.result_file_name = mktemp('.mp4')
             self.convert_options = options.as_commandline()
             setattr(video, file_field_name, None)
             video.save()
@@ -110,24 +116,23 @@ class ConvertVideoTask(Task):
             try:
                 video = Video.objects.get(pk=video_id)
             except Video.DoesNotExist:
-                self.temporarily_original_copy.close()
-                self.temporarily_result_file.close()
+                os.unlink(self.original_copy.name)
+                os.unlink(self.result_file_name)
                 return "Stop Convert - video is deleted"
             if process:
+                print 'some error during convert'
                 stdout, stderr = process.communicate()
                 print 'stdout:', stdout
                 print 'stderr:', stderr
                 video.status = video.ERROR
             else:
-                size = os.path.getsize(self.temporarily_result_file.name)
-                self.temporarily_result_file.seek(0)
+                size = os.path.getsize(self.result_file_name)
                 converted_file = InMemoryUploadedFile(
-                    self.temporarily_result_file, None,
+                    open(self.result_file_name), None,
                     '{0}.mp4'.format(options.title), 'video/mp4', size, None)
                 setattr(video, file_field_name, converted_file)
             video.save()
-            self.temporarily_result_file.close()
-        self.temporarily_original_copy.close()
+            os.unlink(self.result_file_name)
+        os.unlink(self.original_copy.name)
         MakeScreenShots.delay(video_id)
         return "Ready"
-

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import tempfile
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -17,7 +16,6 @@ from albums.models import VideoAlbum
 from models import Video
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
-from mediainfo import video_duration
 
 
 class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
@@ -62,15 +60,7 @@ class VideoDetailView(DetailView):
         return response
 
 
-class VideoEditMixin(object):
-    def set_duration(self):
-        temp_file = tempfile.NamedTemporaryFile()
-        temp_file.write(self.object.original_file.file.read())
-        self.object.duration = video_duration(temp_file.name)
-        self.object.original_file.open()
-        temp_file.close()
-
-class VideoCreateView(CreateView, VideoEditMixin):
+class VideoCreateView(CreateView):
     model = Video
 
     def get_form(self, form_class):
@@ -84,7 +74,6 @@ class VideoCreateView(CreateView, VideoEditMixin):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
-        self.set_duration()
         self.object.save()
         ConvertVideoTask.delay(self.object.id)
         messages.add_message(
@@ -103,7 +92,7 @@ class VideoCreateView(CreateView, VideoEditMixin):
     def get_success_url(self):
         return reverse('video-edit', kwargs={'pk': self.object.id})
 
-class VideoUpdateView(OwnerMixin, UpdateView, VideoEditMixin):
+class VideoUpdateView(OwnerMixin, UpdateView):
     model = Video
 
     def get_form(self, form_class):
@@ -113,12 +102,13 @@ class VideoUpdateView(OwnerMixin, UpdateView, VideoEditMixin):
         return reverse('video-edit', kwargs={'pk': self.object.id})
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         if 'original_file' in form.changed_data:
-            self.set_duration()
             self.object.status = self.object.PENDING
             self.object.save()
             ConvertVideoTask.delay(self.object.id)
+        else:
+            self.object.save()
         messages.add_message(self.request, messages.SUCCESS,
             u'Информация о видео успешно обновлена')
         return HttpResponseRedirect(self.get_success_url())

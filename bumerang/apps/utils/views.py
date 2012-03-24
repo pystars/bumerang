@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
+
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-
 from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import BaseFormView
