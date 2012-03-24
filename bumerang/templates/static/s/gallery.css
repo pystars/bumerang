@@ -191,7 +191,7 @@ div.hr {
     z-index:101;
     background:#000 url(jmFullWall/loading.gif) center no-repeat;
     opacity:0.9;
-    position:absolute;
+    position: fixed;
     visibility: hidden;
 }
 

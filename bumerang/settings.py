@@ -50,7 +50,8 @@ else:
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
     STATIC_ROOT = ''
-    STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+    #STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+    STATIC_URL = '/static/'
 
 FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644

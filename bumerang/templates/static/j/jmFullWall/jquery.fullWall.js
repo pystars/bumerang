@@ -22,7 +22,12 @@
         var wall_items_for_row = options.itemsForRow;
         
         var x = 0;
-        
+
+        this.showLoading = function() {
+            $(wall_loading).css('visibility', 'visible');
+            $(wall_loading).css('display', 'block');
+        };
+
         this.setWallDimensions = function(resizing) {
             /** get wall width & height **/
             wall_container_w = parseInt( $(window).width() );
@@ -86,65 +91,15 @@
             }
             
         }
-        
+
         this.showItem = function(id) {
+            this.showLoading();
             $('body').css('overflow', 'hidden');
-            
             $(wall_container).css('display', 'block');
             $(wall).css('display', 'block');
-
             $('.image-wrapper.current').css('opacity', 1);
-            
-            link = $(wall_items).find("a").get(id);
-            
-            var $img_detail = $(link).parent(wall_items).find("span.img_detail").text();
-            var $text = $(link).parent(wall_items).find("span.tooltip").html();
-
-            //$(wall_loading).fadeIn();
-
-            var position = $(wall_items).find("a").index(id);
-
-            (position >= wall_items_count) ? next_item = 0 : next_item = position;
-
-            position = position-2;
-            (position < 0) ? prev_item = (wall_items_count-1) : prev_item = position;
-
-            var scope = this;
-            $.imgpreload($img_detail, function() {
-                var $img = new Image();
-                $img.src = $img_detail;
-
-                ht = '';
-                ht += '<div class="'+wall_detail_controls_container+'">';
-                ht += '<a href="#" rel="'+prev_item+'" class="'+options.itemsBtnClose+'"><\/a>';
-                ht += '<a href="#" rel="'+prev_item+'" class="'+options.itemsBtnPrev+'"><\/a>';
-                ht += '<a href="#" rel="'+next_item+'" class="'+options.itemsBtnNext+'"><\/a>';
-                ht += '<span class="'+wall_detail_info.split(".").join('')+'">'+$text+'<\/span>';
-                ht += '<\/div>';
-                ht += '<div class="'+wall_detail_image_container+'">';
-                ht += scope.setBgImage($img.src, $img.width, $img.height);
-                ht += '<\/div>';
-                
-                $(wall_detail).empty().html(ht).fadeIn(options.detailTransitionInSpeed, function() {
-                    if(options.imgPanning) {
-                        (options.imgPanningCenter) ? $imgOrient = 'center' : $imgOrient = 'top';
-                        (options.imgPanningZoom)   ? $imgZoom = 'yes' : $imgZoom = 'no';
-                        $pancontainer = $(wall_detail);
-                        $this = $pancontainer;
-                        $this.css('cursor', 'move');
-                        $img = $this.find('img:eq(0)');
-                        $options={$pancontainer:$this, pos:$imgOrient, curzoom:1, canzoom:$imgZoom, wrappersize:[$this.width(), $this.height()]};
-                        $img.imgmover($options);
-                    }
-
-                    $(wall_loading).fadeOut(200, function() {
-                        if(options.showTooltip)
-                        {
-                            $(wall_detail).find(wall_detail_info).animate({bottom:20});
-                        }
-                    });
-                });
-            });
+            $(wall_detail).hide();
+            $(wall_items).find('a').eq(id).trigger('click');
         };
         
         this.bindItemActions = function() {
@@ -159,9 +114,12 @@
             });
             
             var scope = this;
-            links.bind('click', function() {
+            links.bind('click', function(e) {
+                e.preventDefault();
+
                 var $img_detail = $(this).parent(wall_items).find("span.img_detail").text();
                 var $text = $(this).parent(wall_items).find("span.tooltip").html();
+
                 $(wall_loading).fadeIn();
 
                 $('.image-wrapper.current').css('opacity', 1);
@@ -212,8 +170,6 @@
                         });
                     });
                 });
-
-                return false;
             });
             
             $(document).on("click", '.'+options.itemsBtnPrev, function(e) {
