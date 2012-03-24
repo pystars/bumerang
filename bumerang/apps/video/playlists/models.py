@@ -2,7 +2,7 @@
 from datetime import timedelta, datetime
 
 from django.db import models
-from django.utils.timezone import now
+from django.utils.timezone import now, UTC
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.video.models import Video
@@ -63,4 +63,4 @@ class PlayList(models.Model):
     @property
     def rotate_from(self):
         year, month, day = self.rotate_from_date.timetuple()[0:3]
-        return datetime(year, month, day, 3)
+        return datetime(year, month, day, 3, tzinfo=UTC)

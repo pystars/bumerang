@@ -1,4 +1,4 @@
--e svn+http://code.djangoproject.com/svn/django/trunk/#egg=django-trunk
+django
 Pillow==1.7.6
 South
 django-debug-toolbar
