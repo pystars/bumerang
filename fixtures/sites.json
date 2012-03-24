@@ -3,8 +3,8 @@
         "pk": 1, 
         "model": "sites.site", 
         "fields": {
-            "domain": "bumerang.tv", 
-            "name": "bumerang.tv"
+            "domain": "probumerang.tv",
+            "name": "probumerang.tv"
         }
     }
 ]

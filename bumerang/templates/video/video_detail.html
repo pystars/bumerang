@@ -67,7 +67,7 @@
                 <script type="text/javascript">
                     var flashvars = {
                         "comment":"Бумер (широкоэкранник 2.1)",
-                        "st":"http://bumerang.tv/static/uppod/video113-881.txt",
+                        "st":"{{ STATIC_URL }}uppod/video113-881.txt",
                         "file":"{{ object.best_quality_file.url }}"
                     };
                     var params = {
@@ -78,7 +78,7 @@
                         id:"videoplayer"
                     };
                     new swfobject.embedSWF(
-                            "http://bumerang.tv/static/uppod/player.swf",
+                            "{{ STATIC_URL }}uppod/player.swf",
                             "videoplayer",
                             "780",
                             "420",
