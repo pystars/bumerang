@@ -59,6 +59,18 @@ function show_notification(status, text) {
     $('.alert-message').delay(delay_time).hide(300);
 };
 
+function increasePhotoViewsCount(photoId) {
+    if (photoId) {
+        $.ajax({
+            method: 'GET',
+            url: '/photo/'+ photoId +'/update-count/',
+            success: function() {
+
+            }
+        });
+    }
+};
+
 function invokeUploadMessage() {
     var popup = $('#popup-upload');
     popup.css('margin-left', - popup.width() / 2 + 'px');
@@ -1107,7 +1119,7 @@ $(function() {
         });
     }
 
-    $(window).bind('hashchange',function(event){
+    $(window).bind('hashchange', function(e) {
         var hash = location.hash.replace('#','');
         if(hash == '') $(window).scrollTop(window.lastPosition);
     });

@@ -23,6 +23,12 @@
         
         var x = 0;
 
+        this.sendEventCurrentItem = function(itemId) {
+            var event = jQuery.Event("fullWallCurrent");
+            event.position = itemId;
+            $(document).trigger(event);
+        };
+
         this.showLoading = function() {
             $(wall_loading).css('visibility', 'visible');
             $(wall_loading).css('display', 'block');
@@ -125,10 +131,6 @@
                 $('.image-wrapper.current').css('opacity', 1);
 
                 var position = $(wall_items).find("a").index(this)+1;
-                
-                var event = jQuery.Event("fullWallCurrent");
-                event.position = position-1;
-                $(document).trigger(event);
 
                 (position >= wall_items_count) ? next_item = 0 : next_item = position;
                 
@@ -175,12 +177,16 @@
             $(document).on("click", '.'+options.itemsBtnPrev, function(e) {
                 e.preventDefault();
                 prev_items = $(this).attr("rel");
+                scope.sendEventCurrentItem(prev_items);
+
                 $(wall_items).find('a').eq(prev_items).trigger('click');
             });
             
             $(document).on("click", '.'+options.itemsBtnNext, function(e) {
                 e.preventDefault();
                 next_items = $(this).attr("rel");
+                scope.sendEventCurrentItem(next_items);
+
                 $(wall_items).find('a').eq(next_items).trigger('click');
             });
             
