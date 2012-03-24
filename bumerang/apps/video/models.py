@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import now
 from djangoratings import RatingField
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
 from bumerang.apps.utils.media_storage import media_storage
-from validators import check_video_file
+from bumerang.apps.video.validators import is_video_file
 from utils import (original_upload_to, hq_upload_to, mq_upload_to, lq_upload_to,
     screenshot_upload_to, thumbnail_upload_to, icon_upload_to)
 
@@ -67,17 +66,17 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.FileField(u"Оригинальное видео",
-        validators=[check_video_file], upload_to=original_upload_to,
+        validators=[is_video_file], upload_to=original_upload_to,
         storage=media_storage, null=True, blank=False)
     hq_file = models.FileField(u'Видео высокого качества',
         upload_to=hq_upload_to, storage=media_storage,
-        validators=[check_video_file], **nullable)
+        validators=[is_video_file], **nullable)
     mq_file = models.FileField(u'Видео среднего качества',
         upload_to=mq_upload_to,storage=media_storage,
-        validators=[check_video_file], **nullable)
+        validators=[is_video_file], **nullable)
     lq_file = models.FileField(u'Видео низкого качества',
         upload_to=lq_upload_to,storage=media_storage,
-        validators=[check_video_file], **nullable)
+        validators=[is_video_file], **nullable)
     duration = models.IntegerField(u'Длительность', default=0,
                                    editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
@@ -96,8 +95,8 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
     manager = models.CharField(u'Руководитель', max_length=255, **nullable)
     festivals = models.TextField(u'Фестивали', **nullable)
     access = models.IntegerField(u'Кому доступно видео',
-        choices=ACCESS_FLAGS_CHOICES, default=1, **nullable)
-    created = models.DateTimeField(u'Дата добавления', default=datetime.now)
+        choices=ACCESS_FLAGS_CHOICES, default=FREE_FOR_ALL, **nullable)
+    created = models.DateTimeField(u'Дата добавления', default=now)
     views_count = models.IntegerField(u'Количество просмотров видео', default=0,
                                       editable=False, **nullable)
     status = models.IntegerField(u'статус', choices=STATUS_CHOICES,#TODO: remove

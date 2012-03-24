@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import time
-from datetime import datetime
 
 from django import template
+from django.utils.timezone import now
 
 register = template.Library()
 
@@ -28,7 +28,7 @@ def to_hms(value):
 
 @register.filter
 def is_future(value):
-    if value.rotate_from() > datetime.now():
+    if value.rotate_from() > now():
         return True
     return False
 #    now = time.localtime()
@@ -43,7 +43,7 @@ def is_future(value):
 
 @register.filter
 def is_now(value):
-    if value.rotate_from() < datetime.now() < value.rotate_till():
+    if value.rotate_from() < now() < value.rotate_till():
         return True
     return False
 #    now = time.localtime()

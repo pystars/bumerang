@@ -62,7 +62,7 @@ class PhotoForm(BasePhotoForm):
             'authors',
             'teachers',
             'festivals',
-            'access'
+#            'access'
         )
 
 

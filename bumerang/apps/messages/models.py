@@ -1,9 +1,8 @@
-import datetime
 from django.db import models
 from django.conf import settings
 from django.db.models import signals
-from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 class MessageManager(models.Manager):
@@ -75,12 +74,12 @@ class Message(models.Model):
         return self.subject
     
     def get_absolute_url(self):
-        return ('messages_detail', [self.id])
+        return 'messages_detail', [self.id]
     get_absolute_url = models.permalink(get_absolute_url)
     
     def save(self, **kwargs):
         if not self.id:
-            self.sent_at = datetime.datetime.now()
+            self.sent_at = now()
         super(Message, self).save(**kwargs) 
     
     class Meta:

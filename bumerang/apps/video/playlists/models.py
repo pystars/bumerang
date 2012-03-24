@@ -2,6 +2,7 @@
 from datetime import timedelta, datetime
 
 from django.db import models
+from django.utils.timezone import now
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.video.models import Video
@@ -44,7 +45,7 @@ class PlayList(models.Model):
     channel = models.ForeignKey(Channel)
     rotate_from_date = models.DateField(u'Дата начала ротации')
     created = models.DateTimeField(u'Время создания',
-        default=datetime.now, editable=False)
+        default=now, editable=False)
 
     class Meta:
         verbose_name = u'Список воспроизведения'

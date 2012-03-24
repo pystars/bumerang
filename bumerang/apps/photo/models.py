@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import now
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
@@ -76,8 +75,8 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     manager = models.CharField(u'Руководитель', max_length=255, **nullable)
     festivals = models.TextField(u'Фестивали', **nullable)
     access = models.IntegerField(u'Кому доступно фото',
-        choices=ACCESS_FLAGS_CHOICES, default=1, **nullable)
-    created = models.DateTimeField(u'Дата добавления', default=datetime.now)
+        choices=ACCESS_FLAGS_CHOICES, default=FREE_FOR_ALL, **nullable)
+    created = models.DateTimeField(u'Дата добавления', default=now)
     views_count = models.IntegerField(u'Количество просмотров фото', default=0,
                                       editable=False, **nullable)
 

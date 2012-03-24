@@ -2,7 +2,7 @@
 from __future__ import division
 import json
 import urlparse
-from datetime import datetime, timedelta
+from datetime import timedelta
 from uuid import uuid4
 
 try:
@@ -27,6 +27,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.forms.models import inlineformset_factory
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.utils.timezone import now
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.video.models import Video
@@ -35,8 +36,8 @@ from bumerang.apps.accounts.forms import (RegistrationForm,
       UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.email import send_activation_success, send_activation_link, send_new_password
-from bumerang.apps.utils.tasks import (send_new_password_task,
-    send_activation_link_task)
+#from bumerang.apps.utils.tasks import (send_new_password_task,
+#    send_activation_link_task)
 
 # TODO: рефакторить нотификации
 
@@ -150,7 +151,7 @@ class RegistrationFormView(CreateView):
         url = reverse('activate-account', args=[self.object.activation_code])
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
-        self.object.activation_code_expire = datetime.now() + timedelta(days=1)
+        self.object.activation_code_expire = now() + timedelta(days=1)
         self.object.save()
 
 #        send_activation_link_task.delay(full_activation_url,
@@ -177,7 +178,7 @@ class AccountActivationView(TemplateView):
         try:
             user = Profile.objects.get(activation_code=kwargs['code'])
 
-            if user.activation_code_expire < datetime.now():
+            if user.activation_code_expire < now():
                 user.delete()
 
                 notify_error(self.request, message=u'''

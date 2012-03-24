@@ -1,10 +1,10 @@
-import datetime
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django_messages.models import Message
 from django_messages.utils import format_subject, format_quote
+from django.utils.timezone import now
 
 
 class SendTestCase(TestCase):
@@ -30,8 +30,8 @@ class DeleteTestCase(TestCase):
         self.user2 = User.objects.create_user('user4', 'user4@example.com', '123456')
         self.msg1 = Message(sender=self.user1, recipient=self.user2, subject='Subject Text 1', body='Body Text 1')
         self.msg2 = Message(sender=self.user1, recipient=self.user2, subject='Subject Text 2', body='Body Text 2')
-        self.msg1.sender_deleted_at = datetime.datetime.now()
-        self.msg2.recipient_deleted_at = datetime.datetime.now()
+        self.msg1.sender_deleted_at = now()
+        self.msg2.recipient_deleted_at = now()
         self.msg1.save()
         self.msg2.save()
                 

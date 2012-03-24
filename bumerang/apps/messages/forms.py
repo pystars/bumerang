@@ -1,9 +1,8 @@
-import datetime
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext_noop
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
@@ -11,7 +10,7 @@ else:
     notification = None
 
 from bumerang.apps.messages.models import Message
-from bumerang.apps.messages.fields import CommaSeparatedUserField
+
 
 class ComposeForm(forms.Form):
     """
@@ -45,7 +44,7 @@ class ComposeForm(forms.Form):
         )
         if parent_msg is not None:
             msg.parent_msg = parent_msg
-            parent_msg.replied_at = datetime.datetime.now()
+            parent_msg.replied_at = now()
             parent_msg.save()
         msg.save()
         message_list.append(msg)

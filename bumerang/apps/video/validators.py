@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
+from string import lower
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 
-from mediainfo import video_duration
-
-
-def check_video_file(field):
-    if 'temporary_file_path' in field.file:
-        if not video_duration(field.file.temporary_file_path()):
-            raise ValidationError('file fail')
+def is_video_file(field):
+    ext = lower(os.path.splitext(field.name)[1][1:])
+    if ext not in settings.SUPPORTED_VIDEO_FORMATS:
+        raise ValidationError(u'неправильный видеофайл')

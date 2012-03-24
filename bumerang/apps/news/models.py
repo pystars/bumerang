@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from django.db import models
+from django.utils.timezone import now
+
 
 class NewsCategory(models.Model):
     title = models.CharField(max_length=255, verbose_name=u'Название раздела')
@@ -24,7 +24,7 @@ class NewsItem(models.Model):
     slug = models.SlugField()
     preview_text = models.TextField(verbose_name=u'Текст превью')
     text = models.TextField(verbose_name=u'Текст')
-    creation_date = models.DateTimeField(editable=False, default=datetime.now)
+    creation_date = models.DateTimeField(editable=False, default=now)
 
     def __unicode__(self):
         return self.title

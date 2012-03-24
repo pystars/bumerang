@@ -56,6 +56,9 @@ else:
 FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
 
+SUPPORTED_VIDEO_FORMATS = ['avi','mkv','vob','mp4','ogv','ogg','m4v','m2ts',
+    'mts','m2t','wmv','ogm','mov','qt','mpg','mpeg','mp4v']
+
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'templates/static'),
 ]

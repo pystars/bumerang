@@ -50,7 +50,7 @@ class VideoForm(BaseVideoForm):
             'authors',
             'teachers',
             'festivals',
-            'access'
+#            'access'
         )
 
 
