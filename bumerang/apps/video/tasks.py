@@ -97,8 +97,8 @@ class ConvertVideoTask(Task):
         self.original_copy = NamedTemporaryFile(delete=False, suffix=ext)
         self.original_copy.write(video.original_file.file.read())
         video.original_file.open()
-        video.duration = video_duration(self.original_copy.name)
         self.original_copy.close()
+        video.duration = video_duration(self.original_copy.name)
         if not video.duration:
             video.status = Video.ERROR
             video.save()
