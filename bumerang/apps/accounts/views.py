@@ -8,7 +8,7 @@ from uuid import uuid4
 try:
     from cStringIO import StringIO
 except ImportError:
-    import StringIO
+    from StringIO import StringIO
 
 from PIL import Image
 from django.contrib.auth.models import User
@@ -443,8 +443,7 @@ class ProfileAvatarEditView(UpdateView):
 
             notify_error(self.request, message=u'''
             Произошла ошибка при обновлении фотографии профиля.
-            Размер изображения должен быть больше 175x175 пикселей.
-            ''')
+            Размер изображения должен быть больше 175x175 пикселей.''')
             return self.render_to_response(self.get_context_data(form=form))
 
         # Если изображение слишком широкое, ужимаем
@@ -452,14 +451,14 @@ class ProfileAvatarEditView(UpdateView):
             aspect = img.size[0] / img.size[1]
             new_height = int(round(img.size[1] / aspect))
             # Вот с этим изображением мы и будем работать
-            img = img.resize((MAX_WIDTH, new_height), Image.ADAPTIVE)
+            img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
 
         # Иначе просто обрезаем
         cropped_image = img.crop((coords['x'],
                                   coords['y'],
                                   coords['x2'],
                                   coords['y2']))
-        cropped_image.thumbnail((175, 175), Image.ADAPTIVE)
+        cropped_image.thumbnail((175, 175), Image.ANTIALIAS)
 
         temp_handle = StringIO()
         cropped_image.save(temp_handle, 'jpeg')

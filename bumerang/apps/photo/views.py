@@ -71,6 +71,7 @@ def increase_views_count(request, pk):
 class PhotoEditMixin(object):
     def make_thumbs(self):
         img = Image.open(self.object.original_file.file).copy()
+        img = img.convert('RGB')
         self.object.original_file.file.seek(0)
         self.object.image = thumb_img(img, 938)
         self.object.thumbnail = thumb_img(img, 190)
