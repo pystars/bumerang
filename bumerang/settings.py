@@ -33,6 +33,7 @@ LANGUAGE_CODE = 'ru-RU'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
+USE_TZ = True
 
 #Storage settings
 if LOCALHOST:
@@ -212,7 +213,8 @@ if DEBUG:
 #        INTERCEPT_REDIRECTS=False
 #    )
 
-EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
+#EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
+EMAIL_NOREPLY_ADDR = 'va.bolshakov@gmail.com'
 EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_SES_REGION_NAME = 'us-east-1'
 AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'

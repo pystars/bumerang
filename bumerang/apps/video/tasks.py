@@ -2,7 +2,6 @@
 import os
 import random
 import subprocess
-import tempfile
 from tempfile import NamedTemporaryFile, mktemp
 
 from PIL import Image
@@ -34,7 +33,7 @@ class MakeScreenShots(Task):
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
-        source_file = tempfile.NamedTemporaryFile(delete=False)
+        source_file = NamedTemporaryFile(delete=False)
         source_file.write(video.best_quality_file().read())
         source_file.close()
         video.best_quality_file().open()
@@ -51,7 +50,7 @@ class MakeScreenShots(Task):
             previews_count = screenable_duration
         step = screenable_duration / previews_count
         for offset in (offset+step for i in xrange(previews_count)):
-            result_file = tempfile.NamedTemporaryFile()
+            result_file = NamedTemporaryFile()
             preview = Preview(owner=video)
             cmd = self.get_commandline(source_file.name, random.choice(
                 range(offset, offset+step)), size, result_file.name)
@@ -62,8 +61,8 @@ class MakeScreenShots(Task):
             result_file.close()
             preview_name = '{0}.jpg'.format(offset)
             preview.image = thumb_img(img, name=preview_name)
-            preview.thumbnail = thumb_img(img, name=preview_name)
-            preview.icon = thumb_img(img, name=preview_name)
+            preview.thumbnail = thumb_img(img, 190, name=preview_name)
+            preview.icon = thumb_img(img, 60, name=preview_name)
             preview.save()
         os.unlink(source_file.name)
         Video.objects.filter(pk=video_id).update(status=Video.READY)
