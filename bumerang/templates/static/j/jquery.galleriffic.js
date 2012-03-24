@@ -494,7 +494,6 @@
 				if (!bypassHistory && this.enableHistory)
 					$.historyLoad(String(imageData.hash));  // At the moment, historyLoad only accepts string arguments
 				else
-                    console.log('gallerific gotoIndex refresh');
 					this.gotoImage(imageData);
 
 				return this;
@@ -511,7 +510,6 @@
 				this.currentImage = imageData;
 				this.preloadRelocate(index);
 
-                console.log('gallerific gotoImage refresh');
 				this.refresh();
 				
 				return this;
@@ -528,7 +526,6 @@
 
 			// Rebuilds the slideshow image and controls and performs transitions
 			refresh: function() {
-                console.log('gallerific refresh');
 				var imageData = this.currentImage;
 				if (!imageData)
 					return this;
@@ -625,7 +622,6 @@
 			// @param {Object} imageData An object holding the image metadata of the image to build.
 			// @param {Boolean} isSync Specifies whether the transitions are synchronized.
 			buildImage: function(imageData, isSync) {
-                console.log('buildImage');
 				var gallery = this;
 				var nextIndex = this.getNextIndex(imageData.index);
 

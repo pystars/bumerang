@@ -117,29 +117,18 @@
                 });
 
                 $('#vk_comments').empty();
-                var current_url = window.location.href;
                 VK.Widgets.Comments("vk_comments", {
-                    pageUrl: current_url,
-                    limit: 10,
-                    width: "600",
-                    attach: "*" }
+                            pageUrl: window.location.href,
+                            limit: 10,
+                            width: "600",
+                            attach: "*" }
                 );
             },
 
-            onTransitionIn: function() {
-                if ($('.gallery-modal').is(':visible')) {
-                    var index = gallery.currentImage.index;
-                    var photo_id = $($('#thumbs').find('a.thumb').get(index)).attr('data-photo-id');
-
-                    // make request for adding 1 view
-                    $.ajax({
-                        method: 'GET',
-                        url: '/photo/'+ photo_id +'/update-count/',
-                        success: function() {
-
-                        }
-                    })
-
+            onTransitionIn: function(newSlide, newCaption, isSync) {
+                if ($('.gallery-modal').is(':visible') && $('#wall-container').is(':hidden')) {
+                    // Fix for FF browser
+                    newSlide.css('opacity', '1');
                 };
             },
 
@@ -166,52 +155,43 @@
 
         $(document).on('fullWallCurrent', document, function(e) {
             gallery.gotoIndex(e.position);
+            var photo_id = $($('#thumbs').find('a.thumb').get(e.position)).attr('data-photo-id');
+            increasePhotoViewsCount(photo_id);
         });
 
         gallery.find('a.prev').click(function(e) {
-            gallery.previousPage();
             e.preventDefault();
+            gallery.previousPage();
         });
 
         gallery.find('a.next').click(function(e) {
-            gallery.nextPage();
             e.preventDefault();
+            gallery.nextPage();
         });
 
-
-        /**** Functions to support integration of galleriffic with the jquery.history plugin ****/
-
-            // PageLoad function
-            // This function is called when:
-            // 1. after calling $.historyInit();
-            // 2. after calling $.historyLoad();
-            // 3. after pushing "Go Back" button of a browser
         function pageload(hash) {
-            // alert("pageload: " + hash);
-            // hash doesn't contain the first # character.
-            if (hash) {
-                $.galleriffic.gotoImage(hash);
 
+            if (hash) {
                 $("body").css("overflow", "hidden");
                 $('#tint').show();
                 $('.gallery-modal-wrapper').show();
 
-            } else {
-                gallery.gotoIndex(0);
+                $.galleriffic.gotoImage(hash);
+
+                var photo_id = $($('#thumbs').find('a.thumb').get(hash)).attr('data-photo-id');
+                increasePhotoViewsCount(photo_id);
             }
         }
 
         $.historyInit(pageload, "advanced.html");
 
         $("a[rel='history']").live('click', function(e) {
-            if (e.button != 0) return true;
+            e.preventDefault();
 
             var hash = this.href;
             hash = hash.replace(/^.*#/, '');
 
             $.historyLoad(hash);
-
-            return false;
         });
 
     });
