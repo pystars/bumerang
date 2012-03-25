@@ -1083,7 +1083,7 @@ $(function() {
         console.log(filename);
         if(filename != '')
         {
-            var valid_extensions = /(.jpg|.jpeg|.png)$/i;
+            var valid_extensions = /(.bmp|.jpe|.jpg|.jpeg|.tif|.gif|.tiff|.png)$/i;
             if(!valid_extensions.test(filename))
             {
                 $('#popup-upload').hide();
