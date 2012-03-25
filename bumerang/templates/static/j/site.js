@@ -1076,11 +1076,9 @@ $(function() {
     });
 
     $('.button-photo-upload').bind('click', function(e) {
-        console.log(e);
         e.preventDefault();
 
         var filename = $("#photo-upload-form input[name=original_file]").val();
-        console.log(filename);
         if(filename != '')
         {
             var valid_extensions = /(.bmp|.jpe|.jpg|.jpeg|.tif|.gif|.tiff|.png)$/i;
