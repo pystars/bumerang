@@ -16,6 +16,7 @@ class ConvertOptions(models.Model):
     PRESET_CHOICES = choices('Normal', 'High Profile', 'Classic')
     RATE_CHOICES = choices("5", "10", "12", "15", "23.976", "24", "25", "29.97")
     codec = 'x264'
+    channels = 'stereo'
 
     title = models.CharField('title', max_length=20)
     sample_rate = models.FloatField('audio sampling frequency', **nullable)
@@ -36,6 +37,9 @@ class ConvertOptions(models.Model):
     default='ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0',
         **nullable)
 
+    def __unicode__(self):
+        return ' '.join(self.as_commandline())
+
     def as_commandline(self):
         args = [
             '-t', '1',
@@ -46,7 +50,7 @@ class ConvertOptions(models.Model):
             '-r', self.frame_rate,
             '-a', '1',
             '-E', 'faac',
-            '-6', 'stereo',
+            '-6', self.channels,
             '-R', str(self.sample_rate),
             '-B', str(self.abitrate),
             '-D', '0.0',
@@ -58,5 +62,23 @@ class ConvertOptions(models.Model):
             args += ['-Z', self.preset]
         return args
 
-    def __unicode__(self):
-        return ' '.join(self.as_commandline())
+    def update(self, media_info):
+        video = media_info['Video']
+        audio = media_info.get('Audio', {})
+        if video['Width'] < self.width:
+            self.width = video['Width']
+            self.height = int(self.width / video['PixelAspectRatio'])
+        vbitrate = (video['BitRate_Maximum'] or video['BitRate']) / 1000
+        if self.vbitrate > vbitrate:
+            self.vbitrate = vbitrate
+        if float(self.frame_rate) > video['FrameRate']:
+            self.frame_rate = str(video['FrameRate'])
+        if audio:
+            sample_rate = audio['SamplingRate'] / 1000
+            if self.sample_rate > sample_rate:
+                self.sample_rate = sample_rate
+            abitrate = (audio['BitRate_Maximum'] or audio['BitRate']) / 1000
+            if self.abitrate > abitrate:
+                self.abitrate = abitrate
+            if audio['Channel(s)'] == 1:
+                self.channels = 'mono'

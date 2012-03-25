@@ -93,3 +93,24 @@ def video_duration(filename):
     if minfo:
         return minfo['Video']['Duration']
     return None
+
+def media_info(filename):
+    query = {
+        'Video': {
+            'Duration' : int,
+            'BitRate': int,
+            'BitRate_Maximum': int,
+            'Width': int,
+            'Height': int,
+            'FrameRate_Maximum': float,
+            'FrameRate': float,
+            'PixelAspectRatio': float
+        },
+        'Audio': {
+            'BitRate': int,
+            'BitRate_Maximum': int,
+            'Channel(s)': int,
+            'SamplingRate': float,
+        }
+    }
+    return get_metadata(filename, **query)

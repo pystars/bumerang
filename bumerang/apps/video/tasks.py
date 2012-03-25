@@ -10,7 +10,7 @@ from celery.task import Task
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from bumerang.apps.utils.functions import thumb_img
-from bumerang.apps.video.mediainfo import video_duration
+from bumerang.apps.video.mediainfo import media_info
 from models import Preview, Video
 from converting.models import ConvertOptions
 
@@ -98,14 +98,16 @@ class ConvertVideoTask(Task):
         self.original_copy.write(video.original_file.file.read())
         video.original_file.open()
         self.original_copy.close()
-        video.duration = video_duration(self.original_copy.name)
-        if not video.duration:
+        file_params = media_info(self.original_copy.name)
+        if not file_params.get('Video', None):
             video.status = Video.ERROR
             video.save()
             return "Stop Convert - bad original file"
+        video.duration = file_params['Video']['Duration']
         video.status = Video.CONVERTING
         video.save()
         for options in ConvertOptions.objects.all():
+            options.update(file_params)
             file_field_name = options.title
             self.result_file_name = mktemp('.mp4')
             self.convert_options = options.as_commandline()

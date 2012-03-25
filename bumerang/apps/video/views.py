@@ -74,6 +74,8 @@ class VideoCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
+        if not self.object.title:
+            self.object.title = self.object.original_file.name
         self.object.save()
         ConvertVideoTask.delay(self.object.id)
         messages.add_message(
@@ -104,7 +106,7 @@ class VideoUpdateView(OwnerMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if 'original_file' in form.changed_data:
-            self.object.status = self.object.PENDING
+            self.object.status = Video.PENDING
             self.object.save()
             ConvertVideoTask.delay(self.object.id)
         else:
