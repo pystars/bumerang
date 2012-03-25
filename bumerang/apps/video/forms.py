@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
+from bumerang.apps.utils.forms import S3StorageFormMixin
 from models import Video
 
 
-class BaseVideoForm(forms.ModelForm):
+class BaseVideoForm(S3StorageFormMixin, forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(BaseVideoForm, self).__init__(*args, **kwargs)
         self.fields['album'].queryset = self.fields[

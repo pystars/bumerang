@@ -18,11 +18,6 @@ class FileModelMixin(object):
         return [field for field in self.__class__._meta.fields
                 if isinstance(field, FileField) and getattr(self, field.name)]
 
-    def save(self, *args, **kwargs):
-        for field in self.not_empty_file_fields():
-            getattr(self, field.name).file.open()
-        super(FileModelMixin, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
         try:
             super(FileModelMixin, self).delete(*args, **kwargs)

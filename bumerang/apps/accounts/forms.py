@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from bumerang.apps.accounts.models import Profile, Faculty, Service, Teammate
+from bumerang.apps.utils.forms import S3StorageFormMixin
 
 
 class InfoEditFormsMixin(forms.ModelForm):
@@ -121,7 +122,7 @@ class ProfileInfoEditForm(InfoEditFormsMixin, forms.ModelForm):
         )
 
 
-class ProfileAvatarEditForm(forms.ModelForm):
+class ProfileAvatarEditForm(S3StorageFormMixin, forms.ModelForm):
     avatar_coords = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = Profile
@@ -210,13 +211,13 @@ class ServiceForm(EditFormsMixin, forms.ModelForm):
         fields = ('title', 'description')
 
 
-class TeammateForm(EditFormsMixin, forms.ModelForm):
+class TeammateForm(S3StorageFormMixin, EditFormsMixin, forms.ModelForm):
     class Meta:
         model = Teammate
         fields = ('photo', 'name', 'description')
 
 
-class TeacherForm(EditFormsMixin, forms.ModelForm):
+class TeacherForm(S3StorageFormMixin, EditFormsMixin, forms.ModelForm):
     class Meta:
         model = Teammate
         fields = ('photo', 'name', 'description')

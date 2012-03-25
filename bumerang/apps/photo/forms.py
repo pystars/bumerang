@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
+from bumerang.apps.utils.forms import S3StorageFormMixin
 from models import Photo
 
 
-class BasePhotoForm(forms.ModelForm):
+class BasePhotoForm(S3StorageFormMixin, forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(BasePhotoForm, self).__init__(*args, **kwargs)
