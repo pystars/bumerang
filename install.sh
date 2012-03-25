@@ -50,8 +50,6 @@ pip -E /var/www/.virtualenvs/bumerang install -U -r /home/ubuntu/bumerang/requir
 chown -R www-data:adm /var/www
 chown -R www-data:adm /var/log/uwsgi
 chmod -R 750 /var/log/uwsgi
-chown -R www-data:adm /var/run/uwsgi
-chmod -R 750 /var/run/uwsgi
 chown -R www-data:adm /home/ubuntu/bumerang
 # on web we need add this
 ln -s /home/ubuntu/bumerang/nginx.conf /etc/nginx/sites-enabled/bumerang.conf
