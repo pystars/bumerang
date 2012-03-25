@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 import string
-from cStringIO import StringIO
+from tempfile import TemporaryFile
 from exceptions import TypeError
 
 from PIL import Image
@@ -11,10 +11,11 @@ def random_string(length, letters=string.ascii_letters+string.digits):
     return u''.join(random.choice(letters) for i in xrange(length))
 
 def thumb_img(img, width=None, height=None, name='thumb.jpg'):
-    io = StringIO()
+    io = TemporaryFile()
     thumb = img.copy()
     thumb.thumbnail(image_width_height(img, width, height), Image.ANTIALIAS)
     thumb.save(io, format='JPEG')
+    del thumb
     size = io.tell()
     io.seek(0)
     return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)

@@ -76,6 +76,7 @@ class PhotoEditMixin(object):
         self.object.image = thumb_img(img, 938)
         self.object.thumbnail = thumb_img(img, 190)
         self.object.icon = thumb_img(img, 60)
+        del img
         self.object.save()
 
 
