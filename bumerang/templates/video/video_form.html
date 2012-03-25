@@ -97,7 +97,7 @@
             </dd>
             <dt>
                 {% spaceless %}
-                    <a href="{% url profile-photo-detail object.id %}">
+                    <a href="{% url profile-photo-detail request.user.id %}">
                         <span>Фото</span>
                     </a>
                 {% endspaceless %}
