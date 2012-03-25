@@ -449,7 +449,7 @@ class ProfileAvatarEditView(UpdateView):
 
         # Если изображение слишком широкое, ужимаем
         if img.size[0] > MAX_WIDTH:
-            aspect = img.size[0] / img.size[1]
+            aspect = img.size[0] / MAX_WIDTH
             new_height = int(round(img.size[1] / aspect))
             # Вот с этим изображением мы и будем работать
             img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)

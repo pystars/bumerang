@@ -13,5 +13,6 @@ class S3StorageFormMixin(object):
         if commit:
             for field in set(f[0] for f in self.fields.items()
             if isinstance(f[1], FileField)) & set(self.changed_data):
-                getattr(self, field).open()
+#                getattr(self, field).open()
+                self.files[field].open()
         return super(S3StorageFormMixin, self).save(commit)
