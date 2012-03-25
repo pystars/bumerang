@@ -33,7 +33,6 @@ LANGUAGE_CODE = 'ru-RU'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
 
 #Storage settings
 if LOCALHOST:
@@ -52,12 +51,11 @@ else:
     MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
     STATIC_ROOT = ''
     STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+    #STATIC_URL = '/static/'
 
 FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
-
-SUPPORTED_VIDEO_FORMATS = ['avi','mkv','vob','mp4','ogv','ogg','m4v','m2ts',
-    'mts','m2t','wmv','ogm','mov','qt','mpg','mpeg','mp4v']
+ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'templates/static'),
@@ -216,8 +214,8 @@ if DEBUG:
 
 EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
 EMAIL_BACKEND = 'django_ses.SESBackend'
-AWS_SES_REGION_NAME = 'us-east-1'
-AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
+AWS_SES_REGION_NAME = 'eu-west-1'
+AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
 
 import djcelery
 
