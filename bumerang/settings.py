@@ -46,11 +46,11 @@ else:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_ROOT = ''
     AWS_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
-    AWS_MEDIA_STORAGE_BUCKET_NAME = 'files.probumerang.tv'
+    AWS_MEDIA_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
     AWS_S3_SECURE_URLS = False
     AWS_PRELOAD_METADATA = True
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    MEDIA_URL = 'http://files.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+    MEDIA_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
     STATIC_ROOT = ''
     STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
 
