@@ -195,7 +195,7 @@ FIXTURE_DIRS = (
 
 PREVIEWS_COUNT = 5
 
-if DEBUG:
+#if DEBUG:
 #    INSTALLED_APPS += ('debug_toolbar',)
 #
 #    DEBUG_TOOLBAR_PANELS = (
