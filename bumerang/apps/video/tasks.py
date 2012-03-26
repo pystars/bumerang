@@ -82,6 +82,11 @@ class ConvertVideoTask(Task):
             self.original_copy.name]
             + self.convert_options + ['-o', self.result_file_name])
 
+    def _error_handle(self, video):
+        video.status = Video.ERROR
+        video.save()
+        os.unlink(self.original_copy.name)
+
     def run(self, video_id, **kwargs):
         """
         Converts the Video and creates the related files.
@@ -98,10 +103,13 @@ class ConvertVideoTask(Task):
         self.original_copy.write(video.original_file.file.read())
         video.original_file.open()
         self.original_copy.close()
-        file_params = media_info(self.original_copy.name)
+        try:
+            file_params = media_info(self.original_copy.name)
+        except OSError:
+            self._error_handle(video)
+            return "Stop Convert - bad original file"
         if not file_params.get('Video', None):
-            video.status = Video.ERROR
-            video.save()
+            self._error_handle(video)
             return "Stop Convert - bad original file"
         video.duration = file_params['Video']['Duration']
         video.status = Video.CONVERTING
