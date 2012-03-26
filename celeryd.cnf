@@ -5,7 +5,7 @@ CELERYD_PYTHON="/var/www/.virtualenvs/bumerang/bin/python"
 # Path to celeryd
 CELERYD_MULTI="$CELERYD_PYTHON $CELERYD_CHDIR/manage.py celeryd_multi"
 
-CELERYD_OPTS="-Q default,video --time-limit=7200 --concurrency=2 -B"
+CELERYD_OPTS="-Q celery,video --time-limit=7200 --concurrency=2 -B"
 CELERYD_LOG_FILE=/var/log/celery/%n.log
 
 # Path to celerybeat
