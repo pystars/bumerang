@@ -144,6 +144,7 @@ INSTALLED_APPS = [
     'djkombu',
     'djangoratings',
     'django_ses',
+    'django_extensions',
     # internal
     'bumerang.apps.bumerang_site',
     'bumerang.apps.news',
@@ -196,7 +197,6 @@ PREVIEWS_COUNT = 5
 
 if DEBUG:
 #    INSTALLED_APPS += ('debug_toolbar',)
-    INSTALLED_APPS += ('django_extensions',)
 #
 #    DEBUG_TOOLBAR_PANELS = (
 #        'debug_toolbar.panels.version.VersionDebugPanel',
