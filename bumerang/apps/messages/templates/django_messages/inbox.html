@@ -9,6 +9,7 @@
         <hr />
     </div>
     <h3>Сообщения</h3>
+    <h4>Входящие&nbsp;<a href="{% url messages_outbox %}">Исходящие</a></h4>
     <p>Всего полученных сообщений: {% inbox_all_count %}</p>
 {% endblock %}
 
