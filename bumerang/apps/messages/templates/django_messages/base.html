@@ -18,7 +18,7 @@
                 <span>Видео</span>
             </a>
             {% endspaceless %}
-                <small>{{ profile.video_set.count }}</small>
+                <small>{{ request.user.profile.video_set.count }}</small>
             <i class="l"></i>
             <i class="r"></i>
         </dt>
@@ -28,7 +28,7 @@
                 <span>Фото</span>
             </a>
             {% endspaceless %}
-                <small>{{ profile.photo_set.count }}</small>
+                <small>{{ request.user.profile.photo_set.count }}</small>
             <i class="l"></i>
             <i class="r"></i>
         </dt>
