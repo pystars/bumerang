@@ -68,7 +68,7 @@
                     var flashvars = {
                         "comment":"Бумер (широкоэкранник 2.1)",
                         "st":"{{ STATIC_URL }}uppod/video113-881.txt",
-                        "file":"{{ object.best_quality_file.url }}"
+                        "file":"{% autoescape off %}{{ object.best_quality_file.url }}{% endautoescape %}"
                     };
                     var params = {
                         bgcolor:"#ffffff",

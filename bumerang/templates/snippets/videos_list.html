@@ -7,7 +7,7 @@
                     {% if video.status == video.READY %}
                     <a href="{% url video-detail video.id %}">
                         <span>
-                            <img src="{% if video.preview %}{{ video.preview.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="{{ video.title }}" />
+                            <img src="{% if video.preview %}{{ video.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="{{ video.title }}" />
                             <span class="time">{{ video.duration|default_if_none:0|to_hms }}</span>
                         </span>
                         <i class="b-ico b-ico_play"><i></i></i>
