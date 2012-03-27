@@ -24,6 +24,7 @@ def makemedia():
     '''
     Makes media direcory structure
     '''
+    local('mkdir ./bumerang/media')
     local('mkdir ./bumerang/media/tmp')
     local('mkdir ./bumerang/media/uploads')
     local('mkdir ./bumerang/media/previews')
