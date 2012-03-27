@@ -14,7 +14,7 @@ class VideoAlbum(models.Model, TitleUnicode):
     owner = models.ForeignKey(User)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание', **nullable)
-    preview = models.ImageField(u'Обложка', storage=media_storage,
+    image = models.ImageField(u'Обложка', storage=media_storage,
         upload_to=video_album_preview_upload_to, **nullable)
     cover = models.ForeignKey(Video, on_delete=models.SET_NULL, **nullable)
 
@@ -22,3 +22,9 @@ class VideoAlbum(models.Model, TitleUnicode):
         verbose_name = u'Видеоальбом'
         verbose_name_plural = u'Видеоальбомы'
 
+    def preview(self):
+        if self.image:
+            return self.image
+        elif self.cover:
+            return self.cover.preview().thumbnail
+        return None

@@ -5,7 +5,7 @@
             <a href="{% url video-album-detail videoalbum.id %}">
                 <span class="gi-img">
                     <span>
-                        <img src="{% if videoalbum.preview %}{{ videoalbum.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}"
+                        <img src="{% if videoalbum.preview.thumbnail %}{{ videoalbum.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}"
                              width="190" height="123" alt="{{ videoalbum.title }}" />
                     </span>
                 </span>

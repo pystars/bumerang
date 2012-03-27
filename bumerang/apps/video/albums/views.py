@@ -18,7 +18,7 @@ class VideoSetCoverView(AjaxView, OwnerMixin, UpdateView):
         self.object = form.save(commit=False)
         if (self.object.id == cover.album_id
         and self.object.owner == self.request.user):
-            self.object.preview = cover.preview()
+            self.object.image = None
             self.object.save()
         return self.render_to_response(result=True)
 

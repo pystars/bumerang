@@ -9,7 +9,7 @@ from forms import PhotoAlbumForm, PhotoAlbumCoverForm
 from models import PhotoAlbum
 
 
-class PhotoSetCoverView(AjaxView, UpdateView):
+class PhotoSetCoverView(AjaxView, OwnerMixin, UpdateView):
     model = PhotoAlbum
     form_class = PhotoAlbumCoverForm
 
