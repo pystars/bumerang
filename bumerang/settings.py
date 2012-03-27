@@ -40,8 +40,8 @@ USE_TZ = True
 if LOCALHOST:
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL)
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL)
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL[1:])
+    MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL[1:])
 else:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_ROOT = ''
