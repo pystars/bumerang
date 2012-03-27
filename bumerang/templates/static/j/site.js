@@ -1106,7 +1106,7 @@ $(function() {
 
         var filename = $("#video-upload-form input[name=original_file]").val();
         if(filename != '') {
-            var valid_extensions = /(.m1v|.mpeg|.mov|.qt|.mpa|.mpg|.mpe|.avi|.movie|.mp4)$/i;
+            var valid_extensions = /(.avi|.mkv|.vob|.mp4|.ogv|.ogg|.m4v|.m2ts|.mts|.m2t|.wmv|.ogm|.mov|.qt|.mpg|.mpeg|.mp4v)$/i;
             if(!valid_extensions.test(filename))
             {
                 $('#popup-upload').hide();
