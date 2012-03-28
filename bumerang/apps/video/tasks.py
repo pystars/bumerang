@@ -85,8 +85,7 @@ class ConvertVideoTask(Task):
     def _error_handle(self, video):
         video.status = Video.ERROR
         video.save()
-        #TODO: uncomment it
-#        os.unlink(self.original_copy.name)
+        os.unlink(self.original_copy.name)
 
     def run(self, video_id, **kwargs):
         """
