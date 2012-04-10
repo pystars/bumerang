@@ -33,7 +33,7 @@ from bumerang.apps.utils.functions import random_string
 from bumerang.apps.video.models import Video
 from bumerang.apps.accounts.forms import (RegistrationForm,
       PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
-      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm)
+      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm, UserContactsForm, OrganizationContactsForm)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.email import send_activation_success, send_activation_link, send_new_password
 #from bumerang.apps.utils.tasks import (send_new_password_task,
@@ -484,6 +484,21 @@ class ProfileAvatarEditView(UpdateView):
         ''')
 
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class ProfileContactsEditView(UpdateView):
+    model = Profile
+    template_name = 'accounts/profile_edit_contacts.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_form_class(self):
+        if self.request.user.profile.type == 1:
+            return UserContactsForm
+        if self.request.user.profile.type == 2 \
+        or self.request.user.profile.type == 3:
+            return OrganizationContactsForm
 
 
 class ProfileSettingsEditView(UpdateView):

@@ -79,16 +79,22 @@ class Profile(FileModelMixin, User):
     nickname = models.CharField(u'Никнейм', max_length=100, **nullable)
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 
-    # Школа
-#    teachers = models.ManyToManyField('self', through='TeachersRelationship',
-#                                      verbose_name=u'Преподаватели',
-#                                      related_name='teacher_related_to',
-#                                      symmetrical=False,
-#                                      **nullable)
-
-    #Студия
-#    services = models.CharField(u'Услуги', max_length=255, **nullable)
-#    team = models.ManyToManyField('self', verbose_name=u'Команда', **nullable)
+    info_name = models.CharField(u'Имя', max_length=100, blank=False,
+        null=True)
+    info_second_name = models.CharField(u'Фамилия', max_length=100, blank=False,
+        null=True)
+    info_middle_name = models.CharField(u'Отчество', max_length=100,
+        blank=False, null=True)
+    info_address = models.TextField(u'Фактический адрес')
+    info_postal_address = models.TextField(u'Почтовый адрес')
+    info_phone = models.CharField(u'Контактный телефон', max_length=12)
+    info_mobile_phone = models.CharField(u'Мобильный телефон',
+        max_length=12, **nullable)
+    info_email = models.EmailField(u'Электронный адрес')
+    info_organization = models.CharField(u'Название организации',
+        max_length=255)
+    info_organization_form = models.CharField(u'Организационно-правовая форма',
+        max_length=255)
 
     views_count = models.IntegerField(u'Количество просмотров профиля',
                                       default=0,

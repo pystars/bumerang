@@ -234,3 +234,36 @@ class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
         fields = ('title', 'country',
                   'region',
                   'city', 'description', )
+
+
+class UserContactsForm(EditFormsMixin, forms.ModelForm):
+    info_address = forms.CharField(widget=forms.Textarea,
+        label=u'Домашний адрес')
+
+    class Meta:
+        model = Profile
+        fields = (
+            'info_address',
+            'info_postal_address',
+            'info_phone',
+            'info_mobile_phone',
+            'info_email',
+        )
+
+
+class OrganizationContactsForm(EditFormsMixin, forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = (
+            'info_name',
+            'info_second_name',
+            'info_middle_name',
+            'info_address',
+            'info_postal_address',
+            'info_phone',
+            'info_mobile_phone',
+            'info_email',
+            'info_organization',
+            'info_organization_form',
+            )

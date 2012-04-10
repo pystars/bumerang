@@ -8,7 +8,7 @@ from bumerang.apps.accounts.models import Faculty, Service, Teammate, Teacher
 from bumerang.apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
-     AccountActivationView, FormsetUpdateView, ProfileVideoView, ProfilePhotoView)
+     AccountActivationView, FormsetUpdateView, ProfileVideoView, ProfilePhotoView, ProfileContactsEditView)
 
 
 urlpatterns = patterns('',
@@ -130,6 +130,10 @@ url(r'^login/$',
             form=ServiceForm,
         )),
         name='profile-edit-services'
+    ),
+    url(r'^edit-contacts/$',
+        login_required(ProfileContactsEditView.as_view()),
+        name='profile-edit-contacts'
     ),
     url(r'^(?P<pk>[\d]+)/$',
         ProfileView.as_view(),

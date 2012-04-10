@@ -1,0 +1,67 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+<section class="b-form b-form_smaller b-form_edit b-form_left">
+<form name="editform" action="" method="post">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <h3 class="title">
+                    {% if user.profile.type == 1 %}
+                        {% sitetree_page_title from "user_edit_menu" %}
+                    {% endif %}{% if user.profile.type == 2 %}
+                    {% sitetree_page_title from "school_edit_menu" %}
+                {% endif %}{% if user.profile.type == 3 %}
+                    {% sitetree_page_title from "studio_edit_menu" %}
+                {% endif %}
+                </h3>
+                {% if form|form_type in 'UserContactsForm' %}
+                    <p>
+                    Контактная информация обязательна для заполнения в случае, если вы участвуете в конкурсе или фестивале.
+                    Ваши контактные данные доступны только организатору конкурса и сторонние пользователи их не видят.
+                    </p>
+                {% else %}
+                    <p>
+                    Контактная информация обязательна для заполнения в случае, если вы участвуете в конкурсе или фестивале.
+                    </p>
+                    <h4>Руководитель</h4>
+                {% endif %}
+                {% for item in form %}
+                    <fieldset>
+                    <div class="b-form__field">
+                        <label>
+                            <span class="f-title">
+                                <span>{{ item.label }}</span>
+                            </span>
+                            {% if item|widget_type in 'TextInput DateInput' %}
+                                <span class="f-input">
+                            {% endif %}{% if item|widget_type == 'Textarea' %}
+                            <span class="f-textarea">
+                        {% endif %}{% if item|widget_type == 'Select' %}
+                            <span class="f-select">
+                        {% endif %}
+                            {{ item }}
+                            </span>
+                        </label>
+                        {% if item.errors %}
+                            <div class="f-err"><span>{{ item.errors }}</span></div>
+                        {% endif %}
+                    </div>
+                    </fieldset>
+                {% endfor %}
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+</section>
+{% endblock %}
+
