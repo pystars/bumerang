@@ -1,3 +1,7 @@
+allowed_photos_extensions_regexp = /.+\.(bmp|jpe|jpg|jpeg|tif|gif|tiff|png)$/i;
+allowed_videos_extensions_regexp =
+    /.+\.(avi|mkv|vob|mp4|ogv|ogg|m4v|m2ts|mts|m2t|wmv|ogm|mov|qt|mpg|mpeg|mp4v)$/i;
+
 // implement JSON.stringify serialization
 var JSON = JSON || {};
 JSON.stringify = JSON.stringify || function (obj) {
@@ -1062,8 +1066,7 @@ $(function() {
         var filename = $("#video-upload-form input[name=original_file]").val();
         if(filename != '')
         {
-            var valid_extensions = /(.m1v|.mpeg|.mov|.qt|.mpa|.mpg|.mpe|.avi|.movie|.mp4)$/i;
-            if(!valid_extensions.test(filename))
+            if(!allowed_videos_extensions_regexp.test(filename))
             {
                 $('#popup-upload').hide();
                 $('#tint').hide();
@@ -1084,8 +1087,7 @@ $(function() {
         var filename = $("#photo-upload-form input[name=original_file]").val();
         if(filename != '')
         {
-            var valid_extensions = /(.bmp|.jpe|.jpg|.jpeg|.tif|.gif|.tiff|.png)$/i;
-            if(!valid_extensions.test(filename))
+            if(!allowed_photos_extensions_regexp.test(filename))
             {
                 $('#popup-upload').hide();
                 $('#tint').hide();
@@ -1108,9 +1110,9 @@ $(function() {
         e.preventDefault();
 
         var filename = $("#video-upload-form input[name=original_file]").val();
+        alert(filename);
         if(filename != '') {
-            var valid_extensions = /(.avi|.mkv|.vob|.mp4|.ogv|.ogg|.m4v|.m2ts|.mts|.m2t|.wmv|.ogm|.mov|.qt|.mpg|.mpeg|.mp4v)$/i;
-            if(!valid_extensions.test(filename))
+            if(!allowed_videos_extensions_regexp.test(filename))
             {
                 $('#popup-upload').hide();
                 $('#tint').hide();
@@ -1130,8 +1132,7 @@ $(function() {
 
         var filename = $("#photo-upload-form input[name=original_file]").val();
         if (filename) {
-            var valid_extensions = /(.bmp|.jpe|.jpg|.jpeg|.tif|.gif|.tiff|.png)$/i;
-            if(!valid_extensions.test(filename))
+            if(!allowed_photos_extensions_regexp.test(filename))
             {
                 $('#popup-upload').hide();
                 $('#tint').hide();
