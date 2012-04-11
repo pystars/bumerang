@@ -500,6 +500,9 @@ class ProfileContactsEditView(UpdateView):
         or self.request.user.profile.type == 3:
             return OrganizationContactsForm
 
+    def get_success_url(self):
+        return reverse('profile-edit-contacts')
+
 
 class ProfileSettingsEditView(UpdateView):
     model = User
