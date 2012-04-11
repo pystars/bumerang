@@ -87,7 +87,7 @@ class Profile(FileModelMixin, User):
         blank=False, null=True)
     info_address = models.TextField(u'Фактический адрес')
     info_postal_address = models.TextField(u'Почтовый адрес')
-    info_phone = models.CharField(u'Контактный телефон', max_length=12)
+    info_phone = models.CharField(u'Контактный телефон', max_length=40)
     info_mobile_phone = models.CharField(u'Мобильный телефон',
         max_length=12, **nullable)
     info_email = models.EmailField(u'Электронный адрес')
