@@ -708,7 +708,10 @@ var PhotoAlbumsView = Backbone.View.extend({
     clickSinglePhotoDelete: function(e) {
         e.preventDefault();
         var el = e.target || e.srcElement;
-        this.selected_photos.push($(el).attr('data-photo-id'));
+
+        this.selected_photos.push(
+            parseInt($(el).attr('data-photo-id'))
+        );
         this.selected_photos = _.uniq(this.selected_photos);
 
         if (this.selected_albums.length > 1) {
