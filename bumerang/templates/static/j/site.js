@@ -1110,7 +1110,6 @@ $(function() {
         e.preventDefault();
 
         var filename = $("#video-upload-form input[name=original_file]").val();
-        alert(filename);
         if(filename != '') {
             if(!allowed_videos_extensions_regexp.test(filename))
             {
