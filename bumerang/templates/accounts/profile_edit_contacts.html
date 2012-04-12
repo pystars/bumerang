@@ -32,29 +32,194 @@
                     </p>
                     <h4>Руководитель</h4>
                 {% endif %}
-                {% for item in form %}
+
+                {% if form|form_type in 'UserContactsForm' %}
+                    {% for item in form %}
+                        <fieldset>
+                            <div class="b-form__field">
+                                <label>
+                                    <span class="f-title">
+                                        <span>{{ item.label }}</span>
+                                    </span>
+                                    {% if item|widget_type in 'TextInput DateInput' %}
+                                        <span class="f-input">
+                                    {% endif %}{% if item|widget_type == 'Textarea' %}
+                                    <span class="f-textarea">
+                                {% endif %}{% if item|widget_type == 'Select' %}
+                                    <span class="f-select">
+                                {% endif %}
+                                    {{ item }}
+                                    </span>
+                                </label>
+                                {% if item.errors %}
+                                    <div class="f-err"><span>{{ item.errors }}</span></div>
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                    {% endfor %}
+                {% else %}
                     <fieldset>
-                    <div class="b-form__field">
-                        <label>
-                            <span class="f-title">
-                                <span>{{ item.label }}</span>
-                            </span>
-                            {% if item|widget_type in 'TextInput DateInput' %}
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_second_name.label }}</span>
+                                </span>
                                 <span class="f-input">
-                            {% endif %}{% if item|widget_type == 'Textarea' %}
-                            <span class="f-textarea">
-                        {% endif %}{% if item|widget_type == 'Select' %}
-                            <span class="f-select">
+                                    {{ form.info_second_name }}
+                                </span>
+                            </label>
+                        {% if form.info_second_name.errors %}
+                            <div class="f-err"><span>{{ item.info_second_name.errors }}</span></div>
                         {% endif %}
-                            {{ item }}
-                            </span>
-                        </label>
-                        {% if item.errors %}
-                            <div class="f-err"><span>{{ item.errors }}</span></div>
-                        {% endif %}
-                    </div>
+                        </div>
                     </fieldset>
-                {% endfor %}
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_name.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_name }}
+                                </span>
+                            </label>
+                            {% if form.info_name.errors %}
+                                <div class="f-err"><span>{{ item.info_name.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_middle_name.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_middle_name }}
+                                </span>
+                            </label>
+                            {% if form.info_middle_name.errors %}
+                                <div class="f-err"><span>{{ item.info_middle_name.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_address.label }}</span>
+                                </span>
+                                <span class="f-textarea">
+                                    {{ form.info_address }}
+                                </span>
+                            </label>
+                            {% if form.info_address.errors %}
+                                <div class="f-err"><span>{{ item.info_address.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_postal_address.label }}</span>
+                                </span>
+                                <span class="f-textarea">
+                                    {{ form.info_postal_address }}
+                                </span>
+                            </label>
+                            {% if form.info_postal_address.errors %}
+                                <div class="f-err"><span>{{ item.info_postal_address.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_phone.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_phone }}
+                                </span>
+                            </label>
+                            {% if form.info_phone.errors %}
+                                <div class="f-err"><span>{{ item.info_phone.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_mobile_phone.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_mobile_phone }}
+                                </span>
+                            </label>
+                            {% if form.info_mobile_phone.errors %}
+                                <div class="f-err"><span>{{ item.info_mobile_phone.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_email.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_email }}
+                                </span>
+                            </label>
+                            {% if form.info_email.errors %}
+                                <div class="f-err"><span>{{ item.info_email.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <h4>Организация, в составе которой находится данный коллектив</h4>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_organization.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_organization }}
+                                </span>
+                            </label>
+                            {% if form.info_organization.errors %}
+                                <div class="f-err"><span>{{ item.info_organization.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ form.info_organization_form.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ form.info_organization_form }}
+                                </span>
+                            </label>
+                            {% if form.info_organization_form.errors %}
+                                <div class="f-err"><span>{{ item.info_organization_form.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                {% endif %}
             </div>
             <footer class="b-form__footer">
                 <div class="wrap">
