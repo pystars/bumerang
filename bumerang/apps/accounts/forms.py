@@ -245,6 +245,9 @@ class UserContactsForm(EditFormsMixin, forms.ModelForm):
     class Meta:
         model = Profile
         fields = (
+            'info_second_name',
+            'info_name',
+            'info_middle_name',
             'info_address',
             'info_postal_address',
             'info_phone',
