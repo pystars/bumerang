@@ -503,6 +503,16 @@ class ProfileContactsEditView(UpdateView):
     def get_success_url(self):
         return reverse('profile-edit-contacts')
 
+    def form_valid(self, form):
+        message = u'Контакты обновлены успешно.'
+        notify_success(self.request, message=message)
+        return super(ProfileContactsEditView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        message = u'Ошибка при обновлении контактов.'
+        notify_error(self.request, message=message)
+        return super(ProfileContactsEditView, self).form_invalid(form)
+
 
 class ProfileSettingsEditView(UpdateView):
     model = User
