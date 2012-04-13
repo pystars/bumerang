@@ -580,14 +580,16 @@ var PhotoAlbumsView = Backbone.View.extend({
     clickAlbumCheckbox: function(e) {
         var el = e.target || e.srcElement;
         if (el.checked) {
-            this.selected_albums.push($(el).attr('data-photoalbum-id'));
+            this.selected_albums.push(
+                parseInt($(el).attr('data-photoalbum-id'))
+            );
         } else {
             this.selected_albums = _.without(
                 this.selected_albums,
-                $(el).attr('data-photoalbum-id')
+                parseInt($(el).attr('data-photoalbum-id'))
             );
         }
-        
+
         this.updatePage();
     },
 
@@ -608,7 +610,7 @@ var PhotoAlbumsView = Backbone.View.extend({
     hideAlbums: function() {
         var view = this;
         this.selected_albums.forEach(function(e, i) {
-            var el = $('#photoalbum-item-' + e);
+            var el = $('#photoalbums-item-' + e);
             el.hide(function() {
                 el.remove();
                 view.updatePage();
@@ -624,6 +626,8 @@ var PhotoAlbumsView = Backbone.View.extend({
         } else {
             var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
         }
+
+        console.log(this.selected_albums);
 
         var view = this;
         invokeConfirmDialog(msg, function() {
@@ -650,14 +654,18 @@ var PhotoAlbumsView = Backbone.View.extend({
         e.preventDefault();
         var el = e.target || e.srcElement;
 
-        this.selected_photos.push($(el).attr('data-photoalbum-id'));
+        this.selected_albums.push(
+            $(el).attr('data-photoalbum-id')
+        );
 
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные фотоальбомы?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
         }
-        
+
+        console.log(el, this.selected_albums);
+
         var view = this;
         invokeConfirmDialog(msg, function() {
             $.ajax({
