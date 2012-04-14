@@ -6,6 +6,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 #from filebrowser.sites import site
 
 from django.conf import settings
+from django.conf.urls.static import static
 
 admin.autodiscover()
 
@@ -26,6 +27,9 @@ urlpatterns = patterns('',
     url(r'^admin/django-ses/', include('django_ses.urls')),
 )
 
+urlpatterns += patterns('django.contrib.staticfiles.views',
+    url(r'^crossdomain.xml$', kwargs={'path': 'crossdomain.xml'}, view='serve'),
+)
 #if settings.DEBUG:
 #    urlpatterns += patterns('django.contrib.staticfiles.views',
 #        url(r'^static/(?P<path>.*)$', 'serve'),
@@ -37,6 +41,6 @@ urlpatterns = patterns('',
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
 
-    from django.conf.urls.static import static
+#    from django.conf.urls.static import static
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

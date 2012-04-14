@@ -57,7 +57,10 @@ class MakeScreenShots(Task):
             process = subprocess.call(cmd, shell=False)
             if process:
                 return "Stop making screen shoots - video is deleted"
-            orig = Image.open(result_file.name)
+            try:
+                orig = Image.open(result_file.name)
+            except IOError:
+                print result_file.name
             img = orig.copy()
             result_file.close()
             preview_name = '{0}.jpg'.format(offset)
