@@ -222,7 +222,7 @@ AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 
 import djcelery
 
-if LOCALHOST:
+if LOCALHOST or True: #TODO test case
     BROKER_TRANSPORT = 'djkombu.transport.DatabaseTransport'
 else:
     BROKER_TRANSPORT = 'sqs'
