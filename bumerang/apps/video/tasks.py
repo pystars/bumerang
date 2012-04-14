@@ -57,7 +57,8 @@ class MakeScreenShots(Task):
             process = subprocess.call(cmd, shell=False)
             if process:
                 return "Stop making screen shoots - video is deleted"
-            img = Image.open(result_file.name).copy()
+            orig = Image.open(result_file.name)
+            img = orig.copy()
             result_file.close()
             preview_name = '{0}.jpg'.format(offset)
             preview.image = thumb_img(img, name=preview_name)
@@ -133,7 +134,7 @@ class ConvertVideoTask(Task):
                 stdout, stderr = process.communicate()
                 print 'stdout:', stdout
                 print 'stderr:', stderr
-                video.status = video.ERROR
+                video.status = Video.ERROR
             else:
                 size = os.path.getsize(self.result_file_name)
                 converted_file = InMemoryUploadedFile(
