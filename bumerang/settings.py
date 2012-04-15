@@ -222,15 +222,15 @@ AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 
 import djcelery
 
-if LOCALHOST or True: #TODO test case
-    BROKER_TRANSPORT = 'djkombu.transport.DatabaseTransport'
-else:
-    BROKER_TRANSPORT = 'sqs'
-    BROKER_TRANSPORT_OPTIONS = {
-        'region': 'eu-west-1',
-    }
-    BROKER_USER = AWS_ACCESS_KEY_ID
-    BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
+#if LOCALHOST:
+#    BROKER_TRANSPORT = 'djkombu.transport.DatabaseTransport'
+#else:
+#    BROKER_TRANSPORT = 'sqs'
+#    BROKER_TRANSPORT_OPTIONS = {
+#        'region': 'eu-west-1',
+#    }
+#    BROKER_USER = AWS_ACCESS_KEY_ID
+#    BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
 BROKER_POOL_LIMIT = 1
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 CELERY_RESULT_BACKEND = "database"
