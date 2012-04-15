@@ -72,7 +72,8 @@ class MakeScreenShots(Task):
                 preview.save()
             except IOError:
                 result_file.close()
-                logger.error('error during imagining', result_file.name)
+                logger.error('error during imagining {0}'.format(
+                    result_file.name))
         logger.info("Screened {0} ({1})".format(video, source_file.name))
         os.unlink(source_file.name)
         Video.objects.filter(pk=video_id).update(status=Video.READY)
