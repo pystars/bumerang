@@ -222,7 +222,7 @@ AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 
 import djcelery
 
-if LOCALHOST or True: #TODO test case
+if LOCALHOST: #TODO test case
     BROKER_TRANSPORT = 'djkombu.transport.DatabaseTransport'
 else:
     BROKER_TRANSPORT = 'sqs'
@@ -233,8 +233,11 @@ else:
     BROKER_PASSWORD = AWS_SECRET_ACCESS_KEY
 BROKER_POOL_LIMIT = 1
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
-#CELERY_RESULT_BACKEND = "djcelery.backends.database.DatabaseBackend"
+CELERY_RESULT_BACKEND = "database"
+
 CELERY_DISABLE_RATE_LIMITS = True
+CELERY_IGNORE_RESULT = True
+CELERY_STORE_ERRORS_EVEN_IF_IGNORED = True
 #CELERY_SEND_TASK_ERROR_EMAILS = True
 CELERYD_TASK_TIME_LIMIT = 86400
 CELERY_DEFAULT_QUEUE = 'celery'
