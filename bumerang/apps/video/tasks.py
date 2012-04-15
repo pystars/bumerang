@@ -5,8 +5,8 @@ import subprocess
 from tempfile import NamedTemporaryFile, mktemp
 
 from PIL import Image
-from django.conf import settings
 from celery.task import Task
+from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from bumerang.apps.utils.functions import thumb_img
@@ -33,8 +33,10 @@ class MakeScreenShots(Task):
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
         size = '{0}x{1}'.format(options.width, options.height)
-        source_file = NamedTemporaryFile(delete=False)
+        source_file = NamedTemporaryFile(delete=False,
+            suffix='.mp4', prefix='screen_shot_source')
         source_file.write(video.best_quality_file().read())
+        logger.info("Downloaded best {0} ({1})".format(video, source_file.name))
         source_file.close()
         video.best_quality_file().open()
         duration = video.seconds_duration()
@@ -50,24 +52,28 @@ class MakeScreenShots(Task):
             previews_count = screenable_duration
         step = screenable_duration / previews_count
         for offset in (offset+step for i in xrange(previews_count)):
-            result_file = NamedTemporaryFile()
+            result_file = NamedTemporaryFile(suffix='.jpg',
+                prefix='screen_shot')
             preview = Preview(owner=video)
             cmd = self.get_commandline(source_file.name, random.choice(
                 range(offset, offset+step)), size, result_file.name)
             process = subprocess.call(cmd, shell=False)
             if process:
+                logger.error("Some error during ffmpeging %s" % video.pk)
                 return "Stop making screen shoots - video is deleted"
             try:
                 orig = Image.open(result_file.name)
+                img = orig.copy()
+                result_file.close()
+                preview_name = '{0}.jpg'.format(offset)
+                preview.image = thumb_img(img, name=preview_name)
+                preview.thumbnail = thumb_img(img, 190, name=preview_name)
+                preview.icon = thumb_img(img, 60, name=preview_name)
+                preview.save()
             except IOError:
-                print result_file.name
-            img = orig.copy()
-            result_file.close()
-            preview_name = '{0}.jpg'.format(offset)
-            preview.image = thumb_img(img, name=preview_name)
-            preview.thumbnail = thumb_img(img, 190, name=preview_name)
-            preview.icon = thumb_img(img, 60, name=preview_name)
-            preview.save()
+                result_file.close()
+                logger.error('error during imagining', result_file.name)
+        logger.info("Screened {0} ({1})".format(video, source_file.name))
         os.unlink(source_file.name)
         Video.objects.filter(pk=video_id).update(status=Video.READY)
         return "Ready"
@@ -103,7 +109,8 @@ class ConvertVideoTask(Task):
             return "Stop Convert - video is deleted"
         logger.info("Starting Video Post conversion: %s" % video)
         ext = os.path.splitext(video.original_file.name)[1]
-        self.original_copy = NamedTemporaryFile(delete=False, suffix=ext)
+        self.original_copy = NamedTemporaryFile(delete=False,
+            prefix='video_source', suffix=ext)
         self.original_copy.write(video.original_file.file.read())
         video.original_file.open()
         self.original_copy.close()
@@ -121,11 +128,12 @@ class ConvertVideoTask(Task):
         for options in ConvertOptions.objects.all():
             options.update(file_params)
             file_field_name = options.title
-            self.result_file_name = mktemp('.mp4')
+            self.result_file_name = mktemp('.mp4', 'video')
             self.convert_options = options.as_commandline()
             setattr(video, file_field_name, None)
             video.save()
             process = subprocess.call(self.get_commandline(), shell=False)
+            logger.info("Processed {0} ({1})".format(video, options.title))
             try:
                 video = Video.objects.get(pk=video_id)
             except Video.DoesNotExist:
@@ -133,10 +141,10 @@ class ConvertVideoTask(Task):
                 os.unlink(self.result_file_name)
                 return "Stop Convert - video is deleted"
             if process:
-                print 'some error during convert'
+                logger.error("some error during convert: %s" % video)
                 stdout, stderr = process.communicate()
-                print 'stdout:', stdout
-                print 'stderr:', stderr
+                logger.error('stdout:', stdout)
+                logger.error('stderr:', stderr)
                 video.status = Video.ERROR
             else:
                 size = os.path.getsize(self.result_file_name)
@@ -146,6 +154,11 @@ class ConvertVideoTask(Task):
                 setattr(video, file_field_name, converted_file)
             video.save()
             os.unlink(self.result_file_name)
+            logger.info("Saved {0} of {1} (was {2})".format(options.title,
+                video, self.result_file_name))
         os.unlink(self.original_copy.name)
-        MakeScreenShots.delay(video_id)
+        logger.info('Convert of {0} ready'.format(video))
+        if video.best_quality_file():
+            logger.info('Send task to screen {0}'.format(video))
+            MakeScreenShots.delay(video_id)
         return "Ready"
