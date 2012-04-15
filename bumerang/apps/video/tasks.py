@@ -144,8 +144,8 @@ class ConvertVideoTask(Task):
             if process:
                 logger.error("some error during convert: %s" % video)
                 stdout, stderr = process.communicate()
-                logger.error('stdout:', stdout)
-                logger.error('stderr:', stderr)
+                logger.error('stdout: {0}'.format(stdout))
+                logger.error('stderr: {0}'.format(stderr))
                 video.status = Video.ERROR
             else:
                 size = os.path.getsize(self.result_file_name)
