@@ -19,6 +19,7 @@
                 {% else %}
                 <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
                 {% endif %}
+                <li><a href="{% url profile-detail object.id %}">Просмотр профиля</a></li>
             </ul>
             <a href="{% url profile-detail profile.id %}">
                 <h4>{{ profile.title }}</h4>
