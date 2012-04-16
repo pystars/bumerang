@@ -48,8 +48,9 @@ virtualenv --no-site-packages --unzip-setuptools /var/www/.virtualenvs/bumerang
 pip -E /var/www/.virtualenvs/bumerang install -U -r /home/ubuntu/bumerang/requirements.txt
 chown -R www-data:adm /var/www
 chown -R www-data:adm /var/log/uwsgi
+chown -R ubuntu:ubuntu /var/log/celery
 chmod -R 750 /var/log/uwsgi
-chown -R www-data:adm /home/ubuntu/bumerang
+chown -R ubuntu:ubuntu /home/ubuntu/bumerang
 # on web we need add this
 ln -s /home/ubuntu/bumerang/nginx.conf /etc/nginx/sites-enabled/bumerang.conf
 service nginx restart
