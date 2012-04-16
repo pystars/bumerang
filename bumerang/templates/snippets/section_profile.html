@@ -17,9 +17,9 @@
                 {% if request.user.id == profile.id %}
                 <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
                 {% else %}
-                <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
+                <li><a href="{% url messages_compose_to profile.id %}">Отправить сообщение</a></li>
                 {% endif %}
-                <li><a href="{% url profile-detail object.id %}">Просмотр профиля</a></li>
+                <li><a href="{% url profile-detail profile.id %}">Просмотр профиля</a></li>
             </ul>
             <a href="{% url profile-detail profile.id %}">
                 <h4>{{ profile.title }}</h4>
