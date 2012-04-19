@@ -1,7 +1,7 @@
 <div class="b-gallery__items">
     <form name="photoalbums" action="{% url photoalbums-delete %}" method="post">
         {% for photoalbum in object.photoalbum_set.all %}
-            <figure class="b-gallery__item photoalbums" id="photoalbums-item-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}">
+            <figure class="b-gallery__item photoalbum" id="photoalbums-item-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}">
             <a href="{% url photo-album-detail photoalbum.id %}">
                 <span class="gi-img">
                     <span>
