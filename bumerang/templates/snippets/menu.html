@@ -1,0 +1,51 @@
+<dt class="first{% ifequal selected 'profile' %} selected{% endifequal %}">
+    <a href="{% url profile-detail profile.id %}">
+        <span>Профиль</span>
+    </a>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+<dt{% ifequal selected 'video' %} class="selected"{% endifequal %}>
+    {% spaceless %}
+        <a href="{% url profile-video-detail profile.id %}">
+            <span>Видео</span>
+        </a>
+    {% endspaceless %}
+    <small>{{ profile.video_set.count }}</small>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+<dt{% ifequal selected 'photo' %} class="selected"{% endifequal %}>
+    <a href="{% url profile-photo-detail profile.id %}">
+        <span>Фото</span>
+    </a>
+    <small>{{ profile.photo_set.count }}</small>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+{% if request.user.is_authenticated %}
+    {% ifequal profile request.user.profile %}
+    <dt{% ifequal selected 'messages' %} class="selected"{% endifequal %}>
+    {% spaceless %}
+        <a href="{% url messages_redirect %}">
+            <span>Сообщения</span>
+        </a>
+    {% endspaceless %}
+        <small>{{ messages_inbox_count }}</small>
+    <i class="l"></i>
+    <i class="r"></i>
+    </dt>
+    {% endifequal %}
+{% endif %}
