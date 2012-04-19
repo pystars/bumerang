@@ -117,12 +117,18 @@ function invokeMoveDialog(callback) {
     popup.find('*').unbind();
 
     var cancelButton = $('#' + popup.attr('id') + ' .confirm-popup-cancel');
+    var closeButton = $('.b-popup__close');
     var okButton = $('#' + popup.attr('id') + ' .confirm-popup-ok');
 
     cancelButton.click(function(e) {
         e.preventDefault();
         popup.hide();
         $('#tint').hide();
+    });
+
+    closeButton.click(function(e) {
+        e.preventDefault();
+        cancelButton.trigger('click');
     });
 
     okButton.click(function(e) {
@@ -709,7 +715,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                     show_notification('success', response['message']);
 
                     view.hidePhotos();
-                    view.showPhotosCount();
+                    //view.showPhotosCount();
                     view.selected_photos = [];
                     view.updatePage();
                 }
@@ -746,7 +752,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                     show_notification('success', response['message']);
 
                     view.hidePhotos();
-                    view.showPhotosCount();
+//                    view.showPhotosCount();
                     view.selected_photos = [];
                     view.updatePage();
                 }
@@ -804,7 +810,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                         show_notification('success', response['message']);
 
                         view.hidePhotos();
-                        view.showPhotosCount();
+//                        view.showPhotosCount();
                         view.selected_photos = [];
                         view.updatePage();
                     }
@@ -842,7 +848,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                         show_notification('success', response['message']);
 
                         view.hidePhotos();
-                        view.showPhotosCount();
+//                        view.showPhotosCount();
                         view.selected_photos = [];
                         view.updatePage();
                     }
@@ -909,7 +915,7 @@ var PhotoAlbumsView = Backbone.View.extend({
         if (count != 0) {
             $('#photos-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#photos-plurals').text()));
         } else {
-            $('#photos-count').text('Нет ни одного видеоролика');
+            $('#photos-count').text('Нет ни одной фотографии');
         };
     },
 
@@ -935,6 +941,7 @@ var PhotoAlbumsView = Backbone.View.extend({
         }
 
         this.showAlbumsCount();
+        this.showPhotosCount();
 
         if (!this.getAlbumsCount() && !$('#photoalbum-empty-block').is(':visible')) {
             var empty_block_tpl = $('#photoalbum-empty-block-tpl');
