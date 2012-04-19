@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from datetime import date, timedelta, datetime
-from django.db.models.aggregates import Min
+from datetime import date, timedelta
 
 from django.views.generic.base import TemplateView
+from django.db.models.aggregates import Min
+from django.utils import timezone
 
 from bumerang.apps.video.playlists.models import PlayList, Channel
 
@@ -38,7 +39,7 @@ class BumerangIndexView(TemplateView):
         next_days = [(today + timedelta(days=i)).timetuple()[0:3]
                      for i in xrange(min_day, SCHEDULE_RANGE)]
         if playlist:
-            now = datetime.now()
+            now = timezone.now()
             for item in playlist.playlistitem_set.all():
                 if item.play_from() < now < item.play_till():
                     current_item = item
