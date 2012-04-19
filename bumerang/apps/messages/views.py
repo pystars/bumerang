@@ -139,7 +139,7 @@ def delete(request, message_id, success_url=None):
     page (e.g. `/foo/bar/`) than ``success_url`` after deletion of the message.
     """
     user = request.user
-    now = now()
+    now = timezone.now()
     message = get_object_or_404(Message, id=message_id)
     deleted = False
     if success_url is None:

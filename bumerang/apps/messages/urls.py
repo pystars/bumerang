@@ -1,10 +1,10 @@
 from django.conf.urls import *
-from django.views.generic.simple import redirect_to
+from django.views.generic.base import RedirectView
 
 from bumerang.apps.messages.views import *
 
 urlpatterns = patterns('',
-    url(r'^$', redirect_to, {'url': 'inbox/'}, name='messages_redirect'),
+    url(r'^$', RedirectView.as_view(url='inbox/'), name='messages_redirect'),
     url(r'^inbox/$', inbox, name='messages_inbox'),
     url(r'^outbox/$', outbox, name='messages_outbox'),
     #url(r'^compose/$', compose, name='messages_compose'),
