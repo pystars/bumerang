@@ -523,6 +523,7 @@ class ProfileSettingsEditView(UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
         ctx.update({
+            'profile': self.request.user.profile,
             'email_form': self.email_form_class(),
             'pwd_form': self.pwd_form_class(self.get_object()),
         })

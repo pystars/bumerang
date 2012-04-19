@@ -1,81 +1,20 @@
 {% extends "video/video_wrapper.html" %}
 {% load sitetree %}
-{% load rupluralize %}
 
 {% block title %}
     {% if object.owner_id == user.id %}
         Ваш профиль
     {% else %}
-        {#  TODO: Избежать отображения None #}
-        {% if object.type != 1 %}
-            {{ object.get_type_display }} {{ object.title }}
-        {% else %}
-            {{ object.title }}
-        {% endif %}
+        {% if object.type != 1 %}{{ object.get_type_display }}{% endif %}
+        {{ object.title|default_if_none:"Аноним" }}
     {% endif %}
 {% endblock %}
 
 {% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
-            {% block profile_tab %}
-                <dt class="first">
-                    <a href="{% url profile-detail object.owner_id %}">
-                        <span>Профиль</span>
-                    </a>
-                    <i class="l"></i>
-                    <i class="r"></i>
-                </dt>
-                <dd><div class="b-tabs__tab-content">
-                </div></dd>
-            {% endblock %}
-
-            {% block profile_video_tab %}
-                <dt class="first">
-                    {% spaceless %}
-                        <a href="{% url profile-video-detail object.owner_id %}">
-                            <span>Видео</span>
-                        </a>
-                    {% endspaceless %}
-                    <small>{{ profile.video_set.count }}</small>
-                    <i class="l"></i>
-                    <i class="r"></i>
-                </dt>
-                <dd><div class="b-tabs__tab-content">
-                </div></dd>
-            {% endblock %}
-
-            {% block profile_photo_tab %}
-                <dt class="first">
-                    {% spaceless %}
-                        <a href="{% url profile-photo-detail object.owner_id %}">
-                            <span>Фото</span>
-                        </a>
-                    {% endspaceless %}
-                    <small>{{ object.owner.photo_set.count }}</small>
-                    <i class="l"></i>
-                    <i class="r"></i>
-                </dt>
-                <dd><div class="b-tabs__tab-content">
-                </div></dd>
-            {% endblock %}
-
-            {% block profile_messages_tab %}
-                <dt>
-                {% spaceless %}
-                    <a href="{% url messages_redirect %}">
-                    <span>Сообщения</span>
-                </a>
-                {% endspaceless %}
-                            <small>{{ messages_inbox_count }}</small>
-                    <i class="l"></i>
-                    <i class="r"></i>
-                </dt>
-                        <dd>
-                    <div class="b-tabs__tab-content">
-                    </div>
-                </dd>
-            {% endblock %}
+            {% include 'snippets/menu.html' with selected='video' profile=object.owner.profile %}
+            {% block tab %}{% endblock %}
         </dl>
     </div>
 {% endblock %}

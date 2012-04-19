@@ -12,23 +12,7 @@
 {% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
-            <dt class="first">
-                <a href="{% url profile-detail request.user.profile.id %}">
-                    <span>Профиль</span>
-                </a>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd>
-                <div class="b-tabs__tab-content">
-                </div>
-            </dd>
-            <dt class="selected">
-                <span>Видео</span>
-                <small>{{ user.video_set.all.count }}</small>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
+            {% include 'snippets/menu.html' with selected='video' profile=request.user.profile %}
             <dd class="selected">
                 <div class="b-tabs__tab-content">
                     {% include "snippets/section_profile.html" with profile=request.user.profile %}
@@ -81,20 +65,6 @@
                         </form>
                     </section>
                     <!--b-form-->
-                </div>
-            </dd>
-            <dt>
-                {% spaceless %}
-                    <a href="">
-                        <span>Фото</span>
-                    </a>
-                {% endspaceless %}
-                <small>0</small>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd>
-                <div class="b-tabs__tab-content">
                 </div>
             </dd>
         </dl>

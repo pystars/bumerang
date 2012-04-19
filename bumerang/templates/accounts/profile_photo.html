@@ -32,13 +32,8 @@
     </script>
 {% endblock %}
 
-{% block profile_photo_tab %}
-    <dt class="selected">
-        <span>Фото</span>
-        <small>{{ profile.photo_set.count }}</small>
-        <i class="l"></i>
-        <i class="r"></i>
-    </dt>
+{% block tab %}
+    {% include 'snippets/menu.html' with selected='photo' %}
     <dd class="selected"><div class="b-tabs__tab-content">
     {% include "snippets/section_profile.html" %}
     <div class="b-hr">

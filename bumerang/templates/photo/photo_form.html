@@ -12,37 +12,7 @@
 {% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
-            <dt class="first">
-                <a href="{% url profile-detail request.user.profile.id %}">
-                    <span>Профиль</span>
-                </a>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd>
-                <div class="b-tabs__tab-content">
-                </div>
-            </dd>
-            <dt>
-                {% spaceless %}
-                    <a href="{% url profile-video-detail request.user.profile.id %}">
-                        <span>Видео</span>
-                    </a>
-                {% endspaceless %}
-                <small>{{ request.user.profile.video_set.count }}</small>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
-            <dd>
-                <div class="b-tabs__tab-content">
-                </div>
-            </dd>
-            <dt class="selected">
-                <span>Фото</span>
-                <small>{{ request.user.profile.photo_set.count }}</small>
-                <i class="l"></i>
-                <i class="r"></i>
-            </dt>
+            {% include 'snippets/menu.html' with selected='photo' profile=request.user.profile %}
             <dd class="selected">
                 <div class="b-tabs__tab-content">
                     {% include "snippets/section_profile.html" with profile=request.user.profile %}
