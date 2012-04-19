@@ -3,7 +3,9 @@
 {% block title %}Редактирование резюме{% endblock %}
 
 {% block edit_form %}
+    <a class="form-profile-view" href="{% url profile-detail object.profile.id %}">Просмотр профиля</a>
     <h3 class="title">Настройки</h3>
+
     <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
         <form name="email_form" action="" method="post">
             {% csrf_token %}

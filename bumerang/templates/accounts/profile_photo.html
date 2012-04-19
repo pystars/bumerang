@@ -236,10 +236,21 @@
                 $('#tint').show();
                 $('.gallery-modal-wrapper').show();
 
+//                var im = $('#thumbs').find('a.thumb[data-photo-id='+hash+']');
+//
+//                var im = $('ul.thumbs a.thumb[data-photo-id='+hash+']');
+//
+//                var index = $('ul.thumbs a.thumb').index(im)+1;
+//                index = index.toString();
+//                console.log(index);
+//
+//                $.galleriffic.gotoImage(index);
+                console.log('hash_gt'+hash);
                 $.galleriffic.gotoImage(hash);
 
                 var photo_id = $($('#thumbs').find('a.thumb').get(hash)).attr('data-photo-id');
                 increasePhotoViewsCount(photo_id);
+//                increasePhotoViewsCount(im.attr('data-photo-id'));
             }
         }
 
@@ -251,7 +262,16 @@
             var hash = this.href;
             hash = hash.replace(/^.*#/, '');
 
+            console.log('hash'+hash);
+
+//            var im = $('ul.thumbs a.thumb[data-photo-id='+hash+']');
+//
+//            var index = $('ul.thumbs a.thumb').index(im)+1;
+//            index = index.toString();
+//            console.log('index'+index);
+
             $.historyLoad(hash);
+//            $.historyLoad(index);
         });
 
     });

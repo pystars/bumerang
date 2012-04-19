@@ -5280,3 +5280,10 @@ h3.title+.b-form_edit_login-pass {
     font-size:.875em;
     margin:.25em 0;
 }
+
+/* -------------------- */
+.form-profile-view {
+    float: right;
+    margin-right: 25px;
+    font-size: 14px;
+}

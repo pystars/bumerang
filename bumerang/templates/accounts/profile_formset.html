@@ -12,6 +12,7 @@
     <section class="b-form b-form_smaller b-form_edit b-form_left">
         <form name="editform" action="" method="post">
             {% csrf_token %}
+            <a class="form-profile-view" href="{% url profile-detail profile.id %}">Просмотр профиля</a>
             <div class="b-form__fields">
                 <h3 class="title">
                     {% if user.profile.type == 1 %}
