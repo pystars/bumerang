@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block head_js %}
-    <script type='text/javascript' src='{{ STATIC_URL }}jwplayer/jwplayer.js'></script>
+{#    <script type='text/javascript' src='{{ STATIC_URL }}jwplayer/jwplayer.js'></script>#}
 {#    <script type="text/javascript" src="{{ STATIC_URL }}flashplayer/history/history.js"></script>#}
 {#    <!-- END Browser History required section -->#}
-{#    <script type="text/javascript" src="{{ STATIC_URL }}j/swfobject.js"></script>#}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/swfobject.js"></script>
 {#    <script type="text/javascript">#}
 {#        // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.#}
 {#        var swfVersionStr = "10.2.0";#}
@@ -66,51 +66,50 @@
             <div class="flash-content-wrapper">
                 <div id="videoplayer"></div>
 
-                <div id='mediaplayer'>This text will be replaced</div>
-                <script type='text/javascript'>
-                    jwplayer("mediaplayer").setup({
-                        flashplayer: "{{ STATIC_URL }}jwplayer/player.swf",
-                        file: "{{ object.best_quality_file.name }}",
-                        provider: "rtmp",
-                        streamer: 'rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/'
-                    });
+{#                <div id='mediaplayer'>This text will be replaced</div>#}
+{#                <script type='text/javascript'>#}
+{#//                    jwplayer("mediaplayer").setup({#}
+{#                        flashplayer: "{{ STATIC_URL }}jwplayer/player.swf",#}
+{#                        file: "{{ object.best_quality_file.name }}",#}
+{#//                        provider: "rtmp",#}
+{#//                        streamer: 'rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/'#}
+{#//                    });#}
 {#                    var so = new SWFObject('{{ STATIC_URL }}jwplayer/player.swf','mpl','470','290','9');#}
-//                    so.addParam('allowfullscreen','true');
-//                    so.addParam('allowscriptaccess','always');
-//                    so.addParam('wmode','opaque');
-//                    <!--This next line is where you specify your video file (uploaded in step 2c). For .mp4 files, you must write it as below ('mp4:YOUR_VIDEO_FILE'),  *without*  the .mp4 extension. For .flv files, you simply write the name of the file ('YOUR_VIDEO_FILE')
-//                    -->
-//                    so.addVariable('file','mp4:videos/ncCP6zSlArsu/test');
-//                    <!--This next line is where you point to your streaming distribution on cloudfront (done in step 3 above). NOTE: you *MUST* add "/cfx/st/" for it to work. This specifies it is a cloudfront object (cfx) and that it is to be streamed (st). This is the URL of the streaming distribution--it ends with .cloudfront.net. In the example above, I would write: 'rtmp:// s1jng015tymskd.cloudfront.net/cfx/st/'
-//                    -->
-//                    so.addVariable('streamer','rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/');
-//                    so.write('mediaspace');
-                </script>
+{#//                    so.addParam('allowfullscreen','true');#}
+{#//                    so.addParam('allowscriptaccess','always');#}
+{#//                    so.addParam('wmode','opaque');#}
+{#//                    <!--This next line is where you specify your video file (uploaded in step 2c). For .mp4 files, you must write it as below ('mp4:YOUR_VIDEO_FILE'),  *without*  the .mp4 extension. For .flv files, you simply write the name of the file ('YOUR_VIDEO_FILE')#}
+{#//                    -->#}
+{#//                    so.addVariable('file','mp4:videos/ncCP6zSlArsu/test');#}
+{#//                    <!--This next line is where you point to your streaming distribution on cloudfront (done in step 3 above). NOTE: you *MUST* add "/cfx/st/" for it to work. This specifies it is a cloudfront object (cfx) and that it is to be streamed (st). This is the URL of the streaming distribution--it ends with .cloudfront.net. In the example above, I would write: 'rtmp:// s1jng015tymskd.cloudfront.net/cfx/st/'#}
+{#//                    -->#}
+{#//                    so.addVariable('streamer','rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/');#}
+{#//                    so.write('mediaspace');#}
+{#//                </script>#}
 
 {#                <video src="{{ object.best_quality_file.url|safe }}"></video>#}
-{#                <script type="text/javascript">#}
-{#                    var flashvars = {#}
-{#                        "comment":"Бумер (широкоэкранник 2.1)",#}
-{#                        "st":"{{ STATIC_URL }}uppod/video113-881.txt",#}
-{#                        "file":encodeURI(escape("{{ object.best_quality_file.url }}"))#}
-{#                    };#}
-{#                    var params = {#}
-{#                        bgcolor:"#ffffff",#}
-{#                        wmode:"opaque",#}
-{#                        allowFullScreen:"true",#}
-{#                        allowScriptAccess:"always",#}
-{#                        id:"videoplayer"#}
-{#                    };#}
-{#                    new swfobject.embedSWF(#}
-{#                            "{{ STATIC_URL }}uppod/player.swf",#}
-{#                            "videoplayer",#}
-{#                            "780",#}
-{#                            "420",#}
-{#                            "9.0.115.0",#}
-{#                            false,#}
-{#                            flashvars,#}
-{#                            params);#}
-{#//                  </script>#}
+                <script type="text/javascript">
+                    var flashvars = {
+                        "comment":"{{ object.title }}",
+                        "st":"{{ STATIC_URL }}uppod/video113-881.txt",
+                        "file":"rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/mp4:{{ object.best_quality_file.name }}"
+                    };
+                    var params = {
+                        bgcolor:"#ffffff",
+                        allowFullScreen:"true",
+                        allowScriptAccess:"always",
+                        id:"videoplayer"
+                    };
+                    new swfobject.embedSWF(
+                            "{{ STATIC_URL }}uppod/player.swf",
+                            "videoplayer",
+                            "780",
+                            "420",
+                            "9.0.115.0",
+                            false,
+                            flashvars,
+                            params);
+                  </script>
 {#                <div id="flashContent">#}
 {#                    <p>#}
 {#                        To view this page ensure that Adobe Flash Player version#}
@@ -121,7 +120,7 @@
 {#                        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"#}
 {#                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );#}
 {#//                    </script>#}
-{#//            </div>#}
+            </div>
             <div class="b-movie__panel cleared">
                 <div class="b-vote">
                     <div class="wrap">
