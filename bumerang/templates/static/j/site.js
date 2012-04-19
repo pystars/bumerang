@@ -88,8 +88,8 @@ function invokeConfirmDialog(text, callback) {
 
     popup.find('*').unbind();
 
-    var cancelButton = $('#' + popup.attr('id') + ' #confirm-popup-cancel');
-    var okButton = $('#' + popup.attr('id') + ' #confirm-popup-ok');
+    var cancelButton = $('#' + popup.attr('id') + ' .confirm-popup-cancel');
+    var okButton = $('#' + popup.attr('id') + ' .confirm-popup-ok');
     
     $('#' + popup.attr('id') + ' #dialog-text').text(text);
         
@@ -116,8 +116,8 @@ function invokeMoveDialog(callback) {
 
     popup.find('*').unbind();
 
-    var cancelButton = $('#' + popup.attr('id') + ' #confirm-popup-cancel');
-    var okButton = $('#' + popup.attr('id') + ' #confirm-popup-ok');
+    var cancelButton = $('#' + popup.attr('id') + ' .confirm-popup-cancel');
+    var okButton = $('#' + popup.attr('id') + ' .confirm-popup-ok');
 
     cancelButton.click(function(e) {
         e.preventDefault();
