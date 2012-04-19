@@ -240,7 +240,7 @@ class UserContactsForm(EditFormsMixin, forms.ModelForm):
     info_address = forms.CharField(widget=forms.Textarea,
         label=u'Домашний адрес')
     info_mobile_phone = forms.CharField(
-        label=u'Мобильный телефон (без пробелов)')
+        label=u'Мобильный телефон (без пробелов)', required=False)
 
     class Meta:
         model = Profile
@@ -258,7 +258,7 @@ class UserContactsForm(EditFormsMixin, forms.ModelForm):
 
 class OrganizationContactsForm(EditFormsMixin, forms.ModelForm):
     info_mobile_phone = forms.CharField(
-        label=u'Мобильный телефон (без пробелов)')
+        label=u'Мобильный телефон (без пробелов)', required=False)
 
     class Meta:
         model = Profile
