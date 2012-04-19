@@ -147,6 +147,11 @@ class Profile(FileModelMixin, User):
     def photos_without_album(self):
         return self.photo_set.filter(album__isnull=True)
 
+    def inbox_count(self):
+        self.received_messages.filter(read_at__isnull=True,
+            recipient_deleted_at__isnull=True).count()
+
+
 class Faculty(models.Model):
     title = models.CharField(u'Название', max_length=255, blank=False)
     description = models.TextField(u'Описание')

@@ -85,7 +85,6 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     'bumerang.apps.accounts.context_processors.global_login_form',
-    'bumerang.apps.messages.context_processors.inbox',
 ]
 
 MIDDLEWARE_CLASSES = [

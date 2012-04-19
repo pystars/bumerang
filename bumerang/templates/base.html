@@ -117,7 +117,7 @@
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
                                     <a href="{% url messages_inbox %}" class="b-dropdown2__link">Сообщения</a>
-                                    <small class="b-dropdown2__count">{{ messages_inbox_count }}</small>
+                                    {% if profile.inbox_count %}<small class="b-dropdown2__count">{{ profile.inbox_count }}</small>{% endif %}
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
                                     <a href="#" class="b-dropdown2__link">Друзья</a>
