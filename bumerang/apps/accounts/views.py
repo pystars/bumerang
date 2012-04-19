@@ -496,8 +496,7 @@ class ProfileContactsEditView(UpdateView):
     def get_form_class(self):
         if self.request.user.profile.type == 1:
             return UserContactsForm
-        if self.request.user.profile.type == 2 \
-        or self.request.user.profile.type == 3:
+        else:
             return OrganizationContactsForm
 
     def get_success_url(self):
