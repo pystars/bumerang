@@ -179,40 +179,45 @@ var VideoAlbumsView = Backbone.View.extend({
 
     initialize: function() {
         this.updatePage();
+
+        $(document).on('click', '.confirm-popup-cancel', function(e) {
+            e.preventDefault();
+        });
     },
 
     clickAlbumCheckbox: function(e) {
-        // Получаем jQuery-объект кликнутого чекбокса альбома
-        var el = e.target || e.srcElement;
-        // Если он отмечен - добавляем в массив видеоальбомов
-        if (el.checked) {
-            this.selected_albums.push(
-                parseInt(el.id.split('checkbox-')[1])
-            );
-        } else {
-            this.selected_albums = _.without(
-                this.selected_albums,
-                parseInt(el.id.split('checkbox-')[1])
-            );
-        }
+        var targetEl = e.toElement || e.relatedTarget;
 
-        this.updatePage();
+        var el = $(e.target || e.srcElement);
+        var videoAlbumId = parseInt(el.attr('data-videoalbum-id'));
+
+        if (targetEl.tagName == 'INPUT') {
+            if (el.is(':checked')) {
+                this.selected_albums.push(videoAlbumId);
+            } else {
+                this.selected_albums = _.without(this.selected_albums, videoAlbumId);
+            }
+
+            this.updatePage();
+        }
     },
 
     clickVideoCheckbox: function(e) {
-        var el = e.srcElement || e.target;
-        if (el.checked) {
-            this.selected_videos.push(
-                parseInt(el.id.split('checkbox-')[1])
-            );
-        } else {
-            this.selected_videos = _.without(
-                this.selected_videos,
-                parseInt(el.id.split('checkbox-')[1])
-            );
-        }
+        var targetEl = e.toElement || e.relatedTarget;
 
-        this.updatePage();
+        var el = $(e.target || e.srcElement);
+        var videoId = parseInt(el.attr('data-video-id'));
+
+        if (targetEl.tagName == 'INPUT') {
+            if (el.is(':checked')) {
+                this.selected_videos.push(videoId);
+            } else {
+                // Delete ID from array if checkbox unchecked
+                this.selected_videos = _.without(this.selected_videos, videoId);
+            }
+
+            this.updatePage();
+        }
     },
 
     clickMakeCover: function(e) {
@@ -275,12 +280,16 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleVideoMove: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
-        this.selected_videos.push(
-            parseInt(el.id.split('move-video-')[1])
-        );
+        var el = $(e.target || e.srcElement);
+        var videoId = parseInt(el.attr('data-video-id'));
+        this.selected_videos.push(videoId);
 
-        if (this.selected_albums.length > 1) {
+        $(".video input:checkbox[id=checkbox-"+videoId+"]").attr("checked", "checked");
+        $(".video input:checkbox[id=checkbox-"+videoId+"]").parents('.announ-item').addClass('checked');
+
+        this.updatePage();
+
+        if (this.selected_videos.length > 1) {
             var msg = 'Вы действительно хотите переместить выбранные видеоролики?';
         } else {
             var msg = 'Вы действительно хотите переместить выбранный видеоролик?';
@@ -343,11 +352,16 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleAlbumDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
+        var el = $(e.target || e.srcElement);
+        var videoAlbumId = parseInt(el.attr('data-videoalbum-id'));
+        this.selected_albums.push(videoAlbumId);
+        this.selected_albums = _.uniq(this.selected_albums);
 
-        this.selected_videos.push(
-            parseInt(el.id.split('video-delete-')[1])
-        );
+        this.updatePage();
+
+        $(".videoalbum input:checkbox[id=checkbox-"+videoAlbumId+"]").attr("checked", "checked");
+        $(".videoalbum input:checkbox[id=checkbox-"+videoAlbumId+"]").parents('.b-gallery__item').addClass('checked');
+
 
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
@@ -408,12 +422,18 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickSingleVideoDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
-        this.selected_videos.push(
-            parseInt(el.id.split('video-delete-')[1])
-        );
+        var el = $(e.target || e.srcElement);
+        var videoId = parseInt(el.attr('data-video-id'));
+        this.selected_videos.push(videoId);
+        this.selected_videos = _.uniq(this.selected_videos);
 
-        if (this.selected_albums.length > 1) {
+        this.updatePage();
+
+        $(".video input:checkbox[id=checkbox-"+videoId+"]").attr("checked", "checked");
+        $(".video input:checkbox[id=checkbox-"+videoId+"]").parents('.announ-item').addClass('checked');
+
+
+        if (this.selected_videos.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные видеоролики?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
