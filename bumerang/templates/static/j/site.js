@@ -90,21 +90,21 @@ function invokeConfirmDialog(text, callback) {
 
     var cancelButton = $('#' + popup.attr('id') + ' .confirm-popup-cancel');
     var okButton = $('#' + popup.attr('id') + ' .confirm-popup-ok');
-    
+
     $('#' + popup.attr('id') + ' #dialog-text').text(text);
-        
+
     cancelButton.bind('click', function(e) {
         e.preventDefault();
         popup.hide();
         $('#tint').hide();
     });
-    
+
     okButton.bind('click', function(e) {
         e.preventDefault();
         callback();
         cancelButton.trigger('click');
     });
-    
+
     popup.css('margin-left', - popup.width() / 2 + 'px');
     popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
     $('#tint').show();
@@ -143,25 +143,25 @@ function invokeMoveDialog(callback) {
     popup.css('margin-left', - popup.width() / 2 + 'px');
     popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
     $('#tint').show();
-    popup.show();    
-    
+    popup.show();
+
 }
 
 /******************************************************************************
- * 
+ *
  * Логика работы с видеоальбомами. Реализовано на библиотеке Backbone.js.
  * Так же исользован функционал библиотеки Underscore.js.
- * 
+ *
  ******************************************************************************/
 
 var VideoAlbumsView = Backbone.View.extend({
 
     el: 'body',
-    
+
     albums: [],
     selected_albums: [],
     selected_videos: [],
-    
+
     events: {
         'click figure[id*=videoalbum-item-]': 'clickAlbumCheckbox',
         'click article[id*=video-item-]': 'clickVideoCheckbox',
@@ -191,14 +191,14 @@ var VideoAlbumsView = Backbone.View.extend({
             );
         } else {
             this.selected_albums = _.without(
-                this.selected_albums, 
+                this.selected_albums,
                 parseInt(el.id.split('checkbox-')[1])
             );
         }
-        
+
         this.updatePage();
     },
-    
+
     clickVideoCheckbox: function(e) {
         var el = e.srcElement || e.target;
         if (el.checked) {
@@ -207,11 +207,11 @@ var VideoAlbumsView = Backbone.View.extend({
             );
         } else {
             this.selected_videos = _.without(
-                this.selected_videos, 
+                this.selected_videos,
                 parseInt(el.id.split('checkbox-')[1])
             );
         }
-        
+
         this.updatePage();
     },
 
@@ -313,13 +313,13 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickAlbumDeleteButton: function(e) {
         e.preventDefault();
-        
+
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранный видеольбом?';
         }
-        
+
         var view = this;
         invokeConfirmDialog(msg, function() {
             $.ajax({
@@ -331,7 +331,7 @@ var VideoAlbumsView = Backbone.View.extend({
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
-                    
+
                     view.hideAlbums();
                     view.showAlbumsCount();
                     view.selected_albums = [];
@@ -354,7 +354,7 @@ var VideoAlbumsView = Backbone.View.extend({
         } else {
             var msg = 'Вы действительно хотите удалить выбранный видеольбом?';
         }
-        
+
         var view = this;
         invokeConfirmDialog(msg, function() {
             $.ajax({
@@ -366,7 +366,7 @@ var VideoAlbumsView = Backbone.View.extend({
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
-                    
+
                     view.hideAlbums();
                     view.showAlbumsCount();
                     view.selected_albums = [];
@@ -378,13 +378,13 @@ var VideoAlbumsView = Backbone.View.extend({
 
     clickVideoDeleteButton: function(e) {
         e.preventDefault();
-        
+
         if (this.selected_videos.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные видеоролики?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
         }
-        
+
         var view = this;
         invokeConfirmDialog(msg, function() {
             $.ajax({
@@ -412,13 +412,13 @@ var VideoAlbumsView = Backbone.View.extend({
         this.selected_videos.push(
             parseInt(el.id.split('video-delete-')[1])
         );
-        
+
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные видеоролики?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
         }
-        
+
         var view = this;
         invokeConfirmDialog(msg, function() {
             $.ajax({
@@ -430,7 +430,7 @@ var VideoAlbumsView = Backbone.View.extend({
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
-                    
+
                     view.hideVideos();
                     view.showVideosCount();
                     view.selected_videos = [];
@@ -450,7 +450,7 @@ var VideoAlbumsView = Backbone.View.extend({
             });
         });
     },
-    
+
     hideVideos: function() {
         var view = this;
         this.selected_videos.forEach(function(e, i, a) {
@@ -465,35 +465,35 @@ var VideoAlbumsView = Backbone.View.extend({
     hideAlbumDeleteButton: function() {
         $('#videoalbum-delete-button').hide(300, 'linear');
     },
-    
+
     showAlbumDeleteButton: function() {
         $('#videoalbum-delete-button').show(300, 'linear');
     },
-    
+
     hideVideoDeleteButton: function() {
         $('#video-delete-button').hide(300, 'linear');
     },
-    
+
     showVideoDeleteButton: function() {
         $('#video-delete-button').show(300, 'linear');
     },
-    
+
     hideVideoMoveButton: function() {
         $('#video-move-button').hide(300, 'linear');
     },
-    
+
     showVideoMoveButton: function() {
         $('#video-move-button').show(300, 'linear');
     },
-    
+
     getAlbumsCount: function() {
         return $('form .videoalbum:visible').length;
     },
-    
+
     getVideosCount: function() {
         return $('form .video:visible').length;
     },
-    
+
     showAlbumsCount: function() {
         var count = this.getAlbumsCount();
         if (count != 0) {
@@ -502,7 +502,7 @@ var VideoAlbumsView = Backbone.View.extend({
             $('#albums-count').text('Нет ни одного альбома');
         };
     },
-    
+
     showVideosCount: function() {
         var count = this.getVideosCount();
         if (count != 0) {
@@ -511,25 +511,25 @@ var VideoAlbumsView = Backbone.View.extend({
             $('#videos-count').text('Нет ни одного видеоролика');
         };
     },
-        
+
     /*
      * Функция обновления страницы. Перерисовывает контролы
      * в соответствии с логикой работы представления
      */
     updatePage: function() {
         var view = this;
-        
+
         view.albums = [];
         $('figure[id*=videoalbum-item-]:visible').each(function() {
             view.albums.push(this.getAttribute('data-videoalbum-id'));
         });
-                
+
         if (this.selected_albums.length) {
             this.showAlbumDeleteButton();
         } else {
             this.hideAlbumDeleteButton();
         }
-        
+
         if (this.selected_videos.length) {
             this.showVideoDeleteButton();
             this.showVideoMoveButton();
@@ -537,22 +537,22 @@ var VideoAlbumsView = Backbone.View.extend({
             this.hideVideoDeleteButton();
             this.hideVideoMoveButton();
         }
-        
+
         this.showAlbumsCount();
-        
+
         if (!this.getAlbumsCount() && !$('#videoalbum-empty-block').is(':visible')) {
             var empty_block_tpl = $('#videoalbum-empty-block-tpl');
             $('#videoalbums-container').append(empty_block_tpl);
             empty_block_tpl.show(300, 'linear')
         }
-        
+
         if (!this.getVideosCount() && !$('#video-empty-block').is(':visible')) {
             var empty_block_tpl = $('#video-empty-block-tpl');
             $('#videos-container').append(empty_block_tpl);
             empty_block_tpl.show(300, 'linear')
         }
     }
-    
+
 });
 
 
@@ -581,36 +581,57 @@ var PhotoAlbumsView = Backbone.View.extend({
 
     initialize: function() {
         this.updatePage();
+
+        var view = this;
+        $(document).on('click', '.confirm-popup-cancel', function(e) {
+            e.preventDefault();
+            //view.selected_photos = [];
+
+//            $('.announ-item.photo').each(function() {
+//                var el = $(this);
+//                el.removeClass('checked');
+//                el.find('input:checkbox').attr('checked', false);
+//                view.updatePage();
+//            });
+
+        });
     },
 
     clickAlbumCheckbox: function(e) {
-        var el = e.target || e.srcElement;
-        if (el.checked) {
-            this.selected_albums.push(
-                parseInt($(el).attr('data-photoalbum-id'))
-            );
-        } else {
-            this.selected_albums = _.without(
-                this.selected_albums,
-                parseInt($(el).attr('data-photoalbum-id'))
-            );
-        }
+        var targetEl = e.toElement || e.relatedTarget;
 
-        this.updatePage();
+        var el = $(e.target || e.srcElement);
+        var photoAlbumId = parseInt(el.attr('data-photoalbum-id'));
+
+        if (targetEl.tagName == 'INPUT') {
+            if (el.is(':checked')) {
+                this.selected_albums.push(photoAlbumId);
+            } else {
+                this.selected_albums = _.without(this.selected_albums, photoAlbumId);
+            }
+
+            this.updatePage();
+        }        
     },
 
     clickPhotoCheckbox: function(e) {
-        var el = e.target || e.srcElement;
-        if (el.checked) {
-            this.selected_photos.push($(el).attr('data-photo-id'));
-        } else {
-            this.selected_photos = _.without(
-                this.selected_photos,
-                $(el).attr('data-photo-id')
-            );
-        }
+        // Which element was clicked? It may be delete link, not checkbox, lol
+        var targetEl = e.toElement || e.relatedTarget;
 
-        this.updatePage();
+        var el = $(e.target || e.srcElement);
+        var photoId = parseInt(el.attr('data-photo-id'));
+
+        // And we process event only if checkbox was clicked
+        if (targetEl.tagName == 'INPUT') {
+            if (el.is(':checked')) {
+                this.selected_photos.push(photoId);
+            } else {
+                // Delete ID from array if checkbox unchecked
+                this.selected_photos = _.without(this.selected_photos, photoId);
+            }
+
+            this.updatePage();
+        }
     },
 
     hideAlbums: function() {
@@ -655,22 +676,24 @@ var PhotoAlbumsView = Backbone.View.extend({
             });
         });
     },
-    
+
     clickSingleAlbumDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
+        var el = $(e.target || e.srcElement);
+        var photoAlbumId = parseInt(el.attr('data-photoalbum-id'));
+        this.selected_albums.push(photoAlbumId);
+        this.selected_albums = _.uniq(this.selected_albums);
 
-        this.selected_albums.push(
-            $(el).attr('data-photoalbum-id')
-        );
+        this.updatePage();
+
+        $(".photoalbum input:checkbox[id=checkbox-"+photoAlbumId+"]").attr("checked", "checked");
+        $(".photoalbum input:checkbox[id=checkbox-"+photoAlbumId+"]").parents('.b-gallery__item').addClass('checked');
 
         if (this.selected_albums.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные фотоальбомы?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
         }
-
-        console.log(el, this.selected_albums);
 
         var view = this;
         invokeConfirmDialog(msg, function() {
@@ -683,7 +706,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
-                    
+
                     view.hideAlbums();
                     view.showAlbumsCount();
                     view.selected_albums = [];
@@ -725,14 +748,17 @@ var PhotoAlbumsView = Backbone.View.extend({
 
     clickSinglePhotoDelete: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
-
-        this.selected_photos.push(
-            parseInt($(el).attr('data-photo-id'))
-        );
+        var el = $(e.target || e.srcElement);
+        var photoId = parseInt(el.attr('data-photo-id'));
+        this.selected_photos.push(photoId);
         this.selected_photos = _.uniq(this.selected_photos);
 
-        if (this.selected_albums.length > 1) {
+        this.updatePage();
+
+        $(".photo input:checkbox[id=checkbox-"+photoId+"]").attr("checked", "checked");
+        $(".photo input:checkbox[id=checkbox-"+photoId+"]").parents('.announ-item').addClass('checked');
+
+        if (this.selected_photos.length > 1) {
             var msg = 'Вы действительно хотите удалить выбранные фотографии?';
         } else {
             var msg = 'Вы действительно хотите удалить выбранную фотографию?';
@@ -752,7 +778,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                     show_notification('success', response['message']);
 
                     view.hidePhotos();
-//                    view.showPhotosCount();
+                    view.showPhotosCount();
                     view.selected_photos = [];
                     view.updatePage();
                 }
@@ -767,8 +793,6 @@ var PhotoAlbumsView = Backbone.View.extend({
 
         var album_id = el.getAttribute('data-album-id');
         var photo_id = el.getAttribute('data-photo-id');
-
-        console.log(album_id, photo_id)
 
         $.ajax({
             type: 'POST',
@@ -810,7 +834,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                         show_notification('success', response['message']);
 
                         view.hidePhotos();
-//                        view.showPhotosCount();
+                        view.showPhotosCount();
                         view.selected_photos = [];
                         view.updatePage();
                     }
@@ -822,12 +846,17 @@ var PhotoAlbumsView = Backbone.View.extend({
 
     clickSinglePhotoMove: function(e) {
         e.preventDefault();
-        var el = e.target || e.srcElement;
-        this.selected_photos.push(
-            parseInt(el.id.split('move-photo-')[1])
-        );
+        var el = $(e.target || e.srcElement);
+        var photoId = parseInt(el.attr('data-photo-id'));
+        this.selected_photos.push(photoId);
+        this.selected_photos = _.uniq(this.selected_photos);
 
-        if (this.selected_albums.length > 1) {
+        $(".photo input:checkbox[id=checkbox-"+photoId+"]").attr("checked", "checked");
+        $(".photo input:checkbox[id=checkbox-"+photoId+"]").parents('.announ-item').addClass('checked');
+
+        this.updatePage();
+
+        if (this.selected_photos.length > 1) {
             var msg = 'Вы действительно хотите переместить выбранные фотографии?';
         } else {
             var msg = 'Вы действительно хотите переместить выбранную фотографию?';
@@ -848,7 +877,7 @@ var PhotoAlbumsView = Backbone.View.extend({
                         show_notification('success', response['message']);
 
                         view.hidePhotos();
-//                        view.showPhotosCount();
+                        view.showPhotosCount();
                         view.selected_photos = [];
                         view.updatePage();
                     }
