@@ -4,7 +4,8 @@
             <article class="announ-item photo" id="photo-item-{{ photo.id }}" data-photo-id="{{ photo.id }}" data-photo-album="{{ photo.album_id|default:'' }}">
                 <div class="ai-img d-sh">
 {#                    <a class="thumb" href="{% url photo-detail photo.id %}">#}
-                    <a class="thumb" href="#{{ forloop.counter }}" title="{{ photo.title }}" rel="history">
+{#                    <a class="thumb" href="#{{ forloop.counter }}" title="{{ photo.title }}" rel="history">#}
+                    <a class="thumb" href="#{{ photo.id }}" title="{{ photo.title }}" rel="history">
                         <span>
                             {% autoescape off %}
                             <img src="{{ photo.thumbnail.url }}" width="190" height="123" alt="{{ photo.title }}" />
@@ -13,7 +14,8 @@
                     </a>
                 </div>
                 <header class="ai-head">
-                    <h3><a class="thumb" href="#{{ forloop.counter }}" rel="history">{{ photo.title }}</a></h3>
+{#                    <h3><a class="thumb" href="#{{ forloop.counter }}" rel="history">{{ photo.title }}</a></h3>#}
+                    <h3><a class="thumb" href="#{{ photo.id }}" rel="history">{{ photo.title }}</a></h3>
                 </header>
                 <footer class="ai-foot">
                     <time class="date">{{ photo.created|date:'j.m.Y, G:i' }}</time>

@@ -152,7 +152,9 @@
 
 				// Autogenerate a hash value if none is present or if it is a duplicate
 				if (!hash || allImages[''+hash]) {
-					hash = imageCounter;
+					//hash = imageCounter;
+                    //console.log(listItem.find('a.thumb').attr('data-photo-id'));
+                    hash = listItem.find('a.thumb').attr('data-photo-id');
 				}
 
 				// Set position to end when not specified
