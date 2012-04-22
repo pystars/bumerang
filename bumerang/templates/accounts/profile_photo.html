@@ -244,7 +244,7 @@
                 $.galleriffic.gotoImage(hash);
 
                 var photo_id = $($('#thumbs').find('a.thumb').get(hash)).attr('data-photo-id');
-                increasePhotoViewsCount(photo_id);
+//                increasePhotoViewsCount(photo_id);
 //                increasePhotoViewsCount(im.attr('data-photo-id'));
             }
         }
@@ -259,14 +259,9 @@
 
             console.log('hash'+hash);
 
-//            var im = $('ul.thumbs a.thumb[data-photo-id='+hash+']');
-//
-//            var index = $('ul.thumbs a.thumb').index(im)+1;
-//            index = index.toString();
-//            console.log('index'+index);
+            increasePhotoViewsCount(hash);
 
             $.historyLoad(hash);
-//            $.historyLoad(index);
         });
 
     });

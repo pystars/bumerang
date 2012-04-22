@@ -186,6 +186,8 @@
             var hash = this.href;
             hash = hash.replace(/^.*#/, '');
 
+            increasePhotoViewsCount(hash);
+
             $.historyLoad(hash);
         });
 
