@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -13,6 +14,14 @@ from bumerang.apps.messages.models import Message
 
 
 class ComposeForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(ComposeForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if (field.widget.__class__ == forms.widgets.Textarea):
+                if field.widget.attrs.has_key('class'):
+                    field.widget.attrs['class'] += ' wide'
+                else:
+                    field.widget.attrs.update({'class': 'wide'})
     """
     A simple default form for private messages.
     """
