@@ -32,16 +32,28 @@
             <strong>Длительность (сек):</strong>
             <span>{{ object.duration|default_if_none:0|to_hms }}</span>
         </li>
+        {% if object.year %}
+            <li>
+                <strong>Год:</strong>
+                <span>{{ object.year }}</span>
+            </li>
+        {% endif %}
         {% if object.authors %}
             <li>
                 <strong>Авторы:</strong>
                 <span>{{ object.authors }}</span>
             </li>
         {% endif %}
-        {% if object.year %}
+        {% if object.teachers %}
             <li>
-                <strong>Год:</strong>
-                <span>{{ object.year }}</span>
+                <strong>Педагоги:</strong>
+                <span>{{ object.teachers }}</span>
+            </li>
+        {% endif %}
+        {% if object.manager %}
+            <li>
+                <strong>Руководитель:</strong>
+                <span>{{ object.manager }}</span>
             </li>
         {% endif %}
         {% if object.festivals %}
