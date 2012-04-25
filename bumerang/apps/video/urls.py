@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from djangoratings.views import AddRatingFromModel
 
 from bumerang.apps.utils.views import XMLDetailView, ObjectsDeleteView, AjaxRatingView
 from bumerang.apps.video.albums.views import VideoAlbumDetailView
@@ -14,6 +13,15 @@ from albums.views import (VideoAlbumCreateView, VideoSetCoverView,
 
 
 urlpatterns = patterns('',
+    url(r'^$',
+        VideoListView.as_view(),
+        name='video-list'
+    ),
+    url(r'^~(?P<category>[\w\-]+)/$',
+        VideoListView.as_view(),
+        name='video-list-category'
+    ),
+
     url(r'^album/add/$',
         login_required(VideoAlbumCreateView.as_view()),
         name='video-album-add'
@@ -42,10 +50,6 @@ urlpatterns = patterns('',
         login_required(VideoUpdateView.as_view()),
         name='video-edit'
     ),
-    url(r'^$',
-        VideoListView.as_view(),
-        name='video-list'
-    ),
     url(r'^videos-delete/$',
         login_required(ObjectsDeleteView.as_view(model=Video)),
         name='videos-delete'
@@ -58,16 +62,11 @@ urlpatterns = patterns('',
         login_required(VideoMoveView.as_view()),
         name='video-move'
     ),
-    url(r'^(?P<pk>\w+)/$',
-        VideoDetailView.as_view(),
-        name='video-detail'
-    ),
     url(r'^(?P<pk>\w+).xml$',
         XMLDetailView.as_view(
             model=Video, template_name_suffix='_xml'),
         name='video-xml'
     ),
-
     # Ratings
     url(r'^rate/(?P<object_id>\d+)/(?P<score>\d+)/$', login_required(AjaxRatingView()), {
             'app_label': 'video',
@@ -75,5 +74,9 @@ urlpatterns = patterns('',
             'field_name': 'rating',
         },
         name='video-rate'
+    ),
+    url(r'^(?P<pk>\w+)/$',
+        VideoDetailView.as_view(),
+        name='video-detail'
     ),
 )

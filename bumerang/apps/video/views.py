@@ -13,9 +13,21 @@ from django.views.generic.list import MultipleObjectMixin
 
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
-from models import Video
+from models import Video, VideoCategory
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
+
+
+class VideoMixin(object):
+    def get_context_data(self, **kwargs):
+        ctx = super(VideoMixin, self).get_context_data(**kwargs)
+        ctx['video_categories'] =VideoCategory.objects.all()
+        try:
+            ctx['current_category'] = self.current_category
+        except AttributeError:
+            pass
+
+        return ctx
 
 
 class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
@@ -46,7 +58,7 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
         return super(VideoMoveView, self).render_to_response(message=msg)
 
 
-class VideoDetailView(DetailView):
+class VideoDetailView(VideoMixin, DetailView):
     model = Video
 
     def get_queryset(self):
@@ -116,17 +128,27 @@ class VideoUpdateView(OwnerMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class VideoListView(ListView):
-    queryset = Video.objects.filter(
-        hq_file__isnull=False,
-#        Q(hq_file__isnull=False) |
-#        Q(mq_file__isnull=False) |
-#        Q(lq_file__isnull=False),
-        published_in_archive=True,
-        status=Video.READY
-    )
-    paginate_by = 5
+class VideoListView(VideoMixin, ListView):
+    model = Video
+    paginate_by = 25
 
+    def get_queryset(self):
+        qs = super(VideoListView, self).get_queryset()
+        try:
+            self.current_category = VideoCategory.objects.get(
+                slug=self.kwargs['category'])
+            qs = qs.filter(category=self.current_category)
+        except VideoCategory.DoesNotExist:
+            return qs.none()
+        except KeyError:
+            pass
+
+        qs = qs.filter(
+            hq_file__isnull=False,
+            published_in_archive=True,
+            status=Video.READY
+        )
+        return qs
 
 #def save_upload( uploaded, filename, raw_data ):
 #    '''
