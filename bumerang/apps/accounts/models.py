@@ -97,13 +97,12 @@ class Profile(FileModelMixin, User):
         max_length=255)
 
     views_count = models.IntegerField(u'Количество просмотров профиля',
-                                      default=0,
-                                      editable=False, **nullable)
+        default=0, editable=False, **nullable)
 
     objects = UserManager()
 
     def __unicode__(self):
-        return self.email
+        return self.username
 
     def get_locality(self):
         u"""
