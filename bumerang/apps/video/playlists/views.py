@@ -10,7 +10,7 @@ from models import PlayList
 
 class PlaylistDetailView(DateDetailView):
     model = PlayList
-    allow_future=True
+    allow_future = True
     date_field = 'rotate_from_date'
     channel = None
     month_format = '%m'

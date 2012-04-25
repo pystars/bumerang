@@ -18,10 +18,11 @@ class BumerangIndexView(TemplateView):
         ctx = super(BumerangIndexView, self).get_context_data(**kwargs)
         main_channel = Channel.objects.get(slug='main')
         today = date.today()
-        current_item = None
+        ctx['current_item'] = None
         try:
             playlist = PlayList.objects.filter(
-                channel=main_channel, rotate_from_date__lte=today)[0]
+                channel=main_channel,
+                rotate_from_date__lte=today).order_by('-rotate_from_date')[0]
             playlist.rotate_from_date = today
         except (PlayList.DoesNotExist, IndexError):
             playlist = None
@@ -41,11 +42,12 @@ class BumerangIndexView(TemplateView):
         if playlist:
             now = timezone.now()
             for item in playlist.playlistitem_set.all():
-                if item.play_from() < now < item.play_till():
-                    current_item = item
+                item.playlist = playlist
+                if item.play_from() <= now < item.play_till():
+                    ctx['current_item'] = item
+                    break
         ctx.update(
             playlist = playlist,
             next_days = next_days,
-            current_item = current_item
         )
         return ctx
