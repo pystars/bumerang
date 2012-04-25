@@ -3,7 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
 from bumerang.apps.photo.albums.views import PhotoAlbumDetailView
-from bumerang.apps.photo.views import increase_views_count
+from bumerang.apps.photo.views import increase_views_count, PhotoAlbumListView
 
 from bumerang.apps.utils.views import ObjectsDeleteView
 from models import Photo
@@ -44,7 +44,7 @@ urlpatterns = patterns('',
         name='photo-edit'
     ),
     url(r'^$',
-        PhotoListView.as_view(),
+        PhotoAlbumListView.as_view(),
         name='photo-list'
     ),
     url(r'^photos-delete/$',

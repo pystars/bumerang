@@ -148,3 +148,10 @@ class PhotoListView(ListView):
         published_in_archive=True,
     )
     paginate_by = 25
+
+
+class PhotoAlbumListView(ListView):
+    queryset = PhotoAlbum.objects.filter(
+        cover__isnull = False,
+    )
+    paginate_by = 5
