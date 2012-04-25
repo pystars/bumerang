@@ -357,17 +357,7 @@ var VideoAlbumsView = Backbone.View.extend({
         this.selected_albums.push(videoAlbumId);
         this.selected_albums = _.uniq(this.selected_albums);
 
-        this.updatePage();
-
-        $(".videoalbum input:checkbox[id=checkbox-"+videoAlbumId+"]").attr("checked", "checked");
-        $(".videoalbum input:checkbox[id=checkbox-"+videoAlbumId+"]").parents('.b-gallery__item').addClass('checked');
-
-
-        if (this.selected_albums.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранный видеольбом?';
-        }
+        var msg = 'Вы действительно хотите удалить выбранный видеольбом?';
 
         var view = this;
         invokeConfirmDialog(msg, function() {
@@ -427,17 +417,7 @@ var VideoAlbumsView = Backbone.View.extend({
         this.selected_videos.push(videoId);
         this.selected_videos = _.uniq(this.selected_videos);
 
-        this.updatePage();
-
-        $(".video input:checkbox[id=checkbox-"+videoId+"]").attr("checked", "checked");
-        $(".video input:checkbox[id=checkbox-"+videoId+"]").parents('.announ-item').addClass('checked');
-
-
-        if (this.selected_videos.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные видеоролики?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
-        }
+        var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
 
         var view = this;
         invokeConfirmDialog(msg, function() {
@@ -704,16 +684,7 @@ var PhotoAlbumsView = Backbone.View.extend({
         this.selected_albums.push(photoAlbumId);
         this.selected_albums = _.uniq(this.selected_albums);
 
-        this.updatePage();
-
-        $(".photoalbum input:checkbox[id=checkbox-"+photoAlbumId+"]").attr("checked", "checked");
-        $(".photoalbum input:checkbox[id=checkbox-"+photoAlbumId+"]").parents('.b-gallery__item').addClass('checked');
-
-        if (this.selected_albums.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные фотоальбомы?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
-        }
+        var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
 
         var view = this;
         invokeConfirmDialog(msg, function() {
@@ -773,26 +744,16 @@ var PhotoAlbumsView = Backbone.View.extend({
         this.selected_photos.push(photoId);
         this.selected_photos = _.uniq(this.selected_photos);
 
-        this.updatePage();
-
-        $(".photo input:checkbox[id=checkbox-"+photoId+"]").attr("checked", "checked");
-        $(".photo input:checkbox[id=checkbox-"+photoId+"]").parents('.announ-item').addClass('checked');
-
-        if (this.selected_photos.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные фотографии?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранную фотографию?';
-        }
+        var msg = 'Вы действительно хотите удалить выбранную фотографию?';
 
         var view = this;
-        var stringified_ids = JSON.stringify(this.selected_photos);
         invokeConfirmDialog(msg, function() {
             $.ajax({
                 type: 'POST',
                 url: '/photo/photos-delete/',
                 data: {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: stringified_ids
+                    ids: JSON.stringify(view.selected_photos)
                 },
                 success: function(response) {
                     show_notification('success', response['message']);
