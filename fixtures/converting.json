@@ -14,5 +14,5 @@
             "abitrate": 128, 
             "x264opts": "ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0"
         }
-    }, 
+    }
 ]
