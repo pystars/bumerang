@@ -8,11 +8,11 @@ def original_upload_to(instance, filename):
 def hq_upload_to(instance, filename):
     return 'videos/{0}/hq_file.mp4'.format(instance.slug)
 
-def mq_upload_to(instance, filename):
-    return 'videos/{0}/mq_file.mp4'.format(instance.slug)
-
-def lq_upload_to(instance, filename):
-    return 'videos/{0}/lq_file.mp4'.format(instance.slug)
+#def mq_upload_to(instance, filename):
+#    return 'videos/{0}/mq_file.mp4'.format(instance.slug)
+#
+#def lq_upload_to(instance, filename):
+#    return 'videos/{0}/lq_file.mp4'.format(instance.slug)
 
 def screenshot_upload_to(instance, filename):
     return 'videos/{0}/screenshots/{1}'.format(instance.owner.slug, filename)

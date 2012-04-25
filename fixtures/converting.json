@@ -15,36 +15,4 @@
             "x264opts": "ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0"
         }
     }, 
-    {
-        "pk": 2, 
-        "model": "converting.convertoptions", 
-        "fields": {
-            "title": "mq_file", 
-            "quality": null, 
-            "vbitrate": 500, 
-            "height": 418, 
-            "width": 720, 
-            "preset": "High Profile", 
-            "sample_rate": 44.1, 
-            "frame_rate": "25", 
-            "abitrate": 96, 
-            "x264opts": "ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "converting.convertoptions", 
-        "fields": {
-            "title": "lq_file", 
-            "quality": null, 
-            "vbitrate": 200, 
-            "height": 418, 
-            "width": 720, 
-            "preset": "High Profile", 
-            "sample_rate": 44.1, 
-            "frame_rate": "25", 
-            "abitrate": 64, 
-            "x264opts": "ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0"
-        }
-    }
 ]

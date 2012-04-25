@@ -71,12 +71,12 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
     hq_file = models.FileField(u'Видео высокого качества',
         upload_to=hq_upload_to, storage=media_storage,
         validators=[is_video_file], **nullable)
-    mq_file = models.FileField(u'Видео среднего качества',
-        upload_to=mq_upload_to,storage=media_storage,
-        validators=[is_video_file], **nullable)
-    lq_file = models.FileField(u'Видео низкого качества',
-        upload_to=lq_upload_to,storage=media_storage,
-        validators=[is_video_file], **nullable)
+#    mq_file = models.FileField(u'Видео среднего качества',
+#        upload_to=mq_upload_to,storage=media_storage,
+#        validators=[is_video_file], **nullable)
+#    lq_file = models.FileField(u'Видео низкого качества',
+#        upload_to=lq_upload_to,storage=media_storage,
+#        validators=[is_video_file], **nullable)
     duration = models.IntegerField(u'Длительность', default=0,
                                    editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
@@ -131,7 +131,8 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
             return None
 
     def best_quality_file(self):
-        return self.hq_file or self.mq_file or self.lq_file or None
+#        return self.hq_file or self.mq_file or self.lq_file or None
+        return self.hq_file
 
     def any_file(self):
         return self.best_quality_file() or self.original_file or None

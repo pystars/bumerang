@@ -118,9 +118,10 @@ class VideoUpdateView(OwnerMixin, UpdateView):
 
 class VideoListView(ListView):
     queryset = Video.objects.filter(
-        Q(hq_file__isnull=False) |
-        Q(mq_file__isnull=False) |
-        Q(lq_file__isnull=False),
+        hq_file__isnull=False,
+#        Q(hq_file__isnull=False) |
+#        Q(mq_file__isnull=False) |
+#        Q(lq_file__isnull=False),
         published_in_archive=True,
         status=Video.READY
     )
