@@ -10,7 +10,7 @@
             <header class="b-head cleared">
                 {% if user.id == object.owner.id %}
                 <ul class="b-service-buttons">
-                    <li class="addvideo"><i></i><a href="{% url video-add %}">Добавить видео</a></li>
+                    <li class="addvideo"><i></i><a href="{% url album-video-add object.id %}">Добавить видео</a></li>
                     <li class="edit"><i></i><a href="{% url video-album-edit object.id %}">Редактировать альбом</a></li>
                 </ul>
                 {% endif %}
@@ -37,7 +37,7 @@
                 <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.count %}style="display: none;"{% endif %}>
                     <div class="b-empty__pic"></div>
                     <strong class="b-empty__text">Нет видеороликов</strong>
-                    <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+                    <div><a href="{% url album-video-add object.id %}" class="b-button b-button_yellow">Загрузить видео</a></div>
                 </div>
                 {% include "snippets/videos_list.html" %}
             </section>
