@@ -1191,4 +1191,9 @@ $(function() {
         var hash = location.hash.replace('#','');
         if(hash == '') $(window).scrollTop(window.lastPosition);
     });
+
+    $("a.cal-day").click(function(){
+        window.open($(this).attr('href'), 'popUpWindow', 'height=700,width=980,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes,directories=no,status=yes');
+        return false;
+    });
 });
