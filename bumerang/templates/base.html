@@ -116,13 +116,16 @@
                                         {% endif %}
                                 </li>
                                 <li class="b-dropdown2__item b-dropdown2__visible">
-                                    <a href="{% url messages_inbox %}" class="b-dropdown2__link">Сообщения</a>
-                                    {% if profile.inbox_count %}<small class="b-dropdown2__count">{{ profile.inbox_count }}</small>{% endif %}
+                                    {% inbox_count as inbox_count %}
+                                    {% if inbox_count %}
+                                        <a href="{% url messages_inbox %}" class="b-dropdown2__link">Сообщения</a>
+                                        <small class="b-dropdown2__count">{{ inbox_count }}</small>
+                                    {% endif %}
                                 </li>
-                                <li class="b-dropdown2__item b-dropdown2__visible">
-                                    <a href="#" class="b-dropdown2__link">Друзья</a>
-                                    <small class="b-dropdown2__count">2</small>
-                                </li>
+{#                                <li class="b-dropdown2__item b-dropdown2__visible">#}
+{#                                    <a href="#" class="b-dropdown2__link">Друзья</a>#}
+{#                                    <small class="b-dropdown2__count">2</small>#}
+{#                                </li>#}
                                 <li class="b-dropdown2__item">
                                     <a href="{% url profile-video-detail user.id %}" class="b-dropdown2__link">Видеосюжеты</a>
                                     <small class="b-dropdown2__count">{{ user.profile.video_set.count|default:'0' }}</small>
