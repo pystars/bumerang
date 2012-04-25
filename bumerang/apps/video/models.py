@@ -9,8 +9,8 @@ from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
 from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.video.validators import is_video_file
-from utils import (original_upload_to, hq_upload_to, mq_upload_to, lq_upload_to,
-    screenshot_upload_to, thumbnail_upload_to, icon_upload_to)
+from utils import (original_upload_to, hq_upload_to, screenshot_upload_to,
+                   thumbnail_upload_to, icon_upload_to)
 
 
 class VideoCategory(models.Model, TitleUnicode):
