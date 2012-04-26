@@ -47,7 +47,7 @@ class Profile(FileModelMixin, User):
                                db_index=True)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
     avatar = models.ImageField(u'Фотография профиля',
-        upload_to=get_avatar_path, **nullable)
+        upload_to=get_avatar_path, storage=media_storage, **nullable)
     min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
         upload_to=get_mini_avatar_path, storage=media_storage, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
