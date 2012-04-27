@@ -186,38 +186,30 @@ var VideoAlbumsView = Backbone.View.extend({
     },
 
     clickAlbumCheckbox: function(e) {
-        var targetEl = e.toElement || e.relatedTarget;
-
         var el = $(e.target || e.srcElement);
         var videoAlbumId = parseInt(el.attr('data-videoalbum-id'));
 
-        if (targetEl.tagName == 'INPUT') {
-            if (el.is(':checked')) {
-                this.selected_albums.push(videoAlbumId);
-            } else {
-                this.selected_albums = _.without(this.selected_albums, videoAlbumId);
-            }
-
-            this.updatePage();
+        if (el.is(':checked')) {
+            this.selected_albums.push(videoAlbumId);
+        } else {
+            this.selected_albums = _.without(this.selected_albums, videoAlbumId);
         }
+
+        this.updatePage();
     },
 
     clickVideoCheckbox: function(e) {
-        var targetEl = e.toElement || e.relatedTarget;
-
         var el = $(e.target || e.srcElement);
         var videoId = parseInt(el.attr('data-video-id'));
 
-        if (targetEl.tagName == 'INPUT') {
-            if (el.is(':checked')) {
-                this.selected_videos.push(videoId);
-            } else {
-                // Delete ID from array if checkbox unchecked
-                this.selected_videos = _.without(this.selected_videos, videoId);
-            }
-
-            this.updatePage();
+        if (el.is(':checked')) {
+            this.selected_videos.push(videoId);
+        } else {
+            // Delete ID from array if checkbox unchecked
+            this.selected_videos = _.without(this.selected_videos, videoId);
         }
+
+        this.updatePage();
     },
 
     clickMakeCover: function(e) {
@@ -598,40 +590,30 @@ var PhotoAlbumsView = Backbone.View.extend({
     },
 
     clickAlbumCheckbox: function(e) {
-        var targetEl = e.toElement || e.relatedTarget;
-
         var el = $(e.target || e.srcElement);
         var photoAlbumId = parseInt(el.attr('data-photoalbum-id'));
 
-        if (targetEl.tagName == 'INPUT') {
-            if (el.is(':checked')) {
-                this.selected_albums.push(photoAlbumId);
-            } else {
-                this.selected_albums = _.without(this.selected_albums, photoAlbumId);
-            }
+        if (el.is(':checked')) {
+            this.selected_albums.push(photoAlbumId);
+        } else {
+            this.selected_albums = _.without(this.selected_albums, photoAlbumId);
+        }
 
-            this.updatePage();
-        }        
+        this.updatePage();
     },
 
     clickPhotoCheckbox: function(e) {
-        // Which element was clicked? It may be delete link, not checkbox, lol
-        var targetEl = e.toElement || e.relatedTarget;
-
         var el = $(e.target || e.srcElement);
         var photoId = parseInt(el.attr('data-photo-id'));
 
-        // And we process event only if checkbox was clicked
-        if (targetEl.tagName == 'INPUT') {
-            if (el.is(':checked')) {
-                this.selected_photos.push(photoId);
-            } else {
-                // Delete ID from array if checkbox unchecked
-                this.selected_photos = _.without(this.selected_photos, photoId);
-            }
-
-            this.updatePage();
+        if (el.is(':checked')) {
+            this.selected_photos.push(photoId);
+        } else {
+            // Delete ID from array if checkbox unchecked
+            this.selected_photos = _.without(this.selected_photos, photoId);
         }
+
+        this.updatePage();
     },
 
     hideAlbums: function() {
