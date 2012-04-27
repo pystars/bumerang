@@ -89,7 +89,7 @@
         <div class="l-cols l-cols_movie"><div class="l-cols__i cleared">
             <section class="l-cols__section"><div class="l-cols__section__i">
                 <section class="b-movie js-toggle2-container js-toggle2-container_movie">
-                    <video id="movie" width="100%" height="380" preload controls style="background:url({{ STATIC_URL }}i/fake/video.jpg) repeat-x;">
+                    <video id="movie" width="100%" height="380" preload controls style="background:url({{ STATIC_URL }}i/player.png) repeat-x;">
                         <img src="{{ STATIC_URL }}i/fake/video.jpg" width="100%" height="380" />
                     </video>
                     {% if current_item %}
@@ -104,13 +104,13 @@
 {#                        <div class="b-adv__title">Реклама</div>#}
                     </header>
                     <p>
-                        <a href="">
-                            <img src="{{ STATIC_URL }}i/fake/ban1.jpg" alt="" width="200" height="340" />
+                        <a href="{% url registration %}">
+                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
                         </a>
                     </p>
                     <p>
-                        <a href="">
-                            <img src="{{ STATIC_URL }}i/fake/ban2.jpg" alt="" width="200" height="240" />
+                        <a href="{% url registration %}">
+                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
                         </a>
                     </p>
                 </section>
