@@ -5291,3 +5291,8 @@ h3.title+.b-form_edit_login-pass {
 .vk_comments {
     margin-top: 30px !important;
 }
+
+.photo-deleted {
+    margin: 0 auto;
+    display:block;
+}

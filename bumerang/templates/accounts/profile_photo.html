@@ -257,8 +257,6 @@
             var hash = this.href;
             hash = hash.replace(/^.*#/, '');
 
-            console.log('hash'+hash);
-
             increasePhotoViewsCount(hash);
 
             $.historyLoad(hash);
@@ -351,6 +349,11 @@
                 <div id="vk_comments" style="margin: 0 auto;"></div>
             </div>
         </div>
+
+        <div id="hidden-photo-container" style="display: none;">
+            <img id="hidden-photo-thumb" src="{{ STATIC_URL }}i/photo-deleted.png" />
+        </div>
+
     </div>
 
     {% if profile.id == request.user.id %}

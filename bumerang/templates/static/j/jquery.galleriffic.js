@@ -34,8 +34,14 @@
 		// @param {String} hash This is the unique hash value assigned to an image.
 		gotoImage: function(hash) {
 			var imageData = $.galleriffic.getImage(hash);
-			if (!imageData)
-				return false;
+			if (!imageData) {
+
+                $('#slideshow').empty();
+                $('#slideshow').append('<img class="photo-deleted" src="'+ $('#hidden-photo-thumb').attr('src') +'" />');
+                return false;
+            }
+
+            $('#slideshow').empty();
 
 			var gallery = imageData.gallery;
 			gallery.gotoImage(imageData);
