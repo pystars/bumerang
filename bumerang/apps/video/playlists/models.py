@@ -63,4 +63,4 @@ class PlayList(models.Model):
     @property
     def rotate_from(self):
         year, month, day = self.rotate_from_date.timetuple()[0:3]
-        return datetime(year, month, day-1, 23, tzinfo=UTC())
+        return datetime(year, month, day, 0, tzinfo=UTC())
