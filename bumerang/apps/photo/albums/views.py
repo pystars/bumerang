@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 
 from bumerang.apps.utils.views import OwnerMixin, AjaxView
 from forms import PhotoAlbumForm, PhotoAlbumCoverForm
@@ -56,3 +57,10 @@ class PhotoAlbumDetailView(DetailView):
         ctx = super(PhotoAlbumDetailView, self).get_context_data(**kwargs)
         ctx['photos'] = photos
         return ctx
+
+
+class PhotoAlbumListView(ListView):
+    queryset = PhotoAlbum.objects.filter(
+        published_in_archive = True,
+    ).order_by('-created')
+    paginate_by = 25

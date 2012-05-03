@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.timezone import now
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.photo.models import Photo
@@ -24,6 +25,7 @@ class PhotoAlbum(models.Model, TitleUnicode):
     cover = models.ForeignKey(Photo, on_delete=models.SET_NULL, **nullable)
     category = models.ForeignKey(PhotoCategory, verbose_name=u'Категория',
         **nullable)
+    created = models.DateTimeField(u'Дата добавления', default=now)
 
     class Meta:
         verbose_name = u'Фотоальбом'
