@@ -10,12 +10,7 @@ class NewsCategoryAdmin(admin.ModelAdmin):
 
 class NewsItemAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
-
-    class Media:
-        js = [
-            'grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
-            'j/tinymce_setup.js',
-        ]
+    change_form_template = 'news/admin/change_form.html'
 
 
 admin.site.register(NewsCategory, NewsCategoryAdmin)

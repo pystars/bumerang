@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -11,7 +9,8 @@ class Advice(MPTTModel):
     name = models.CharField(max_length=255, unique=True)
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
-    description = models.TextField(verbose_name=u'Описание раздела', default=u'Введите описание')
+    description = models.TextField(verbose_name=u'Описание раздела',
+        default=u'Введите описание')
     # Slug of node's name
     slug = models.SlugField()
     # Url hash
@@ -37,5 +36,5 @@ class Advice(MPTTModel):
 def advice_pre_save(sender, **kwargs):
     advice = kwargs['instance']
     # Building advice URL from parents
-    url = ''.join([ancestor.slug + u'/' for ancestor in advice.get_ancestors(ascending=False)] + [advice.slug])
-    advice.url = url
+    advice.url = u'/'.join(advice.get_ancestors(
+        include_self=True).values_list('slug', flat=True))

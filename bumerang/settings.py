@@ -49,6 +49,7 @@ else:
     AWS_MEDIA_STORAGE_BUCKET_NAME = 'media.probumerang.tv'
     AWS_S3_SECURE_URLS = False
     AWS_PRELOAD_METADATA = True
+    AWS_REDUCED_REDUNDANCY = True
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
     STATIC_ROOT = ''
@@ -69,7 +70,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 ]
-
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -130,19 +130,18 @@ INSTALLED_APPS = [
     'sitetree',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
-    'grappelli',
 #    'filebrowser',
     'django.contrib.admin',
     'django.contrib.admindocs',
     # external
     'south',
     'mptt',
-    'tinymce',
     'djcelery',
     'storages',
     'djkombu',
     'djangoratings',
     'django_ses',
+    'django_wysiwyg',
     'django_extensions',
     # internal
     'bumerang.apps.accounts',
@@ -161,32 +160,7 @@ INSTALLED_APPS = [
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
-#TINYMCE_JS_URL = os.path.join(STATIC_ROOT, "tiny_mce/tiny_mce.js")
-#TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "tiny_mce")
-
-TINYMCE_PLUGINS = [
-    'safari',
-    'table',
-    'advlink',
-    'advimage',
-    'iespell',
-    'inlinepopups',
-    'media',
-    'searchreplace',
-    'contextmenu',
-    'paste',
-    'wordcount'
-]
-TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,paste,searchreplace",
-    'theme': "advanced",
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
-    }
-
-FILEBROWSER_DIRECTORY = 'uploads/'
-
-GRAPPELLI_ADMIN_TITLE = u'Bumerang'
+DJANGO_WYSIWYG_FLAVOR = "ckeditor"
 
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),

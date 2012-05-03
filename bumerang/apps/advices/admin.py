@@ -7,12 +7,7 @@ from bumerang.apps.advices.models import Advice
 
 class AdviceAdmin(MPTTModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-
-    class Media:
-        js = [
-            'grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
-            'j/tinymce_setup.js',
-        ]
+    change_form_template = 'advices/admin/change_form.html'
 
 
 admin.site.register(Advice, AdviceAdmin)
