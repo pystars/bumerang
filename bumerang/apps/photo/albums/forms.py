@@ -7,7 +7,7 @@ from models import PhotoAlbum
 class PhotoAlbumForm(forms.ModelForm):
     class Meta:
         model = PhotoAlbum
-        fields = ('title', 'description')
+        fields = ('title', 'description', 'category',)
 
 
 class PhotoAlbumCoverForm(forms.ModelForm):
