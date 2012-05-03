@@ -179,5 +179,6 @@ class PhotoListView(ListView):
 class PhotoAlbumListView(PhotoAlbumMixin, ListView):
     queryset = PhotoAlbum.objects.filter(
         cover__isnull = False,
+        published_in_archive = True,
     )
     paginate_by = 5

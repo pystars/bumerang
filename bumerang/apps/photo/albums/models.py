@@ -6,11 +6,24 @@ from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.photo.models import Photo
 
 
+class PhotoCategory(models.Model, TitleUnicode):
+    title = models.CharField(max_length=255, verbose_name=u"Имя")
+    slug = models.SlugField()
+
+    class Meta:
+        verbose_name = u'Категория фото'
+        verbose_name_plural = u'Категории фото'
+
+
 class PhotoAlbum(models.Model, TitleUnicode):
     owner = models.ForeignKey(User)
+    published_in_archive = models.BooleanField(u'Опубликовано в фотогалерее',
+        default=False)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание', **nullable)
     cover = models.ForeignKey(Photo, on_delete=models.SET_NULL, **nullable)
+    category = models.ForeignKey(PhotoCategory, verbose_name=u'Категория',
+        **nullable)
 
     class Meta:
         verbose_name = u'Фотоальбом'

@@ -11,15 +11,6 @@ from utils import (original_upload_to, image_upload_to, thumbnail_upload_to,
 from bumerang.apps.utils.media_storage import media_storage
 
 
-class PhotoCategory(models.Model, TitleUnicode):
-    title = models.CharField(max_length=255, verbose_name=u"Имя")
-    slug = models.SlugField()
-
-    class Meta:
-        verbose_name = u'Категория фото'
-        verbose_name_plural = u'Категории фото'
-
-
 class PhotoGenre(models.Model, TitleUnicode):
     title = models.CharField(max_length=255, verbose_name=u"Имя")
     slug = models.SlugField()
@@ -62,8 +53,6 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
     album = models.ForeignKey('albums.PhotoAlbum', verbose_name=u'Альбом',
         max_length=255, **nullable)
-    category = models.ForeignKey(PhotoCategory, verbose_name=u'Категория',
-        **nullable)
     description = models.TextField(u'Описание', **nullable)
     year = models.IntegerField(u'Год', default=2011, **nullable)
     genre = models.ForeignKey(PhotoGenre, verbose_name=u'Жанр', **nullable)
