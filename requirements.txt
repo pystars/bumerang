@@ -21,3 +21,4 @@ pytz
 dnspython
 django-kombu==0.9.4
 django-celery-with-redis
+django-wysiwyg
