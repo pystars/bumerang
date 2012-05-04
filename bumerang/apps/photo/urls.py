@@ -47,6 +47,10 @@ urlpatterns = patterns('',
         PhotoAlbumListView.as_view(),
         name='photo-list'
     ),
+    url(r'^~(?P<category>[\w\-]+)/$',
+        PhotoAlbumListView.as_view(),
+        name='photo-list-category'
+    ),
     url(r'^photos-delete/$',
         login_required(ObjectsDeleteView.as_view(model=Photo)),
         name='photos-delete'

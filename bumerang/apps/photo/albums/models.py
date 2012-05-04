@@ -10,10 +10,12 @@ from bumerang.apps.photo.models import Photo
 class PhotoCategory(models.Model, TitleUnicode):
     title = models.CharField(max_length=255, verbose_name=u"Имя")
     slug = models.SlugField()
+    sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
 
     class Meta:
         verbose_name = u'Категория фото'
         verbose_name_plural = u'Категории фото'
+        ordering = ('sort_order',)
 
 
 class PhotoAlbum(models.Model, TitleUnicode):
