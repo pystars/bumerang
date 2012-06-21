@@ -24,7 +24,7 @@ class NewsItem(models.Model):
     slug = models.SlugField()
     preview_text = models.TextField(verbose_name=u'Текст превью')
     text = models.TextField(verbose_name=u'Текст')
-    creation_date = models.DateTimeField(editable=False, default=now)
+    creation_date = models.DateTimeField(default=now)
 
     def __unicode__(self):
         return self.title
