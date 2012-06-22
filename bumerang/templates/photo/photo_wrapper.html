@@ -12,6 +12,26 @@
             {% endblock %}
         </div></section>
         <aside class="l-cols__side"><div class="l-cols__side__i">
+            {% if photo_categories %}
+                <nav class="b-side-nav d-indent">
+                        <ul>
+                            <h4>{% if current_category %}<a href="{% url photo-list %}">Все фото</a>{% else %}Все фото{% endif %}</h4>
+                            {% for category in photo_categories %}
+                                {% ifequal category current_category %}
+                                    <li>{{ category.title }}</li>
+                                {% else %}
+                                    <li><a href="{% url photo-list-category category.slug %}"
+                                           title="{{ category.title }}">{{ category.title }}</a></li>
+                                {% endifequal %}
+                            {% endfor %}
+                        </ul>
+                        <i class="d-indent__tl"></i>
+                        <i class="d-indent__tr"></i>
+                        <i class="d-indent__br"></i>
+                        <i class="d-indent__bl"></i>
+                    </nav>
+            {% endif %}
+
             {% block right_column %}
                 <section class="b-adv b-adv2">
                     <header>
