@@ -11,6 +11,7 @@ from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
+from bumerang.apps.photo.models import PhotoCategory
 
 from bumerang.apps.utils.functions import thumb_img
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
@@ -143,6 +144,18 @@ class PhotoUpdateView(OwnerMixin, UpdateView, PhotoEditMixin):
         return super(ModelFormMixin, self).form_valid(form)
 
 
+class PhotoAlbumMixin(object):
+    def get_context_data(self, **kwargs):
+        ctx = super(PhotoAlbumMixin, self).get_context_data(**kwargs)
+        ctx['photo_categories'] = PhotoCategory.objects.all()
+        try:
+            ctx['current_category'] = self.current_category
+        except AttributeError:
+            pass
+
+        return ctx
+
+
 class PhotoListView(ListView):
     queryset = Photo.objects.filter(
         published_in_archive=True,
@@ -150,7 +163,7 @@ class PhotoListView(ListView):
     paginate_by = 25
 
 
-class PhotoAlbumListView(ListView):
+class PhotoAlbumListView(PhotoAlbumMixin, ListView):
     queryset = PhotoAlbum.objects.filter(
         cover__isnull = False,
     )

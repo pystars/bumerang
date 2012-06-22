@@ -67,5 +67,10 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>[\d]+)/update-count/$',
         increase_views_count,
         name='photo-update-count'
-    )
+    ),
+
+    url(r'^~(?P<category>[\w\-]+)/$',
+        PhotoAlbumListView.as_view(),
+        name='photo-list-category'
+    ),
 )
