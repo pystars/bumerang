@@ -157,10 +157,23 @@ class PhotoAlbumMixin(object):
 
 
 class PhotoListView(ListView):
-    queryset = Photo.objects.filter(
-        published_in_archive=True,
-    )
     paginate_by = 25
+
+    def get_queryset(self):
+        qs = super(PhotoListView, self).get_queryset()
+        try:
+            self.current_category = PhotoCategory.objects.get(
+                slug=self.kwargs['category'])
+            qs = qs.filter(category=self.current_category)
+        except PhotoCategory.DoesNotExist:
+            return qs.none()
+        except KeyError:
+            pass
+
+        qs = qs.filter(
+            published_in_archive=True,
+        )
+        return qs
 
 
 class PhotoAlbumListView(PhotoAlbumMixin, ListView):
