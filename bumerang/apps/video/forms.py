@@ -34,9 +34,7 @@ class VideoCreateForm(BaseVideoForm):
 
     def __init__(self, *args, **kwargs):
         super(VideoCreateForm, self).__init__(*args, **kwargs)
-        original_file_field = self.fields['original_file']
-        original_file_field.required = False
-        self.fields['original_file'] = original_file_field
+        self.fields['original_file'].required = False
 
 
 class VideoForm(BaseVideoForm):

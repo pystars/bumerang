@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.contrib.flatpages.forms import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.flatpages.admin import FlatPageAdmin as FlatPageAdminOld
 
 
+class CustomFlatpageForm(FlatpageForm):
+    def __init__(self, *args, **kwargs):
+        super(CustomFlatpageForm, self).__init__(*args, **kwargs)
+        self.fields['template_name'].initial = 'flatpages/about.html'
+        self.fields['sites'].initial = [i[0]
+                                        for i in self.fields['sites'].choices]
+
+
 class FlatPageAdmin(FlatPageAdminOld):
+    form = CustomFlatpageForm
     change_form_template = 'flatpages/admin/change_form.html'
 
 
