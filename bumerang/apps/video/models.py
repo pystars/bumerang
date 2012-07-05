@@ -67,7 +67,7 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
     original_file = models.FileField(u"Оригинальное видео",
         validators=[is_video_file], upload_to=original_upload_to,
-        storage=media_storage, null=True, blank=False)
+        storage=media_storage, **nullable)
     hq_file = models.FileField(u'Видео высокого качества',
         upload_to=hq_upload_to, storage=media_storage,
         validators=[is_video_file], **nullable)

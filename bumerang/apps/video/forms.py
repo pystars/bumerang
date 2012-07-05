@@ -6,11 +6,11 @@ from models import Video
 
 
 class BaseVideoForm(S3StorageFormMixin, forms.ModelForm):
+
     def __init__(self, user, *args, **kwargs):
         super(BaseVideoForm, self).__init__(*args, **kwargs)
         self.fields['album'].queryset = self.fields[
                 'album'].queryset.filter(owner=user)
-
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
                 or field.widget.__class__ == forms.widgets.Textarea):
@@ -31,6 +31,12 @@ class VideoCreateForm(BaseVideoForm):
             'category',
             'description'
         )
+
+    def __init__(self, *args, **kwargs):
+        super(VideoCreateForm, self).__init__(*args, **kwargs)
+        original_file_field = self.fields['original_file']
+        original_file_field.required = False
+        self.fields['original_file'] = original_file_field
 
 
 class VideoForm(BaseVideoForm):
