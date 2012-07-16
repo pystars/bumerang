@@ -18,49 +18,65 @@
         {% csrf_token %}
         <a class="form-profile-view" href="{% url profile-detail profile.id %}">Просмотр профиля</a>
         <div class="b-form__fields">
-            <h3 class="title">Редактирование Фотографии</h3>
-            <fieldset>
-                <div class="b-form__pic">
-                    <div class="b-ava b-ava_big">
-                        {% if user.profile.min_avatar %}
-                            <img src="{{ user.profile.min_avatar.url }}" width="175" height="175" alt="Добавьте фото" />
-                        {% else %}
-                            {% if user.profile.type == 1 %}
-                                <img src="{{ STATIC_URL }}i/add-user-foto.png" width="175" height="175" alt="Добавьтете фото" />
-                            {% endif %}
-                            {% if user.profile.type == 2 %}
-                                <img src="{{ STATIC_URL }}i/add-school-foto.png" width="175" height="175" alt="Добавьте фото" />
-                            {% endif %}
-                            {% if user.profile.type == 3 %}
-                                <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте фото" />
-                            {% endif %}
-                        {% endif %}
-                        <i class="b-ava__sh"></i>
-                    </div>
-                </div>
-                <div class="b-form__txt">
-                    Загрузите фотографию и выберите область, которая будет использована для юзерпика.
-{#                    <div><a href="#" class="b-button b-button_small b-button_file">Выберите файл...</a></div>#}
-                        <span class="f-input">
-                            <input type="file" name="avatar" id="id_avatar" style="margin-top: 8px;" />
-                            <input type="hidden" name="avatar_coords" value='{"x":0,"y":0,"x2":175,"y2":175,"w":175,"h":175}' id="id_avatar_coords" />
-                        </span>
-                    {% if form.avatar.errors %}
-                        <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.avatar.errors }}</span></div>
-                    {% endif %}
-                </div>
-                <div class="clear" style="height: 18px;"></div>
+            {% with type=user.profile.type pf=user.profile %}
 
-                {% if user.profile.avatar and not form.avatar.errors %}
-                    <img src="{{ user.profile.avatar.url }}" id="current_avatar" style="max-width: 500px;" />
+                {% if type == pf.TYPE_FESTIVAL or type == pf.TYPE_STUDIO or type == pf.TYPE_SCHOOL %}
+                    <h3 class="title">Редактирование логотипа</h3>
+                {% elif type == pf.TYPE_USER %}
+                    <h3 class="title">Редактирование фотографии</h3>
                 {% endif %}
-            </fieldset>
 
+                <fieldset>
+                    <div class="b-form__pic">
+                        <div class="b-ava b-ava_big">
+                            {% if pf.min_avatar %}
+                                <img src="{{ pf.min_avatar.url }}?{% now 'su' %}" width="175" height="175" alt="Добавьте фото" />
+                            {% else %}
+                                {% if type == pf.TYPE_USER %}
+                                    <img src="{{ STATIC_URL }}i/add-user-foto.png" width="175" height="175" alt="Добавьте фото" />
+                                {% elif type == pf.TYPE_SCHOOL %}
+                                    <img src="{{ STATIC_URL }}i/add-school-foto.png" width="175" height="175" alt="Добавьте логотип" />
+                                {% elif type == pf.TYPE_STUDIO %}
+                                    <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте логотип" />
+                                {% elif type == pf.TYPE_FESTIVAL %}
+                                    <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте логотип" />
+                                {% endif %}
+                            {% endif %}
+                            <i class="b-ava__sh"></i>
+                        </div>
+                    </div>
+                    <div class="b-form__txt">
+
+                        <p>
+                            {% if type == pf.TYPE_USER %}
+                                Загрузите фотографию и выберите область, которая будет использована для юзерпика.
+                            {% else %}
+                                Загрузите изображение и выберите область, которая будет использована для логотипа.
+                            {% endif %}
+                        </p>
+
+                            <span class="f-input">
+                                <input type="file" name="avatar" id="id_avatar" style="margin-top: 8px;" />
+                                <input type="hidden" name="avatar_coords" value='{"x":0,"y":0,"x2":175,"y2":175,"w":175,"h":175}' id="id_avatar_coords" />
+                            </span>
+                        {% if form.avatar.errors %}
+                            <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.avatar.errors }}</span></div>
+                        {% endif %}
+                    </div>
+                    <div class="clear" style="height: 18px;"></div>
+
+                    {% if pf.avatar and not form.avatar.errors %}
+                        <img src="{{ pf.avatar.url }}?{% now 'su' %}" id="current_avatar" style="max-width: 500px;" />
+                    {% endif %}
+
+                </fieldset>
+
+            {% endwith %}
 
             </div>
         <footer class="b-form__footer">
             <div class="wrap">
-                <a href="" class="b-button b-button_yellow button-submit">Сохранить</a>
+                <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
             </div>
         </footer>
     </form>

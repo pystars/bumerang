@@ -1,7 +1,7 @@
 {% extends "accounts/profile_edit_wrapper.html" %}
 {% load sitetree formtags %}
 
-{% block title %}Редактироване профиля{% endblock %}
+{% block title %}Редактирование профиля{% endblock %}
 
 {% block head_js %}
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
@@ -15,13 +15,7 @@
             <a class="form-profile-view" href="{% url profile-detail profile.id %}">Просмотр профиля</a>
             <div class="b-form__fields">
                 <h3 class="title">
-                    {% if user.profile.type == 1 %}
-                        {% sitetree_page_title from "user_edit_menu" %}
-                    {% endif %}{% if user.profile.type == 2 %}
-                        {% sitetree_page_title from "school_edit_menu" %}
-                    {% endif %}{% if user.profile.type == 3 %}
-                        {% sitetree_page_title from "studio_edit_menu" %}
-                    {% endif %}
+                    {% include "accounts/snippets/profile_edit_left_menu_current.html" %}
                 </h3>
                 {{ formset.management_form }}
                 {% for form in formset.forms %}

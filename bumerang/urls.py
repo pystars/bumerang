@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^photo/', include('bumerang.apps.photo.urls')),
     url(r'^accounts/', include('bumerang.apps.accounts.urls')),
     url(r'^playlists/', include('bumerang.apps.video.playlists.urls')),
+    url(r'^festivals/', include('bumerang.apps.festivals.urls')),
     url(r'^admin/django-ses/', include('django_ses.urls')),
 )
 

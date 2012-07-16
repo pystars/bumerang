@@ -1,0 +1,15 @@
+{% load sitetree %}
+
+{% with type=user.profile.type pf=user.profile %}
+
+    {% if type == pf.TYPE_USER %}
+        {% sitetree_menu from "user_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+    {% elif type == pf.TYPE_SCHOOL %}
+        {% sitetree_menu from "school_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+    {% elif type == pf.TYPE_STUDIO %}
+        {% sitetree_menu from "studio_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+    {% elif type == pf.TYPE_FESTIVAL %}
+        {% sitetree_menu from "festival_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+    {% endif %}
+
+{% endwith %}

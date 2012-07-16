@@ -1,0 +1,25 @@
+<dt class="first{% ifequal selected 'festival' %} selected{% endifequal %}">
+    <a href="{% url festival-detail object.id %}">
+        <span>Фестиваль</span>
+    </a>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+
+{#<dt{% ifequal selected 'video' %} class="selected"{% endifequal %}>#}
+{#    {% spaceless %}#}
+{#        <a href="#">#}
+{#            <span>Пресс—центр</span>#}
+{#        </a>#}
+{#    {% endspaceless %}#}
+{#    <i class="l"></i>#}
+{#    <i class="r"></i>#}
+{#</dt>#}
+{#<dd>#}
+{#    <div class="b-tabs__tab-content">#}
+{#    </div>#}
+{#</dd>#}

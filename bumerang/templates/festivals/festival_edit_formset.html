@@ -1,0 +1,55 @@
+{% extends "festivals/festival_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Редактирование фестиваля {{ festival.name }}{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-ui-1.8.21.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+    <section class="b-form b-form_smaller b-form_edit">
+        <form name="editform" action="" method="post">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <h3 class="title">
+                    {% sitetree_page_title from "fest_edit_menu" %}
+                </h3>
+
+                <div class="b-hr">
+                    <hr />
+                </div>
+
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                    <section id="{{ form.prefix }}-row">
+                        {{ form }}
+                    </section>
+                {% endfor %}
+
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+    </section>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form section').formset({
+                prefix: 'form',
+                addText: '{{ add_item_text }}'
+            })
+        })
+    </script>
+{% endblock %}
+

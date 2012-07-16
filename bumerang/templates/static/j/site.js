@@ -962,25 +962,57 @@ $(function() {
         interpolate : /\{=(.+?)\}/g
     };
 
+
     /*
-    * Make cover of album
-    * */
-//    $('.b-dropdown__link[id*=make-cover-]').click(function() {
-//        var aid = parseInt($('div[id*=videoalbum-id-]').attr('id').split('videoalbum-id-')[1]);
-//        var vid = parseInt($(this).attr('id').split('make-cover-')[1]);
-//
-//        $.ajax({
-//            type: 'post',
-//            url: '/video/album'+aid+'/set-cover/',
-//            data: {
-//                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-//                cover: vid
-//            },
-//            success: function() {
-////                window.location.reload();
-//            }
-//        });
-//    });
+    Datetime picker
+     */
+
+    if ($.fn.datepicker) {
+        $('#datepicker_birthday').datepicker({
+            maxDate: new Date(),
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-100:-16"
+
+        }).datepicker({ showOn: 'both' });
+
+        $('#datepicker_start_date,#datepicker_end_date,#datepicker_accept_requests_date').datepicker({
+            minDate: new Date(),
+            changeMonth: true,
+            changeYear: true
+
+        }).datepicker({ showOn: 'both' });
+
+    };
+
+    /*
+    Festival detail page handler
+     */
+    if ($('.hdr-festival-detail')) {
+        /* Tabs handler */
+        $('div.tabs a.b-button').on('click', function(e) {
+            e.preventDefault();
+            window.location.hash = this.hash;
+            var el = $(e.target);
+            $('div.tabs a.b-button').removeClass('current');
+            el.addClass('current').removeClass('hidden');
+
+            $('.tab-block section').addClass('hidden');
+            $('.tab-block section[id='+el.attr('href').replace('#', '')+']')
+                .addClass('current')
+                .removeClass('hidden');
+        });
+
+        $('.tab-block section:not(.current)').addClass('hidden');
+
+        $('div.tabs a.b-button[href='+location.hash+']').trigger('click');
+
+    } /* end festival page handler */
+
+    $('a.scroll-to-top').click(function(e) {
+        $("html, body").animate({scrollTop:0},"fast");
+        e.preventDefault();
+    });
 
 
     /*
@@ -1026,6 +1058,11 @@ $(function() {
     // Avatar
     $('#id_avatar[type=file]').change(function(event){
         $('form[name=avatar_form]').submit();
+    });
+
+    // Logo
+    $('#id_logo[type=file]').change(function(event){
+        $('form[name=logo_form]').submit();
     });
 
     function crop_initial_coords() {

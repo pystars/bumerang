@@ -8,6 +8,7 @@ from django.db import models
 from bumerang.apps.utils.models import FileModelMixin
 from bumerang.apps.utils.media_storage import media_storage
 
+
 nullable = dict(null=True, blank=True)
 
 def get_avatar_path(instance, filename):
@@ -26,10 +27,17 @@ def get_mini_avatar_path(instance, filename):
 
 
 class Profile(FileModelMixin, User):
+    # User types constants
+    TYPE_USER = 1
+    TYPE_SCHOOL = 2
+    TYPE_STUDIO = 3
+    TYPE_FESTIVAL = 4
+
     ACCOUNT_TYPES = (
-        (1, u'Независимый участник'),
-        (2, u'Школа'),
-        (3, u'Студия'),
+        (TYPE_USER,      u'Независимый участник'),
+        (TYPE_SCHOOL,    u'Школа'),
+        (TYPE_STUDIO,    u'Студия'),
+        #(TYPE_FESTIVAL,  u'Фестиваль'),
     )
 
     GENDER = (
@@ -51,7 +59,6 @@ class Profile(FileModelMixin, User):
     min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
         upload_to=get_mini_avatar_path, storage=media_storage, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
-#    place = models.CharField(u'Откуда', max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
     views_count = models.IntegerField(u'Просмотров', default=0, editable=False)
@@ -61,9 +68,6 @@ class Profile(FileModelMixin, User):
     activation_code_expire = models.DateTimeField(editable=False, **nullable)
 
     # Специфические для разных типов пользователей поля
-#    work = models.TextField(u'Работа и карьера', **nullable)
-#    education = models.TextField(u'Образование', **nullable)
-#    interests = models.TextField(u'Интересы', **nullable)
     country = models.CharField(u'Страна', max_length=255, **nullable)
     region = models.CharField(u'Регион', max_length=255, **nullable)
     city = models.CharField(u'Город', max_length=255, **nullable)
@@ -103,6 +107,21 @@ class Profile(FileModelMixin, User):
 
     def __unicode__(self):
         return self.username
+
+    def get_title(self):
+        u"""
+        Возвращает строку для формирования заголовка страницы
+        в формате "<пользователя, школы, etc> %title%"
+        """
+        title = str()
+        if self.type == self.TYPE_USER:
+            title = u'пользователя'
+        if self.type == self.TYPE_SCHOOL:
+            title = u'школы'
+        if self.type == self.TYPE_STUDIO:
+            title = u'студии'
+
+        return u'{0} {1}'.format(title, self.title)
 
     def get_locality(self):
         u"""

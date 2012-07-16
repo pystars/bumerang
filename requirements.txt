@@ -24,3 +24,5 @@ django-celery-with-redis==2.5
 django-wysiwyg
 simplejson
 johnny-cache
+coverage >= 3.0
+django-coverage

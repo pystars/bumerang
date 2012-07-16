@@ -1,0 +1,8 @@
+<ul class="b-service-buttons">
+    {% if object.owner == request.user.profile %}
+        <li class="edit">
+            <i></i>
+            <a href="{% url festival-edit-info object.id %}">Редактировать фестиваль</a>
+        </li>
+    {% endif %}
+</ul>
