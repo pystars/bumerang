@@ -670,5 +670,28 @@
             "hidden": false, 
             "urlaspattern": true
         }
+    }, 
+    {
+        "pk": 29, 
+        "model": "sitetree.treeitem", 
+        "fields": {
+            "parent": null, 
+            "access_restricted": false, 
+            "access_permissions": [], 
+            "description": "", 
+            "insitetree": true, 
+            "hint": "", 
+            "url": "festival-list", 
+            "inbreadcrumbs": true, 
+            "title": "\u0424\u0435\u0441\u0442\u0438\u0432\u0430\u043b\u0438 \u0438 \u043a\u043e\u043d\u043a\u0443\u0440\u0441\u044b", 
+            "tree": 1, 
+            "access_perm_type": 1, 
+            "alias": null, 
+            "sort_order": 29, 
+            "inmenu": true, 
+            "access_loggedin": false, 
+            "hidden": false, 
+            "urlaspattern": true
+        }
     }
 ]

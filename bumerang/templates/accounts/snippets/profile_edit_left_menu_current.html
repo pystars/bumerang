@@ -1,0 +1,13 @@
+{% load sitetree %}
+
+{% with user.profile.type as type %}
+    {% if type == 1 %}
+        {% sitetree_page_title from "user_edit_menu" %}
+    {% elif type == 2 %}
+        {% sitetree_page_title from "school_edit_menu" %}
+    {% elif type == 3 %}
+        {% sitetree_page_title from "studio_edit_menu" %}
+    {% elif type == 4 %}
+        {% sitetree_page_title from "festival_edit_menu" %}
+    {% endif %}
+{% endwith %}

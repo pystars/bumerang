@@ -1,0 +1,120 @@
+{% extends "festivals/festival_wrapper.html" %}
+{% load sitetree truncatechars %}
+
+{% block title %}Фестивали{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <h1>Фестивали</h1>
+    </header>
+
+    <p>
+        В данном разделе вы можете ознакомиться с фестивалями. Что бы скачать официальное положение и заявку интересующего вас фестиваля, кликните на ссылку "скачать".
+    </p>
+
+    <section class="b-announs b-announs_movie">
+        <div class="announs-items">
+
+            {% for object in object_list %}
+            <table border="0" cellpadding="2">
+                <tbody>
+                    <tr>
+                        <td colspan="3" rowspan="1">
+                            <h3>
+                                <a href="{% url festival-detail object.id %}" title="{{ object.name }}">{{ object.name }}</a>
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            {{ object.description }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            &nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="1">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>
+                            Даты проведения фестиваля:</td>
+                        <td>
+                            С {{ object.start_date }} по {{ object.end_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">
+                            &nbsp;</td>
+                        <td colspan="1">
+                            Место проведения:</td>
+                        <td colspan="1">
+                            {{ object.hold_place }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="1">
+                            &nbsp;</td>
+                        <td>
+                            Заявки и работы принимаются до:</td>
+                        <td>
+                            {{ object.accept_requests_date }}
+                        </td>
+                    </tr>
+{#                    <tr>#}
+{#                        <td rowspan="1">#}
+{#                            &nbsp;</td>#}
+{#                        <td colspan="1">#}
+{#                            Кто может участвовать:</td>#}
+{#                        <td colspan="1">#}
+{#                            без ограничений</td>#}
+{#                    </tr>#}
+                    {% if object.file_rules %}
+                    <tr>
+                        <td colspan="1">
+                            &nbsp;</td>
+                        <td colspan="1">
+                            Официальное положение и завка:</td>
+                        <td colspan="1">
+                            <a href="{{ object.file_rules.url }}" title="Положение {{ object.name }}">скачать &gt;&gt;</a></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="1">
+                            &nbsp;</td>
+                        <td colspan="1">
+                            &nbsp;</td>
+                        <td colspan="1">
+                            &nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            {% include 'paginator/paginator.html' %}
+        {% endif %}
+
+    </section>
+
+{% endblock %}
+
+{% block right_menu %}
+    <nav class="b-side-nav d-indent" style="margin-top: 3.5em;">
+        <ul>
+            <h4>Создать фестиваль</h4>
+            <li>
+                <a href="{% url festival-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+            </li>
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}

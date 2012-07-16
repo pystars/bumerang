@@ -3,6 +3,7 @@
 
 {% block tab %}
 {% include 'snippets/menu.html' with selected='profile' %}
+{% with type=object.type pf=object %}
 <dd class="selected"><div class="b-tabs__tab-content">
     <section class="b-profile">
         <header class="b-profile__head cleared">
@@ -11,19 +12,25 @@
                     {% if object.min_avatar %}
                         <img src="{{ object.min_avatar.url }}" width="60" height="60" alt="" />
                     {% else %}
-                        {% if object.type == 1 %}
-                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
-                        {% endif %}{% if object.type == 2 %}
-                            <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="" />
-                        {% endif %}{% if object.type == 3 %}
-                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
-                        {% endif %}
+
+                            {% if type == pf.TYPE_USER %}
+                                <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
+                            {% elif type == pf.TYPE_SCHOOL %}
+                                <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="" />
+                            {% elif type == pf.TYPE_STUDIO %}
+                                <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
+                            {% elif type == pf.TYPE_FESTIVAL %}
+                                <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
+                            {% endif %}
+
                     {% endif %}
                     <i class="b-ava__sh"></i>
                 </div>
                 <ul class="b-opts b-opts_prof2">
                     {% if request.user.id != object.id %}
-                    <li><a href="{% url messages_compose_to object.id %}">Отправить сообщение</a></li>
+                        <li>
+                            <a href="{% url messages_compose_to object.id %}">Отправить сообщение</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -31,7 +38,7 @@
                 {% include "accounts/service_buttons.html" %}
 
                 {% if object.title %}
-                    {% if object.type != 1 %}
+                    {% if object.type != pf.TYPE_USER %}
                         <h2>{{ object.get_type_display }} &laquo;{{ object.title }}&raquo;</h2>
                     {% else %}
                         <h2>{{ object.title }}</h2>
@@ -47,25 +54,37 @@
                     {% endif %}
                 {% endif %}
 
-                <ul class="b-opts b-opts_prof1">
+                <ul class="b-opts">
                     {% if object.get_locality %}
                         <li>
-                            <strong>Откуда</strong>
+                            <strong>
+                                {% if object.type == pf.TYPE_FESTIVAL %}
+                                    Место проведения:
+                                {% else %}
+                                    Откуда:
+                                {% endif %}
+                            </strong>
                             <span>{{ object.get_locality }}</span>
                         </li>
                     {% endif %}
 
-                    {% if object.birthday %}
-                    <li><strong>День рождения</strong> <span>{{ object.birthday|date:"d E, Y" }}</span></li>
+                    {% if object.birthday and type == pf.TYPE_USER %}
+                        <li>
+                            <strong>День рождения</strong> <span>{{ object.birthday|date:"d E, Y" }}</span>
+                        </li>
                     {% endif %}
+
                     {% if object.nickname %}
-                    <li><strong>Никнейм</strong> <span>{{ object.nickname }}</span></li>
+                        <li>
+                            <strong>Никнейм</strong> <span>{{ object.nickname }}</span>
+                        </li>
                     {% endif %}
                 </ul>
+
                 {% if object.description %}
-                <p class="smaller">
-                    {{ object.description|linebreaks }}
-                </p>
+                    <p class="smaller">
+                        {{ object.description|linebreaks }}
+                    </p>
                 {% endif %}
             </div>
         </header>
@@ -74,4 +93,5 @@
     {% include "accounts/snippets/resume_roll.html" %}
 
 </div></dd>
+{% endwith %}
 {% endblock %}

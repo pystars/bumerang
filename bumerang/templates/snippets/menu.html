@@ -35,6 +35,24 @@
     <div class="b-tabs__tab-content">
     </div>
 </dd>
+
+{% if profile.festival_set.count %}
+    <dt{% ifequal selected 'festival' %} class="selected"{% endifequal %}>
+    {% spaceless %}
+        <a href="{% url profile-festival-list profile.id %}">
+            <span>Фестивали</span>
+        </a>
+    {% endspaceless %}
+        <small>{{ profile.festival_set.count }}</small>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+    <dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+{% endif %}
+
 {% if request.user.is_authenticated %}
     {% ifequal profile request.user.profile %}
         <dt{% ifequal selected 'messages' %} class="selected"{% endifequal %}>

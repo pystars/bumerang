@@ -1,0 +1,43 @@
+{% extends "festivals/festival_wrapper.html" %}
+{% load sitetree %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-ui-1.8.21.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
+{% endblock %}
+
+{% block title %}Заявка на создание фестиваля{% endblock %}
+
+{% block left_column %}
+    <section class="b-form b-form_smaller b-form_edit b-form_left">
+        <form name="editform" action="" method="post">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <h3 class="title">
+                    Заполните форму подачи заявки
+                </h3>
+
+                {{ group_form }}
+
+                {{ fest_form }}
+
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Отправить заявку</a>
+                </div>
+            </footer>
+        </form>
+    </section>
+{% endblock %}
+
+{% block right_menu %}
+<nav class="b-side-nav d-indent">
+
+</nav>
+{% endblock %}

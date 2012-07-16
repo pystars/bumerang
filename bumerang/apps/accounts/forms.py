@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from bumerang.apps.accounts.models import Profile, Faculty, Service, Teammate
+from bumerang.apps.festivals.forms import EditFormsMixin, TemplatedForm
 from bumerang.apps.utils.forms import S3StorageFormMixin
 
 
@@ -37,7 +38,8 @@ class EditFormsMixin(forms.ModelForm):
         super(EditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
-                or field.widget.__class__ == forms.widgets.PasswordInput):
+                or field.widget.__class__ == forms.widgets.PasswordInput
+                or field.widget.__class__ == forms.widgets.DateInput):
                 if field.widget.attrs.has_key('class'):
                     field.widget.attrs['class'] += ' wide'
                 else:
@@ -159,7 +161,8 @@ class ProfileEmailEditForm(forms.ModelForm):
         fields = ('username',)
 
 
-class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
+#class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
+class UserProfileInfoForm(EditFormsMixin, TemplatedForm):
     u"""
     Форма редактирования профиля пользователя
     """
@@ -193,6 +196,57 @@ class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
                   'city', 'description',)
 
 
+class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
+    u"""
+    Форма редактирования профиля студии
+    """
+    title = forms.CharField(max_length=255, label=u'Название')
+    description = forms.CharField(widget=forms.Textarea, label=u'Описание')
+    class Meta:
+        model = Profile
+        fields = ('title', 'country',
+                  'region',
+                  'city', 'description', )
+
+
+#class FestivalProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
+class FestivalProfileInfoForm(EditFormsMixin, TemplatedForm):
+    u"""
+    Форма редактирования профиля фестиваля
+    """
+    title = forms.CharField(max_length=255, label=u'Название фестиваля')
+    description = forms.CharField(widget=forms.Textarea, label=u'Описание')
+
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'country',
+            'region',
+            'city',
+            'description'
+        )
+
+
+class FestivalRegistrationRequestForm(forms.ModelForm):
+    """
+    Форма отпраки заявки на разрешение проведения феста
+    при регистрации
+    """
+    title = forms.CharField(max_length=255, label=u'Название фестиваля')
+    description = forms.CharField(widget=forms.Textarea,
+        label=u'Описание фестиваля', required=True)
+
+    class Meta:
+        model = Profile
+        fields = (
+            'title',
+            'description',
+            'info_phone',
+            'info_mobile_phone',
+        )
+
+
 class FacultyForm(EditFormsMixin, forms.ModelForm):
     u"""
     Форма редактирования одного факультета
@@ -221,19 +275,6 @@ class TeacherForm(S3StorageFormMixin, EditFormsMixin, forms.ModelForm):
     class Meta:
         model = Teammate
         fields = ('photo', 'name', 'description')
-
-
-class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
-    u"""
-    Форма редактирования профиля студии
-    """
-    title = forms.CharField(max_length=255, label=u'Название')
-    description = forms.CharField(widget=forms.Textarea, label=u'Описание')
-    class Meta:
-        model = Profile
-        fields = ('title', 'country',
-                  'region',
-                  'city', 'description', )
 
 
 class UserContactsForm(EditFormsMixin, forms.ModelForm):

@@ -9,7 +9,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '',
         'PORT': '',
-    }
+    },
 }
 
 try:
@@ -84,6 +84,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    # bumerang - specific ctx processors
     'bumerang.apps.accounts.context_processors.global_login_form',
 ]
 
@@ -143,6 +144,7 @@ INSTALLED_APPS = [
     'django_ses',
     'django_wysiwyg',
     'django_extensions',
+    'django_coverage',
     # internal
     'bumerang.apps.accounts',
     'bumerang.apps.news',
@@ -156,6 +158,7 @@ INSTALLED_APPS = [
     'bumerang.apps.photo.albums',
     'bumerang.apps.utils',
     'bumerang.apps.messages',
+    'bumerang.apps.festivals'
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
@@ -187,6 +190,8 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = dict(
         INTERCEPT_REDIRECTS=False
     )
+
+    COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'coverage')
 
 EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
 EMAIL_BACKEND = 'django_ses.SESBackend'

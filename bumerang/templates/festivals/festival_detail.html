@@ -1,0 +1,134 @@
+{% extends "festivals/tabs_wrapper.html" %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block tab %}
+    {% include 'festivals/snippets/fest_tabs_menu.html' with selected='festival' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+                <div class="b-profile__pic">
+                    <div class="b-ava b-ava_big">
+
+                        {% if object.min_logo %}
+                            <img src="{{ object.min_logo.url }}" width="60" height="60" alt="Логотип" />
+                        {% else %}
+                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="Логотип" />
+                        {% endif %}
+
+                        <i class="b-ava__sh"></i>
+                    </div>
+
+                </div>
+                <div class="b-profile__txt">
+                    {% include "festivals/snippets/fest_service_buttons.html" %}
+
+                    <h2>{{ object.name }}</h2>
+
+                    <ul class="b-opts">
+                        <li>
+                            <strong>
+                                Даты проведения
+                            </strong>
+                            <span>
+                                с {{ object.start_date }} по {{ object.end_date }}
+                            </span>
+                        </li>
+
+                        {% if object.is_accepting_requests %}
+                        <li>
+                            <strong>
+                                Прием заявок
+                            </strong>
+                            <span>
+                                до {{ object.accept_requests_date }}
+                            </span>
+                        </li>
+                        {% else %}
+                        <li>
+                            <strong>Прием заявок окончен</strong>
+                        </li>
+                        {% endif %}
+
+                        <li>
+                            <strong>
+                                Место проведения
+                            </strong>
+                            <span>
+                                {{ object.hold_place }}
+                            </span>
+                        </li>
+                    </ul>
+
+                    {% if object.description %}
+                        <p class="smaller">
+                            {{ object.description|linebreaks }}
+                        </p>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="tab-button tabs">
+                <a href="#rules" class="b-button b-button_grey current">Общие положения</a>
+
+                {% if object.is_accepting_requests %}
+                    <a href="#request" class="b-button b-button_grey">Заявка</a>
+                {% endif %}
+
+{#                <a href="#rules" class="b-button b-button_grey">Жюри</a>#}
+
+{#                <a href="#rules" class="b-button b-button_grey">Контакты</a>#}
+            </div>
+
+        </section>
+
+        <div class="tab-container">
+            <div class="b-hr"><hr /></div>
+
+            <div class="tab-block">
+                <section id="rules" class="current">
+                    {% if object.festivalgeneralrule_set.count %}
+
+                        {% for item in object.festivalgeneralrule_set.all %}
+                            <h3>{{ item.title }}</h3>
+                            <p>{{ item.description }}</p>
+                        {% endfor %}
+
+                    {% else %}
+
+                        <p>Раздел не заполнен</p>
+
+                    {% endif %}
+                </section>
+
+                {% if object.is_accepting_requests %}
+                    <section id="request" class="hidden">
+                        <p>request</p>
+                    </section>
+                {% endif %}
+            </div>
+
+            <div class="tab-button">
+                <div class="b-hr"><hr /></div>
+                <a href="#" class="b-button b-button_grey scroll-to-top">↑ Наверх</a>
+            </div>
+        </div>
+
+    </div></dd>
+{% endblock %}
+
+{% block right_menu %}
+    <nav class="b-side-nav d-indent">
+        <ul>
+            <h4>Создать фестиваль</h4>
+            <li>
+                <a href="{% url festival-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+            </li>
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}
