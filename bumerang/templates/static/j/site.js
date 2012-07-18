@@ -1,6 +1,74 @@
-allowed_photos_extensions_regexp = /.+\.(bmp|jpe|jpg|jpeg|tif|gif|tiff|png)$/i;
-allowed_videos_extensions_regexp =
-    /.+\.(avi|mkv|vob|mp4|ogv|ogg|m4v|m2ts|mts|m2t|wmv|ogm|mov|qt|mpg|mpeg|mp4v)$/i;
+document.__DEBUG = true;
+
+/*
+ * Helper functions
+ * */
+(function(window) {
+    /*
+     * Debug console
+     * */
+    this._log = function() {
+        if (document.__DEBUG) {
+            console.info('| [DEBUG OUTPUT]\t[NUM]\t[TYPE]\t\t\t\t[VALUE]');
+            for (var i in arguments) {
+                var arg = arguments[i];
+                var num = parseInt(i, 10) + 1;
+                console.info('|\t\t\t', num, '\t', typeof(arg), '\t\t\t', arg);
+            }
+        } else {
+            return function() {};
+        }
+    };
+
+    /*
+     * Argument to integer, in decimal number system
+     * */
+    this.toi = function() {
+        return parseInt(arguments[0], 10);
+    };
+
+}(window));
+
+(function(st) {
+
+    function fl(s, len) {
+        var len = Number(len);
+        if(isNaN(len)) return s;
+        s = ''+s;
+        var nl = Math.abs(len)-s.length;
+        if (nl<=0) return s;
+        while (sp.length<nl) sp += sp;
+        return len<0?(s+sp.substring(0, nl)):(sp.substring(0, nl)+s);
+    }
+
+    function pp(params, args) {
+        var r;
+        for(var i=0; i<params.length; i++)
+        {
+            if( (r = paramph.exec(params[i])) != null )
+                params[i] = args[Number(r[1])];
+            else
+                params[i] = params[i].replace(/\0/g, ',');
+        }
+        return params;
+    }
+
+    st.format = function() {
+        if(arguments.length==0) return this;
+        var placeholder = /\{(\d+)(?:,([-+]?\d+))?(?:\:([^(^}]+)(?:\(((?:\\\)|[^)])+)\)){0,1}){0,1}\}/g;
+        var args = arguments;
+
+        var result = this.replace(placeholder, function(m, num, len) {
+            var m = args[Number(num)];
+            return fl(m, len);
+        });
+
+        return result;
+    };
+
+//    String.format = st.format;
+
+}(String.prototype));
 
 // implement JSON.stringify serialization
 var JSON = JSON || {};
@@ -31,8 +99,8 @@ JSON.parse = JSON.parse || function (str) {
 };
 
 /*
-* RU pluralize
-* */
+ * RU pluralize
+ * */
 function ru_pluralize(value, args) {
     var args_array = args.split(',');
     var count = parseInt(value);
@@ -48,7 +116,12 @@ function ru_pluralize(value, args) {
     }
 };
 
-// Site variables
+/*
+ * Constants
+ * */
+allowed_photos_extensions_regexp = /.+\.(bmp|jpe|jpg|jpeg|tif|gif|tiff|png)$/i;
+allowed_videos_extensions_regexp =
+    /.+\.(avi|mkv|vob|mp4|ogv|ogg|m4v|m2ts|mts|m2t|wmv|ogm|mov|qt|mpg|mpeg|mp4v)$/i;
 var delay_time = 10000;
 
 function show_notification(status, text) {
@@ -83,7 +156,7 @@ function invokeUploadMessage() {
     popup.show();
 };
 
-function invokeConfirmDialog(text, callback) {
+function invokeConfirmDialog(text, callback, scope) {
     var popup = $('#popup-confirm-video');
 
     popup.find('*').unbind();
@@ -99,16 +172,80 @@ function invokeConfirmDialog(text, callback) {
         $('#tint').hide();
     });
 
+    var cb = function(scope) {
+        return callback(scope);
+    }
+
+    okButton.bind('click', {s1: scope}, function(e) {
+        //console.log(e.data.s1);
+        e.preventDefault();
+        cb();
+        cancelButton.trigger('click');
+    });
+
+
+/*
     okButton.bind('click', function(e) {
+        console.log(s1.selected_photos);
         e.preventDefault();
         callback();
         cancelButton.trigger('click');
+    });
+*/
+
+//    var fc = function(e, scope) {
+//        e.preventDefault();
+//        console.log(scope);
+//        callback(scope);
+//    }
+//
+//    okButton.click(fc, scope);
+
+    popup.css('margin-left', - popup.width() / 2 + 'px');
+    popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
+    $('#tint').show();
+    popup.show();
+};
+
+function invConfDlg(text) {
+
+    defer = $.Deferred();
+
+    var popup = $('#popup-confirm-video');
+
+    popup.find('*').unbind();
+
+    var cancelButton = $('#' + popup.attr('id') + ' .confirm-popup-cancel');
+    var okButton = $('#' + popup.attr('id') + ' .confirm-popup-ok');
+
+    $('#' + popup.attr('id') + ' #dialog-text').text(text);
+
+    var close_n_hide = function() {
+        popup.hide();
+        $('#tint').hide();
+    }
+
+    cancelButton.bind('click', function(e) {
+        e.preventDefault();
+        close_n_hide();
+
+        defer.reject();
+    });
+
+    okButton.bind('click', function(e) {
+        e.preventDefault();
+        //cancelButton.trigger('click');
+        close_n_hide();
+
+        defer.resolve();
     });
 
     popup.css('margin-left', - popup.width() / 2 + 'px');
     popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
     $('#tint').show();
     popup.show();
+
+    return defer;
 };
 
 function invokeMoveDialog(callback) {
@@ -721,18 +858,22 @@ var PhotoAlbumsView = Backbone.View.extend({
 
     clickSinglePhotoDelete: function(e) {
         e.preventDefault();
-        var el = $(e.target || e.srcElement);
-        var photoId = parseInt(el.attr('data-photo-id'));
-        this.selected_photos.push(photoId);
-        this.selected_photos = _.uniq(this.selected_photos);
 
         var msg = 'Вы действительно хотите удалить выбранную фотографию?';
 
+        var confirmDeleteDfr = invConfDlg(msg);
+
         var view = this;
-        invokeConfirmDialog(msg, function() {
+        confirmDeleteDfr.done(function() {
+            var el = $(e.target || e.srcElement);
+            var photoId = parseInt(el.attr('data-photo-id'));
+            view.selected_photos.push(photoId);
+            view.selected_photos = _.uniq(view.selected_photos);
+            //view.hidePhotos();
+
             $.ajax({
                 type: 'POST',
-                url: '/photo/photos-delete/',
+                url: '/photo/photos-delete1/',
                 data: {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     ids: JSON.stringify(view.selected_photos)
@@ -747,6 +888,29 @@ var PhotoAlbumsView = Backbone.View.extend({
                 }
             });
         });
+
+        confirmDeleteDfr.fail(function() {
+            return false;
+        });
+
+//        invokeConfirmDialog(msg, function() {
+//            $.ajax({
+//                type: 'POST',
+//                url: '/photo/photos-delete/',
+//                data: {
+//                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+//                    ids: JSON.stringify(view.selected_photos)
+//                },
+//                success: function(response) {
+//                    show_notification('success', response['message']);
+//
+//                    view.hidePhotos();
+//                    view.showPhotosCount();
+//                    view.selected_photos = [];
+//                    view.updatePage();
+//                }
+//            });
+//        });
     },
 
     clickMakeCover: function(e) {

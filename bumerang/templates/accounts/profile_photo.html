@@ -30,6 +30,8 @@
     <script type="text/javascript">
       VK.init({apiId: 2868516, onlyWidgets: true});
     </script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}j/photo.js"></script>
 {% endblock %}
 
 {% block tab %}
@@ -39,7 +41,7 @@
     <div class="b-hr">
         <hr />
     </div>
-    <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v" id="photoalbums-container">
+    <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v " id="photoalbums-container">
         <header class="b-gallery__head">
             <ul class="b-service-buttons">
                 {% if profile.id == request.user.id %}
@@ -122,7 +124,7 @@
     {% csrf_token %}
     <script type="text/javascript">
     $(function() {
-        var pav = new PhotoAlbumsView();
+        //var pav = new PhotoAlbumsView();
 
         $('#wall').fullWall();
 
