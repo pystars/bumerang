@@ -151,3 +151,7 @@ class FestivalGeneralRuleForm(TemplatedForm):
             'title',
             'description',
         )
+
+
+class FestivalSendRequestForm():
+    pass

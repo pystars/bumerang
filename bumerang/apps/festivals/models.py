@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.aggregates import Max
 import os
 
-from django.db import models
+from django.db import models, IntegrityError
 from django.utils.timezone import now
 from django.conf import settings
 
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.media_storage import media_storage
+from bumerang.apps.video.models import Video
 
 
 nullable = dict(null=True, blank=True)
@@ -93,3 +96,43 @@ class FestivalNomination(models.Model):
     class Meta:
         verbose_name = u'Номинация'
         verbose_name_plural = u'Номинации'
+
+
+class FestivalRequest(models.Model):
+    submitter = models.ForeignKey(Profile, verbose_name=u'Участник')
+    festival = models.ForeignKey(Festival, verbose_name=u'Фестиваль')
+
+    request_num = models.IntegerField(u'Номер заявки',
+        unique=True, editable=False)
+    is_submitted = models.BooleanField(u'Заявка рассмотрена', default=False)
+
+    videos = models.ManyToManyField(Video,
+        verbose_name=u'Видео', through='FestivalRequestVideo')
+
+    def save(self, force_insert=False, force_update=False, using=None):
+        while not self.request_num:
+            last_request_num = FestivalRequest.objects.filter(
+                submitter=self.submitter,
+                festival=self.festival
+            ).aggregate(Max('request_num'))['request_num__max']
+
+            if last_request_num:
+                self.request_num = last_request_num + 1
+            else:
+                self.request_num = 1
+
+            try:
+                super(FestivalRequest, self).save(force_insert, force_update, using)
+            except IntegrityError:
+                continue
+
+
+class FestivalRequestVideo(models.Model):
+    festival_request = models.ForeignKey(FestivalRequest,
+        verbose_name=u'Заявка на фестиваль')
+    video = models.ForeignKey(Video, verbose_name=u'Видео')
+
+    is_accepted = models.BooleanField(u'Видео принято', default=False)
+
+    class Meta:
+        unique_together = [("festival_request", "video")]
