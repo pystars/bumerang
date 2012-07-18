@@ -1,0 +1,81 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block left_column %}
+        <section class="b-form b-form_register">
+            <form name="registration_form" action="{% url registration %}" method="POST">
+            {% csrf_token %}
+            <header class="b-form__header">
+                <h1>
+                    Регистрация
+                </h1>
+            </header>
+            <div class="b-form__fields">
+                <div class="b-form__field {% if form.email.errors %}b-form__field_err{% endif %}">
+							<span class="hint-wrap">
+								<label>
+                                    <span class="f-title"><span>Почта</span></span>
+									<span class="f-input">
+										<span class="b-input">{{ form.username }}</span>
+									</span>
+                                </label>
+								<span class="f-hint">
+									, она же логин
+								</span>
+							</span>
+                    {% if form.username.errors %}<div class="f-err"><span>{{ form.username.errors }}</span></div>{% endif %}
+                </div>
+                <fieldset>
+                    <div class="b-form__field {% if form.password1.errors or form.password2.errors %}b-form__field_err{% endif %}">
+                        <label>
+                            <span class="f-title"><span>Пароль</span></span>
+									<span class="f-input">
+										{{ form.password1 }}
+									</span>
+                        </label>
+                        {% if form.password1.errors %}<div class="f-err"><span>{{ form.password1.errors }}</span></div>{% endif %}
+                    </div>
+                    <div class="b-form__field">
+                        <label>
+                            <span class="f-title"><span>Повторите</span></span>
+									<span class="f-input">
+										{{ form.password2 }}
+									</span>
+                        </label>
+                        {% if form.password2.errors %}<div class="f-err"><span>{{ form.password2.errors }}</span></div>{% endif %}
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="b-form__field b-form__field_radio">
+                        <span class="f-title"><span>Тип пользователя</span></span>
+                        <div class="f-radio">
+                            {% with form.type as field %}
+                                {% for choice in field.field.choices %}
+                                    <div>
+                                        <input type="radio" name="{{ field.html_name }}" value="{{ choice.0 }}" id="id_{{ field.html_name }}_{{ forloop.counter0 }}" />
+                                        <label for="id_{{ field.html_name }}_{{ forloop.counter0 }}">
+                                            {{ choice.1 }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            {% endwith %}
+{#                        TODO: Изменить сообщение об ошибке в валидаторе#}
+                            {% if form.type.errors %}<div class="f-err" style="margin-left: 0px;"><span>Укажите тип пользователя</span></div>{% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Зарегистрироваться</a>
+                </div>
+                <span class="or">или <a href="{% url login %}">войти</a></span>
+            </footer>
+            </form>
+        </section><!--b-form-->
+{% endblock %}
+
+{% block right_column %}
+{% endblock %}

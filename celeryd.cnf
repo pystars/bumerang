@@ -1,0 +1,21 @@
+# Where the Django project is.
+CELERYD_CHDIR="/home/ubuntu/bumerang"
+CELERYD_PYTHON="/var/www/.virtualenvs/bumerang/bin/python"
+
+# Path to celeryd
+CELERYD_MULTI="$CELERYD_PYTHON $CELERYD_CHDIR/manage.py celeryd_multi"
+
+CELERYD_OPTS="-Q celery,video --time-limit=86400"
+CELERYD_LOG_FILE=/var/log/celery/%n.log
+
+# Path to celerybeat
+CELERYBEAT="$CELERYD_PYTHON $CELERYD_CHDIR/manage.py celerybeat"
+CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
+CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
+
+CELERYD_USER="ubuntu"
+CELERYD_GROUP="ubuntu"
+
+CELERY_CONFIG_MODULE="bumerang.settings"
+
+export DJANGO_SETTINGS_MODULE="bumerang.settings"

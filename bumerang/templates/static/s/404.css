@@ -1,0 +1,85 @@
+@charset 'utf-8'
+html {
+	overflow-y:auto;
+}
+
+body {
+	background:#f2f0e7 url(../i/page-gd.jpg) repeat-x;
+	color:#010101;
+	font:1em/1.1875 'PT Sans', 'Myriad Pro', arial, sans-serif;
+}
+
+a {
+	color:#1864b0;
+}
+
+a:visited {
+	color:#63556b;
+}
+
+a:hover {
+	color:#ff0000;
+}
+
+*+html a * {
+	cursor:pointer !important;
+}
+
+h1,h2 {
+	color:#000;
+	font-weight:bold;
+}
+
+h1 {
+	font-size:3em;
+	line-height:1;
+	margin:0 0 .27em 0;
+}
+
+h2 {
+	font-size:1.875em;
+	line-height:1.05;
+	position:relative;zoom:1;
+	margin:0 0 .37em 0;
+}
+
+p {
+	font-size:1.125em;
+	margin:.5em 0 0;
+}
+
+html, body {
+	width:100%;
+	height:100%;
+}
+
+.l-page {
+	min-width:980px;
+	max-width:1470px;
+	margin:0 auto;
+}
+
+.l-page__i {
+	padding:0 2.5% 6.875em;
+}
+
+.l-head {
+	position:relative;
+	padding:1px 0 0 0;
+	height:85px;
+}
+
+.l-head .logo {
+	position:absolute;
+	left:0;
+	top:16px;
+}
+
+.l-body {
+	padding-left:25px;
+	padding-right:50%;
+}
+
+.l-body__i {
+	padding:0 0 3.875em 0;	
+}

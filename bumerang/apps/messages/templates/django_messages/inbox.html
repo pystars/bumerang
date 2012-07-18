@@ -1,0 +1,116 @@
+{% extends "django_messages/base.html" %}
+{% load i18n %}
+{% load inbox %}
+
+{% block title %}Входящие сообщения{% endblock %}
+
+{% block messages_bar %}
+    <div class="b-hr">
+        <hr />
+    </div>
+    <h3>Сообщения</h3>
+    <h4>Входящие&nbsp;<a href="{% url messages_outbox %}">Исходящие</a></h4>
+    <p>Всего полученных сообщений: {% inbox_all_count %}</p>
+{% endblock %}
+
+{% block messages_content %}
+    <section class="b-profile">
+        {% if message_list %}
+            <section class="messages">
+            {% for message in message_list %}
+
+                <div class="b-resume__person cleared">
+                    <div class="rp__pic">
+                        <div class="b-ava">
+                            {% if message.sender.profile.min_avatar %}
+                                <img src="{{ message.sender.profile.min_avatar.url }}" alt="{{ message.sender.profile.title }}" width="60" height="60" />
+                            {% else %}
+                                <img src="{{ STATIC_URL }}i/noava-b.jpg" alt="{{ message.sender.profile.title }}" width="60" height="60" />
+                            {% endif %}
+                            <i class="b-ava__sh"></i>
+                        </div>
+                    </div>
+                    <div class="rp__txt">
+{#                        <h4>{{ message.sender.profile.name }}</h4>#}
+{#                        <p>{{ message.sender.profile.description|linebreaksbr }}</p>#}
+                    
+                        <h4>
+                            <a href="{% url profile-detail message.sender.profile.id %}">{{ message.sender.profile.title|default:message.sender.profile.username }}</a>
+                            <span>{{ message.sent_at|date:"j.m.Y в G:i" }}</span>
+                        </h4>
+                        <h5>
+                            {% if message.new %}<strong>{% endif %}
+                            {% if message.replied %}<em>{% endif %}
+                            <a href="{{message.get_absolute_url }}">{{ message.subject }}</a>
+                            {% if message.replied %}</em>{% endif %}
+                            {% if message.new %}</strong>{% endif %}
+                        </h5>
+                        <p>{{ message.body|linebreaksbr|truncatechars:60 }}</p>
+                    </div>
+                </div>
+                <div class="b-hr">
+                    <hr />
+                </div>
+
+{#                <div class="b-tag d-rounded d-rounded_r10 d-sh">#}
+{#                    <div class="b-tag__i">#}
+{#                        <section class="message cleared">#}
+{#                            <div class="b-ava">#}
+{#                                <span>#}
+{#                                    {% if message.sender.profile.min_avatar %}#}
+{#                                        <img src="{{ message.sender.profile.min_avatar.url }}" alt="{{ message.sender.profile.title }}" />#}
+{#                                    {% else %}#}
+{#                                        <img src="{{ STATIC_URL }}i/noava-b.jpg" alt="{{ profile.title }}" />#}
+{#                                    {% endif %}#}
+{#                                </span>#}
+{#                                <i class="b-ava__sh"></i>#}
+{#                            </div>#}
+{#                            <header class="pi-head">#}
+{#                                {% if message.new %}<strong>{% endif %}#}
+{#                                {% if message.replied %}<em>{% endif %}#}
+{#                                <a href="{{message.get_absolute_url }}">{{ message.subject }}</a>#}
+{#                                {% if message.replied %}</em>{% endif %}#}
+{#                                {% if message.new %}</strong>{% endif %}#}
+{#                                <p>От пользователя:&nbsp;<a href="{% url profile-detail message.sender.profile.id %}">{{ message.sender.profile.title }}</a></p>#}
+{#                                <p>Получено:&nbsp;{{ message.sent_at|date:"j.m.Y в G:i" }}</p>#}
+{#                                <div>#}
+{#                                    {{ message.body|linebreaksbr|truncatechars:60 }}#}
+{#                                </div>#}
+{#                            </header>#}
+{#                            <footer class="pi-foot">#}
+{#                                <a href="{% url messages_delete message.id %}">{% trans "delete" %}</a>#}
+{#                            </footer>#}
+{#                        </section>#}
+{#                    </div>#}
+{#                </div>#}
+            {% endfor %}
+        </section>
+        {% else %}
+            <h1>Нет входящих сообщений.</h1>
+        {% endif %}
+    </section>
+{#{% if message_list %} #}
+{#<table class="messages">#}
+{#    <thead>#}
+{#        <tr><th>{% trans "Sender" %}</th><th>{% trans "Subject" %}</th><th>{% trans "Received" %}</th><th>{% trans "Action" %}</th></tr>#}
+{#    </thead>#}
+{#    <tbody>#}
+{#{% for message in message_list %} #}
+{#    <tr>#}
+{#        <td><a href="{% url profile-detail message.sender.id %}">{{ message.sender.profile.title }}</a></td>#}
+{#        <td>#}
+{#            {% if message.new %}<strong>{% endif %}#}
+{#            {% if message.replied %}<em>{% endif %}#}
+{#            <a href="{{message.get_absolute_url }}">{{ message.subject }}</a>#}
+{#            {% if message.replied %}</em>{% endif %}#}
+{#            {% if message.new %}</strong>{% endif %}</td>#}
+{#        <td>{{ message.sent_at|date:"j.m.Y в G:i" }}</td>#}
+{#        <td><a href="{% url messages_delete message.id %}">{% trans "delete" %}</a></td>#}
+{#    </tr>#}
+{#{% endfor %}#}
+{#    </tbody>#}
+{#</table>#}
+{#{% else %}#}
+{#<p>{% trans "No messages." %}</p>#}
+{#{% endif %}#}
+{% endblock %}

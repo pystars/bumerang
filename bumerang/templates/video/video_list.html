@@ -1,0 +1,74 @@
+{% extends "video/video_wrapper.html" %}
+{% load sitetree videotags truncatechars %}
+
+{% block title %}Видеоархив{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block page_title %}
+    <h1>Видеоархив</h1>
+{% endblock %}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <h1>Видеоархив</h1>
+    </header>
+    <section class="b-announs b-announs_movie">
+        <div class="announs-items">
+            {% for item in object_list %}
+            <article class="announ-item">
+                <div class="ai-img d-sh">
+                    <a href="{% url video-detail item.id %}">
+                        <span>
+                            <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
+                            <span class="time">{{ item.duration|default_if_none:0|to_hms }}</span>
+                        </span>
+                        <i class="b-ico b-ico_play"><i></i></i>
+                    </a>
+                </div>
+                <header class="ai-head">
+                    <h3><a href="{% url video-detail item.id %}">{{ item.title|truncatechars:60 }}</a></h3>
+                    <p>
+                        {{ item.description|truncatechars:150|linebreaksbr }}
+                    </p>
+                </header>
+                <footer class="ai-foot">
+                    <time class="date">{{ item.created|date:"d.m.Y, H:i" }}</time>
+                    <ul class="b-stat">
+                        <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                        <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>{{ item.views_count }}</span></li>
+                    </ul>
+                </footer>
+            </article>
+            {% endfor %}
+        </div>
+        {% if is_paginated %}
+            <div class="pagination" style="margin-top: 40px;">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                {% endif %}
+            </span>
+            </div>
+        {% endif %}
+        {% include 'paginator/paginator.html' %}
+    </section>
+
+{% endblock %}
+
+{% block right_col %}
+    <nav class="b-side-nav d-indent">
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}

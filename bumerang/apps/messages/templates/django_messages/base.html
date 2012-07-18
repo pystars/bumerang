@@ -1,0 +1,29 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+    <dl>
+        {% include 'snippets/menu.html' with selected='messages' profile=request.user.profile %}
+        <dd class="selected"><div class="b-tabs__tab-content">
+            {% with request.user.profile as profile %}
+                {% include "snippets/section_profile.html" %}
+            {% endwith %}
+            {% block messages_bar %}
+{#            <div class="b-hr">#}
+{#                <hr />#}
+{#            </div>#}
+            {% endblock %}
+            <div class="tab-container">
+                <div class="b-hr"><hr /></div>
+                <div class="tab-block">
+                    <section class="b-messages">
+                        {% block messages_content %}{% endblock %}
+                    </section>
+                </div>
+            </div>
+
+        </div></dd>
+    </dl>
+</div>
+{% endblock %}

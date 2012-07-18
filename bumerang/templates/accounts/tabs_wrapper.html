@@ -1,0 +1,22 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}
+    {% if object.id == user.id %}
+        Ваш профиль
+    {% else %}
+        {% if object.title %}
+            {% if object.type != 1 %}
+                {{ object.get_type_display }} &laquo;{{ object.title }}&raquo;
+            {% endif %}
+        {% else %}
+            {{ "Заполните имя профиля" }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block left_column %}
+<div class="b-tabs d-sh">
+    <dl>{% block tab %}{% endblock %}</dl>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="l-cols l-cols_article"><div class="l-cols__i cleared">
+        <section class="l-cols__section"><div class="l-cols__section__i">
+            {% block left_column %}
+                <p>Левая колонка</p>
+            {% endblock %}
+        </div></section>
+        <aside class="l-cols__side"><div class="l-cols__side__i">
+            {% block right_menu %}
+                <nav class="b-side-nav d-indent">
+                    <ul>
+                        <h4>{% if current_type %}<a href="{% url users-list %}">Все участники</a>{% else %}Все участники{% endif %}</h4>
+                        {% ifequal current_type 1 %}
+                            <li>Независимые участники</li>
+                        {% else %}
+                            <li><a href="{% url members-list %}" title="Независимые участники">Независимые участники</a></li>
+                        {% endifequal %}
+                        {% ifequal current_type 2 %}
+                            <li>Школы</li>
+                        {% else %}
+                            <li><a href="{% url schools-list %}" title="Школы">Школы</a></li>
+                        {% endifequal %}
+                        {% ifequal current_type 3 %}
+                            <li>Студии</li>
+                        {% else %}
+                            <li><a href="{% url studios-list %}" title="Студии">Студии</a></li>
+                        {% endifequal %}
+                    </ul>
+                    <i class="d-indent__tl"></i>
+                    <i class="d-indent__tr"></i>
+                    <i class="d-indent__br"></i>
+                    <i class="d-indent__bl"></i>
+                </nav>
+            {% endblock %}
+            {% block right_column %}
+                <section class="b-adv b-adv2">
+                    <header>
+{#                        <div class="b-adv__title">Реклама</div>#}
+                    </header>
+                    <p>
+                        <a href="{% url registration %}">
+                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
+                        </a>
+                    </p>
+                </section>
+{#                <p class="b-side-text">#}
+{#                    Несомненный интерес представляет и тот факт, что тактогенез продольно занимает межпластовый овилин, в то же время поднимаясь в пределах горстов до абсолютных высот 250 м.#}
+{#                </p>#}
+            {% endblock %}
+        </div></aside>
+    </div></div><!--l-cols-->
+{% endblock %}

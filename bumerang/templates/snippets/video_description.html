@@ -1,0 +1,72 @@
+{% load videotags %}
+<article class="js-toggle2-block" style="">
+    <p>
+        {{ object.description|linebreaksbr }}
+    </p>
+    <ul class="b-opts">
+        {% if object.genre %}
+            <li>
+                <strong>Жанр:</strong>
+                <span>{{ object.genre.title }}</span>
+            </li>
+        {% endif %}
+        {% if object.city %}
+            <li>
+                <strong>Город:</strong>
+                <span>{{ object.city }}</span>
+            </li>
+        {% endif %}
+        {% if object.country %}
+            <li>
+                <strong>Страна:</strong>
+                <span>{{ object.country }}</span>
+            </li>
+        {% endif %}
+        {% if object.agency %}
+            <li>
+                <strong>Учреждение:</strong>
+                <span>{{ object.agency }}</span>
+            </li>
+        {% endif %}
+        <li>
+            <strong>Длительность (сек):</strong>
+            <span>{{ object.duration|default_if_none:0|to_hms }}</span>
+        </li>
+        {% if object.year %}
+            <li>
+                <strong>Год:</strong>
+                <span>{{ object.year }}</span>
+            </li>
+        {% endif %}
+        {% if object.authors %}
+            <li>
+                <strong>Авторы:</strong>
+                <span>{{ object.authors }}</span>
+            </li>
+        {% endif %}
+        {% if object.teachers %}
+            <li>
+                <strong>Педагоги:</strong>
+                <span>{{ object.teachers }}</span>
+            </li>
+        {% endif %}
+        {% if object.manager %}
+            <li>
+                <strong>Руководитель:</strong>
+                <span>{{ object.manager }}</span>
+            </li>
+        {% endif %}
+        {% if object.festivals %}
+            <li>
+                <strong>Участие в фестивалях:</strong>
+                <span>{{ object.festivals }}</span>
+            </li>
+        {% endif %}
+    </ul>
+</article>
+<footer class="b-movie__foot">
+    <div class="b-close-lnk">
+        <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>
+        <span class="b-pseudolink js-toggle2-lnk"><span><span class="js-toggle2-text">Скрыть</span> описание ролика</span></span>
+    </div>
+</footer>

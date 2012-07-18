@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Бумеранг PRO{% endblock %}
+
+{% block content %}
+    <div class="b-main-box d-rounded d-rounded_r10 d-sh">
+        <section class="b-tv js-toggle2-container js-toggle2-container_tv">
+            <header class="b-tv__head">
+                <div class="b-now">
+                    <div class="b-plenka">
+                        <h2 class="b-plenka__i">
+                            <span class="b-plenka__title">Сейчас в эфире:</span>
+                            <a href="#">
+                                {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
+                            </a>
+                        </h2>
+                    </div>
+                    <p class="now-brief" id="now-brief">
+                        {{ current_item.video.description|truncatewords:18 }}
+                    </p>
+                </div>
+                <div class="b-close-lnk">
+{#                    <i class="b-ico b-ico_x js-toggle2-ico"><i></i></i>#}
+                    <i class="b-ico b-ico_text js-toggle2-ico"><i></i></i>
+                    <span class="b-pseudolink js-toggle2-lnk"><span class="js-toggle2-text">Программа передач</span></span>
+                </div>
+            </header><!--b-tv__head-->
+            <div class="b-tv__body js-toggle2-block" style="display: none;"><div class="b-tv__body__i">
+                <div class="l-cols l-cols_tv"><div class="l-cols__i cleared">
+                    <section class="l-cols__section"><div class="l-cols__section__i">
+                        <article class="b-tv-programs">
+                            <header class="tp-head">
+                                <nav class="b-calend">
+                                    <h2 class="cal-head">
+                                        <span class="ch-day">{% now "d" %}</span>
+                                        <span class="ch-month">{% now "E" %}</span>
+                                    </h2>
+                                    {% if playlist %}
+                                    {% for year, month, day in next_days %}
+                                        <a href="{% url playlist-detail playlist.channel.slug year month day %}"
+                                           class="cal-day{% if forloop.counter <= 3 %} cal-day{{ forloop.counter }}{% endif %}">
+                                            {{ day }}</a>
+                                    {% endfor %}
+                                    {% endif %}
+                                </nav>
+                                <h3 class="tp-day">{% now "l" %}</h3>
+                                <ul class="tp-ctrls">
+                                    <li class="tp-ctrl">
+                                        <span class="b-pseudolink"><span>Сейчас</span></span>
+                                        <time>{% now "G:i" %}</time>
+                                    </li>
+                                    <li class="tp-ctrl selected"><span class="selected">Весь день</span></li>
+                                </ul>
+                            </header>
+                            {% include 'snippets/playlist_items.html' with playlistitem_set=playlist.playlistitem_set %}
+                        </article>
+                    </div></section>
+                    <aside class="l-cols__side"><div class="l-cols__side__i">
+                        <section class="b-announs b-announs_tv">
+                            <article class="announ-item">
+                                <div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ1.jpg" alt="" /></div>
+                                <header class="ai-head">
+                                    <time class="date">5 августа, Пятница, 22:40-0:30</time>
+                                    <h4>Неоконченный урок</h4>
+                                    <p>
+                                        Jeremy was trying to get me to pound his
+                                        first, but I was too into taking the photo.
+                                        The second of these
+                                    </p>
+                                </header>
+                            </article>
+                            <article class="announ-item">
+                                <div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ2.jpg" alt="" /></div>
+                                <header class="ai-head">
+                                    <time class="date">5 августа, Пятница, 22:40-0:30</time>
+                                    <h4>Неоконченный урок</h4>
+                                    <p>
+                                        Jeremy was trying to get me to pound his
+                                        first, but I was too into taking the photo.
+                                        The second of these
+                                    </p>
+                                </header>
+                            </article>
+                        </section>
+                    </div></aside>
+                </div></div><!--l-cols-->
+            </div></div><!--b-tv__body-->
+        </section><!--b-tv-->
+        <div class="l-cols l-cols_movie"><div class="l-cols__i cleared">
+            <section class="l-cols__section"><div class="l-cols__section__i">
+                <section class="b-movie js-toggle2-container js-toggle2-container_movie">
+                    <video id="movie" width="700" height="380" preload controls style="background:url({{ STATIC_URL }}i/player.png); margin: 0 auto;">
+                        <img src="{{ STATIC_URL }}i/fake/video.jpg" width="700" height="380" />
+                    </video>
+                    {% if current_item %}
+                        {% include 'snippets/video_description.html' with object=current_item.video %}
+                    {% endif %}
+                </section><!--b-movie-->
+            </div></section>
+            <aside class="l-cols__side"><div class="l-cols__side__i">
+                <section class="b-adv">
+                    <header>
+                        <div class="b-adv__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+{#                        <div class="b-adv__title">Реклама</div>#}
+                    </header>
+                    <p>
+                        <a href="{% url registration %}">
+                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url registration %}">
+                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
+                        </a>
+                    </p>
+                </section>
+            </div></aside>
+        </div></div><!--l-cols-->
+    </div><!--b-main-box-->
+    <div class="l-cols l-cols_movies"><div class="l-cols__i cleared">
+        <section class="l-cols__col1"><div class="l-cols__col1__i">
+            <section class="b-announs b-announs_movie b-announs_movie_smaller js-toggle2-container">
+                <header class="announs-head">
+                    <h2>Новые работы участников</h2>
+                </header>
+                <div class="announs-items">
+                    <article class="announ-item cleared">
+                        <div class="ai-img d-sh">
+                            <a href="">
+                                <span>
+                                    <img src="{{ STATIC_URL }}i/fake/mov2.png" width="165" height="107" alt="" />
+                                    <span class="time">1:54</span>
+                                </span>
+                            </a>
+                        </div>
+                        <header class="ai-head">
+                            <hgroup>
+                                <h3><a href="">BACKSTAGE</a></h3>
+                                <h4>Студия &laquo;<a href="">12South</a>&raquo;</h4>
+                            </hgroup>
+                            <p>
+                                Jeremy was trying to get me to pound his
+                                first, but I was too into
+                            </p>
+                        </header>
+                        <footer class="ai-foot">
+                            <time class="date">21.09.2011, 15:35</time>
+                            <ul class="b-stat">
+                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                            </ul>
+                        </footer>
+                    </article>
+                    <article class="announ-item cleared">
+                        <div class="ai-img d-sh">
+                            <a href="">
+                                <span>
+                                    <img src="{{ STATIC_URL }}i/fake/mov1.png" width="165" height="107" alt="" />
+                                    <span class="time">1:54</span>
+                                </span>
+                            </a>
+                        </div>
+                        <header class="ai-head">
+                            <hgroup>
+                                <h3><a href="">Edit</a></h3>
+                                <h4>Школа &laquo;<a href="">1249</a>&raquo;</h4>
+                            </hgroup>
+                        </header>
+                        <footer class="ai-foot">
+                            <time class="date">21.09.2011, 15:35</time>
+                            <ul class="b-stat">
+                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                            </ul>
+                        </footer>
+                    </article>
+                </div>
+            </section>
+        </div></section>
+        <section class="l-cols__col2"><div class="l-cols__col2__i">
+            <section class="b-announs b-announs_movie b-announs_movie_smaller">
+                <header class="announs-head">
+                    <h2>Популярное видео</h2>
+                </header>
+                <div class="announs-items">
+                    <article class="announ-item cleared">
+                        <div class="ai-img d-sh">
+                            <a href="">
+                                <span>
+                                    <img src="{{ STATIC_URL }}i/fake/mov2.png" width="165" height="107" alt="" />
+                                    <span class="time">1:54</span>
+                                </span>
+                            </a>
+                        </div>
+                        <header class="ai-head">
+                            <hgroup>
+                                <h3><a href="">BACKSTAGE</a></h3>
+                                <h4>Студия &laquo;<a href="">12South</a>&raquo;</h4>
+                            </hgroup>
+                            <p>
+                                Jeremy was trying to get me to pound his
+                                first, but I was too into
+                            </p>
+                        </header>
+                        <footer class="ai-foot">
+                            <time class="date">21.09.2011, 15:35</time>
+                            <ul class="b-stat">
+                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                            </ul>
+                        </footer>
+                    </article>
+                    <article class="announ-item cleared">
+                        <div class="ai-img d-sh">
+                            <a href="">
+                                <span>
+                                    <img src="{{ STATIC_URL }}i/fake/mov1.png" width="165" height="107" alt="" />
+                                    <span class="time">1:54</span>
+                                </span>
+                            </a>
+                        </div>
+                        <header class="ai-head">
+                            <hgroup>
+                                <h3><a href="">Edit</a></h3>
+                                <h4>Школа &laquo;<a href="">1249</a>&raquo;</h4>
+                            </hgroup>
+                        </header>
+                        <footer class="ai-foot">
+                            <time class="date">21.09.2011, 15:35</time>
+                            <ul class="b-stat">
+                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
+                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
+                            </ul>
+                        </footer>
+                    </article>
+                </div>
+            </section>
+        </div></section>
+    </div></div><!--l-cols-->
+{% endblock %}

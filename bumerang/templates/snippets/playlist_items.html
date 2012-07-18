@@ -1,0 +1,21 @@
+{% load videotags %}
+<div class="tp-items">
+    {% if not playlistitem_set %}
+        <p>
+            Трансляции не запланированы
+        </p>
+    {% else %}
+        {% for item in playlistitem_set.all %}
+            <p class="tp-item {% if item|is_future %}tp-item_future{% elif item|is_now %}tp-item_now{% else %}tp-item_past{% endif %} {% cycle 'tp-item_odd' 'even' %}">
+                <time>{{ item.play_from|date:"H:i" }}</time>
+                {% if item|is_now %}<strong>{{ item.video.title }}</strong>{% else %}{{ item.video.title }}{% endif %}
+            </p>
+            {% if forloop.last %}
+                <p class="tp-item item_future">
+                    <time>{{ item.play_till|date:"H:i" }}</time>
+                    Конец эфира
+                </p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

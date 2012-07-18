@@ -1,0 +1,20 @@
+{% extends "video/video_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}
+    {% if object.owner_id == user.id %}
+        Ваш профиль
+    {% else %}
+        {% if object.type != 1 %}{{ object.get_type_display }}{% endif %}
+        {{ object.title|default_if_none:"Аноним" }}
+    {% endif %}
+{% endblock %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+        <dl>
+            {% include 'snippets/menu.html' with selected='video' profile=object.owner.profile %}
+            {% block tab %}{% endblock %}
+        </dl>
+    </div>
+{% endblock %}

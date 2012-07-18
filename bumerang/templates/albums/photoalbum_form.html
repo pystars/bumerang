@@ -1,0 +1,72 @@
+{% extends "photo/photo_wrapper.html" %}
+{% load sitetree rupluralize %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Редактирование фотоальбома &laquo;{{ form.instance.title }}&raquo;
+    {% else %}
+        Создание фотоальбома
+    {% endif %}
+{% endblock %}
+
+{% block left_column %}
+    <div class="b-tabs d-sh">
+        <dl>
+            {% include 'snippets/menu.html' with selected='photo' profile=request.user.profile %}
+            <dd class="selected">
+                <div class="b-tabs__tab-content">
+                    {% include "snippets/section_profile.html" with profile=request.user.profile %}
+                    <div class="b-hr">
+                        <hr/>
+                    </div>
+                    <header class="b-head cleared">
+                        <a href="{% url video-list %}" class="b-button-prev return-to-previous-page"><span>Назад</span></a>
+                        <h3>
+                            {% if form.instance.id %}
+                                Редактирование
+                                альбома &laquo;{{ form.instance.title }}&raquo;
+                            {% else %}
+                                Создание альбома
+                            {% endif %}
+                        </h3>
+                    </header>
+                    <section class="b-form b-form_album b-form_smaller">
+                        <form name="editform" action="" method="post">
+                            {% csrf_token %}
+                            <div class="b-form__fields">
+                                {% for item in form %}
+                                    <fieldset>
+                                        <div class="b-form__field">
+                                            <label>
+                                <span class="f-title">
+                                    <span>{{ item.label }}</span>
+                                </span>
+                                <span class="f-input">
+                                    {{ item }}
+                                </span>
+                                            </label>
+                                            {% if item.errors %}
+                                                <div class="f-err">
+                                                    <span>{{ item.errors }}</span></div>
+                                            {% endif %}
+                                        </div>
+                                    </fieldset>
+                                {% endfor %}
+                            </div>
+                            <footer class="b-form__footer">
+                                <div class="wrap">
+                                    {% if form.instance.id %}
+                                        <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                                    {% else %}
+                                        <a href="#" class="b-button b-button_yellow button-submit">Создать</a>
+                                    {% endif %}
+                                </div>
+                            </footer>
+                        </form>
+                    </section>
+                    <!--b-form-->
+                </div>
+            </dd>
+        </dl>
+    </div>
+{% endblock %}

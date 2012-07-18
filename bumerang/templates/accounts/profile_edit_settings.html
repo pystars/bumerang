@@ -1,0 +1,87 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+
+{% block title %}Редактирование резюме{% endblock %}
+
+{% block edit_form %}
+    <a class="form-profile-view" href="{% url profile-detail object.profile.id %}">Просмотр профиля</a>
+    <h3 class="title">Настройки</h3>
+
+    <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
+        <form name="email_form" action="" method="post">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <div class="b-form__field b-form__field_login">
+                    <label>
+                        <span class="f-title">
+                            <span>Логин-почта</span>
+                        </span>
+                        <span class="f-txt">
+                            <strong>{{ user.username }}</strong>
+                        </span>
+                    </label>
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Новая почта</span></span>
+                        <span class="f-input">
+                            {{ email_form.username }}
+                        </span>
+                    </label>
+                    {% if email_form.username.errors %}
+                        <div class="f-err" style="margin-left: 120px;"><span>{{ email_form.username.errors }}</span></div>
+                    {% endif %}
+                </div>
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Изменить</a>
+                </div>
+            </footer>
+        </form>
+    </section><!--b-form-->
+    <section class="b-form b-form_smaller b-form_smaller_login-pass b-form_edit b-form_edit_login-pass">
+        <form name="password_form" action="" method="post">
+            {% csrf_token %}
+            <div class="b-form__fields">
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Старый пароль</span></span>
+                        <span class="f-input">
+                            {{ pwd_form.old_password }}
+                        </span>
+                    </label>
+                    {% if pwd_form.old_password.errors %}
+                        <div class="f-err" style="margin-left: 120px;"><span>{{ pwd_form.old_password.errors }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Новый пароль</span></span>
+                        <span class="f-input">
+                            {{ pwd_form.new_password1 }}
+                        </span>
+                    </label>
+                    {% if pwd_form.new_password1.errors %}
+                        <div class="f-err" style="margin-left: 120px;"><span>{{ pwd_form.new_password1.errors }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Повторите</span></span>
+                        <span class="f-input">
+                            {{ pwd_form.new_password2 }}
+                        </span>
+                    </label>
+                    {% if pwd_form.new_password2.errors %}
+                        <div class="f-err" style="margin-left: 120px;"><span>{{ pwd_form.new_password2.errors }}</span></div>
+                    {% endif %}
+                </div>
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Изменить</a>
+                </div>
+            </footer>
+        </form>
+    </section><!--b-form-->
+{% endblock %}

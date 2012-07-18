@@ -1,0 +1,124 @@
+{% extends "video/tabs_wrapper.html" %}
+{% load sitetree rupluralize videotags %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block tab %}
+        <dd class="selected"><div class="b-tabs__tab-content" id="videoalbum-id-{{ object.id }}">
+            {% include "snippets/section_profile.html" with profile=object.owner.profile %}
+            <div class="b-hr"><hr /></div>
+            <header class="b-head cleared">
+                {% if user.id == object.owner.id %}
+                <ul class="b-service-buttons">
+                    <li class="addvideo"><i></i><a href="{% url album-video-add object.id %}">Добавить видео</a></li>
+                    <li class="edit"><i></i><a href="{% url video-album-edit object.id %}">Редактировать альбом</a></li>
+                </ul>
+                {% endif %}
+                <a href="{% url profile-video-detail object.owner_id %}" class="b-button-prev"><span>Все альбомы</span></a>
+                <h3>
+                    {{ object.title }}
+                </h3>
+                <div class="b-head__descr d-rounded d-rounded_r5">
+                    {{ object.description|linebreaksbr }}
+                </div>
+            </header>
+
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="videos-container">
+                <header class="announs-head cleared">
+                    {% if object.owner.id == request.user.id %}
+                        <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
+                        <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="video-move-button" style="display: none;">Переместить в альбом...</a>
+                    {% endif %}
+                    <p class="smaller" id="videos-count">
+                        Всего {{ videos.count }} видео
+                        <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
+                    </p>
+                </header>
+                <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.count %}style="display: none;"{% endif %}>
+                    <div class="b-empty__pic"></div>
+                    <strong class="b-empty__text">Нет видеороликов</strong>
+                    <div><a href="{% url album-video-add object.id %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+                </div>
+                {% include "snippets/videos_list.html" %}
+            </section>
+        </div></dd>
+
+<script type="text/javascript">
+    $(function() {
+        var vav = new VideoAlbumsView();
+    });
+</script>
+
+{% endblock %}
+
+{% block popup %}
+<section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+        <header class="b-form__header">
+            <h4>
+                Подтвердите действие
+            </h4>
+            <p id="dialog-text">
+                {= text }
+            </p>
+        </header>
+        <footer class="b-form__footer cleared">
+            <a href="#" class="b-button b-button_yellow left cancel confirm-popup-cancel">Отменить</a>
+            <a href="#" class="b-button b-button_red right videos_delete confirm-popup-ok">Удалить</a>
+        </footer>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+
+<section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <form action="{% url video-move %}" method="post">
+            {% csrf_token %}
+            <header class="b-form__header">
+                <h3>
+                    Переместить в альбом
+                </h3>
+            </header>
+            <div class="b-form__fields">
+                <div class="b-form__field" id="albums-list">
+                    {% for item in object.owner.profile.videoalbum_set.all %}
+                    <div class="b-form__field b-form__field_radio">
+                        <div class="f-radio">
+                            <div>
+                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
+                                <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
+                                {{ item.title }}
+                                {% if item == object %}(Текущий альбом){% endif %}
+                                </label>
+                            </div>
+                            <div class="f-err"><span></span></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow right videos_delete confirm-popup-ok">Переместить</a>
+                <a href="#" class="b-button b-button_red left cancel confirm-popup-cancel">Отменить</a>
+            </footer>
+        </form>
+    </section><!--b-form-->
+    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section><!--b-popup-->
+
+{# Шаблоны для JavaScript кода #}
+<div style="display: none;">
+    <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
+        <div class="b-empty__pic"></div>
+        <strong class="b-empty__text">Нет видеороликов</strong>
+        <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+    </div>
+</div>
+{% endblock %}

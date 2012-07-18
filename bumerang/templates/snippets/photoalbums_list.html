@@ -1,0 +1,43 @@
+<div class="b-gallery__items">
+    <form name="photoalbums" action="{% url photoalbums-delete %}" method="post">
+        {% for photoalbum in object.photoalbum_set.all %}
+            <figure class="b-gallery__item photoalbum" id="photoalbums-item-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}">
+            <a href="{% url photo-album-detail photoalbum.id %}">
+                <span class="gi-img">
+                    <span>
+                        {% if photoalbum.preview.thumbnail %}
+                            <img src="{{ photoalbum.preview.thumbnail.url }}" width="190" height="123" alt="{{ photoalbum.title }}" />
+                        {% else %}
+                            <img src="{{ STATIC_URL }}i/nophoto.png" width="190" height="123" alt="{{ photoalbum.title }}" />
+                        {% endif %}
+                    </span>
+                </span>
+                <strong class="gi-title">{{ photoalbum.title }}</strong>
+            </a>
+            <figcaption class="gi-caption">
+                {{ photoalbum.description|truncatewords:8 }}
+            </figcaption>
+                {% if request.user.profile.id == photoalbum.owner_id %}
+                    <div class="ui-checkbox">
+                    <input type="checkbox" name="photoalbums" value="{{ photoalbum.id }}" id="checkbox-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}" />
+                    <label for="checkbox-{{ photoalbum.id }}"></label>
+                </div>
+                    <div class="ui-menu">
+                    <span class="b-dropdown">
+                        <label class="b-menu-button b-dropdown__handle" ></label>
+                        <span class="b-dropdown__popup">
+                            <span class="b-dropdown__popup__i">
+                                <span class="b-dropdown__popup__i__i">
+                                    <span class="b-dropdown__arr"></span>
+                                    <a href="#" class="b-dropdown__link" id="photoalbum-delete-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}">Удалить</a>
+                                    <a href="{% url photo-album-edit photoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </div>
+                {% endif %}
+        </figure>
+        {% endfor %}
+    </form>
+</div>

@@ -1,0 +1,18 @@
+[
+    {
+        "pk": 1, 
+        "model": "converting.convertoptions", 
+        "fields": {
+            "title": "hq_file", 
+            "quality": null, 
+            "vbitrate": 900, 
+            "height": 416, 
+            "width": 720, 
+            "preset": "High Profile", 
+            "sample_rate": 44.1, 
+            "frame_rate": "25", 
+            "abitrate": 128, 
+            "x264opts": "ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0"
+        }
+    }
+]
