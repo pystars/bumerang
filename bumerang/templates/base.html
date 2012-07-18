@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+{% block head %}
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" />
@@ -25,6 +26,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/underscore-min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/backbone-min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/site.js"></script>
+{% endblock %}
 </head>
 <body>
 <div class="l-page"><div class="l-page__i">

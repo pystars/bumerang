@@ -92,7 +92,7 @@
                     var flashvars = {
                         "comment":"{{ object.title }}",
                         "st":"{{ STATIC_URL }}uppod/video113-881.txt",
-                        "file":"rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/mp4:{{ object.best_quality_file.name }}"
+                        "file":"{{ object.rtmp_url }}"
                     };
                     var params = {
                         bgcolor:"#ffffff",

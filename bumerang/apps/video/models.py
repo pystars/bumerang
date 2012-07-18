@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -146,6 +147,9 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
             slug = random_string(cls.SLUG_LENGTH)
             if not cls.objects.filter(slug=slug).exists():
                 return slug
+
+    def rtmp_url(self):
+        return settings.RTMP_SERVER_FORMAT.format(self.best_quality_file().name)
 
 
 class Preview(FileModelMixin, models.Model):

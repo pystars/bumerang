@@ -1534,6 +1534,7 @@ textarea {
 }
 
 .b-tv-programs .tp-item_now {
+    font-weight: bold;
 }
 
 .b-tv-programs .tp-item_now strong {

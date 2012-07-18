@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}Бумеранг PRO{% endblock %}
+{% block head %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/swfobject.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}uppod/uppod_api.js"></script>
+{% endblock %}
 
 {% block content %}
     <div class="b-main-box d-rounded d-rounded_r10 d-sh">
@@ -89,11 +94,74 @@
         <div class="l-cols l-cols_movie"><div class="l-cols__i cleared">
             <section class="l-cols__section"><div class="l-cols__section__i">
                 <section class="b-movie js-toggle2-container js-toggle2-container_movie">
-                    <video id="movie" width="700" height="380" preload controls style="background:url({{ STATIC_URL }}i/player.png); margin: 0 auto;">
-                        <img src="{{ STATIC_URL }}i/fake/video.jpg" width="700" height="380" />
-                    </video>
+                    <div id="movie" width="700" height="380" style="background:url({{ STATIC_URL }}i/player.png); margin: 0 auto;">
+
+                    </div>
                     {% if current_item %}
-                        {% include 'snippets/video_description.html' with object=current_item.video %}
+                        {% with object=current_item.video %}
+                        <div id="movie-description">
+                            {% include 'snippets/video_description.html' %}
+                        </div>
+                        <script type="text/javascript">
+                            start_movie = function(playerID){
+                                $.ajax({
+                                    url: "{% url current-playlist-item "main" %}",
+                                    success: function(data){
+                                        if (uppodGet(playerID, "get[file]").replace("///", "/") != data['file']){
+                                            uppodSend(playerID, "file:"+data['file']);
+                                            uppodSend(playerID, "comment:"+data['comment']);
+                                            $("#movie-description").html(data['movie_description']);
+                                        }
+                                        uppodSend(playerID, "seek:"+data['offset']);
+                                        $(".b-plenka__i").find("a").text(data['comment']);
+                                    }
+                                });
+                            };
+                            var flashvars = {
+                                "comment": "{{ object.title }}",
+                                "st": "{{ STATIC_URL }}uppod/tv-styles.txt",
+                                "file": "{{ object.rtmp_url }}",
+                                "poster": "{{ STATIC_URL }}i/player.png",
+                                "uid": "movie"
+                            };
+                            var params = {
+                                bgcolor:"#ffffff",
+                                allowFullScreen:"true",
+                                allowScriptAccess:"always",
+                                id:"movie",
+                                wmode:"opaque"
+                            };
+                            new swfobject.embedSWF(
+                                    "{{ STATIC_URL }}uppod/tv-player.swf",
+                                    "movie",
+                                    "700",
+                                    "380",
+                                    "9.0.115.0",
+                                    false,
+                                    flashvars,
+                                    params);
+
+                            function uppodEvent(playerID,event) {
+                                switch(event){
+                                    case "init":
+                                        start_movie(playerID);
+                                        break;
+                                    case "play":
+                                        start_movie(playerID);
+                                        break;
+                                    case "end":
+                                        start_movie(playerID);
+                                        $(".b-tv-programs .tp-item_now").toggleClass("tp-item_now").addClass("tp-item_past");
+                                        $(".b-tv-programs .tp-item_future").toggleClass("tp-item_future").addClass("tp-item_now");
+                                        break;
+                                }
+                            }
+                        </script>
+                        {% endwith %}
+                    {% else %}
+                        <video id="movie" width="700" height="380" preload controls style="background:url({{ STATIC_URL }}i/player.png); margin: 0 auto;">
+                            <img src="{{ STATIC_URL }}i/fake/video.jpg" width="700" height="380" />
+                        </video>
                     {% endif %}
                 </section><!--b-movie-->
             </div></section>

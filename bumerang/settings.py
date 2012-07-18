@@ -55,6 +55,8 @@ else:
     STATIC_ROOT = ''
     STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
 
+RTMP_SERVER_FORMAT = 'rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/mp4:{0}'
+
 FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
 
@@ -88,6 +90,9 @@ TEMPLATE_CONTEXT_PROCESSORS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'johnny.middleware.LocalStoreClearMiddleware',
+    'johnny.middleware.QueryCacheMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,6 +162,32 @@ INSTALLED_APPS = [
     'bumerang.apps.utils',
     'bumerang.apps.messages',
 ]
+
+
+#if LOCALHOST:
+CACHES = {
+    'default' : dict(
+        BACKEND = 'johnny.backends.locmem.LocMemCache',
+        JOHNNY_CACHE = True,
+    )
+}
+#else:
+#    CACHES = {
+#        'default' : dict(
+#            BACKEND = 'johnny.backends.memcached.PyLibMCCache',
+#            LOCATION = [ELASTICACHE_ENDPOINT],
+#            JOHNNY_CACHE = True,
+#            TIMEOUT = 500,
+#            BINARY = True,
+#            OPTIONS = {  # Maps to pylibmc "behaviors"
+#               'tcp_nodelay': True,
+#               'ketama': True
+#            }
+#        )
+#    }
+
+
+JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_bumer'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
