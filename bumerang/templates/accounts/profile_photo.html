@@ -359,6 +359,30 @@
     </div>
 
     {% if profile.id == request.user.id %}
+
+{#        Модальный диалог удаления     #}
+    <section class="b-popup" id="popup-confirm">
+        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+            <header class="b-form__header">
+                <h4>
+                    Подтвердите действие
+                </h4>
+                <p id="dialog-message">
+                    &nbsp;
+                </p>
+            </header>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow left cancel confirm-modal-cancel">Отменить</a>
+                <a href="#" class="b-button b-button_red right videos_delete confirm-modal-confirm">Удалить</a>
+            </footer>
+        </section>
+        <div class="b-popup__close close-btn" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+        <div class="b-popup__tl"></div>
+        <div class="b-popup__tr"></div>
+        <div class="b-popup__br"></div>
+        <div class="b-popup__bl"></div>
+    </section>
+
         <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
     <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
         <header class="b-form__header">

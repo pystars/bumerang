@@ -3,32 +3,6 @@ document.__DEBUG = true;
 /*
  * Helper functions
  * */
-(function(window) {
-    /*
-     * Debug console
-     * */
-    this._log = function() {
-        if (document.__DEBUG) {
-            console.info('| [DEBUG OUTPUT]\t[NUM]\t[TYPE]\t\t\t\t[VALUE]');
-            for (var i in arguments) {
-                var arg = arguments[i];
-                var num = parseInt(i, 10) + 1;
-                console.info('|\t\t\t', num, '\t', typeof(arg), '\t\t\t', arg);
-            }
-        } else {
-            return function() {};
-        }
-    };
-
-    /*
-     * Argument to integer, in decimal number system
-     * */
-    this.toi = function() {
-        return parseInt(arguments[0], 10);
-    };
-
-}(window));
-
 (function(st) {
 
     function fl(s, len) {
@@ -66,9 +40,41 @@ document.__DEBUG = true;
         return result;
     };
 
-//    String.format = st.format;
-
 }(String.prototype));
+
+(function(window) {
+    var scp = this;
+    /*
+     * Debug console
+     * */
+    this._ln = function() {
+        if (document.__DEBUG) {
+            console.info(arguments);
+        } else {
+            return function() {};
+        }
+    };
+
+    this._log = function() {
+        if (document.__DEBUG) {
+            console.info('| [DEBUG OUTPUT]\t [NUM]\t [TYPE]\t\t\t\t [VALUE]');
+            for (var i in arguments) {
+                var arg = arguments[i];
+                console.info('|\t\t\t', (toi(i)+1), '\t', typeof(arg), '\t\t\t', arg, '\n');
+            }
+        } else {
+            return function() {};
+        }
+    };
+
+    /*
+     * Argument to integer, in decimal number system
+     * */
+    this.toi = function(value) {
+        return parseInt(value, 10);
+    };
+
+}(window));
 
 // implement JSON.stringify serialization
 var JSON = JSON || {};
@@ -115,6 +121,41 @@ function ru_pluralize(value, args) {
         return args_array[2];
     }
 };
+
+/*
+ * Notifications
+ * */
+var NF_SUCCESS = {
+        class: 'success'
+    },
+    NF_ERROR = {
+        class: 'error'
+    };
+
+function Notify(status, text) {
+
+    var tpl = '<div class="alert-message {0}">'.format(status['class']);
+    tpl += '<a class="close msg-close" href="#">×</a>';
+    tpl += '<p> {0} </p></div>'.format(text);
+
+    var nfc = $(tpl);
+
+    $('.l-page__i').prepend(nfc);
+
+    nfc.css({
+        'width': ($(window).width() - nfc.outerHeight())
+    });
+
+    nfc.on('click', '.msg-close', function() {
+        $(this).parent().hide();
+    });
+
+    $('.msg-close').click(function(){
+        $(this).parent().hide();
+    });
+    $('.alert-message').delay(delay_time).hide(300);
+
+}
 
 /*
  * Constants
@@ -209,7 +250,7 @@ function invokeConfirmDialog(text, callback, scope) {
 
 function invConfDlg(text) {
 
-    defer = $.Deferred();
+    var defer = $.Deferred();
 
     var popup = $('#popup-confirm-video');
 
