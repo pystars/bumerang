@@ -72,17 +72,58 @@ function PhotosPageHandler() {
     /*
      * Private object's data
      * */
-    var scp = this;
+    var root = this;
+
     var _delegateEventSplitter = /^(\S+)\s*(.*)$/;
     var events_handlers = {};
-    var selected_items = [];
-
     var confirm_dialog_selector = '#popup-confirm';
 
     var events = {
         'click a[id*=photo-del-]': 'clickSinglePhotoDelete',
         'click article[id*=photo-item-]': 'clickPhotoCheckbox'
     };
+
+//    this.items_list = [];
+//
+//    this.pushItem = function(item) {
+//        this.items_list.push(toi(item));
+//        this.items_list = _.uniq(this.items_list);
+//    };
+//    this.removeItem = function(item) {
+//        this.items_list = _.without(this.items_list, toi(item));
+//    };
+//    this.getItemsList = function() {
+//        return this.items_list;
+//    };
+//    this.cleanItems = function() {
+//        this.items_list = [];
+//    };
+
+
+    function ItemsListWrapper(listObj) {
+        var list = listObj || [];
+
+        this.push = function(i) {
+            list.push(toi(i));
+            list = _.uniq(list);
+        };
+
+        this.remove = function(i) {
+            list = _.without(list, toi(i));
+        };
+
+        this.getList = function() {
+            return list;
+        };
+
+        this.clean = function() {
+            list = [];
+        };
+    }
+
+    this.sl = [];
+
+    var items_list = new ItemsListWrapper(this.sl);
 
 
     this.init = function() {
@@ -115,19 +156,6 @@ function PhotosPageHandler() {
         }
     };
 
-    var pushItem = function(id) {
-        selected_items.push(toi(id));
-        selected_items = _.uniq(selected_items);
-    };
-
-    var removeItem = function(id) {
-        selected_items = _.without(selected_items, toi(id));
-    };
-
-    var getItems = function() {
-        return selected_items;
-    };
-
     var getPhotosCount = function() {
         return toi($('form .photo:visible').length);
     };
@@ -157,9 +185,9 @@ function PhotosPageHandler() {
     };
 
     var hideItems = function() {
-        var selected_items = getItems();
+        var list = items_list.getList();
 
-        _.each(selected_items, function(id) {
+        _.each(list, function(id) {
             var el = $('#photo-item-{0}'.format(id));
 
             el.hide(function() {
@@ -170,7 +198,9 @@ function PhotosPageHandler() {
     };
 
     var updatePage = function() {
-        if (selected_items.length) {
+        var list = items_list.getList();
+
+        if (list.length) {
             showDeleteButton();
         } else {
             hideDeleteButton();
@@ -179,70 +209,38 @@ function PhotosPageHandler() {
         showPhotosCount();
     };
 
-//    updatePage: function() {
-//        var view = this;
-//        view.albums = [];
-//        $('figure[id*=photoalbum-item-]:visible').each(function() {
-//            view.albums.push(this.getAttribute('data-photoalbum-id'));
+//    var sendItemsDeleteRequest = function() {
+//        $.post('/photo/photos-delete1/', {
+//            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+//            ids: JSON.stringify(selected_items.getList())
+//        })
+//        .success(function(response) {
+//            Notify(NF_SUCCESS, response['message']);
+//            hideItems();
+//            showPhotosCount();
+//            selected_items = [];
+//            updatePage();
+//        })
+//        .error(function() {
+//            var msg = 'Произошла ошибка';
+//            Notify(NF_ERROR, msg);
 //        });
-//
-//        if (this.selected_albums.length) {
-//            this.showAlbumDeleteButton();
-//        } else {
-//            this.hideAlbumDeleteButton();
-//        }
-//
-//        if (this.selected_photos.length) {
-//            this.showPhotoDeleteButton();
-//            this.showPhotoMoveButton();
-//        } else {
-//            this.hidePhotoDeleteButton();
-//            this.hidePhotoMoveButton();
-//        }
-//
-//        this.showAlbumsCount();
-//        this.showPhotosCount();
-//
-//        if (!this.getAlbumsCount() && !$('#photoalbum-empty-block').is(':visible')) {
-//            var empty_block_tpl = $('#photoalbum-empty-block-tpl');
-//            $('#photoalbums-container').append(empty_block_tpl);
-//            empty_block_tpl.show(300, 'linear')
-//        }
-//
-//        if (!this.getPhotosCount() && !$('#photo-empty-block').is(':visible')) {
-//            var empty_block_tpl = $('#photo-empty-block-tpl');
-//            $('#photos-container').append(empty_block_tpl);
-//            empty_block_tpl.show(300, 'linear')
-//        }
-//    }
+//    };
 
     /*
      * Events handlers functions
      */
+
     events_handlers = {
 
-//        clickPhotoCheckbox: function(e) {
-//            var el = $(e.target || e.srcElement);
-//            var photoId = parseInt(el.attr('data-photo-id'));
-//
-//            if (el.is(':checked')) {
-//                this.selected_photos.push(photoId);
-//            } else {
-//                // Delete ID from array if checkbox unchecked
-//                this.selected_photos = _.without(this.selected_photos, photoId);
-//            }
-//
-//            this.updatePage();
-//        },
-//
         clickPhotoCheckbox: function(e) {
             var el = $(e.target || e.srcElement);
-            var photoId = toi(el.attr('data-photo-id'));
+            var id = toi(el.attr('data-photo-id'));
 
             if (el.is(':checked')) {
-                pushItem(photoId);
+                items_list.push(id);
             } else {
-                removeItem(photoId);
+                items_list.remove(id);
             }
 
             updatePage();
@@ -251,22 +249,22 @@ function PhotosPageHandler() {
         clickSinglePhotoDelete: function(e) {
             e.preventDefault();
             var el = $(e.target || e.srcElement);
-            var photoId = toi(el.attr('data-photo-id'));
-
-            pushItem(photoId);
+            var id = el.attr('data-photo-id');
 
             var msg = 'Вы действительно хотите удалить выбранную фотографию?';
             var decision = confirmModalDialog(confirm_dialog_selector, msg);
 
+            items_list.push(id);
+            _ln('b', items_list.getList());
+
             decision.done(function() {
-                Notify(NF_SUCCESS, 'ok');
-                hideItems();
-                updatePage();
+                _ln('dcs', root.sl);
+//                sendItemsDeleteRequest();
             });
 
-            decision.fail(function() {
-                Notify(NF_ERROR, 'cancelled');
-            });
+//            decision.fail(function() {
+//                Notify(NF_ERROR, 'cancelled');
+//            });
         }
 
     };
@@ -276,8 +274,7 @@ function PhotosPageHandler() {
      * */
     this.init();
 
-};
-
+}
 
 $(function() {
 
