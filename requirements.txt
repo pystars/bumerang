@@ -1,4 +1,4 @@
-django
+django==1.4
 Pillow==1.7.6
 South
 django-debug-toolbar
@@ -20,7 +20,7 @@ pydkim
 pytz
 dnspython
 django-kombu==0.9.4
-django-celery-with-redis
+django-celery-with-redis==2.5
 django-wysiwyg
 simplejson
 johnny-cache
