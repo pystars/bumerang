@@ -59,6 +59,7 @@ class MakeScreenShots(Task):
                 range(offset, offset+step)), size, result_file.name)
             process = subprocess.call(cmd, shell=False)
             if process:
+                Video.objects.filter(pk=video_id).update(status=Video.ERROR)
                 logger.error("Some error during ffmpeging %s" % video.pk)
                 return "Stop making screen shoots - video is deleted"
             try:
