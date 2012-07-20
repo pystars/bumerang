@@ -89,11 +89,13 @@ class JSONCurrentPlaylistItemView(BaseDetailView, PlaylistMixin):
     def get_context_data(self, **kwargs):
         playlistitem = self.get_object()
         return dict(
+            id = playlistitem.id,
             comment = playlistitem.video.title,
             movie_description = render_to_string(
                 'snippets/video_description.html',
                 {'object': playlistitem.video}),
             file = playlistitem.video.rtmp_url(),
+            offset = (now() - playlistitem.play_from()).seconds
         )
 
     def render_to_response(self, context):
