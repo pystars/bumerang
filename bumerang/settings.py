@@ -169,6 +169,7 @@ CACHES = {
     'default' : dict(
         BACKEND = 'johnny.backends.locmem.LocMemCache',
         JOHNNY_CACHE = True,
+        TIMEOUT = 1
     )
 }
 #else:
