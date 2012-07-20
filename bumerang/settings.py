@@ -50,7 +50,8 @@ else:
     AWS_S3_SECURE_URLS = False
     AWS_PRELOAD_METADATA = True
     AWS_REDUCED_REDUNDANCY = True
-#    AWS_S3_CUSTOM_DOMAIN = 'media.probumerang.tv'
+    AWS_S3_MEDIA_CUSTOM_DOMAIN = 'media.probumerang.tv'
+    AWS_S3_CUSTOM_DOMAIN = 'static.probumerang.tv'
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_URL = 'http://media.probumerang.tv/'
     STATIC_ROOT = ''
@@ -91,8 +92,8 @@ TEMPLATE_CONTEXT_PROCESSORS = [
 ]
 
 MIDDLEWARE_CLASSES = [
-    'johnny.middleware.LocalStoreClearMiddleware',
-    'johnny.middleware.QueryCacheMiddleware',
+#    'johnny.middleware.LocalStoreClearMiddleware',
+#    'johnny.middleware.QueryCacheMiddleware',
 
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -166,13 +167,13 @@ INSTALLED_APPS = [
 
 
 #if LOCALHOST:
-CACHES = {
-    'default' : dict(
-        BACKEND = 'johnny.backends.locmem.LocMemCache',
-        JOHNNY_CACHE = True,
-        TIMEOUT = 1
-    )
-}
+#CACHES = {
+#    'default' : dict(
+#        BACKEND = 'johnny.backends.locmem.LocMemCache',
+#        JOHNNY_CACHE = True,
+#        TIMEOUT = 1
+#    )
+#}
 #else:
 #    CACHES = {
 #        'default' : dict(
@@ -189,7 +190,7 @@ CACHES = {
 #    }
 
 
-JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_bumer'
+#JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_bumer'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 

@@ -9,4 +9,7 @@ if settings.LOCALHOST:
     media_storage = OverwriteStorage()
 else:
     from storages.backends.s3boto import S3BotoStorage
-    media_storage = S3BotoStorage(bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME)
+    media_storage = S3BotoStorage(
+        bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME,
+        custom_domain=settings.AWS_S3_MEDIA_CUSTOM_DOMAIN
+    )
