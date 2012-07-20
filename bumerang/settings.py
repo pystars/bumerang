@@ -50,7 +50,7 @@ else:
     AWS_S3_SECURE_URLS = False
     AWS_PRELOAD_METADATA = True
     AWS_REDUCED_REDUNDANCY = True
-    AWS_S3_CUSTOM_DOMAIN = 'static.probumerang.tv'
+#    AWS_S3_CUSTOM_DOMAIN = 'media.probumerang.tv'
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     MEDIA_URL = 'http://media.probumerang.tv/'
     STATIC_ROOT = ''
