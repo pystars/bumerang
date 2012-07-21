@@ -84,27 +84,3 @@ class ConvertOptions(models.Model):
                     self.abitrate = abitrate
             if audio['Channel(s)'] == 1:
                 self.channels = 'mono'
-
-    def adjust(self, media_info):
-        video = media_info['Video']
-        audio = media_info.get('Audio', {})
-        if video['Width'] < self.width:
-            self.width = video['Width']
-        self.height = int(self.width * video['Height'] / float(video['Width']))
-        vbitrate = (video['BitRate_Maximum'] or video['BitRate']) / 1000
-        if self.vbitrate > vbitrate:
-            self.vbitrate = vbitrate
-        if float(self.frame_rate) > video['FrameRate']:
-            self.frame_rate = str(video['FrameRate'])
-        if audio:
-            if audio['SamplingRate']:
-                sample_rate = audio['SamplingRate'] / 1000
-                if self.sample_rate > sample_rate:
-                    self.sample_rate = sample_rate
-            if audio['BitRate_Maximum'] or audio['BitRate']:
-                abitrate = (audio['BitRate_Maximum'] or audio['BitRate']) / 1000
-                if self.abitrate > abitrate:
-                    self.abitrate = abitrate
-            if audio['Channel(s)'] == 1:
-                self.channels = 'mono'
-        return self
