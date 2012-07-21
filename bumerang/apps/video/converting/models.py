@@ -67,7 +67,7 @@ class ConvertOptions(models.Model):
         audio = media_info.get('Audio', {})
         if video['Width'] < self.width:
             self.width = video['Width']
-        self.height = int(self.width / float(video['Width']) / video['Height'])
+        self.height = int(self.width * video['Height'] / float(video['Width']))
         vbitrate = (video['BitRate_Maximum'] or video['BitRate']) / 1000
         if self.vbitrate > vbitrate:
             self.vbitrate = vbitrate
