@@ -15,15 +15,15 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect
 from django.forms.util import ErrorList
 from django.forms.models import modelformset_factory
-from django.views.generic import ListView, UpdateView, View, TemplateView
+from django.views.generic import ListView, UpdateView, View, TemplateView, CreateView
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import DetailView
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.festivals.forms import FestivalGroupForm, FestivalForm, \
-    FestivalLogoEditForm, FestivalNominationForm
+    FestivalLogoEditForm, FestivalNominationForm, FestivalRequestForm
 
-from bumerang.apps.festivals.models import Festival, FestivalNomination
+from bumerang.apps.festivals.models import Festival, FestivalNomination, FestivalRequest
 
 
 class FestivalListView(ListView):
@@ -279,53 +279,37 @@ class FestivalFormsetGenericView(UpdateView):
         return self.render_to_response(self.get_context_data(formset=formset))
 
 
-#class FestivalEditNominationsView(FestivalEditMixin):
-#    model = Festival
-#    template_name = "festivals/festival_edit_formset.html"
-#
-#    NominationFormSet = modelformset_factory(
-#        model=FestivalNomination,
-#        form=FestivalNominationForm,
-#        can_delete=True
-#    )
-#
-#    def get_context_data(self, **kwargs):
-#        profile = self._get_profile(self.request)
-#        festival = self.get_object()
-#
-#        if festival.owner != profile:
-#            raise PermissionDenied
-#
-#        qs = FestivalNomination.objects.filter(
-#            festival=festival
-#        )
-#
-#        context = {
-#            'profile': profile,
-#            'festival': festival,
-#            'formset': self.NominationFormSet(queryset=qs),
-#        }
-#
-#        context.update(kwargs)
-#
-#        return context
+#class FestivalFormsetRequestView(FestivalFormsetGenericView):
 #
 #    def post(self, request, *args, **kwargs):
-#        formset = self.NominationFormSet(request.POST, request.FILES)
+#        formset = self.ModelFormSet(request.POST, request.FILES)
 #
 #        if formset.is_valid():
-#
 #            instances = formset.save(commit=False)
 #            festival = self.get_object()
+#            submitter = self._get_profile(request)
+#
 #            for instance in instances:
 #                instance.festival = festival
+#                instance.submitter = submitter
 #                instance.save()
 #
-#            return HttpResponseRedirect(
-#                reverse(
-#                    'festival-edit-nominations',
-#                    kwargs = { 'pk': kwargs['pk'] }
-#                )
-#            )
+#            return HttpResponseRedirect(self.get_success_url())
 #
 #        return self.render_to_response(self.get_context_data(formset=formset))
+
+
+class FestivalRequestFormView(CreateView):
+    model = FestivalRequest
+    form_class = FestivalRequestForm
+    template_name = 'festivals/festival_request_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(FestivalRequestFormView, self).get_context_data(**kwargs)
+        festival = Festival.objects.get(id=self.kwargs['pk'])
+
+        context.update({
+            'festival': festival
+        })
+
+        return context

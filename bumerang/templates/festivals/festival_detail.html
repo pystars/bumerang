@@ -110,7 +110,7 @@
                             <h3>Заявка на {{ object.name }}</h3>
 
                             <p>
-                                Прикрепите ваши работы к заявке. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.
+                                <a href="{% url festival-request-form object.id %}">Подать заявку</a>. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.
                             </p>
 
                         {% else %}
@@ -134,10 +134,12 @@
 {% block right_menu %}
     <nav class="b-side-nav d-indent">
         <ul>
-            <h4>Создать фестиваль</h4>
-            <li>
-                <a href="{% url festival-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
-            </li>
+            <h4>Архив фестивалей</h4>
+            {% for item in festivals_archive %}
+                <li>
+                    <a href="{% url festival-detail item.id %}" title="{{ item.name }}">{{ festivals_group_name }} {{ item.start_date.year }}</a>
+                </li>
+            {% endfor %}
         </ul>
         <i class="d-indent__tl"></i>
         <i class="d-indent__tr"></i>
@@ -145,64 +147,64 @@
         <i class="d-indent__bl"></i>
     </nav>
 {% endblock %}
-
-{% block popup %}
-    <div class="clean-modal" id="modal-request-video-list">
-        <form>
-            <header>
-                <a href="#" class="close">×</a>
-                <h3>Список видео</h3>
-            </header>
-            <section class="content">
-
-                <p id="#result"></p>
-
-                <dl class="dropdown">
-                    <dt>
-                        <a href="#">
-                            <span>
-                                <p>
-                                    Выберите видеоальбом
-                                </p>
-                            </span>
-                        </a>
-                    </dt>
-                    <dd>
-                        <ul>
-                        {% if request.user.profile.video_set.count %}
-                            {% for item in request.user.profile.video_set.all %}
-                                <li>
-                                <article class="announ-item">
-                                    <div class="ai-img d-sh">
-                                        <a href="#">
-                                            <span>
-                                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
-                                                <span class="time">{{ item.duration|default_if_none:0 }}</span>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <header class="ai-head">
-                                        <h3>{{ item.title|truncatechars:60 }}</h3>
-                                    </header>
-                                    <footer class="ai-foot">
-                                        <time class="date">{{ item.created|date:"d.m.Y, H:i" }}</time>
-                                    </footer>
-                                </article>
-                                </li>
-                            {% endfor %}
-                        {% else %}
-                            <li>
-                                <p>У вас нет ни одного видео</p>
-                            </li>
-                        {% endif %}
-                        </ul>
-                    </dd>
-                </dl>
-
-            </section>
-            <footer>
-                <a href="#" class="b-button b-button_yellow">Добавить</a>
-            </footer>
-        </form>
-    </div>
-{% endblock %}
+{##}
+{#{% block popup %}#}
+{#    <div class="clean-modal" id="modal-request-video-list">#}
+{#        <form>#}
+{#            <header>#}
+{#                <a href="#" class="close">×</a>#}
+{#                <h3>Список видео</h3>#}
+{#            </header>#}
+{#            <section class="content">#}
+{##}
+{#                <p id="#result"></p>#}
+{##}
+{#                <dl class="dropdown">#}
+{#                    <dt>#}
+{#                        <a href="#">#}
+{#                            <span>#}
+{#                                <p>#}
+{#                                    Выберите видеоальбом#}
+{#                                </p>#}
+{#                            </span>#}
+{#                        </a>#}
+{#                    </dt>#}
+{#                    <dd>#}
+{#                        <ul>#}
+{#                        {% if request.user.profile.video_set.count %}#}
+{#                            {% for item in request.user.profile.video_set.all %}#}
+{#                                <li>#}
+{#                                <article class="announ-item">#}
+{#                                    <div class="ai-img d-sh">#}
+{#                                        <a href="#">#}
+{#                                            <span>#}
+{#                                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />#}
+{#                                                <span class="time">{{ item.duration|default_if_none:0 }}</span>#}
+{#                                            </span>#}
+{#                                        </a>#}
+{#                                    </div>#}
+{#                                    <header class="ai-head">#}
+{#                                        <h3>{{ item.title|truncatechars:60 }}</h3>#}
+{#                                    </header>#}
+{#                                    <footer class="ai-foot">#}
+{#                                        <time class="date">{{ item.created|date:"d.m.Y, H:i" }}</time>#}
+{#                                    </footer>#}
+{#                                </article>#}
+{#                                </li>#}
+{#                            {% endfor %}#}
+{#                        {% else %}#}
+{#                            <li>#}
+{#                                <p>У вас нет ни одного видео</p>#}
+{#                            </li>#}
+{#                        {% endif %}#}
+{#                        </ul>#}
+{#                    </dd>#}
+{#                </dl>#}
+{##}
+{#            </section>#}
+{#            <footer>#}
+{#                <a href="#" class="b-button b-button_yellow">Добавить</a>#}
+{#            </footer>#}
+{#        </form>#}
+{#    </div>#}
+{#{% endblock %}#}

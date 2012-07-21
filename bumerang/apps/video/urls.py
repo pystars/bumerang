@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from bumerang.apps.utils.views import XMLDetailView, ObjectsDeleteView, AjaxRatingView
 from bumerang.apps.video.albums.views import VideoAlbumDetailView
+from bumerang.apps.video.views import VideoListAjaxView
 from models import Video
 from albums.models import VideoAlbum
 from views import (VideoListView, VideoCreateView, VideoDetailView,
@@ -20,6 +21,12 @@ urlpatterns = patterns('',
     url(r'^~(?P<category>[\w\-]+)/$',
         VideoListView.as_view(),
         name='video-list-category'
+    ),
+
+    # AJAX video list
+    url(r'^ajax/(?P<pk>[\d]+)/$',
+        VideoListAjaxView.as_view(),
+        name='video-list-ajax'
     ),
 
     url(r'^album/add/$',
@@ -67,6 +74,7 @@ urlpatterns = patterns('',
             model=Video, template_name_suffix='_xml'),
         name='video-xml'
     ),
+
     # Ratings
     url(r'^rate/(?P<object_id>\d+)/(?P<score>\d+)/$', login_required(AjaxRatingView()), {
             'app_label': 'video',

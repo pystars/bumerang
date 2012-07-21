@@ -2,11 +2,13 @@
 #from django.conf.urls.defaults import patterns, url
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from bumerang.apps.festivals.forms import FestivalNominationForm, FestivalGeneralRuleForm
-from bumerang.apps.festivals.models import FestivalNomination, Festival, FestivalGeneralRule
+from bumerang.apps.festivals.forms import FestivalNominationForm, \
+    FestivalGeneralRuleForm
+from bumerang.apps.festivals.models import FestivalNomination, \
+    Festival, FestivalGeneralRule
 from bumerang.apps.festivals.views import FestivalListView, \
     FestivalSendRequest, FestivalDetailView, FestivalEditInfoView, \
-    FestivalEditLogoView, FestivalFormsetGenericView
+    FestivalEditLogoView, FestivalFormsetGenericView, FestivalRequestFormView
 
 urlpatterns = patterns('',
     url(r'^$',
@@ -59,6 +61,11 @@ urlpatterns = patterns('',
             add_item_text=u'Добавить положение'
         )),
         name='festival-edit-rules'
-    )
+    ),
+
+    url(r'^fest(?P<pk>[\d]+)/festival-request/$',
+        login_required(FestivalRequestFormView.as_view()),
+        name='festival-request-form'
+    ),
 
 )
