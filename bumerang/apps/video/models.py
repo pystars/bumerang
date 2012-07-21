@@ -157,7 +157,9 @@ class Video(models.Model, TitleUnicode):
             super(Video, self).delete(*args, **kwargs)
             s3bucket = self.original_file.storage.bucket
             s3bucket.delete_keys(
-                s3bucket.get_all_keys(prefix='videos/Wq1p12ckOJBb'), True)
+                s3bucket.get_all_keys(prefix='videos/{0}'.format(self.slug)),
+                True
+            )
         except ProtectedError:
             #TODO: notice user about it
             pass
