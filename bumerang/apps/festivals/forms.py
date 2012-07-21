@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.forms.fields import ChoiceField
 from os.path import basename
 from django import forms
 from django.forms import CheckboxInput
@@ -10,7 +11,7 @@ from django.template import loader
 from django.template.context import Context
 from django.utils.safestring import mark_safe
 
-from bumerang.apps.festivals.models import Festival, FestivalGroup, FestivalNomination, FestivalGeneralRule
+from bumerang.apps.festivals.models import Festival, FestivalGroup, FestivalNomination, FestivalGeneralRule, FestivalRequestVideo, FestivalRequest
 from bumerang.apps.utils.forms import S3StorageFormMixin
 
 
@@ -153,5 +154,11 @@ class FestivalGeneralRuleForm(TemplatedForm):
         )
 
 
-class FestivalSendRequestForm():
-    pass
+class FestivalRequestForm(forms.ModelForm):
+    #videos = forms.MultipleChoiceField()
+
+    class Meta:
+        model = FestivalRequest
+        fields = (
+            'videos',
+        )

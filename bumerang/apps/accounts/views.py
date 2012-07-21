@@ -4,7 +4,6 @@ import json
 import urlparse
 from datetime import timedelta
 from uuid import uuid4
-from bumerang.apps.festivals.models import Festival
 
 try:
     from cStringIO import StringIO
@@ -21,7 +20,7 @@ from django.contrib.sites.models import Site, get_current_site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
@@ -34,9 +33,12 @@ from bumerang.apps.utils.functions import random_string
 from bumerang.apps.video.models import Video
 from bumerang.apps.accounts.forms import (RegistrationForm,
       PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
-      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm, UserContactsForm, OrganizationContactsForm, FestivalRegistrationRequestForm, FestivalProfileInfoForm)
+      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm,
+      UserContactsForm, OrganizationContactsForm,
+      FestivalRegistrationRequestForm, FestivalProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
-from bumerang.apps.utils.email import send_activation_success, send_activation_link, send_new_password, send_fest_registration_request
+from bumerang.apps.utils.email import send_activation_success, \
+    send_activation_link, send_new_password, send_fest_registration_request
 #from bumerang.apps.utils.tasks import (send_new_password_task,
 #    send_activation_link_task)
 

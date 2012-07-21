@@ -51,6 +51,7 @@ function ru_pluralize(value, args) {
 // Site variables
 var delay_time = 10000;
 
+
 function show_notification(status, text) {
     var tpl = '<div class="alert-message ' + status +'">' +
               '<a class="close msg-close" href="#">×</a>' +
@@ -983,57 +984,7 @@ $(function() {
 
         }).datepicker({ showOn: 'both' });
 
-    };
-
-    /*
-    Festival detail page handler
-     */
-    if ($('.hdr-festival-detail')) {
-        /* Tabs handler */
-        $('div.tabs a.b-button').on('click', function(e) {
-            e.preventDefault();
-            window.location.hash = this.hash;
-            var el = $(e.target);
-            $('div.tabs a.b-button').removeClass('current');
-            el.addClass('current').removeClass('hidden');
-
-            $('.tab-block section').addClass('hidden');
-            $('.tab-block section[id='+el.attr('href').replace('#', '')+']')
-                .addClass('current')
-                .removeClass('hidden');
-        });
-
-        $('.tab-block section:not(.current)').addClass('hidden');
-
-        $('div.tabs a.b-button[href='+location.hash+']').trigger('click');
-
-//        $('#modal-request-video-list').show();
-//        $('#tint').show();
-//        $('body').css('overflow', 'hidden');
-
-        $(".dropdown dt a").click(function() {
-            $(".dropdown dd ul").toggle();
-        });
-
-        $(".dropdown dd ul li a").click(function() {
-            var text = $(this).html();
-            $(".dropdown dt a span").html(text);
-            $(".dropdown dd ul").hide();
-            $("#result").html("Selected value is: " + getSelectedValue("sample"));
-        });
-
-        function getSelectedValue(id) {
-            return $("#" + id).find("dt a span.value").html();
-        }
-
-        $(document).bind('click', function(e) {
-            var $clicked = $(e.target);
-            if (! $clicked.parents().hasClass("dropdown"))
-                $(".dropdown dd ul").hide();
-        });
-
-
-    } /* end festival page handler */
+    }
 
     $('a.scroll-to-top').click(function(e) {
         $("html, body").animate({scrollTop:0},"fast");
