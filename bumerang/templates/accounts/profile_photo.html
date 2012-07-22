@@ -74,49 +74,49 @@
             {% endif %}
         </div>
         {% include "snippets/photoalbums_list.html" %}
-    </section>
+        </section>
         {% if profile.id == request.user.id or photos.count %}
             <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container">
-        <header class="announs-head">
-            {% if profile.id == request.user.id %}
-                <ul class="b-service-buttons">
-                <li class="addphoto">
-                    <i></i>
-                    <a href="{% url photo-add %}">Добавить фото</a>
-                </li>
-            </ul>
-            {% endif %}
-            <h3>Фотографии без альбомов</h3>
-            <div class="clear"></div>
-            {% if photos.count %}
-                {% if profile.id == request.user.id %}
-                    <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="photo-delete-button" style="display: none;">Удалить</a>
-                    <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="photo-move-button" style="display: none;">Переместить в альбом...</a>
-                {% endif %}
-                <p class="smaller" id="photos-count">
-                    Всего {{ photos.count }} фото
-                <div id="photos-plurals" style="display: none;">фото,фото,фото</div>
-                </p>
-            {% endif %}
-            {#            <div class="b-sort">#}
-{#                <div class="b-sort__title">Сортировка</div>#}
-{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort1" />#}
-{#                <label class="b-sort__handle" for="sort1"><span>по просмотрам</span></label>#}
-{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort2" />#}
-{#                <label class="b-sort__handle" for="sort2"><span>по оценкам</span></label>#}
-{#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort3" />#}
-{#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
-{#            </div>#}
-        </header>
-        <div id="photo-empty-block" class="b-empty b-empty_video" {% if photos.count %}style="display: none;"{% endif %}>
-            <div class="b-empty__pic"></div>
-            <strong class="b-empty__text">Нет фотографий</strong>
-            {% if profile.id == request.user.id %}
-                <div><a href="{% url photo-add %}" class="b-button b-button_yellow">Загрузить фото</a></div>
-            {% endif %}
-        </div>
-        {% include "snippets/photos_list.html" %}
-    </section>
+                <header class="announs-head">
+                    {% if profile.id == request.user.id %}
+                        <ul class="b-service-buttons">
+                        <li class="addphoto">
+                            <i></i>
+                            <a href="{% url photo-add %}">Добавить фото</a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    <h3>Фотографии без альбомов</h3>
+                    <div class="clear"></div>
+                    {% if photos.count %}
+                        {% if profile.id == request.user.id %}
+                            <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="photo-delete-button" style="display: none;">Удалить</a>
+                            <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="photo-move-button" style="display: none;">Переместить в альбом...</a>
+                        {% endif %}
+                        <p class="smaller" id="photos-count">
+                            Всего {{ photos.count }} фото
+                        <div id="photos-plurals" style="display: none;">фото,фото,фото</div>
+                        </p>
+                    {% endif %}
+                    {#            <div class="b-sort">#}
+        {#                <div class="b-sort__title">Сортировка</div>#}
+        {#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort1" />#}
+        {#                <label class="b-sort__handle" for="sort1"><span>по просмотрам</span></label>#}
+        {#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort2" />#}
+        {#                <label class="b-sort__handle" for="sort2"><span>по оценкам</span></label>#}
+        {#                <input type="radio" hidden="hidden" value="" name="sort" class="b-sort__helper" id="sort3" />#}
+        {#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
+        {#            </div>#}
+                </header>
+                <div id="photo-empty-block" class="b-empty b-empty_video" {% if photos.count %}style="display: none;"{% endif %}>
+                    <div class="b-empty__pic"></div>
+                    <strong class="b-empty__text">Нет фотографий</strong>
+                    {% if profile.id == request.user.id %}
+                        <div><a href="{% url photo-add %}" class="b-button b-button_yellow">Загрузить фото</a></div>
+                    {% endif %}
+                </div>
+                {% include "snippets/photos_list.html" %}
+            </section>
         {% endif %}
     </div>
     </dd>

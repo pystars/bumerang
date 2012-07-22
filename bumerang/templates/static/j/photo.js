@@ -68,7 +68,7 @@ function confirmModalDialog(selector, message) {
 /*
  * Photos handler
  * */
-function PhotosPageHandler() {
+var PhotosPageHandler = function() {
     /*
      * Private object's data
      * */
@@ -77,58 +77,36 @@ function PhotosPageHandler() {
     var _delegateEventSplitter = /^(\S+)\s*(.*)$/;
     var events_handlers = {};
     var confirm_dialog_selector = '#popup-confirm';
+    var items_list = [];
 
     var events = {
         'click a[id*=photo-del-]': 'clickSinglePhotoDelete',
         'click article[id*=photo-item-]': 'clickPhotoCheckbox'
     };
 
-//    this.items_list = [];
-//
-//    this.pushItem = function(item) {
-//        this.items_list.push(toi(item));
-//        this.items_list = _.uniq(this.items_list);
-//    };
-//    this.removeItem = function(item) {
-//        this.items_list = _.without(this.items_list, toi(item));
-//    };
-//    this.getItemsList = function() {
-//        return this.items_list;
-//    };
-//    this.cleanItems = function() {
-//        this.items_list = [];
-//    };
+    var addItem = function(i) {
+        items_list.push(toi(i));
+        items_list = _.uniq(items_list);
+    };
+
+    var removeItem = function(i) {
+        items_list = _.without(items_list, toi(i));
+    };
+
+    var getItems = function() {
+        return items_list;
+    };
+
+    var cleanItems = function() {
+        items_list = [];
+    };
 
 
-    function ItemsListWrapper(listObj) {
-        var list = listObj || [];
+    var init = function() {
 
-        this.push = function(i) {
-            list.push(toi(i));
-            list = _.uniq(list);
-        };
+//        delegateEvents(events);
 
-        this.remove = function(i) {
-            list = _.without(list, toi(i));
-        };
-
-        this.getList = function() {
-            return list;
-        };
-
-        this.clean = function() {
-            list = [];
-        };
-    }
-
-    this.sl = [];
-
-    var items_list = new ItemsListWrapper(this.sl);
-
-
-    this.init = function() {
-
-        delegateEvents(events);
+        _log(this);
 
     };
 
@@ -198,7 +176,7 @@ function PhotosPageHandler() {
     };
 
     var updatePage = function() {
-        var list = items_list.getList();
+        var list = getItems();
 
         if (list.length) {
             showDeleteButton();
@@ -238,9 +216,9 @@ function PhotosPageHandler() {
             var id = toi(el.attr('data-photo-id'));
 
             if (el.is(':checked')) {
-                items_list.push(id);
+                addItem(id);
             } else {
-                items_list.remove(id);
+                removeItem(id);
             }
 
             updatePage();
@@ -254,11 +232,11 @@ function PhotosPageHandler() {
             var msg = 'Вы действительно хотите удалить выбранную фотографию?';
             var decision = confirmModalDialog(confirm_dialog_selector, msg);
 
-            items_list.push(id);
-            _ln('b', items_list.getList());
+            addItem(id);
+            _ln('b', getItems());
 
             decision.done(function() {
-                _ln('dcs', root.sl);
+                _ln('dcs', getItems());
 //                sendItemsDeleteRequest();
             });
 
@@ -272,16 +250,33 @@ function PhotosPageHandler() {
     /*
      * Init Handler object
      * */
-    this.init();
+    init();
 
-}
+};
+
+
+(function($) {
+    $.fn.lol = function(options) {
+
+        var settings = $.extend( {
+            'delete': ''
+        }, options);
+
+        this.each(function() {
+            _log(settings.delete);
+        });
+    };
+})(jQuery);
+
 
 $(function() {
 
     if ($('#photoalbums-container')) {
 
-        var handler = new PhotosPageHandler();
+        $('#photos-container').lol({ delete: 'photo' });
 
-    };
+//        var handler = new PhotosPageHandler();
+
+    }
 
 });
