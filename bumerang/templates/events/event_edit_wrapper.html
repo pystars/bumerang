@@ -1,12 +1,12 @@
-{% extends "festivals/tabs_wrapper.html" %}
+{% extends "events/tabs_wrapper.html" %}
 {% load sitetree %}
 
 {% block page_title %}
-    <h1>{{ festival.name }}</h1>
+    <h1>{{ object.title }}</h1>
 {% endblock %}
 
 {% block tab %}
-    {% include 'festivals/snippets/fest_edit_tabs_menu.html' with selected='festival' %}
+    {% include 'events/snippets/edit_tabs_menu.html' with selected='event' %}
     <dd class="selected">
         <div class="l-cols l-cols_tab">
             <div class="l-cols__bg-section">
@@ -15,18 +15,14 @@
             <div class="l-cols__i cleared">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
-
                         {% block edit_form %}{% endblock %}
-
                     </div>
                 </section>
                 <aside class="l-cols__side">
                     <div class="l-cols__side__i">
                         <nav class="b-tab-sidenav">
                             {% block edit_side_nav %}
-
-                                {% sitetree_menu from "fest_edit_menu" include "trunk" template "accounts/left_menu.html" %}
-
+                                {% sitetree_menu from "event_edit_menu" include "trunk" template "accounts/left_menu.html" %}
                             {% endblock %}
                         </nav>
                     </div>
@@ -41,10 +37,11 @@
         <ul>
             <h4>Управление</h4>
             <li>
-                <a href="{% url profile-festival-list profile.id %}" title="Заполнить заявку">Ваши фестивали</a>
+{#                {% url profile-event-list user.profile.id %}#}
+                <a href="" title="Заполнить заявку">Ваши фестивали и конкурсы</a>
             </li>
             <li>
-                <a href="{% url festival-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
             </li>
         </ul>
         <i class="d-indent__tl"></i>

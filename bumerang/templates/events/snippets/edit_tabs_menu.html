@@ -1,8 +1,8 @@
 {# Вкладка редактирования феста #}
-<dt class="first{% ifequal selected 'festival' %} selected{% endifequal %}">
+<dt class="first{% ifequal selected 'event' %} selected{% endifequal %}">
     {% spaceless %}
-        <a href="{% url festival-detail festival.id %}">
-            <span>Фестиваль</span>
+        <a href="{% url event-detail event.id %}">
+            <span>{{ event.get_type_display }}</span>
         </a>
     {% endspaceless %}
     <i class="l"></i>
@@ -84,7 +84,7 @@
 {#{% if profile.festival_set.count %}#}
 {#    <dt{% ifequal selected 'festival' %} class="selected"{% endifequal %}>#}
 {#    {% spaceless %}#}
-{#        <a href="{% url profile-festival-list profile.id %}">#}
+{#        <a href="{% url profile-event-list profile.id %}">#}
 {#            <span>Фестивали</span>#}
 {#        </a>#}
 {#    {% endspaceless %}#}

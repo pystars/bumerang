@@ -1,4 +1,4 @@
-{% extends "festivals/festival_edit_wrapper.html" %}
+{% extends "events/event_edit_wrapper.html" %}
 
 {% block title %}Логотип фестиваля{% endblock %}
 
@@ -14,7 +14,7 @@
 
 {% block edit_form %}
     <section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_photo2">
-    <form name="logo_form" action="{% url festival-edit-logo festival.id %}" method="post" enctype="multipart/form-data">
+    <form name="logo_form" action="{% url event-edit-logo object.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 {#        <a class="form-profile-view" href="{% url profile-detail profile.id %}">Просмотр профиля</a>#}
         <div class="b-form__fields">
@@ -28,8 +28,8 @@
                 <fieldset>
                     <div class="b-form__pic">
                         <div class="b-ava b-ava_big">
-                            {% if festival.min_logo %}
-                                <img src="{{ festival.min_logo.url }}?{% now 'su' %}" width="175" height="175" alt="Добавьте фото" />
+                            {% if object.min_logo %}
+                                <img src="{{ object.min_logo.url }}?{% now 'su' %}" width="175" height="175" alt="Добавьте фото" />
                             {% else %}
                                 <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте логотип" />
                             {% endif %}
@@ -52,8 +52,8 @@
                     </div>
                     <div class="clear" style="height: 18px;"></div>
 
-                    {% if festival.logo and not form.logo.errors %}
-                        <img src="{{ festival.logo.url }}?{% now 'su' %}" id="current_avatar" style="max-width: 500px;" />
+                    {% if object.logo and not form.logo.errors %}
+                        <img src="{{ object.logo.url }}?{% now 'su' %}" id="current_avatar" style="max-width: 500px;" />
                     {% endif %}
 
                 </fieldset>

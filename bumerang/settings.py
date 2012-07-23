@@ -165,7 +165,7 @@ INSTALLED_APPS = [
     'bumerang.apps.photo.albums',
     'bumerang.apps.utils',
     'bumerang.apps.messages',
-    'bumerang.apps.festivals'
+    'bumerang.apps.events'
 ]
 
 

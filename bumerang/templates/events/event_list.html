@@ -1,4 +1,4 @@
-{% extends "festivals/festival_wrapper.html" %}
+{% extends "events/event_wrapper.html" %}
 {% load sitetree truncatechars %}
 
 {% block title %}Фестивали{% endblock %}
@@ -23,7 +23,7 @@
                     <tr>
                         <td colspan="3" rowspan="1">
                             <h3>
-                                <a href="{% url festival-detail object.id %}" title="{{ object.name }}">{{ object.name }}</a>
+                                <a href="{% url event-detail object.id %}" title="{{ object.title }}">{{ object.title }}</a>
                             </h3>
                         </td>
                     </tr>
@@ -78,7 +78,7 @@
                         <td colspan="1">
                             Официальное положение и завка:</td>
                         <td colspan="1">
-                            <a href="{{ object.file_rules.url }}" title="Положение {{ object.name }}">скачать &gt;&gt;</a></td>
+                            <a href="{{ object.file_rules.url }}" title="Положение {{ object.title }}">скачать &gt;&gt;</a></td>
                     </tr>
                     {% endif %}
                     <tr>
@@ -109,7 +109,7 @@
         <ul>
             <h4>Создать фестиваль</h4>
             <li>
-                <a href="{% url festival-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
             </li>
         </ul>
         <i class="d-indent__tl"></i>

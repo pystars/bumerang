@@ -9,7 +9,8 @@ from bumerang.apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
      AccountActivationView, FormsetUpdateView, ProfileVideoView,
-     ProfilePhotoView, ProfileContactsEditView, RegisterFestRequestForm, ProfileFestivalListView)
+     ProfilePhotoView, ProfileContactsEditView, RegisterFestRequestForm,
+     ProfileEventListView)
 
 
 urlpatterns = patterns('',
@@ -138,9 +139,9 @@ urlpatterns = patterns('',
         name='profile-photo-detail'
     ),
 
-    url(r'^(?P<pk>[\d]+)/festivals/$',
-        ProfileFestivalListView.as_view(),
-        name='profile-festival-list'
+    url(r'^(?P<pk>[\d]+)/events/$',
+        ProfileEventListView.as_view(),
+        name='profile-event-list'
     ),
 
     (r'^messages/', include('bumerang.apps.messages.urls')),

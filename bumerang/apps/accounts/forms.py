@@ -5,8 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from bumerang.apps.accounts.models import Profile, Faculty, Service, Teammate
-from bumerang.apps.festivals.forms import EditFormsMixin, TemplatedForm
-from bumerang.apps.utils.forms import S3StorageFormMixin
+from bumerang.apps.utils.forms import S3StorageFormMixin, TemplatedForm
 
 
 class InfoEditFormsMixin(forms.ModelForm):
@@ -34,6 +33,7 @@ class EditFormsMixin(forms.ModelForm):
     u"""
     Миксин, добавляющий стилизацию полей формы
     """
+    #TODO: it must be refactored to utils?
     def __init__(self, *args, **kwargs):
         super(EditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
@@ -45,7 +45,7 @@ class EditFormsMixin(forms.ModelForm):
                 else:
                     field.widget.attrs.update({'class': 'wide'})
             if (field.widget.__class__ == forms.widgets.Textarea):
-                if field.widget.attrs.has_key('class'):
+                if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide wide_descr2'
                 else:
                     field.widget.attrs.update({'class': 'wide wide_descr2'})

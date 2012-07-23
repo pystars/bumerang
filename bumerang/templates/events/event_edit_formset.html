@@ -1,7 +1,7 @@
-{% extends "festivals/festival_edit_wrapper.html" %}
+{% extends "events/event_edit_wrapper.html" %}
 {% load sitetree formtags %}
 
-{% block title %}Редактирование фестиваля {{ festival.name }}{% endblock %}
+{% block title %}Редактирование события {{ object.title }}{% endblock %}
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
@@ -20,7 +20,7 @@
             {% csrf_token %}
             <div class="b-form__fields">
                 <h3 class="title">
-                    {% sitetree_page_title from "fest_edit_menu" %}
+                    {% sitetree_page_title from "event_edit_menu" %}
                 </h3>
 
                 <div class="b-hr">
@@ -52,4 +52,3 @@
         })
     </script>
 {% endblock %}
-

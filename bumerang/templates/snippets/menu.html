@@ -36,14 +36,14 @@
     </div>
 </dd>
 
-{% if profile.festival_set.count %}
-    <dt{% ifequal selected 'festival' %} class="selected"{% endifequal %}>
+{% if profile.event_set.count %}
+    <dt{% ifequal selected 'event' %} class="selected"{% endifequal %}>
     {% spaceless %}
-        <a href="{% url profile-festival-list profile.id %}">
-            <span>Фестивали</span>
+        <a href="{% url profile-event-list profile.id %}">
+            <span>Фестивали и конкурсы</span>
         </a>
     {% endspaceless %}
-        <small>{{ profile.festival_set.count }}</small>
+        <small>{{ profile.event_set.count }}</small>
     <i class="l"></i>
     <i class="r"></i>
 </dt>

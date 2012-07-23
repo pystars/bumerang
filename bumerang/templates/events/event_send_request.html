@@ -1,4 +1,4 @@
-{% extends "festivals/festival_wrapper.html" %}
+{% extends "events/event_wrapper.html" %}
 {% load sitetree %}
 
 {% block head_css %}
@@ -11,7 +11,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
 {% endblock %}
 
-{% block title %}Заявка на создание фестиваля{% endblock %}
+{% block title %}Заявка на создание конкурса или фестиваля{% endblock %}
 
 {% block left_column %}
     <section class="b-form b-form_smaller b-form_edit b-form_left">
@@ -24,7 +24,7 @@
 
                 {{ group_form }}
 
-                {{ fest_form }}
+                {{ event_form }}
 
             </div>
             <footer class="b-form__footer">

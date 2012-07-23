@@ -7,3 +7,5 @@ local_settings.py
 media/video/.+
 
 bumerang/coverage
+bumerang/media
+bumerang/static

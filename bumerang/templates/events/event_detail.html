@@ -1,9 +1,9 @@
-{% extends "festivals/tabs_wrapper.html" %}
+{% extends "events/tabs_wrapper.html" %}
 
-{% block title %}{{ object.name }}{% endblock %}
+{% block title %}{{ object.title }}{% endblock %}
 
 {% block tab %}
-    {% include 'festivals/snippets/fest_tabs_menu.html' with selected='festival' %}
+    {% include 'events/snippets/tabs_menu.html' with selected='festival' %}
 
     <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
         <section class="b-profile">
@@ -22,9 +22,9 @@
 
                 </div>
                 <div class="b-profile__txt">
-                    {% include "festivals/snippets/fest_service_buttons.html" %}
+                    {% include "events/snippets/service_buttons.html" %}
 
-                    <h2>{{ object.name }}</h2>
+                    <h2>{{ object.title }}</h2>
 
                     <ul class="b-opts">
                         <li>
@@ -89,13 +89,14 @@
             <div class="tab-block">
                 <section id="rules" class="current">
 
-                    {% if object.festivalgeneralrule_set.count %}
-
-                        {% for item in object.festivalgeneralrule_set.all %}
-                            <h3>{{ item.title }}</h3>
-                            <p>{{ item.description }}</p>
-                        {% endfor %}
-
+                    {% if object.text_rules %}
+                        {{ object.text_rules }}
+{##}
+{#                        {% for item in object.festivalgeneralrule_set.all %}#}
+{#                            <h3>{{ item.title }}</h3>#}
+{#                            <p>{{ item.description }}</p>#}
+{#                        {% endfor %}#}
+{##}
                     {% else %}
 
                         <p>Раздел не заполнен</p>
@@ -107,10 +108,10 @@
                     <section id="request" class="hidden">
                         {% if object.is_accepting_requests %}
 
-                            <h3>Заявка на {{ object.name }}</h3>
+                            <h3>Заявка на {{ object.title }}</h3>
 
                             <p>
-                                <a href="{% url festival-request-form object.id %}">Подать заявку</a>. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.
+                                <a href="{% url event-request-form object.id %}">Подать заявку</a>. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.
                             </p>
 
                         {% else %}
@@ -137,7 +138,7 @@
             <h4>Архив фестивалей</h4>
             {% for item in festivals_archive %}
                 <li>
-                    <a href="{% url festival-detail item.id %}" title="{{ item.name }}">{{ festivals_group_name }} {{ item.start_date.year }}</a>
+                    <a href="{% url event-detail item.id %}" title="{{ item.title }}">{{ object.group.title }} {{ item.start_date.year }}</a>
                 </li>
             {% endfor %}
         </ul>

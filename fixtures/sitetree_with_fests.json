@@ -31,7 +31,7 @@
         "pk": 5, 
         "model": "sitetree.tree", 
         "fields": {
-            "alias": "fest_edit_menu"
+            "alias": "event_edit_menu"
         }
     }, 
     {

@@ -1,6 +1,6 @@
-<dt class="first{% ifequal selected 'festival' %} selected{% endifequal %}">
-    <a href="{% url festival-detail object.id %}">
-        <span>Фестиваль</span>
+<dt class="first{% ifequal selected 'event' %} selected{% endifequal %}">
+    <a href="{% url event-detail object.id %}">
+        <span>{{ object.display_type_name }}Фестиваль</span>
     </a>
     <i class="l"></i>
     <i class="r"></i>

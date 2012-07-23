@@ -45,7 +45,7 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
         except ValueError:
             try:
                 kwargs = dict(id__in=map(int,
-                    json.loads(form.cleaned_data['video_id'])))
+                    simplejson.loads(form.cleaned_data['video_id'])))
             except ValueError:
                 return HttpResponseForbidden()
         if 'album_id' in form.cleaned_data:

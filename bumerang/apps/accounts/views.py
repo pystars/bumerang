@@ -639,12 +639,11 @@ class ProfileSettingsEditView(UpdateView):
             self.get_context_data(**{form_name:form}))
 
 
-class ProfileFestivalListView(DetailView):
+class ProfileEventListView(DetailView):
     model = Profile
-    template_name = "accounts/profile_festival_list.html"
+    template_name = "accounts/profile_event_list.html"
 
     def get_context_data(self, **kwargs):
-        festivals = self.object.festival_set.all()
-        ctx = super(ProfileFestivalListView, self).get_context_data(**kwargs)
-        ctx['festivals'] = festivals
+        ctx = super(ProfileEventListView, self).get_context_data(**kwargs)
+        ctx['events'] = self.object.event_set.all()
         return ctx

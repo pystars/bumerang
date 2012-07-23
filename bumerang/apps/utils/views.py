@@ -3,13 +3,17 @@ import json
 
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.core.urlresolvers import reverse
+from django.forms.models import modelformset_factory
+from django.http import (HttpResponse, HttpResponseForbidden, Http404,
+    HttpResponseRedirect)
+from django.views.generic import UpdateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import BaseFormView
+from django.views.generic.edit import BaseFormView, CreateView
 from django.views.generic.list import MultipleObjectMixin
 from djangoratings.views import AddRatingView
 
-from forms import ManyObjectsForm
+from bumerang.apps.utils.forms import ManyObjectsForm
 
 
 class AjaxView(object):
@@ -23,8 +27,7 @@ class AjaxView(object):
 class OwnerMixin(object):
     def get_queryset(self):
         # Если владелец - текущий пользователь, выбирутся
-        # все видео. Иначе ни одного, удалять будет нечего.
-        # И пусть хацкеры ломают головы ;)
+        # все объекты, иначе ни одного
         return super(OwnerMixin, self).get_queryset().filter(
             owner=self.request.user)
 
@@ -86,3 +89,97 @@ class AjaxRatingView(AddRatingView):
     @permission_required('djangoratings.add_vote')
     def dispatch(self, *args, **kwargs):
         return super(AjaxRatingView, self).dispatch(*args, **kwargs)
+
+
+class GenericFormsetWithFKUpdateView(UpdateView):
+    model = None
+    formset_model = None
+    formset_form_class = None
+    add_item_text = None
+
+    def __init__(self, **kwargs):
+        for kw, arg in kwargs.iteritems():
+            setattr(self, kw, arg)
+        self.ModelFormSet = modelformset_factory(
+            model=self.formset_model,
+            form=self.formset_form_class,
+            can_delete=True
+        )
+        self.model_name = self.model.__name__.lower()
+
+    def get_context_data(self, **kwargs):
+        context = kwargs
+        object = self.get_object()
+        qs = self.formset_model.objects.filter(**{self.model_name:object})
+        context.update({
+            self.model_name: object,
+            'formset': self.ModelFormSet(queryset=qs),
+            'add_item_text': self.add_item_text,
+        })
+        return context
+
+    def get_success_url(self):
+        return self.request.path
+
+    def post(self, request, *args, **kwargs):
+        formset = self.ModelFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            object = self.get_object()
+            for instance in instances:
+                #the name of fk attribute must be same to lower case of fk model
+                setattr(instance, self.model_name, object)
+                instance.save()
+            return HttpResponseRedirect(self.get_success_url())
+
+        return self.render_to_response(self.get_context_data(formset=formset))
+
+
+class GenericFormsetWithFKCreateView(CreateView):
+    model = None
+    form_class = None
+    formset_model = None
+    formset_form_class = None
+    add_item_text = None
+    object = None
+
+    def __init__(self, **kwargs):
+        for kw, arg in kwargs.iteritems():
+            setattr(self, kw, arg)
+        self.ModelFormSet = modelformset_factory(
+            model=self.formset_model,
+            form=self.formset_form_class,
+            can_delete=True
+        )
+        self.model_name = self.model.__name__.lower()
+
+    def get_context_data(self, **kwargs):
+        context = kwargs
+        context.update({
+            'form' : self.form_class(**self.get_form_kwargs()),
+            'formset': self.ModelFormSet(),
+            'add_item_text': self.add_item_text,
+        })
+        return context
+
+    def get_success_url(self):
+        return reverse('participant-edit', args=self.object.id,)#self.request.path
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(**self.get_form_kwargs())
+        formset = self.ModelFormSet(request.POST, request.FILES)
+        print
+        if form.is_valid() and formset.is_valid():
+            self.object = form.save(commit=False)
+            self.object.owner = request.user
+            self.object.save()
+            instances = formset.save(commit=False)
+            for instance in instances:
+                #the name of fk attribute must be same to lower case of fk model
+                setattr(instance, self.model_name, self.object)
+#                instance.save()
+            self.formset_model.objects.bulk_create(instances)
+            return HttpResponseRedirect(self.get_success_url())
+
+        return self.render_to_response(self.get_context_data(
+            form=form, formset=formset))
