@@ -24,7 +24,10 @@ def thumb_crop_img(img, width=None, height=None, name='thumb.jpg'):
     io = TemporaryFile()
     thumb = img.copy()
     thumb.thumbnail(image_width_height(img, width=width), Image.ANTIALIAS)
-    thumb = thumb.crop((0, 0, width, height))
+    if thumb.size[1] >= height:
+        thumb = thumb.crop((0, 0, width, height))
+    else:
+        thumb = thumb.resize((width, height), Image.ANTIALIAS)
     thumb.save(io, format='JPEG', quality=100)
     del thumb
     size = io.tell()
