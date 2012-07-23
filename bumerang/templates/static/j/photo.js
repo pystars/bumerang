@@ -65,218 +65,520 @@ function confirmModalDialog(selector, message) {
     return deferred_result;
 }
 
-/*
- * Photos handler
- * */
-var PhotosPageHandler = function() {
-    /*
-     * Private object's data
-     * */
-    var root = this;
+function confirmMoveModalDialog() {
+    var deferred_result = $.Deferred();
 
-    var _delegateEventSplitter = /^(\S+)\s*(.*)$/;
-    var events_handlers = {};
-    var confirm_dialog_selector = '#popup-confirm';
-    var items_list = [];
+    var dialog = $('#popup-move');
+    var dialog_id = dialog.attr('id');
 
-    var events = {
-        'click a[id*=photo-del-]': 'clickSinglePhotoDelete',
-        'click article[id*=photo-item-]': 'clickPhotoCheckbox'
-    };
+    var btnClose = dialog.find('.close-btn');
+    var btnConfirm = dialog.find('.confirm-modal-confirm');
 
-    var addItem = function(i) {
-        items_list.push(toi(i));
-        items_list = _.uniq(items_list);
-    };
+    dialog.find('*').unbind();
 
-    var removeItem = function(i) {
-        items_list = _.without(items_list, toi(i));
-    };
+    btnClose.bind('click', function(e) {
+        e.preventDefault();
+        close_n_hide();
+        $(window).unbind('resize');
+        deferred_result.reject();
+    });
 
-    var getItems = function() {
-        return items_list;
-    };
+    dialog.on('click', 'input:radio:checked', function(e) {
+        btnConfirm.removeClass('disabled');
+    });
 
-    var cleanItems = function() {
-        items_list = [];
-    };
-
-
-    var init = function() {
-
-//        delegateEvents(events);
-
-        _log(this);
-
-    };
-
-    /*
-     * Private object's methods
-     * */
-    var getEventsHandlers = function() {
-        return events_handlers;
-    };
-
-    var delegateEvents = function(events) {
-        var events_handlers = getEventsHandlers();
-
-        for (var key in events) {
-            var method = events[key];
-
-            if (!_.isFunction(method)) {
-                method = events_handlers[method];
-            }
-
-            var match = key.match(_delegateEventSplitter);
-            var eventName = match[1], selector = match[2];
-
-            $(document).on(eventName, selector, method);
+    btnConfirm.bind('click', function(e) {
+        e.preventDefault();
+        var id = dialog.find('input:radio:checked').attr('data-album-to-move');
+        if (id) {
+            close_n_hide();
+            deferred_result.resolve(id);
         }
-    };
+    });
 
-    var getPhotosCount = function() {
-        return toi($('form .photo:visible').length);
-    };
+    $(document).on('keydown', function(e) {
+        if (e.which == 27) btnClose.click();
+    });
 
-    var makePhotosCountText = function() {
-        var plurals = $('#photos-plurals').text();
-        var count = getPhotosCount();
-
-        if (count) {
-            var plural_form = ru_pluralize(count, plurals);
-            return 'Всего {0} {1}'.format(count, plural_form);
-        } else {
-            return 'Нет ни одной фотографии';
-        }
-    };
-
-    var showPhotosCount = function() {
-        $('#photos-count').text(makePhotosCountText());
-    };
-
-    var showDeleteButton = function() {
-        $('#photo-delete-button').show(300, 'linear');
-    };
-
-    var hideDeleteButton = function() {
-        $('#photo-delete-button').hide(300, 'linear');
-    };
-
-    var hideItems = function() {
-        var list = items_list.getList();
-
-        _.each(list, function(id) {
-            var el = $('#photo-item-{0}'.format(id));
-
-            el.hide(function() {
-                el.remove();
-                updatePage();
-            });
+    var resize = function() {
+        var w = $(window);
+        dialog.css({
+            'margin-left': (w.width()-dialog.outerWidth())/2+'px',
+            'top': ((w.height()-dialog.outerHeight())/2)+ w.scrollTop()+"px"
         });
     };
 
-    var updatePage = function() {
-        var list = getItems();
-
-        if (list.length) {
-            showDeleteButton();
-        } else {
-            hideDeleteButton();
-        }
-
-        showPhotosCount();
+    var show = function() {
+        $('#tint').show();
+        dialog.resize();
+        dialog.show();
     };
 
-//    var sendItemsDeleteRequest = function() {
-//        $.post('/photo/photos-delete1/', {
-//            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-//            ids: JSON.stringify(selected_items.getList())
-//        })
-//        .success(function(response) {
-//            Notify(NF_SUCCESS, response['message']);
-//            hideItems();
-//            showPhotosCount();
-//            selected_items = [];
-//            updatePage();
-//        })
-//        .error(function() {
-//            var msg = 'Произошла ошибка';
-//            Notify(NF_ERROR, msg);
-//        });
-//    };
-
-    /*
-     * Events handlers functions
-     */
-
-    events_handlers = {
-
-        clickPhotoCheckbox: function(e) {
-            var el = $(e.target || e.srcElement);
-            var id = toi(el.attr('data-photo-id'));
-
-            if (el.is(':checked')) {
-                addItem(id);
-            } else {
-                removeItem(id);
-            }
-
-            updatePage();
-        },
-
-        clickSinglePhotoDelete: function(e) {
-            e.preventDefault();
-            var el = $(e.target || e.srcElement);
-            var id = el.attr('data-photo-id');
-
-            var msg = 'Вы действительно хотите удалить выбранную фотографию?';
-            var decision = confirmModalDialog(confirm_dialog_selector, msg);
-
-            addItem(id);
-            _ln('b', getItems());
-
-            decision.done(function() {
-                _ln('dcs', getItems());
-//                sendItemsDeleteRequest();
-            });
-
-//            decision.fail(function() {
-//                Notify(NF_ERROR, 'cancelled');
-//            });
-        }
-
+    var close_n_hide = function() {
+        dialog.hide();
+        $('#tint').hide();
     };
 
-    /*
-     * Init Handler object
-     * */
-    init();
+    $(window).resize(function(e) {
+        resize();
+    });
 
-};
+    show();
+
+    return deferred_result;
+
+}
 
 
 (function($) {
-    $.fn.lol = function(options) {
+    $.fn.photoItemsHandler = function() {
+        var $this = $(this);
 
-        var settings = $.extend( {
-            'delete': ''
-        }, options);
+        var items_list = [];
+        var plurals = $this.attr('data-plurals');
+        var items_count = $this.attr('data-items-count');
+        var items_on_page_count = $('form .photo:visible').length;
+        var items_on_other_pages_count = items_count - items_on_page_count;
+
+        var addItem = function(i) {
+            items_list.push(toi(i));
+            items_list = _.uniq(items_list);
+        };
+
+        var removeItem = function(i) {
+            items_list = _.without(items_list, toi(i));
+        };
+
+        var getItems = function() {
+            return items_list;
+        };
+
+        var deleteItems = function() {
+            items_list = [];
+        };
+
+        var getOnPageItemsCount = function() {
+            return $('form .photo:visible').length;
+        };
+
+        var getItemsCount = function() {
+            return items_on_other_pages_count + getOnPageItemsCount();
+        };
+
+        var makePhotosCountText = function() {
+            var count = getItemsCount();
+
+            if (count) {
+                var plural_form = ru_pluralize(count, plurals);
+                return 'Всего {0} {1}'.format(count, plural_form);
+            } else {
+                return 'Нет ни одной фотографии';
+            }
+        };
+
+        var showPhotosCount = function() {
+            $('#photos-count').text(makePhotosCountText());
+        };
+
+        var hideItems = function() {
+            var list = getItems();
+
+            _.each(list, function(id) {
+                var el = $('.photo[data-item-id={0}]'.format(id));
+
+                el.hide(function() {
+                    el.remove();
+                    updatePage();
+                });
+            });
+        };
+
+        var showServiceButtons = function() {
+            $('#photoalbum-delete-button').show(300, 'linear');
+            $('#photoalbum-move-button').show(300, 'linear');
+        };
+
+        var hideServiceButtons = function() {
+            $('#photoalbum-delete-button').hide(300, 'linear');
+            $('#photoalbum-move-button').hide(300, 'linear');
+        };
+
+        var updatePage = function() {
+            if (getItems().length) {
+                showServiceButtons();
+            } else {
+                hideServiceButtons();
+            }
+            showPhotosCount();
+        };
+
+        var getDeleteMsg = function() {
+            if (getItems().length > 1) {
+                return 'Вы действительно хотите удалить выбранные фотографии?';
+            } else {
+                return 'Вы действительно хотите удалить выбранную фотографию?';
+            }
+        };
+
+        var getCSRF = function() {
+            return $('input[name=csrfmiddlewaretoken]').val()
+        };
+
+        updatePage();
 
         this.each(function() {
-            _log(settings.delete);
+
+            $(this).on('click', '.photo input[name=photos]', function(e) {
+                var el = $(this);
+                var id = el.val();
+
+                if (el.is(':checked')) {
+                    addItem(id);
+                } else {
+                    removeItem(id);
+                }
+                updatePage();
+            });
+
+            $(this).on('click', '#photo-delete-button', function(e) {
+                e.preventDefault();
+                var decision = confirmModalDialog('#popup-confirm', getDeleteMsg());
+                decision.done(function() {
+                    $.ajax({
+                        url: '/photo/photos-delete/',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: getCSRF(),
+                            ids: JSON.stringify(getItems())
+                        }
+                    })
+                        .success(function(data) {
+                            if (getItems().length > 1) {
+                                var msg = 'Фотографии удалены';
+                            } else {
+                                var msg = 'Фотография удалена';
+                            }
+                            hideItems();
+                            deleteItems();
+                            updatePage();
+                            Notify(NF_SUCCESS, msg);
+                        })
+                        .error(function() {
+                            var msg = 'Произошла ошибка';
+                            Notify(NF_ERROR, msg);
+                        });
+                });
+            });
+
+            $(this).on('click', '.photo-menu-delete-link', function(e) {
+                e.preventDefault();
+                var el = $(this);
+                var id = toi(el.attr('data-item-id'));
+                addItem(id);
+
+                var decision = confirmModalDialog('#popup-confirm', getDeleteMsg());
+                decision.done(function() {
+                    $.ajax({
+                        url: '/photo/photos-delete/',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: getCSRF(),
+                            ids: JSON.stringify(getItems())
+                        }
+                    })
+                        .success(function(data) {
+                            if (getItems().length > 1) {
+                                var msg = 'Фотографии удалены';
+                            } else {
+                                var msg = 'Фотография удалена';
+                            }
+                            hideItems();
+                            deleteItems();
+                            updatePage();
+                            Notify(NF_SUCCESS, msg);
+                        })
+                        .error(function() {
+                            var msg = 'Произошла ошибка';
+                            Notify(NF_ERROR, msg);
+                        });
+                });
+            });
+
+            $(this).on('click', '.photo-menu-move-link', function(e) {
+                e.preventDefault();
+                var el = $(this);
+                var id = toi(el.attr('data-item-id'));
+                addItem(id);
+
+                var decision = confirmMoveModalDialog();
+                decision.done(function(album) {
+                    $.ajax({
+                        type: 'post',
+                        url: '/photo/photo-move/',
+                        data: {
+                            csrfmiddlewaretoken: getCSRF(),
+                            photo_id: JSON.stringify(getItems()),
+                            album_id: album
+                        }
+                    })
+                        .success(function(data) {
+                            if (getItems().length > 1) {
+                                var msg = 'Фотографии перемещены';
+                            } else {
+                                var msg = 'Фотография перемещена';
+                            }
+                            hideItems();
+                            deleteItems();
+                            updatePage();
+                            Notify(NF_SUCCESS, msg);
+                        })
+                        .error(function() {
+                            var msg = 'Произошла ошибка';
+                            Notify(NF_ERROR, msg);
+                        });
+                });
+            });
+
+            $(this).on('click', '#photo-move-button', function(e) {
+                e.preventDefault();
+                var count = getItems().length;
+
+                var decision = confirmMoveModalDialog();
+                decision.done(function(album) {
+                    $.ajax({
+                        type: 'post',
+                        url: '/photo/photo-move/',
+                        data: {
+                            csrfmiddlewaretoken: getCSRF(),
+                            photo_id: JSON.stringify(getItems()),
+                            album_id: album
+                        }
+                    })
+                    .success(function(data) {
+                        if (count > 1) {
+                            var msg = 'Фотографии перемещены';
+                        } else {
+                            var msg = 'Фотография перемещена';
+                        }
+                        hideItems();
+                        deleteItems();
+                        updatePage();
+                        Notify(NF_SUCCESS, msg);
+                    })
+                    .error(function() {
+                        var msg = 'Произошла ошибка';
+                        Notify(NF_ERROR, msg);
+                    });
+                });
+            });
+
+            $(this).on('click', '.photo-menu-makecover-link', function(e) {
+                e.preventDefault();
+                var el = $(this);
+                var album_id = el.attr('data-album-id');
+                var photo_id = el.attr('data-photo-id');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/photo/album'+album_id+'/set-cover/',
+                    data: {
+                        csrfmiddlewaretoken: getCSRF(),
+                        cover: photo_id
+                    }
+                })
+                .success(function(data) {
+                     var msg = 'Обложка изменена';
+                     Notify(NF_SUCCESS, msg);
+                })
+                .error(function(data) {
+                    var msg = 'Произошла ошибка';
+                    Notify(NF_ERROR, msg);
+                })
+            });
         });
     };
 })(jQuery);
 
 
+(function($) {
+    $.fn.photoAlbumsHandler = function() {
+        var $this = $(this);
+
+        var items_list = [];
+        var plurals = $this.attr('data-plurals');
+        var items_count = $this.attr('data-items-count');
+        var items_on_page_count = $('form .photoalbum:visible').length;
+        var items_on_other_pages_count = items_count - items_on_page_count;
+
+        var addItem = function(i) {
+            items_list.push(toi(i));
+            items_list = _.uniq(items_list);
+        };
+
+        var removeItem = function(i) {
+            items_list = _.without(items_list, toi(i));
+        };
+
+        var getItems = function() {
+            return items_list;
+        };
+
+        var deleteItems = function() {
+            items_list = [];
+        };
+
+        var getOnPageItemsCount = function() {
+            return $('form .photoalbum:visible').length;
+        };
+
+        var getItemsCount = function() {
+            return items_on_other_pages_count + getOnPageItemsCount();
+        };
+
+        var makePhotosCountText = function() {
+            var count = getItemsCount();
+
+            if (count) {
+                var plural_form = ru_pluralize(count, plurals);
+                return 'Всего {0} {1}'.format(count, plural_form);
+            } else {
+                return 'Нет ни одного альбома';
+            }
+        };
+
+        var showPhotosCount = function() {
+            $('#albums-count').text(makePhotosCountText());
+        };
+
+        var hideItems = function() {
+            var list = getItems();
+
+            _.each(list, function(id) {
+                var el = $('.photoalbum[data-item-id={0}]'.format(id));
+
+                el.hide(function() {
+                    el.remove();
+                    updatePage();
+                });
+            });
+        };
+
+        var showServiceButtons = function() {
+            $('#photoalbum-delete-button').show(300, 'linear');
+        };
+
+        var hideServiceButtons = function() {
+            $('#photoalbum-delete-button').hide(300, 'linear');
+        };
+
+        var updatePage = function() {
+            if (getItems().length) {
+                showServiceButtons();
+            } else {
+                hideServiceButtons();
+            }
+            showPhotosCount();
+        };
+
+        var getDeleteMsg = function() {
+            if (getItems().length > 1) {
+                return 'Вы действительно хотите удалить выбранные альбомы?';
+            } else {
+                return 'Вы действительно хотите удалить выбранный альбом?';
+            }
+        };
+
+        var getCSRF = function() {
+            return $('input[name=csrfmiddlewaretoken]').val()
+        };
+
+        updatePage();
+
+        this.each(function() {
+
+            $(this).on('click', '.photoalbum input[name=photoalbums]', function(e) {
+                var el = $(this);
+                var id = el.val();
+
+                if (el.is(':checked')) {
+                    addItem(id);
+                } else {
+                    removeItem(id);
+                }
+                updatePage();
+            });
+
+            $(this).on('click', '#photoalbum-delete-button', function(e) {
+                e.preventDefault();
+                var decision = confirmModalDialog('#popup-confirm', getDeleteMsg());
+                decision.done(function() {
+                    $.ajax({
+                        url: '/photo/albums-delete/',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: getCSRF(),
+                            ids: JSON.stringify(getItems())
+                        }
+                    })
+                        .success(function(data) {
+                            if (getItems().length > 1) {
+                                var msg = 'Фотографии удалены';
+                            } else {
+                                var msg = 'Фотография удалена';
+                            }
+                            hideItems();
+                            deleteItems();
+                            updatePage();
+                            Notify(NF_SUCCESS, msg);
+                        })
+                        .error(function() {
+                            var msg = 'Произошла ошибка';
+                            Notify(NF_ERROR, msg);
+                        });
+                });
+            });
+
+            $(this).on('click', '.photoalbum-menu-delete-link', function(e) {
+                e.preventDefault();
+                var el = $(this);
+                var id = toi(el.attr('data-item-id'));
+                addItem(id);
+
+                var decision = confirmModalDialog('#popup-confirm', getDeleteMsg());
+                decision.done(function() {
+                    $.ajax({
+                        url: '/photo/albums-delete/',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: getCSRF(),
+                            ids: JSON.stringify(getItems())
+                        }
+                    })
+                        .success(function(data) {
+                            if (getItems().length > 1) {
+                                var msg = 'Фотографии удалены';
+                            } else {
+                                var msg = 'Фотография удалена';
+                            }
+                            hideItems();
+                            deleteItems();
+                            updatePage();
+                            Notify(NF_SUCCESS, msg);
+                        })
+                        .error(function() {
+                            var msg = 'Произошла ошибка';
+                            Notify(NF_ERROR, msg);
+                        });
+                });
+            });
+        });
+    };
+})(jQuery);
+
 $(function() {
 
-    if ($('#photoalbums-container')) {
+    $('#photos-container').photoItemsHandler();
 
-        $('#photos-container').lol({ delete: 'photo' });
-
-//        var handler = new PhotosPageHandler();
-
-    }
+    $('#photoalbums-container').photoAlbumsHandler();
 
 });

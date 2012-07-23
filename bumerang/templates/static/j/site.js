@@ -146,13 +146,11 @@ function Notify(status, text) {
         'width': ($(window).width() - nfc.outerHeight())
     });
 
-    nfc.on('click', '.msg-close', function() {
+    nfc.on('click', '.msg-close', function(e) {
+        e.preventDefault();
         $(this).parent().hide();
     });
 
-    $('.msg-close').click(function(){
-        $(this).parent().hide();
-    });
     $('.alert-message').delay(delay_time).hide(300);
 
 }

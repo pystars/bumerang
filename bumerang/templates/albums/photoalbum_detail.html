@@ -18,6 +18,8 @@
     <script type="text/javascript">
       VK.init({apiId: 2868516, onlyWidgets: true});
     </script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}j/photo.js"></script>
 {% endblock %}
 
 {% block tab %}
@@ -40,7 +42,7 @@
                 </div>
             </header>
 
-            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container">
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container" data-items-count="{{ profile.photo_set.count|default:'0' }}" data-plurals="фотография,фотографии,фотографий">
                 <header class="announs-head cleared">
                     {% if object.owner.id == request.user.id %}
                         <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-photo" id="photo-delete-button" style="display: none;">Удалить</a>
@@ -62,7 +64,7 @@
 
     <script type="text/javascript">
     $(function() {
-        var pav = new PhotoAlbumsView();
+//        var pav = new PhotoAlbumsView();
 
         $('#wall').fullWall();
 
@@ -281,66 +283,66 @@
         </div>
     </div>
 
-    <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">
-        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
-            <header class="b-form__header">
-                <h4>
-                    Подтвердите действие
-                </h4>
-                <p id="dialog-text">
-                    {= text }
-                </p>
-            </header>
-            <footer class="b-form__footer cleared">
-                <a href="#" class="b-button b-button_yellow left cancel confirm-popup-cancel">Отменить</a>
-                <a href="#" class="b-button b-button_red right videos_delete confirm-popup-ok">Удалить</a>
-            </footer>
-        </section><!--b-form-->
-        <div class="b-popup__tl"></div>
-        <div class="b-popup__tr"></div>
-        <div class="b-popup__br"></div>
-        <div class="b-popup__bl"></div>
-    </section><!--b-popup-->
+{#    <section class="b-popup" id="popup-confirm-video" style="left:50%; top:100px;">#}
+{#        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">#}
+{#            <header class="b-form__header">#}
+{#                <h4>#}
+{#                    Подтвердите действие#}
+{#                </h4>#}
+{#                <p id="dialog-text">#}
+{#                    {= text }#}
+{#                </p>#}
+{#            </header>#}
+{#            <footer class="b-form__footer cleared">#}
+{#                <a href="#" class="b-button b-button_yellow left cancel confirm-popup-cancel">Отменить</a>#}
+{#                <a href="#" class="b-button b-button_red right videos_delete confirm-popup-ok">Удалить</a>#}
+{#            </footer>#}
+{#        </section><!--b-form-->#}
+{#        <div class="b-popup__tl"></div>#}
+{#        <div class="b-popup__tr"></div>#}
+{#        <div class="b-popup__br"></div>#}
+{#        <div class="b-popup__bl"></div>#}
+{#    </section><!--b-popup-->#}
 
-    <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">
-    <section class="b-form b-form_smaller b-form_popup">
-        <form action="{% url photo-move %}" method="post">
-            {% csrf_token %}
-            <header class="b-form__header">
-                <h3>
-                    Переместить в альбом
-                </h3>
-            </header>
-            <div class="b-form__fields">
-                <div class="b-form__field" id="albums-list">
-                    {% for item in object.owner.profile.photoalbum_set.all %}
-                        <div class="b-form__field b-form__field_radio">
-                        <div class="f-radio">
-                            <div>
-                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
-                                <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
-                                {{ item.title }}
-                                    {% if item == object %}(Текущий альбом){% endif %}
-                                </label>
-                            </div>
-                            <div class="f-err"><span></span></div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <footer class="b-form__footer cleared">
-                <a href="#" class="b-button b-button_yellow right videos_delete confirm-popup-ok">Переместить</a>
-                <a href="#" class="b-button b-button_red left cancel confirm-popup-cancel">Отменить</a>
-            </footer>
-        </form>
-    </section><!--b-form-->
-    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
-    <div class="b-popup__tl"></div>
-    <div class="b-popup__tr"></div>
-    <div class="b-popup__br"></div>
-    <div class="b-popup__bl"></div>
-</section><!--b-popup-->
+{#    <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">#}
+{#    <section class="b-form b-form_smaller b-form_popup">#}
+{#        <form action="{% url photo-move %}" method="post">#}
+{#            {% csrf_token %}#}
+{#            <header class="b-form__header">#}
+{#                <h3>#}
+{#                    Переместить в альбом#}
+{#                </h3>#}
+{#            </header>#}
+{#            <div class="b-form__fields">#}
+{#                <div class="b-form__field" id="albums-list">#}
+{#                    {% for item in object.owner.profile.photoalbum_set.all %}#}
+{#                        <div class="b-form__field b-form__field_radio">#}
+{#                        <div class="f-radio">#}
+{#                            <div>#}
+{#                                <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />#}
+{#                                <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>#}
+{#                                {{ item.title }}#}
+{#                                    {% if item == object %}(Текущий альбом){% endif %}#}
+{#                                </label>#}
+{#                            </div>#}
+{#                            <div class="f-err"><span></span></div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            </div>#}
+{#            <footer class="b-form__footer cleared">#}
+{#                <a href="#" class="b-button b-button_yellow right videos_delete confirm-popup-ok">Переместить</a>#}
+{#                <a href="#" class="b-button b-button_red left cancel confirm-popup-cancel">Отменить</a>#}
+{#            </footer>#}
+{#        </form>#}
+{#    </section><!--b-form-->#}
+{#    <div class="b-popup__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>#}
+{#    <div class="b-popup__tl"></div>#}
+{#    <div class="b-popup__tr"></div>#}
+{#    <div class="b-popup__br"></div>#}
+{#    <div class="b-popup__bl"></div>#}
+{#</section><!--b-popup-->#}
 
     {# Шаблоны для JavaScript кода #}
     <div style="display: none;">
@@ -350,4 +352,78 @@
         <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
     </div>
 </div>
+
+
+
+    <section class="b-popup" id="popup-confirm">
+        <section class="b-form b-form_left b-form_smaller b-form_popup b-form_popup_confirm">
+            <header class="b-form__header">
+                <h4>
+                    Подтвердите действие
+                </h4>
+                <p id="dialog-message">
+                    &nbsp;
+                </p>
+            </header>
+            <div class="b-hr">
+                <hr />
+            </div>
+            <footer class="b-form__footer cleared">
+                <a href="#" class="b-button b-button_yellow left cancel confirm-modal-cancel">Отменить</a>
+                <a href="#" class="b-button b-button_red right videos_delete confirm-modal-confirm">Удалить</a>
+            </footer>
+        </section>
+        <div class="b-popup__close close-btn" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+        <div class="b-popup__tl"></div>
+        <div class="b-popup__tr"></div>
+        <div class="b-popup__br"></div>
+        <div class="b-popup__bl"></div>
+    </section>
+
+    <section class="b-popup" id="popup-move">
+        <section class="b-form b-form_smaller b-form_popup" style="padding-bottom: 14px;">
+            <form action="{% url photo-move %}" method="post">
+                {% csrf_token %}
+                <header class="b-form__header" style="padding-right: 10px;">
+                    <h3>
+                        Переместить в альбом
+                    </h3>
+                </header>
+                <div class="b-form__fields">
+                    <div class="b-form__field" id="albums-list">
+                        {% if object.owner.profile.photoalbum_set.count %}
+                            {% for item in object.owner.profile.photoalbum_set.all %}
+                                <div class="b-form__field b-form__field_radio">
+                                <div class="f-radio" style="margin-left: 0px;">
+                                    <div>
+                                        <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
+                                        <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
+                                        {{ item.title }}
+                                            {% if item == object %}(Текущий альбом){% endif %}
+                                        </label>
+                                    </div>
+                                    <div class="f-err"><span></span></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>У вас нет ни одного альбома.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="b-hr">
+                    <hr />
+                </div>
+                <footer class="b-form__footer cleared">
+{#                        <a href="#" class="b-button b-button_red left cancel confirm-modal-cancel">Отменить</a>#}
+                    <a href="#" class="b-button b-button_yellow disabled right confirm-modal-confirm">Переместить</a>
+                </footer>
+            </form>
+        </section><!--b-form-->
+        <div class="b-popup__close close-btn" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+        <div class="b-popup__tl"></div>
+        <div class="b-popup__tr"></div>
+        <div class="b-popup__br"></div>
+        <div class="b-popup__bl"></div>
+    </section><!--b-popup-->
 {% endblock %}
