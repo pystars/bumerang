@@ -5,11 +5,11 @@
 
 {% block left_column %}
     <section class="b-form b-form_register">
-        <form name="registration_request_form" action="{% url register-fest-request %}" method="post">
+        <form name="registration_request_form" action="{% url register-event-request %}" method="post">
         {% csrf_token %}
         <header class="b-form__header">
             <h1>
-                Информация о фестивале
+                Информация о событии
             </h1>
             <p>
                 Пожалуйста, заполните все необходимые поля и мы свяжемся с вами. Контактные телефоны будут сохранены
@@ -26,7 +26,7 @@
                     </p>
 
                     {% if item.errors %}
-                        <div class="f-err" style="margin-left: 0px;"><span>{{ item.errors }}</span></div>
+                        <div class="f-err" style="margin-left: 0;"><span>{{ item.errors }}</span></div>
                     {% endif %}
 
                     <p>

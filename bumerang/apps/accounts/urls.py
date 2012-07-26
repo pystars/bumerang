@@ -9,7 +9,7 @@ from bumerang.apps.accounts.views import (UsersListView, RegistrationFormView,
      PasswordRecoveryView, ProfileView, ProfileInfoEditView,
      ProfileAvatarEditView, ProfileUpdateView, ProfileSettingsEditView,
      AccountActivationView, FormsetUpdateView, ProfileVideoView,
-     ProfilePhotoView, ProfileContactsEditView, RegisterFestRequestForm,
+     ProfilePhotoView, ProfileContactsEditView, RegisterEventRequestForm,
      ProfileEventListView)
 
 
@@ -37,9 +37,9 @@ urlpatterns = patterns('',
         RegistrationFormView.as_view(),
         name='registration'
     ),
-    url(r'^register-fest-request/$',
-        RegisterFestRequestForm.as_view(),
-        name='register-fest-request'
+    url(r'^register-event-request/$',
+        RegisterEventRequestForm.as_view(),
+        name='register-event-request'
     ),
     url(r'^login/$',
         'bumerang.apps.accounts.views.login',

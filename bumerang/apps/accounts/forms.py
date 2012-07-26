@@ -228,7 +228,7 @@ class FestivalProfileInfoForm(EditFormsMixin, TemplatedForm):
         )
 
 
-class FestivalRegistrationRequestForm(forms.ModelForm):
+class EventRegistrationRequestForm(forms.ModelForm):
     """
     Форма отпраки заявки на разрешение проведения феста
     при регистрации

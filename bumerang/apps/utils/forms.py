@@ -83,8 +83,7 @@ class EditFormsMixin(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            #isinstance(field.widget, forms.widgets.Textarea)
-            if (field.widget.__class__ == forms.widgets.Textarea):
+            if field.widget.__class__ == forms.widgets.Textarea:
                 if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide wide_descr2'
                 else:

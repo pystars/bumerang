@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
+from copy import copy
 
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
 from django.http import (HttpResponse, HttpResponseForbidden, Http404,
     HttpResponseRedirect)
 from django.views.generic import UpdateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import BaseFormView, CreateView
+from django.views.generic.edit import BaseFormView
 from django.views.generic.list import MultipleObjectMixin
 from djangoratings.views import AddRatingView
 
@@ -32,7 +32,8 @@ class OwnerMixin(object):
             owner=self.request.user)
 
 
-class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
+class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView,
+        MultipleObjectMixin):
     form_class = ManyObjectsForm
 
     def get_queryset(self, **kwargs):
@@ -66,7 +67,8 @@ class AjaxRatingView(AddRatingView):
 
         Adds a vote to the specified model field."""
         try:
-            content_type = ContentType.objects.get(model=model, app_label=app_label)
+            content_type = ContentType.objects.get(
+                model=model, app_label=app_label)
         except ContentType.DoesNotExist:
             raise Http404('Invalid `model` or `app_label`.')
 
@@ -92,6 +94,9 @@ class AjaxRatingView(AddRatingView):
 
 
 class GenericFormsetWithFKUpdateView(UpdateView):
+    """
+    Generic view save a formset of objects that contains relation to other
+    """
     model = None
     formset_model = None
     formset_form_class = None
@@ -122,6 +127,7 @@ class GenericFormsetWithFKUpdateView(UpdateView):
         return self.request.path
 
     def post(self, request, *args, **kwargs):
+        self.object = None
         formset = self.ModelFormSet(request.POST, request.FILES)
         if formset.is_valid():
             instances = formset.save(commit=False)
@@ -131,55 +137,76 @@ class GenericFormsetWithFKUpdateView(UpdateView):
                 setattr(instance, self.model_name, object)
                 instance.save()
             return HttpResponseRedirect(self.get_success_url())
-
         return self.render_to_response(self.get_context_data(formset=formset))
 
 
-class GenericFormsetWithFKCreateView(CreateView):
-    model = None
-    form_class = None
-    formset_model = None
-    formset_form_class = None
-    add_item_text = None
-    object = None
+class SortingMixin(object):
+    """
+    Mixin for simple adding sorting in ListView
 
-    def __init__(self, **kwargs):
-        for kw, arg in kwargs.iteritems():
-            setattr(self, kw, arg)
-        self.ModelFormSet = modelformset_factory(
-            model=self.formset_model,
-            form=self.formset_form_class,
-            can_delete=True
-        )
-        self.model_name = self.model.__name__.lower()
+    need to setup sort_fields and DEFAULT_SORT_FIELD
+
+    template must include 'snippets/sort_controls.html'
+    """
+    SORT_DIRECTION_PARAM = 'sort_direction'
+    SORT_FIELD_PARAM = 'sort_field'
+    DEFAULT_SORT_DIRECTION = 'asc'
+    DEFAULT_SORT_FIELD = 'id'
+    SORT_DIRECTIONS = {'asc', 'desc'}
+    sort_fields = [
+        ('id', u'по умолчанию'),
+    ]
+
+    def get_queryset(self):
+        order = self.sort_field
+        if self.sort_direction == 'desc':
+            order = '-' + order
+        return super(SortingMixin, self).get_queryset().order_by(order)
+
+    def set_current_sort_params(self):
+        self.sort_direction = self.params.pop(self.SORT_DIRECTION_PARAM,
+            self.DEFAULT_SORT_DIRECTION)
+        if self.sort_direction not in self.SORT_DIRECTIONS:
+            self.sort_direction = self.DEFAULT_SORT_DIRECTION
+        self.sort_field = self.params.pop(self.SORT_FIELD_PARAM,
+            self.DEFAULT_SORT_FIELD)
+        if self.sort_field not in [i[0] for i in self.sort_fields]:
+            self.sort_field = self.DEFAULT_SORT_FIELD
+
+    def _invert_sort(self, sort_direction):
+        return list(self.SORT_DIRECTIONS - {sort_direction})[0]
+
+    def get_sort_params(self):
+        sort_params = []
+        for field, name in self.sort_fields:
+            uri_params = [self.request.path]
+            sort_direction = self.DEFAULT_SORT_DIRECTION
+            get_params = copy(self.params)
+            sort_param = {'name': name, self.SORT_FIELD_PARAM: field}
+            if self.sort_field == field:
+                sort_param['is_current'] = True
+                if self.sort_direction == self.DEFAULT_SORT_DIRECTION:
+                    sort_direction = self._invert_sort(self.sort_direction)
+                    get_params[self.SORT_DIRECTION_PARAM] = sort_direction
+            else:
+                sort_param['is_current'] = False
+            if field != self.DEFAULT_SORT_FIELD:
+                get_params[self.SORT_FIELD_PARAM] = field
+            sort_param[self.SORT_DIRECTION_PARAM] = sort_direction
+            get_string = u'&'.join([u'{0}={1}'.format(*param)
+                                    for param in get_params.iteritems()])
+            if get_string:
+                uri_params.append(get_string)
+            sort_param['url'] = u'?'.join(uri_params)
+            sort_params.append(sort_param)
+        return sort_params
 
     def get_context_data(self, **kwargs):
-        context = kwargs
-        context.update({
-            'form' : self.form_class(**self.get_form_kwargs()),
-            'formset': self.ModelFormSet(),
-            'add_item_text': self.add_item_text,
-        })
-        return context
+        ctx = super(SortingMixin, self).get_context_data(**kwargs)
+        ctx['sort_params'] = self.get_sort_params()
+        return ctx
 
-    def get_success_url(self):
-        return reverse('participant-edit', args=self.object.id,)#self.request.path
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(**self.get_form_kwargs())
-        formset = self.ModelFormSet(request.POST, request.FILES)
-        print
-        if form.is_valid() and formset.is_valid():
-            self.object = form.save(commit=False)
-            self.object.owner = request.user
-            self.object.save()
-            instances = formset.save(commit=False)
-            for instance in instances:
-                #the name of fk attribute must be same to lower case of fk model
-                setattr(instance, self.model_name, self.object)
-#                instance.save()
-            self.formset_model.objects.bulk_create(instances)
-            return HttpResponseRedirect(self.get_success_url())
-
-        return self.render_to_response(self.get_context_data(
-            form=form, formset=formset))
+    def get(self, request, *args, **kwargs):
+        self.params = dict(request.REQUEST)
+        self.set_current_sort_params()
+        return super(SortingMixin, self).get(request, *args, **kwargs)

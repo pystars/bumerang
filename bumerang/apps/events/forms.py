@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.forms.widgets import Select, SelectMultiple
 
 from bumerang.apps.events.models import (Event, FestivalGroup, Nomination,
-    Participant, ParticipantVideo)
+    ParticipantVideo, GeneralRule, NewsPost, Juror)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin)
+from bumerang.apps.video.models import Video
 
 
 #class FestivalProfileSettingsForm(EditFormsMixin, TemplatedForm):
@@ -18,6 +20,7 @@ from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
 #            'text_rules',
 #            'file_rules',
 #        )
+from bumerang.apps.video.models import Video
 
 
 class EventCreateForm(EditFormsMixin, TemplatedForm):
@@ -81,27 +84,44 @@ class NominationForm(TemplatedForm):
         )
 
 
-#class FestivalGeneralRuleForm(TemplatedForm):
-#
-#    class Meta:
-#        model = FestivalGeneralRule
-#        fields = (
-#            'title',
-#            'description',
-#        )
+class GeneralRuleForm(TemplatedForm):
+
+    class Meta:
+        model = GeneralRule
+        fields = (
+            'title',
+            'description',
+        )
 
 
-    def __init__(self, request, event, *args, **kwargs):
-        self.request = request
-        self.event = event
-        super(ParticipantForm, self).__init__(*args, **kwargs)
+class NewsPostForm(TemplatedForm):
 
-    def save(self, commit=True):
-        self.instance.event = self.event
-        return super(ParticipantForm, self).save(commit)
+    class Meta:
+        model = NewsPost
+        fields = (
+            'title',
+            'description',
+        )
 
 
-class ParticipantVideoForm(forms.ModelForm):
+class JurorForm(TemplatedForm):
+
+    class Meta:
+        model = Juror
+        fields = (
+            'email',
+            'info_second_name',
+            'info_name',
+            'info_middle_name',
+            'min_avatar',
+        )
+
+
+class ParticipantVideoForm(TemplatedForm):
+    """
+    before using this modelform, we need to setup class:
+    event and request needed for properly work
+    """
 
     class Meta:
         model = ParticipantVideo
@@ -110,8 +130,24 @@ class ParticipantVideoForm(forms.ModelForm):
             'video',
             'nominations'
         )
+        widgets = {
+            'nominations': Select
+        }
 
     def __init__(self, *args, **kwargs):
-        #TODO: need to select only event nominations in nominations field
-        #TODO: need to select only current user videos in video
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
+        self.fields['nominations'].queryset = self.event.nomination_set.all()
+        self.fields['video'].queryset = Video.objects.filter(
+            owner=self.request.user)
+
+
+class ParticipantVideoFormForEventOwner(ParticipantVideoForm):
+    """
+    before using this modelform, we need to setup class:
+    event and request needed for properly work
+    """
+
+    class Meta(ParticipantVideoForm.Meta):
+        widgets = {
+            'nominations': SelectMultiple
+        }

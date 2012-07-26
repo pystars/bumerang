@@ -6,7 +6,9 @@ from django.db.models.aggregates import Max
 from django.db import models
 from django.utils.timezone import now
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
+from bumerang.apps.accounts.models import get_mini_avatar_path
 from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.utils.models import TitleUnicode
 from bumerang.apps.video.models import Video
@@ -47,7 +49,7 @@ class Event(TitleUnicode, models.Model):
     )
     group = models.ForeignKey(FestivalGroup, verbose_name=u'Группа фестивалей',
         **nullable)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, related_name='owned_events')
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
 
@@ -70,6 +72,9 @@ class Event(TitleUnicode, models.Model):
     created = models.DateTimeField(u'Дата добавления', default=now,
         editable=False)
 
+    jurors = models.ManyToManyField(User, verbose_name=u'Члены жюри',
+        through='Juror', related_name='juror_events')
+
     def is_accepting_requests(self):
         if self.requesting_till > now().date():
             return True
@@ -80,14 +85,40 @@ class Event(TitleUnicode, models.Model):
         verbose_name_plural = u'События'
 
 
-#class GeneralRule(models.Model):
-#    festival = models.ForeignKey(Festival, verbose_name=u'Фестиваль')
-#    title = models.CharField(u'Положение', max_length=255)
-#    description = models.TextField(u'Описание')
-#
-#    class Meta:
-#        verbose_name = u'Общие положения'
-#        verbose_name_plural = verbose_name
+class Juror(models.Model):
+    event = models.ForeignKey(Event, verbose_name=u'Событие')
+    user = models.ForeignKey(User, verbose_name=u'Пользователь')
+    email = models.EmailField(_('e-mail address'))
+    info_second_name = models.CharField(u'Фамилия', max_length=100)
+    info_name = models.CharField(u'Имя', max_length=100)
+    info_middle_name = models.CharField(u'Отчество', max_length=100)
+    #TODO: just do it
+    min_avatar = models.ImageField(u'Фото',
+        upload_to=get_mini_avatar_path, storage=media_storage, **nullable)
+
+    class Meta:
+        verbose_name = u'Член жюри'
+        verbose_name_plural = u'Члены жюри'
+
+
+class GeneralRule(TitleUnicode, models.Model):
+    event = models.ForeignKey(Event, verbose_name=u'Событие')
+    title = models.CharField(u'Положение', max_length=255)
+    description = models.TextField(u'Описание')
+
+    class Meta:
+        verbose_name = u'Общие положения'
+        verbose_name_plural = verbose_name
+
+
+class NewsPost(TitleUnicode, models.Model):
+    event = models.ForeignKey(Event, verbose_name=u'Событие')
+    title = models.CharField(u'Новость', max_length=255)
+    description = models.TextField(u'Описание')
+
+    class Meta:
+        verbose_name = u'Общие положения'
+        verbose_name_plural = verbose_name
 
 
 class Nomination(TitleUnicode, models.Model):

@@ -28,7 +28,7 @@ class FestivalsTest(TestCase):
         self.assertEqual(fest_acount.is_active, False)
 
         self.assertTemplateUsed(response,
-            template_name='accounts/regisration_festival_info_form.html')
+            template_name='accounts/regisration_event_info_form.html')
 
         self.assertIsNotNone(response.context['form'])
         form = response.context['form']

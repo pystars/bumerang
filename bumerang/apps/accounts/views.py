@@ -35,7 +35,7 @@ from bumerang.apps.accounts.forms import (RegistrationForm,
       PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
       UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm,
       UserContactsForm, OrganizationContactsForm,
-      FestivalRegistrationRequestForm, FestivalProfileInfoForm)
+      EventRegistrationRequestForm, FestivalProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.email import send_activation_success, \
     send_activation_link, send_new_password, send_fest_registration_request
@@ -152,7 +152,8 @@ class RegistrationFormView(CreateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_anonymous():
-            return super(RegistrationFormView, self).get(request, *args, **kwargs)
+            return super(RegistrationFormView, self).get(
+                request, *args, **kwargs)
         else:
             return HttpResponseRedirect(reverse('BumerangIndexView'))
 
@@ -168,26 +169,26 @@ class RegistrationFormView(CreateView):
             self.object.save()
             send_fest_registration_request()
 
-            self.request.session['fest_profile_id'] = self.object.id
+            self.request.session['event_profile_id'] = self.object.id
 
             notify_success(self.request, message=u'''
-                Заполните все поля чтобы отправить заявку
-                 на рассмотрение
-                ''')
+                Заполните все поля чтобы отправить заявку на рассмотрение''')
 
-            return HttpResponseRedirect(reverse('register-fest-request'))
+            return HttpResponseRedirect(reverse('register-event-request'))
 
         else:
             self.object.activation_code = random_string(32)
 
             current_site = Site.objects.get_current()
-            url = reverse('activate-account', args=[self.object.activation_code])
+            url = reverse('activate-account',
+                args=[self.object.activation_code])
 
             full_activation_url = 'http://{0}{1}'.format(current_site, url)
             self.object.activation_code_expire = now() + timedelta(days=1)
             self.object.save()
 
-            send_activation_link(full_activation_url, form.cleaned_data['username'])
+            send_activation_link(
+                full_activation_url, form.cleaned_data['username'])
 
             notify_success(self.request, message=u'''
                 Регистрация прошла успешно. Вам была отправлена ссылка
@@ -203,18 +204,18 @@ class RegistrationFormView(CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RegisterFestRequestForm(FormView):
-    form_class = FestivalRegistrationRequestForm
-    template_name = "accounts/regisration_festival_info_form.html"
-
+class RegisterEventRequestForm(FormView):
+    form_class = EventRegistrationRequestForm
+    template_name = "accounts/regisration_event_info_form.html"
     profile_id = None
 
     def _get_profile_id(self):
-        return self.request.session.get('fest_profile_id')
+        return self.request.session.get('event_profile_id')
 
     def get(self, request, *args, **kwargs):
         if self._get_profile_id():
-            return super(RegisterFestRequestForm, self).get(request, *args, **kwargs)
+            return super(RegisterEventRequestForm, self).get(
+                request, *args, **kwargs)
         else:
             return HttpResponseRedirect(reverse('registration'))
 
@@ -222,7 +223,8 @@ class RegisterFestRequestForm(FormView):
         return reverse('BumerangIndexView')
 
     def get_form(self, form_class):
-        return form_class(self.request.POST, instance=Profile.objects.get(id=self._get_profile_id()))
+        return form_class(self.request.POST, instance=Profile.objects.get(
+            id=self._get_profile_id()))
 
     def form_valid(self, form):
         form.save()
@@ -231,7 +233,7 @@ class RegisterFestRequestForm(FormView):
         Ваша заявка принята, мы с вами свяжемся.
         ''')
 
-        return super(RegisterFestRequestForm, self).form_valid(form)
+        return super(RegisterEventRequestForm, self).form_valid(form)
 
 
 class AccountActivationView(TemplateView):
@@ -645,5 +647,5 @@ class ProfileEventListView(DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfileEventListView, self).get_context_data(**kwargs)
-        ctx['events'] = self.object.event_set.all()
+        ctx['events'] = self.object.owned_events.all()
         return ctx

@@ -10,7 +10,7 @@ from PIL import Image
 from django.db.utils import IntegrityError
 from django.forms.models import modelformset_factory
 from django.views.generic.edit import CreateView
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect
@@ -22,45 +22,26 @@ from django.views.generic.detail import DetailView
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.events.models import (Event, Nomination, Participant,
-    ParticipantVideo)
+    ParticipantVideo, GeneralRule, NewsPost, Juror)
 from bumerang.apps.events.forms import (FestivalGroupForm, EventCreateForm,
-    EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantForm,
-    ParticipantVideoForm)
-from bumerang.apps.utils.views import (OwnerMixin,
+    EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
+    ParticipantVideoFormForEventOwner, GeneralRuleForm, NewsPostForm, JurorForm)
+from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
 
 
-class EventListView(ListView):
+class EventListView(SortingMixin, ListView):
     model = Event
     paginate_by = 10
+    DEFAULT_SORT_FIELD = 'title'
+    sort_fields = [
+        ('title', u'по названию'),
+        ('requesting_till', u'по дате приема заявок')
+    ]
 
     def get_queryset(self):
         return super(EventListView, self).get_queryset().filter(
             is_approved=True)
-
-
-class EventEditMixin(UpdateView):
-    model = Event
-
-    def _get_profile(self, request):
-        try:
-            return request.user.profile
-        except Profile.DoesNotExist:
-            return Profile()
-
-    def get_context_data(self, **kwargs):
-        profile = self._get_profile(self.request)
-        festival = self.get_object()
-
-        if festival.owner != profile:
-            raise PermissionDenied
-
-        context = {
-            'profile': profile,
-            'festival': festival,
-        }
-        context.update(kwargs)
-        return context
 
 
 class EventCreateView(TemplateResponseMixin, View):
@@ -119,7 +100,6 @@ class EventDetailView(DetailView):
         context.update({'festivals_archive': festivals_archive})
         return context
 
-#class EventEditInfoView(EventEditMixin):
 class EventEditInfoView(OwnerMixin, UpdateView):
     model = Event
     form_class = EventUpdateForm
@@ -203,33 +183,95 @@ class EventEditLogoView(OwnerMixin, UpdateView):
 
 
 class EventNominationsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
-    model=Event
-    formset_model=Nomination
-    formset_form_class=NominationForm
-    template_name="events/event_edit_formset.html"
-    add_item_text=u'Добавить номинацию'
+    model = Event
+    formset_model = Nomination
+    formset_form_class = NominationForm
+    template_name = "events/event_edit_formset.html"
+    add_item_text = u'Добавить номинацию'
 
 
-class ParticipantCreateView(CreateView):
+class EventGeneralRuleUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
+    model = Event
+    formset_model = GeneralRule
+    formset_form_class = GeneralRuleForm
+    template_name = "events/event_edit_formset.html"
+    add_item_text = u'Добавить положение'
+
+
+class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
+    model = Event
+    formset_model = Juror
+    formset_form_class = JurorForm
+    template_name = "events/event_edit_formset.html"
+    add_item_text = u'Добавить члена жюри'
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        formset = self.ModelFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            object = self.get_object()
+            for instance in instances:
+                try:
+                    user = User.objects.get(username=instance.email)
+                except User.DoesNotExist:
+                    #TODO: create users for jurors
+                    profile = Profile(
+                        username = instance.email,
+                        info_second_name = instance.info_second_name,
+                        info_name = instance.info_name,
+                        info_middle_name = instance.info_middle_name,
+                        min_avatar = instance.min_avatar,
+                    )
+                    password = User.objects.make_random_password()
+                    profile.set_password(password)
+                    profile.save()
+                    user = User.objects.get(pk=profile.id)
+                    #TODO: send letter to new juror with links to password
+                    # and event
+                instance.user = user
+                #the name of fk attribute must be same to lower case of fk model
+                setattr(instance, self.model_name, object)
+                instance.save()
+            return HttpResponseRedirect(self.get_success_url())
+        return self.render_to_response(self.get_context_data(formset=formset))
+
+
+
+class EventNewsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
+    model = Event
+    formset_model = NewsPost
+    formset_form_class = NewsPostForm
+    template_name = "events/event_edit_formset.html"
+    add_item_text = u'Добавить новость'
+
+
+class ParticipantMixin(object):
     model = Participant
     formset_model = ParticipantVideo
-    formset_form_class = ParticipantVideoForm
     add_item_text = u"Добавить еще одну работу"
     template_name = 'events/participant_form.html'
 
-    def __init__(self, **kwargs):
-#        self.object = None
-        for kw, arg in kwargs.iteritems():
-            setattr(self, kw, arg)
+    def dispatch(self, request, *args, **kwargs):
+        self.event = Event.objects.get(id=kwargs['pk'])
+        if self.event.owner == request.user:
+            self.formset_form_class = ParticipantVideoFormForEventOwner
+        else:
+            self.formset_form_class = ParticipantVideoForm
+        self.formset_form_class.event = self.event
+        self.formset_form_class.request = request
         self.ModelFormSet = modelformset_factory(
             model=self.formset_model,
             form=self.formset_form_class,
             can_delete=True
         )
-        self.model_name = self.model.__name__.lower()
+        return super(ParticipantMixin, self).dispatch(
+            request, *args, **kwargs)
+
+
+class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def get_context_data(self, **kwargs):
-        self.event = Event.objects.get(id=self.kwargs['pk'])
         context = {
             'formset': self.ModelFormSet(prefix='participantvideo'),
             'add_item_text': self.add_item_text,
@@ -242,7 +284,7 @@ class ParticipantCreateView(CreateView):
         return reverse('participant-edit', args=(self.object.id,))
 
     def post(self, request, *args, **kwargs):
-        self.event = Event.objects.get(id=self.kwargs['pk'])
+        self.object = None
         formset = self.ModelFormSet(request.POST, prefix='participantvideo')
         if formset.is_valid():
             self.object = self.model(owner=request.user, event=self.event)
@@ -265,14 +307,33 @@ class ParticipantCreateView(CreateView):
         return self.render_to_response(self.get_context_data(formset=formset))
 
 
-class ParticipantUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
-    model = Participant
-    formset_model = ParticipantVideo
+class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
+        GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoForm
-    add_item_text = u"Добавить еще одну работу"
-    template_name = 'events/participant_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ParticipantUpdateView, self).get_context_data(**kwargs)
-        context.update({'event': Event.objects.get(id=self.kwargs['pk'])})
+        context.update({'event': self.event})
         return context
+
+
+class ParticipantListView(SortingMixin, ListView):
+    model = Participant
+    paginate_by = 10
+    DEFAULT_SORT_FIELD = 'id'
+    sort_fields = [
+        ('id', u'по дате'),
+    ]
+
+    def get_queryset(self):
+        return super(ParticipantListView, self).get_queryset().filter(
+            event=self.event)
+
+    def get(self, request, *args, **kwargs):
+        self.event = Event.objects.get(pk=self.kwargs['pk'])
+        return super(ParticipantListView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ParticipantListView, self).get_context_data(**kwargs)
+        ctx['event'] = self.event
+        return ctx

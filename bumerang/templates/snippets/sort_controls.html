@@ -1,0 +1,5 @@
+{% for param in sort_params %}
+    <li class="{{ param.sort_direction }}{% if param.is_current %} current{% endif %}">
+        <a href="{{ param.url }}">{{ param.name }}</a>
+    </li>
+{% endfor %}
