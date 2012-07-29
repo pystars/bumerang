@@ -56,6 +56,7 @@ else:
     MEDIA_URL = 'http://media.probumerang.tv/'
     STATIC_ROOT = ''
     STATIC_URL = 'http://static.probumerang.tv/'
+    COMPRESS_ROOT = ''
 
 RTMP_SERVER_FORMAT = 'rtmp://stream.probumerang.tv/cfx/st/mp4:{0}'
 
