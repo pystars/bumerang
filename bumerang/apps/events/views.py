@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
+from django.db.models.query_utils import Q
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -307,14 +309,20 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         return self.render_to_response(self.get_context_data(formset=formset))
 
 
-class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
-        GenericFormsetWithFKUpdateView):
+class ParticipantUpdateView(ParticipantMixin, GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoForm
 
     def get_context_data(self, **kwargs):
         context = super(ParticipantUpdateView, self).get_context_data(**kwargs)
         context.update({'event': self.event})
         return context
+
+    def get_queryset(self):
+    # Если владелец - текущий пользователь, выбирутся
+    # все объекты, иначе ни одного
+        return super(OwnerMixin, self).get_queryset().filter(
+            Q(owner=self.request.user) | Q(event__owner=self.request.user)
+        )
 
 
 class ParticipantListView(SortingMixin, ListView):
