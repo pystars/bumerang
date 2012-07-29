@@ -21,14 +21,14 @@ def get_logo_path(instance, filename):
     if not os.path.exists(path):
         os.makedirs(path)
     ext = os.path.splitext(filename)[1]
-    return 'logos/{0}/full{1}'.format(instance.id, ext)
+    return u'logos/{0}/full{1}'.format(instance.id, ext)
 
 def get_mini_logo_path(instance, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'logos', str(instance.id))
     if not os.path.exists(path):
         os.makedirs(path)
     ext = os.path.splitext(filename)[1]
-    return 'logos/{0}/min{1}'.format(instance.id, ext)
+    return u'logos/{0}/min{1}'.format(instance.id, ext)
 
 
 class FestivalGroup(TitleUnicode, models.Model):
@@ -108,7 +108,7 @@ class GeneralRule(TitleUnicode, models.Model):
 
     class Meta:
         verbose_name = u'Общие положения'
-        verbose_name_plural = verbose_name
+        verbose_name_plural = u'Общие положения'
 
 
 class NewsPost(TitleUnicode, models.Model):
@@ -117,8 +117,8 @@ class NewsPost(TitleUnicode, models.Model):
     description = models.TextField(u'Описание')
 
     class Meta:
-        verbose_name = u'Общие положения'
-        verbose_name_plural = verbose_name
+        verbose_name = u'Новость'
+        verbose_name_plural = u'Новости'
 
 
 class Nomination(TitleUnicode, models.Model):
