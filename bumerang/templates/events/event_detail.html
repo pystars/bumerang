@@ -82,6 +82,10 @@
                     <a href="#request" class="b-button b-button_grey">Заявка</a>
                 {% endif %}
 
+{#                {% if object. %}#}
+                    <a href="#juror" class="b-button b-button_grey">Жюри</a>
+{#                {% endif %}#}
+
 {#                <a href="#rules" class="b-button b-button_grey">Жюри</a>#}
 
 {#                <a href="#rules" class="b-button b-button_grey">Контакты</a>#}
@@ -127,6 +131,42 @@
                         {% endif %}
                     </section>
                 {% endif %}
+
+                <section id="juror" class="hidden">
+
+                    {% if object.juror_set.count %}
+                        {% for item in object.juror_set.all %}
+
+                            <div class="b-resume__person cleared">
+                                <div class="rp__pic">
+                                    <div class="b-ava">
+                                        {% if item.min_avatar %}
+                                            <img src="{{ item.min_avatar.url }}" width="125" height="125" alt="" />
+                                        {% else %}
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="125" height="125" alt="" />
+                                        {% endif %}
+                                        <i class="b-ava__sh"></i>
+                                    </div>
+                                </div>
+                                <div class="rp__txt">
+                                    <h4>{{ item.info_name }} {{ item.middle_name }} {{ item.second_name }}</h4>
+{#                                    <p>{{ person.description|linebreaksbr }}</p>#}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                        <p>Жюри еще не назначено.</p>
+                    {% endif %}
+
+                    {% if object.text_rules %}
+                        {{ object.text_rules }}
+                    {% else %}
+
+                        <p>Раздел не заполнен</p>
+
+                    {% endif %}
+                </section>
             </div>
 
             <div class="tab-button">

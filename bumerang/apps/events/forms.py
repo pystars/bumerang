@@ -27,6 +27,7 @@ from bumerang.apps.video.models import Video
 
 
 class EventCreateForm(EditFormsMixin, TemplatedForm):
+    type = forms.ChoiceField(choices=Event.TYPES_CHOICES, label=u'Тип события')
 
     class Meta:
         model = Event
@@ -136,12 +137,6 @@ class ParticipantVideoForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
-
-#        if kwargs.get('instance'):
-#            i = kwargs.get('instance')
-#            print(self.event.nomination_set.all())
-#            print(i.nominations.all())
-
         self.fields['nominations'] = forms.ModelChoiceField(
             label=u'Номинации', queryset=self.event.nomination_set.all(),
             widget=RadioSelect, empty_label=None)
@@ -150,12 +145,6 @@ class ParticipantVideoForm(ModelForm):
             label=u'Видео',
             queryset=Video.objects.filter(
             owner=self.request.user))
-
-#    def save(self, commit=False):
-#        try:
-#            super(ParticipantVideoForm, self).save(commit=commit)
-#        except IntegrityError:
-#            pass
 
 
 class ParticipantVideoFormForEventOwner(ParticipantVideoForm):
