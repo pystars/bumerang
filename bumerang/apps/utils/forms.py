@@ -37,7 +37,6 @@ class TemplatedForm(forms.ModelForm):
     def _render_field(self, field):
         widget_type = field.field.widget.__class__
         template_name = str()
-        print('Field name: {0}, \t\t\tWidget type: {1}'.format(field.name, widget_type))
 
         ctx = Context({ 'data': {
             'label': field.label,

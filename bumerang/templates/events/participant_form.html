@@ -36,6 +36,9 @@
                         <section class="b-form b-form_smaller b-form_edit">
                             <form name="editform" action="" method="post">
                                 {% csrf_token %}
+
+                                <a class="form-profile-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
+
                                 <div>
                                     <h3 class="title">
                                         Подача заявки на участие

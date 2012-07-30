@@ -5426,10 +5426,30 @@ div.ui-datepicker {
     margin-left: 10px
 }
 
-.b-sort-nav__li.current,
-.b-sort-nav__li:hover {
-    background: orange;
+.b-sort-nav__li.current {
+    background: #bba203; /* Old browsers */
+    background: -moz-linear-gradient(top, #bba203 0%, #d8bb03 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bba203), color-stop(100%,#d8bb03)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #bba203 0%,#d8bb03 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #bba203 0%,#d8bb03 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #bba203 0%,#d8bb03 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #bba203 0%,#d8bb03 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bba203', endColorstr='#d8bb03',GradientType=0 ); /* IE6-9 */
     border-radius: 5px;
+    -webkit-box-shadow: inset 0px 1px 1px 0px ;
+
+    box-shadow: inset 0px 1px 1px 0px ;
+}
+
+.b-sort-nav__li:hover {
+    background: #d8bb03; /* Old browsers */
+    background: -moz-linear-gradient(top, #d8bb03 0%, #bba203 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d8bb03), color-stop(100%,#bba203)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #d8bb03 0%,#bba203 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #d8bb03 0%,#bba203 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #d8bb03 0%,#bba203 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #d8bb03 0%,#bba203 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d8bb03', endColorstr='#bba203',GradientType=0 ); /* IE6-9 */
 }
 
 .b-sort-nav__li .sort-direction-arrow {color: orange; font-size: 0.7em;}
