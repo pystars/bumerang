@@ -5437,7 +5437,6 @@ div.ui-datepicker {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bba203', endColorstr='#d8bb03',GradientType=0 ); /* IE6-9 */
     border-radius: 5px;
     -webkit-box-shadow: inset 0px 1px 1px 0px ;
-
     box-shadow: inset 0px 1px 1px 0px ;
 }
 
@@ -5450,6 +5449,9 @@ div.ui-datepicker {
     background: -ms-linear-gradient(top, #d8bb03 0%,#bba203 100%); /* IE10+ */
     background: linear-gradient(to bottom, #d8bb03 0%,#bba203 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d8bb03', endColorstr='#bba203',GradientType=0 ); /* IE6-9 */
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0px 1px 1px 0px ;
+    box-shadow: inset 0px 1px 1px 0px ;
 }
 
 .b-sort-nav__li .sort-direction-arrow {color: orange; font-size: 0.7em;}
