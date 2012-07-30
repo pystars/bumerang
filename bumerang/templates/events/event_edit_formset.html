@@ -14,6 +14,10 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
 {% endblock %}
 
+{% block page_title %}
+    <h1>{{ event.title }}</h1>
+{% endblock %}
+
 {% block edit_form %}
     <section class="b-form b-form_smaller b-form_edit">
         <form name="editform" action="" method="post">
@@ -23,14 +27,13 @@
                     {% sitetree_page_title from "event_edit_menu" %}
                 </h3>
 
-                <div class="b-hr">
-                    <hr />
-                </div>
+                <div class="b-hr"><hr /></div>
 
                 {{ formset.management_form }}
                 {% for form in formset.forms %}
                     <section id="{{ form.prefix }}-row">
                         {{ form }}
+                        <div class="b-hr"><hr /></div>
                     </section>
                 {% endfor %}
 
