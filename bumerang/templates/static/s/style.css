@@ -5284,9 +5284,7 @@ h3.title+.b-form_edit_login-pass {
     margin-bottom: 0;
 }
 
-.flash-content-wrapper {
-    height: 420px;
-}
+.flash-content-wrapper {height: 420px;}
 
 /* Стили форматирования простых страниц */
 
@@ -5322,14 +5320,10 @@ h3.title+.b-form_edit_login-pass {
     display: block;
 }
 
-.b-vote .star-rate li a {
-    background-position: 0 0;
-}
+.b-vote .star-rate li a {background-position: 0 0;}
 
 .b-vote .star-rate li a.active,
-.b-vote .star-rate li b.active {
-    background-position: 0 -24px;
-}
+.b-vote .star-rate li b.active {background-position: 0 -24px;}
 
 .b-vote .star-rate li a:hover {
     background-position: 0 -24px;
@@ -5358,13 +5352,9 @@ h3.title+.b-form_edit_login-pass {
 }
 
 .message .pi-head,
-.message .pi-foot {
-    margin-left:65px;
-}
+.message .pi-foot {margin-left:65px;}
 
-.message .pi-head h3 {
-    margin:0 0 .33em 0;
-}
+.message .pi-head h3 {margin:0 0 .33em 0;}
 
 .message  .pi-head div {
     font-size:.875em;
@@ -5378,9 +5368,7 @@ h3.title+.b-form_edit_login-pass {
     font-size: 14px;
 }
 
-.vk_comments {
-    margin-top: 30px !important;
-}
+.vk_comments {margin-top: 30px !important;}
 
 .photo-deleted {
     margin: 0 auto;
@@ -5388,34 +5376,22 @@ h3.title+.b-form_edit_login-pass {
 }
 
 /* ---- Festivals ---- */
-.l-cols_fests .l-cols__section__i {
-    padding-right:45px;
-}
+.l-cols_fests .l-cols__section__i {padding-right:45px;}
 
-.l-cols_fests .l-cols__section__i .notification {
-    margin:0 0 0 -25px;
-}
+.l-cols_fests .l-cols__section__i .notification {margin:0 0 0 -25px;}
 
-.green {
-    color: #51A351;
-}
+.green {color: #51A351;}
 
-.gray {
-    color: #999;
-}
+.gray {color: #999;}
 
-.dark-gray {
-    color: #666;
-}
+.dark-gray {color: #666;}
 
 .sp-err {
     display: inline !important;
     color:#dc291e;
 }
 
-div.tab-button.tabs a.b-button {
-    margin-right: 20px;
-}
+div.tab-button.tabs a.b-button {margin-right: 20px;}
 
 .form-footer {
     margin-left: 0px;
@@ -5430,9 +5406,37 @@ p.new-lnk {
 /* ------------- */
 div.ui-datepicker {
     font-size:12px;
-    font-family: 'Tahoma', Verdana;
+    font-family: 'Tahoma', Verdana, serif;
 }
 
-#ui-datepicker-div {
-    z-index: 9999999!important;
+#ui-datepicker-div {z-index: 9999999!important;}
+
+.b-sort-nav {padding: 1em;}
+
+.b-sort-nav__title {
+    display: inline-block;
+    float: left;
 }
+
+.b-sort-nav__ul {display: inline;}
+
+.b-sort-nav__li {
+    display: inline;
+    padding: 3px 8px;
+    margin-left: 10px
+}
+
+.b-sort-nav__li.current,
+.b-sort-nav__li:hover {
+    background: orange;
+    border-radius: 5px;
+}
+
+.b-sort-nav__li .sort-direction-arrow {color: orange;}
+
+.b-sort-nav__li .sort-link {color: blue;}
+
+.b-sort-nav__li.current .sort-link,
+.b-sort-nav__li:hover .sort-link,
+.b-sort-nav__li.current .sort-direction-arrow,
+.b-sort-nav__li:hover .sort-direction-arrow {color: white;}
