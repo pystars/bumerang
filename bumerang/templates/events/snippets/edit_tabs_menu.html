@@ -1,7 +1,7 @@
 {# Вкладка редактирования феста #}
 <dt class="first{% ifequal selected 'event' %} selected{% endifequal %}">
     {% spaceless %}
-        <a href="{% url event-detail event.id %}">
+        <a href="{% url event-edit-info event.id %}">
             <span>{{ event.get_type_display }}</span>
         </a>
     {% endspaceless %}
@@ -15,7 +15,7 @@
 
 {# Вкладка просмотра заявок феста #}
 {% if request.user.id == event.owner.id %}
-<dt class="first{% ifequal selected 'requests' %} selected{% endifequal %}">
+<dt class="{% ifequal selected 'requests' %} selected{% endifequal %}">
     {% spaceless %}
         <a href="{% url participant-list event.id %}">
             <span>Заявки</span>

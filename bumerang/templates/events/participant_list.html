@@ -14,45 +14,47 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
 {% endblock %}
 
-{% block edit_form %}
-    <section class="b-form b-form_smaller b-form_edit">
-{#        <form name="editform" action="" method="post">#}
-{#            {% csrf_token %}#}
-            <div class="b-form__fields">
-                <h3 class="title">
-                    Заявки на участие в событии
-                </h3>
-                {% include 'snippets/sort_controls.html' %}
-                <div class="b-hr">
-                    <hr />
-                </div>
-                {% for object in object_list %}
-                    <a href="{% url participant-edit object.id %}">{{ object.owner.username }}</a>
-                    <a href="{% url participant-approve object.id %}">approve: {{ object.owner.username }}</a>
-                {% endfor %}
+{% block page_title %}
+    <h1>{{ event.title }}</h1>
+{% endblock %}
 
-                {#                {{ formset.management_form }}#}
-{#                {% for form in formset.forms %}#}
-{#                    <section id="{{ form.prefix }}-row">#}
-{#                        {{ form }}#}
-{#                    </section>#}
-{#                {% endfor %}#}
-
+{% block tab %}
+    {% include 'events/snippets/edit_tabs_menu.html' with selected='requests' %}
+    <dd class="selected">
+        <div class="l-cols l-cols_tab">
+            <div class="l-cols__bg-section">
+                <div></div>
             </div>
-{#            <footer class="b-form__footer">#}
-{#                <div class="wrap">#}
-{#                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>#}
-{#                </div>#}
-{#            </footer>#}
-{#        </form>#}
-    </section>
+            <div class="l-cols__i cleared">
+                <section class="l-cols__section">
+                    <div class="l-cols__section__i">
+                        <section class="b-form b-form_smaller b-form_edit">
+                            <div class="b-form__fields">
+                                <h3 class="title">
+                                    Заявки на участие в событии
+                                </h3>
+                                {% include 'snippets/sort_controls.html' %}
+                                <div class="b-hr">
+                                    <hr />
+                                </div>
+                                {% for object in object_list %}
+                                    <a href="{% url participant-edit object.id %}">{{ object.owner.username }}</a>
+                                {% endfor %}
 
-    <script type="text/javascript">
-        $(function() {
-            $('form section').formset({
-                prefix: 'form',
-                addText: '{{ add_item_text }}'
-            })
-        })
-    </script>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+                <aside class="l-cols__side">
+                    <div class="l-cols__side__i">
+                        <nav class="b-tab-sidenav">
+                            {% block edit_side_nav %}
+                                {% sitetree_menu from "event_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+                            {% endblock %}
+                        </nav>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </dd>
 {% endblock %}
