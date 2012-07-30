@@ -5394,13 +5394,13 @@ h3.title+.b-form_edit_login-pass {
 div.tab-button.tabs a.b-button {margin-right: 20px;}
 
 .form-footer {
-    margin-left: 0px;
+    margin-left: 0;
     margin-bottom: 20px;
     margin-top: 10px;
 }
 
 p.new-lnk {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 
 /* ------------- */
@@ -5432,7 +5432,7 @@ div.ui-datepicker {
     border-radius: 5px;
 }
 
-.b-sort-nav__li .sort-direction-arrow {color: orange;}
+.b-sort-nav__li .sort-direction-arrow {color: orange; font-size: 0.7em;}
 
 .b-sort-nav__li .sort-link {color: blue;}
 
