@@ -12,11 +12,6 @@ DATABASES = {
     },
 }
 
-try:
-    from bumerang.local_settings import *
-except ImportError:
-    pass
-
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -37,28 +32,11 @@ USE_L10N = True
 USE_TZ = True
 
 #Storage settings
-if LOCALHOST:
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL[1:])
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL[1:])
-else:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    MEDIA_ROOT = ''
-    AWS_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
-    AWS_MEDIA_STORAGE_BUCKET_NAME = 'media.probumerang.tv'
-    AWS_S3_SECURE_URLS = False
-    AWS_PRELOAD_METADATA = True
-    AWS_REDUCED_REDUNDANCY = True
-    AWS_S3_MEDIA_CUSTOM_DOMAIN = 'media.probumerang.tv'
-    AWS_S3_CUSTOM_DOMAIN = 'static.probumerang.tv'
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    MEDIA_URL = 'http://media.probumerang.tv/'
-    STATIC_ROOT = ''
-    STATIC_URL = 'http://static.probumerang.tv/'
-    COMPRESS_ROOT = ''
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL[1:])
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL[1:])
 
-RTMP_SERVER_FORMAT = 'rtmp://stream.probumerang.tv/cfx/st/mp4:{0}'
 
 FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
@@ -267,3 +245,8 @@ CELERY_QUEUES = {
 }
 
 djcelery.setup_loader()
+
+try:
+    from bumerang.local_settings import *
+except ImportError:
+    pass

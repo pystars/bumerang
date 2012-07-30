@@ -255,7 +255,19 @@ class ParticipantMixin(object):
     template_name = 'events/participant_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        self.event = Event.objects.get(id=kwargs['pk'])
+        if request.method.lower() in self.http_method_names:
+            handler = getattr(self, request.method.lower(),
+                self.http_method_not_allowed)
+        else:
+            handler = self.http_method_not_allowed
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        if 'event_pk' in kwargs:
+            self.event = Event.objects.get(id=kwargs['event_pk'])
+        else:
+            self.object = self.get_object()
+            self.event = self.object.event
         if self.event.owner == request.user:
             self.formset_form_class = ParticipantVideoFormForEventOwner
         else:
@@ -267,8 +279,7 @@ class ParticipantMixin(object):
             form=self.formset_form_class,
             can_delete=True
         )
-        return super(ParticipantMixin, self).dispatch(
-            request, *args, **kwargs)
+        return handler(request, *args, **kwargs)
 
 
 class ParticipantCreateView(ParticipantMixin, CreateView):
@@ -329,42 +340,15 @@ class ParticipantUpdateView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         formset = self.ModelFormSet(request.POST, request.FILES)
         object = self.get_object()
 
-        if formset.is_valid():
-            for form in formset:
-                print('form valid: ', form.is_valid())
-                print('form data: ', form.cleaned_data)
-
-                instance = form.save(commit=False)
-
-#                vn = VideoNomination.objects.create(form)
-
-                setattr(instance, self.model_name, object)
-                try:
-                    print(instance)
-                    p = ParticipantVideo(
-                        participant=instance.save(),
-                        nominations=form.cleaned_data['nominations']
-                    )
-                    instance.save()
-                    p.save()
-
-                except IntegrityError:
-                    pass
-
-#        instances = formset.save(commit=False)
-#        object = self.get_object()
-#        for instance in instances:
-#            #the name of fk attribute must be same to lower case of fk model
-#            setattr(instance, self.model_name, object)
-#            instance.save()
+        instances = formset.save(commit=False)
+        object = self.get_object()
+        for instance in instances:
+#            the name of fk attribute must be same to lower case of fk model
+            setattr(instance, self.model_name, object)
+            instance.save()
 
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
-
-
-class ParticipantApproveView(UpdateView):
-    model = Participant
-    form_class = ParticipantApproveForm
 
 
 class ParticipantListView(SortingMixin, ListView):
@@ -380,7 +364,7 @@ class ParticipantListView(SortingMixin, ListView):
             event=self.event)
 
     def get(self, request, *args, **kwargs):
-        self.event = Event.objects.get(pk=self.kwargs['pk'])
+        self.event = Event.objects.get(pk=self.kwargs['event_pk'])
         return super(ParticipantListView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
