@@ -11,7 +11,7 @@ import json
 from PIL import Image
 from django.db.utils import IntegrityError
 from django.forms.models import modelformset_factory
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -24,10 +24,10 @@ from django.views.generic.detail import DetailView
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.events.models import (Event, Nomination, Participant,
-    ParticipantVideo, GeneralRule, NewsPost, Juror)
+    ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination)
 from bumerang.apps.events.forms import (FestivalGroupForm, EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
-    ParticipantVideoFormForEventOwner, GeneralRuleForm, NewsPostForm, JurorForm)
+    ParticipantVideoFormForEventOwner, GeneralRuleForm, NewsPostForm, JurorForm, ParticipantApproveForm)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
 
@@ -275,7 +275,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = {
-            'formset': self.ModelFormSet(prefix='participantvideo'),
+            'formset': self.ModelFormSet(prefix='participantvideo_set'),
             'add_item_text': self.add_item_text,
             'event': self.event
         }
@@ -287,7 +287,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        formset = self.ModelFormSet(request.POST, prefix='participantvideo')
+        formset = self.ModelFormSet(request.POST, prefix='participantvideo_set')
         if formset.is_valid():
             self.object = self.model(owner=request.user, event=self.event)
             try:
@@ -320,9 +320,51 @@ class ParticipantUpdateView(ParticipantMixin, GenericFormsetWithFKUpdateView):
     def get_queryset(self):
     # Если владелец - текущий пользователь, выбирутся
     # все объекты, иначе ни одного
-        return super(OwnerMixin, self).get_queryset().filter(
+        return super(ParticipantUpdateView, self).get_queryset().filter(
             Q(owner=self.request.user) | Q(event__owner=self.request.user)
         )
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        formset = self.ModelFormSet(request.POST, request.FILES)
+        object = self.get_object()
+
+        if formset.is_valid():
+            for form in formset:
+                print('form valid: ', form.is_valid())
+                print('form data: ', form.cleaned_data)
+
+                instance = form.save(commit=False)
+
+#                vn = VideoNomination.objects.create(form)
+
+                setattr(instance, self.model_name, object)
+                try:
+                    print(instance)
+                    p = ParticipantVideo(
+                        participant=instance.save(),
+                        nominations=form.cleaned_data['nominations']
+                    )
+                    instance.save()
+                    p.save()
+
+                except IntegrityError:
+                    pass
+
+#        instances = formset.save(commit=False)
+#        object = self.get_object()
+#        for instance in instances:
+#            #the name of fk attribute must be same to lower case of fk model
+#            setattr(instance, self.model_name, object)
+#            instance.save()
+
+            return HttpResponseRedirect(self.get_success_url())
+        return self.render_to_response(self.get_context_data(formset=formset))
+
+
+class ParticipantApproveView(UpdateView):
+    model = Participant
+    form_class = ParticipantApproveForm
 
 
 class ParticipantListView(SortingMixin, ListView):

@@ -3983,6 +3983,18 @@ textarea {
 	background-color:#00831c;
 }
 
+/* b-ava__caption_festival */
+.b-ava__caption_festival {
+    background-position:0 -57px;
+    background-color:#0b9fe3;
+}
+
+/* b-ava__caption_contest */
+.b-ava__caption_contest {
+    background-position:0 -76px;
+    background-color:#a31863;
+}
+
 /* b-side-text */
 .b-side-text {
 	font-size:.875em;
@@ -5390,6 +5402,10 @@ h3.title+.b-form_edit_login-pass {
 
 .gray {
     color: #999;
+}
+
+.dark-gray {
+    color: #666;
 }
 
 .sp-err {

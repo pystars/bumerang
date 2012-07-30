@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.forms.widgets import Select, SelectMultiple
+from django.db.utils import IntegrityError
+from django.forms.fields import ChoiceField
+from django.forms.models import ModelForm, ModelChoiceField
+from django.forms.widgets import Select, SelectMultiple, RadioSelect
 
 from bumerang.apps.events.models import (Event, FestivalGroup, Nomination,
-    ParticipantVideo, GeneralRule, NewsPost, Juror)
+    ParticipantVideo, GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
-    EditFormsMixin)
+    EditFormsMixin, SelectList)
 from bumerang.apps.video.models import Video
 
 
@@ -117,7 +120,7 @@ class JurorForm(TemplatedForm):
         )
 
 
-class ParticipantVideoForm(TemplatedForm):
+class ParticipantVideoForm(ModelForm):
     """
     before using this modelform, we need to setup class:
     event and request needed for properly work
@@ -130,15 +133,29 @@ class ParticipantVideoForm(TemplatedForm):
             'video',
             'nominations'
         )
-        widgets = {
-            'nominations': Select
-        }
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
-        self.fields['nominations'].queryset = self.event.nomination_set.all()
-        self.fields['video'].queryset = Video.objects.filter(
-            owner=self.request.user)
+
+#        if kwargs.get('instance'):
+#            i = kwargs.get('instance')
+#            print(self.event.nomination_set.all())
+#            print(i.nominations.all())
+
+        self.fields['nominations'] = forms.ModelChoiceField(
+            label=u'Номинации', queryset=self.event.nomination_set.all(),
+            widget=RadioSelect, empty_label=None)
+
+        self.fields['video'] = forms.ModelChoiceField(
+            label=u'Видео',
+            queryset=Video.objects.filter(
+            owner=self.request.user))
+
+#    def save(self, commit=False):
+#        try:
+#            super(ParticipantVideoForm, self).save(commit=commit)
+#        except IntegrityError:
+#            pass
 
 
 class ParticipantVideoFormForEventOwner(ParticipantVideoForm):
@@ -151,3 +168,9 @@ class ParticipantVideoFormForEventOwner(ParticipantVideoForm):
         widgets = {
             'nominations': SelectMultiple
         }
+
+
+class ParticipantApproveForm(ModelForm):
+
+    class Meta:
+        model = Participant

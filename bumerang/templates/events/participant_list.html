@@ -28,6 +28,7 @@
                 </div>
                 {% for object in object_list %}
                     <a href="{% url participant-edit object.id %}">{{ object.owner.username }}</a>
+                    <a href="{% url participant-approve object.id %}">approve: {{ object.owner.username }}</a>
                 {% endfor %}
 
                 {#                {{ formset.management_form }}#}

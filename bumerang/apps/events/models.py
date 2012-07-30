@@ -159,9 +159,9 @@ class ParticipantVideo(models.Model):
     participant = models.ForeignKey(Participant,
         verbose_name=u'Заявка на фестиваль')
     nominations = models.ManyToManyField(Nomination, verbose_name=u'Номинации',
-        through='VideoNomination')
-    age = models.PositiveSmallIntegerField(u'Возраст автора')
-    video = models.ForeignKey(Video, verbose_name=u'Видео')
+        through='VideoNomination', blank=False)
+    age = models.PositiveSmallIntegerField(u'Возраст автора', blank=False)
+    video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False)
 
     class Meta:
         unique_together = (("participant", "video"),)

@@ -24,6 +24,11 @@ class S3StorageFormMixin(object):
         return super(S3StorageFormMixin, self).save(commit)
 
 
+class SelectList(Select):
+    def __init__(self, attrs=None, choices=()):
+        super(SelectList, self).__init__(attrs, choices)
+
+
 class TemplatedForm(forms.ModelForm):
     u"""
     Подменяет виджеты формы
@@ -32,6 +37,7 @@ class TemplatedForm(forms.ModelForm):
     def _render_field(self, field):
         widget_type = field.field.widget.__class__
         template_name = str()
+        print('Field name: {0}, \t\t\tWidget type: {1}'.format(field.name, widget_type))
 
         ctx = Context({ 'data': {
             'label': field.label,
@@ -44,10 +50,16 @@ class TemplatedForm(forms.ModelForm):
             }
         })
         if widget_type == Select:
-            if field.field.required:
-                ctx['data']['choices'] = field.field.choices[1:]
-            else:
-                ctx['data']['choices'] = field.field.choices
+#            if field.field.required:
+#                print field.field.choices[1:], 'required'
+#                ctx['data']['choices'] = field.field.choices[1:]
+#            else:
+#                print field.field.choices
+#                ctx['data']['choices'] = field.field.choices
+            ctx['data']['choices'] = field.field.choices
+
+        if widget_type == SelectList:
+            ctx['data']['choices'] = field.field.choices
 
         template_name = 'utils/widgets/{0}.html'.format(
             widget_type.__name__.lower())

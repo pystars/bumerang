@@ -1,5 +1,29 @@
-{% for param in sort_params %}
-    <li class="{{ param.sort_direction }}{% if param.is_current %} current{% endif %}">
-        <a href="{{ param.url }}">{{ param.name }}</a>
-    </li>
-{% endfor %}
+{#<ul>#}
+{#    {% for param in sort_params %}#}
+{#        <li class="{{ param.sort_direction }}{% if param.is_current %} current{% endif %}">#}
+{#            <a href="{{ param.url }}">{{ param.name }}</a>#}
+{#        </li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+
+<nav class="b-filter-nav">
+    <div class="b-filter-nav__i">
+        <span class="b-filter-nav__title">Сортировка</span>
+
+        {% for param in sort_params %}
+            <strong class="selected d-indent2">
+                {{ param.name }}
+                <i class="d-indent2__tl"></i>
+                <i class="d-indent2__tr"></i>
+                <i class="d-indent2__br"></i>
+                <i class="d-indent2__bl"></i>
+            </strong>
+        {% endfor %}
+    </div>
+</nav>
+
+<nav>
+    <div>
+        <span>asd dadf adfa fgadg dg adsg</span>
+    </div>
+</nav>

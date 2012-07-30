@@ -10,60 +10,112 @@
         <h1>Фестивали</h1>
     </header>
 
-    <p>
-        В данном разделе вы можете ознакомиться с фестивалями. Что бы скачать официальное положение и заявку интересующего вас фестиваля, кликните на ссылку "скачать".
-    </p>
+    <section class="b-participants">
+{#        {% include 'snippets/sort_controls.html' %}#}
 
-    <section class="b-announs b-announs_movie">
-        <div class="announs-items">
-            {% include 'snippets/sort_controls.html' %}
+        {% for item in object_list %}
+{#            {% if item.is_active and profile.title %}#}
+                <div class="b-tag d-rounded d-rounded_r10 d-sh">
+                <div class="b-tag__i">
+                    <section class="b-participants__item cleared">
+                        <div class="b-ava">
+                                <span>
+                                    {% if item.min_logo %}
+                                        <img src="{{ profile.min_avatar.url }}" width="100" height="100" alt="Логотип" />
+                                    {% else %}
+                                        <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="100" height="100" alt="" />
+                                    {% endif %}
+                                </span>
+                            <i class="b-ava__sh"></i>
 
-            {% for object in object_list %}
-            <table border="0" cellpadding="2">
-                <tbody>
-                    <tr>
-                        <td colspan="3" rowspan="1">
-                            <h3>
-                                <a href="{% url event-detail object.id %}" title="{{ object.title }}">{{ object.title }}</a>
-                            </h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            {{ object.description }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            &nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td rowspan="1">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>
-                            Даты проведения фестиваля:</td>
-                        <td>
-                            С {{ object.start_date }} по {{ object.end_date }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="1">
-                            &nbsp;</td>
-                        <td colspan="1">
-                            Место проведения:</td>
-                        <td colspan="1">
-                            {{ object.hold_place }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td rowspan="1">
-                            &nbsp;</td>
-                        <td>
-                            Заявки и работы принимаются до:</td>
-                        <td>
-                            {{ object.accept_requests_date }}
-                        </td>
-                    </tr>
+                            {% if item.type == item.FESTIVAL %}
+                                <div class="b-ava__caption b-ava__caption_festival">Фестиваль</div>
+                            {% elif item.type == item.CONTEST %}
+                                <div class="b-ava__caption b-ava__caption_contest">Конкурс</div>
+                            {% endif %}
+                        </div>
+                        <header class="pi-head">
+                            <h3><a href="{% url event-detail item.id %}">{{ item.title }}</a></h3>
+                            <div>
+                                <span class="dark-gray">Даты проведения: </span>{{ item.start_date }} &mdash; {{ item.end_date }}
+                            </div>
+                            <div>
+                                {% if item.is_accepting_requests %}
+                                    <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно (<a href="{% url event-request-form item.id %}">подать заявку</a>)
+                                {% else %}
+                                    <span class="dark-gray">Прием заявок: </span>окончен
+                                {% endif %}
+                            </div>
+                        </header>
+                        <footer class="pi-foot">
+{#                            <ul class="b-stat">#}
+{#                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>#}
+{#                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>#}
+{#                            </ul>#}
+                        </footer>
+                    </section>
+                </div>
+                <i class="b-tag__hole"></i>
+            </div>
+{#            {% endif %}#}
+        {% endfor %}
+    </section>
+    {% include 'paginator/paginator.html' %}
+
+{#    <p>#}
+{#        В данном разделе вы можете ознакомиться с фестивалями. Что бы скачать официальное положение и заявку интересующего вас фестиваля, кликните на ссылку "скачать".#}
+{#    </p>#}
+
+{#    <section class="b-announs b-announs_movie">#}
+{#        <div class="announs-items">#}
+{#            {% include 'snippets/sort_controls.html' %}#}
+{##}
+{#            {% for object in object_list %}#}
+{#            <table border="0" cellpadding="2">#}
+{#                <tbody>#}
+{#                    <tr>#}
+{#                        <td colspan="3" rowspan="1">#}
+{#                            <h3>#}
+{#                                <a href="{% url event-detail object.id %}" title="{{ object.title }}">{{ object.title }}</a>#}
+{#                            </h3>#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <td colspan="3">#}
+{#                            {{ object.description }}#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <td colspan="3">#}
+{#                            &nbsp;</td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <td rowspan="1">#}
+{#                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>#}
+{#                        <td>#}
+{#                            Даты проведения фестиваля:</td>#}
+{#                        <td>#}
+{#                            С {{ object.start_date }} по {{ object.end_date }}#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <td colspan="1">#}
+{#                            &nbsp;</td>#}
+{#                        <td colspan="1">#}
+{#                            Место проведения:</td>#}
+{#                        <td colspan="1">#}
+{#                            {{ object.hold_place }}#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <td rowspan="1">#}
+{#                            &nbsp;</td>#}
+{#                        <td>#}
+{#                            Заявки и работы принимаются до:</td>#}
+{#                        <td>#}
+{#                            {{ object.accept_requests_date }}#}
+{#                        </td>#}
+{#                    </tr>#}
 {#                    <tr>#}
 {#                        <td rowspan="1">#}
 {#                            &nbsp;</td>#}
@@ -72,50 +124,70 @@
 {#                        <td colspan="1">#}
 {#                            без ограничений</td>#}
 {#                    </tr>#}
-                    {% if object.file_rules %}
-                    <tr>
-                        <td colspan="1">
-                            &nbsp;</td>
-                        <td colspan="1">
-                            Официальное положение и завка:</td>
-                        <td colspan="1">
-                            <a href="{{ object.file_rules.url }}" title="Положение {{ object.title }}">скачать &gt;&gt;</a></td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td colspan="1">
-                            &nbsp;</td>
-                        <td colspan="1">
-                            &nbsp;</td>
-                        <td colspan="1">
-                            &nbsp;</td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-
-            {% endfor %}
-        </div>
-
-        {% if is_paginated %}
-            {% include 'paginator/paginator.html' %}
-        {% endif %}
-
-    </section>
+{#                    {% if object.file_rules %}#}
+{#                    <tr>#}
+{#                        <td colspan="1">#}
+{#                            &nbsp;</td>#}
+{#                        <td colspan="1">#}
+{#                            Официальное положение и завка:</td>#}
+{#                        <td colspan="1">#}
+{#                            <a href="{{ object.file_rules.url }}" title="Положение {{ object.title }}">скачать &gt;&gt;</a></td>#}
+{#                    </tr>#}
+{#                    {% endif %}#}
+{#                    <tr>#}
+{#                        <td colspan="1">#}
+{#                            &nbsp;</td>#}
+{#                        <td colspan="1">#}
+{#                            &nbsp;</td>#}
+{#                        <td colspan="1">#}
+{#                            &nbsp;</td>#}
+{#                    </tr>#}
+{#                </tbody>#}
+{#            </table>#}
+{#            <hr />#}
+{##}
+{#            {% endfor %}#}
+{#        </div>#}
+{##}
+{#        {% if is_paginated %}#}
+{#            {% include 'paginator/paginator.html' %}#}
+{#        {% endif %}#}
+{##}
+{#    </section>#}
 
 {% endblock %}
 
 {% block right_menu %}
-    <nav class="b-side-nav d-indent" style="margin-top: 3.5em;">
+    <nav class="b-side-nav d-indent" style="margin-top: 3.7em;">
         <ul>
-            <h4>Создать фестиваль</h4>
+            <h4>Выбор события</h4>
+
             <li>
-                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+                <a href="{% url event-list %}">все</a>
+            </li>
+            <li>
+                <a href="#">фестивали</a>
+            </li>
+            <li>
+                <a href="#">конкурсы</a>
             </li>
         </ul>
         <i class="d-indent__tl"></i>
         <i class="d-indent__tr"></i>
         <i class="d-indent__br"></i>
         <i class="d-indent__bl"></i>
+    </nav>
+
+    <nav class="b-side-nav d-indent">
+    <ul>
+        <h4>Создать событие</h4>
+        <li>
+            <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+        </li>
+    </ul>
+    <i class="d-indent__tl"></i>
+    <i class="d-indent__tr"></i>
+    <i class="d-indent__br"></i>
+    <i class="d-indent__bl"></i>
     </nav>
 {% endblock %}

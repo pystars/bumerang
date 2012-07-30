@@ -14,6 +14,7 @@
 </dd>
 
 {# Вкладка просмотра заявок феста #}
+{% if request.user.id == event.owner.id %}
 <dt class="first{% ifequal selected 'requests' %} selected{% endifequal %}">
     {% spaceless %}
         <a href="{% url participant-list event.id %}">
@@ -28,7 +29,7 @@
     <div class="b-tabs__tab-content">
     </div>
 </dd>
-
+{% endif %}
 {#<dt class="first{% ifequal selected 'profile' %} selected{% endifequal %}">#}
 {#    <a href="{% url profile-detail profile.id %}">#}
 {#        <span>Профиль</span>#}
