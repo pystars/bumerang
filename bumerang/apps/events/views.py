@@ -338,14 +338,13 @@ class ParticipantUpdateView(ParticipantMixin, GenericFormsetWithFKUpdateView):
     def post(self, request, *args, **kwargs):
         self.object = None
         formset = self.ModelFormSet(request.POST, request.FILES)
-        object = self.get_object()
-
-        instances = formset.save(commit=False)
-        object = self.get_object()
-        for instance in instances:
-#            the name of fk attribute must be same to lower case of fk model
-            setattr(instance, self.model_name, object)
-            instance.save()
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            object = self.get_object()
+            for instance in instances:
+    #            the name of fk attribute must be same to lower case of fk model
+                setattr(instance, self.model_name, object)
+                instance.save()
 
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
