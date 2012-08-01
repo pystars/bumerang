@@ -1,0 +1,83 @@
+{% extends "events/tabs_wrapper.html" %}
+
+{% block title %}Фильмы-участники{% endblock %}
+
+{% block head_js %}
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/tabs_menu.html' with selected='films' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+                {% if nominations %}
+                <h3>Номинации:</h3>
+                <ul>
+                    {% for item in nominations %}
+                        <li><a href="{% url event-films-by-id event.id item.id %}">{{ item.title }}</a></li>
+                    {% endfor %}
+                </ul>
+
+                <div class="b-hr"><hr /></div>
+                {% endif %}
+
+                {% if object_list %}
+                    <h3>{{ nomination }}</h3>
+
+                    {% for objects in object_list %}
+                        {% with item=objects.video %}
+                        <div>
+                            <table>
+                                <tr>
+                                    <td style="width: 190px;">
+                                        <a href="{% url video-detail item.id %}" title="{{ item.title }}">
+                                            <span>
+                                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
+                                            </span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url video-detail item.id %}" title="{{ item.title }}"><h3>{{ item.title }}</h3></a>
+                                        <div>
+                                            <span class="dark-gray">Участник </span>
+                                            <a href="{% url profile-detail item.owner.profile.id %}">{{ item.owner.profile.title }}</a>
+                                        </div>
+                                        <div>{{ item.description|truncatechars:200 }}</div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="b-hr"><hr /></div>
+                        </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <h3>Фильмов в данной номинации нет</h3>
+                {% endif %}
+            </header>
+        </section>
+        {% if is_paginated %}
+        {% include 'paginator/paginator.html' %}
+        {% endif %}
+    </div></dd>
+{% endblock %}
+
+{% block right_menu %}
+    <nav class="b-side-nav d-indent">
+        <ul>
+            <h4>Архив фестивалей</h4>
+            {% for item in festivals_archive %}
+                <li>
+                    <a href="{% url event-detail item.id %}" title="{{ item.title }}">{{ object.group.title }} {{ item.start_date.year }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <i class="d-indent__tl"></i>
+        <i class="d-indent__tr"></i>
+        <i class="d-indent__br"></i>
+        <i class="d-indent__bl"></i>
+    </nav>
+{% endblock %}

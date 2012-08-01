@@ -68,6 +68,7 @@ class Event(TitleUnicode, models.Model):
     text_rules = models.TextField(u'Правила фестиваля', blank=False)
     file_rules = models.FileField(u'Правила фестиваля (документ)',
         upload_to='rules', blank=True)
+    contacts_raw_text = models.TextField(u'Контакты', **nullable)
 
     created = models.DateTimeField(u'Дата добавления', default=now,
         editable=False)
@@ -115,6 +116,8 @@ class NewsPost(TitleUnicode, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
     title = models.CharField(u'Новость', max_length=255)
     description = models.TextField(u'Описание')
+    creation_date = models.DateField(u'Дата добавления',
+        editable=False, default=now)
 
     class Meta:
         verbose_name = u'Новость'

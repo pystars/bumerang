@@ -7,10 +7,10 @@
 {% endblock %}
 
 {% block tab %}
-{#    {% include 'events/snippets/tabs_menu.html' with selected='event' %}#}
-{#    {% with event=object %}#}
-{#    {% include 'events/snippets/edit_tabs_menu.html' with selected='event' %}#}
-{#    {% endwith %}#}
+    {% with event=object %}
+    {% include 'events/snippets/tabs_menu.html' with selected='event' %}
+    {% endwith %}
+
     <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
         <section class="b-profile">
             <header class="b-profile__head cleared">
@@ -48,7 +48,7 @@
                                 Прием заявок
                             </strong>
                             <span>
-                                до {{ object.accept_requests_date }}
+                                до {{ object.requesting_till }}
                             </span>
                         </li>
                         {% else %}
@@ -86,9 +86,7 @@
                     <a href="#juror" class="b-button b-button_grey">Жюри</a>
 {#                {% endif %}#}
 
-{#                <a href="#rules" class="b-button b-button_grey">Жюри</a>#}
-
-{#                <a href="#rules" class="b-button b-button_grey">Контакты</a>#}
+                <a href="#contacts" class="b-button b-button_grey">Контакты</a>
             </div>
 
         </section>
@@ -141,15 +139,15 @@
                                 <div class="rp__pic">
                                     <div class="b-ava">
                                         {% if item.min_avatar %}
-                                            <img src="{{ item.min_avatar.url }}" width="125" height="125" alt="" />
+                                            <img src="{{ item.min_avatar.url }}" width="60" height="60" alt="" />
                                         {% else %}
-                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="125" height="125" alt="" />
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
                                         {% endif %}
                                         <i class="b-ava__sh"></i>
                                     </div>
                                 </div>
                                 <div class="rp__txt">
-                                    <h4>{{ item.info_name }} {{ item.middle_name }} {{ item.second_name }}</h4>
+                                    <h4>{{ item.info_name }} {{ item.info_middle_name }} {{ item.info_second_name }}</h4>
 {#                                    <p>{{ person.description|linebreaksbr }}</p>#}
                                 </div>
                             </div>
@@ -158,15 +156,23 @@
                     {% else %}
                         <p>Жюри еще не назначено.</p>
                     {% endif %}
-
-                    {% if object.text_rules %}
-                        {{ object.text_rules }}
-                    {% else %}
-
-                        <p>Раздел не заполнен</p>
-
-                    {% endif %}
                 </section>
+
+                <section id="contacts" class="hidden">
+
+                    {% if object.contacts_raw_text %}
+                        <h3>Контакты:</h3>
+                        <p>
+                            {{ object.contacts_raw_text|striptags|linebreaks }}
+                        </p>
+                    {% else %}
+                        <p>
+                            Контакты еще не заполнены.
+                        </p>
+                    {% endif %}
+
+                </section>
+
             </div>
 
             <div class="tab-button">

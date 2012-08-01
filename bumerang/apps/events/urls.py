@@ -6,7 +6,8 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     EventDetailView, EventEditInfoView, EventCreateView, EventEditLogoView,
     ParticipantUpdateView, EventNominationsUpdateView,
     EventGeneralRuleUpdateView, EventNewsUpdateView, ParticipantListView,
-    EventJurorsUpdateView, ParticipantReviewView)
+    EventJurorsUpdateView, EventPressListView, EventFilmsListView,
+    ParticipantReviewView, EventContactsUpdateView)
 
 
 urlpatterns = patterns('',
@@ -23,6 +24,21 @@ urlpatterns = patterns('',
     url(r'^event(?P<pk>[\d]+)/$',
         EventDetailView.as_view(),
         name='event-detail'
+    ),
+
+    url(r'^event(?P<event_pk>[\d]+)/press/$',
+        EventPressListView.as_view(),
+        name='event-press'
+    ),
+
+    url(r'^event(?P<event_pk>[\d]+)/films/$',
+        EventFilmsListView.as_view(),
+        name='event-films'
+    ),
+
+    url(r'^event(?P<event_pk>[\d]+)/films/(?P<nomination_pk>[\d]+)$',
+        EventFilmsListView.as_view(),
+        name='event-films-by-id'
     ),
 
     url(r'^event(?P<pk>[\d]+)/edit/$',
@@ -53,6 +69,11 @@ urlpatterns = patterns('',
     url(r'^event(?P<pk>[\d]+)/edit-news/$',
         login_required(EventNewsUpdateView.as_view()),
         name='event-edit-news'
+    ),
+
+    url(r'^event(?P<pk>[\d]+)/edit-contacts/$',
+        login_required(EventContactsUpdateView.as_view()),
+        name='event-edit-contacts'
     ),
 
     url(r'^event(?P<event_pk>[\d]+)/edit-requests/$',

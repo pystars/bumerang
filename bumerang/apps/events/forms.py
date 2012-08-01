@@ -1,29 +1,12 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.db.utils import IntegrityError
-from django.forms.fields import ChoiceField
-from django.forms.models import ModelForm, ModelChoiceField
-from django.forms.widgets import Select, SelectMultiple, RadioSelect
+from django.forms.models import ModelForm
+from django.forms.widgets import Textarea
 
 from bumerang.apps.events.models import (Event, FestivalGroup, Nomination,
     ParticipantVideo, GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
-    EditFormsMixin, SelectList)
-from bumerang.apps.video.models import Video
-
-
-#class FestivalProfileSettingsForm(EditFormsMixin, TemplatedForm):
-#    text_rules = forms.CharField(label=u'Правила фестиваля', widget=Textarea)
-#
-#    class Meta:
-#        model = Festival
-#        fields = (
-#            'opened',
-#            'accept_requests',
-#            'text_rules',
-#            'file_rules',
-#        )
-from bumerang.apps.video.models import Video
+    EditFormsMixin)
 
 
 class EventCreateForm(EditFormsMixin, TemplatedForm):
@@ -57,6 +40,16 @@ class EventUpdateForm(EditFormsMixin, TemplatedForm):
             'description',
             'text_rules',
             'file_rules',
+        )
+
+
+class EventContactsUpdateForm(EditFormsMixin, TemplatedForm):
+    contacts_raw_text = forms.CharField(label=u'Контакты',
+        required=True, widget=Textarea)
+
+    class Meta:
+        fields = (
+            'contacts_raw_text',
         )
 
 
