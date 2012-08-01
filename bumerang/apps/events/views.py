@@ -44,9 +44,14 @@ class EventListView(SortingMixin, ListView):
         ('requesting_till', u'по дате приема заявок')
     ]
 
+    def get_filter(self):
+        if 'type' in self.kwargs:
+            return {'type': self.kwargs['type']}
+        return {}
+
     def get_queryset(self):
         return super(EventListView, self).get_queryset().filter(
-            is_approved=True)
+            is_approved=True, **self.get_filter())
 
 
 class EventCreateView(TemplateResponseMixin, View):
@@ -330,6 +335,7 @@ class EventContactsUpdateView(UpdateView):
 class ParticipantMixin(object):
     model = Participant
     formset_model = ParticipantVideo
+    formset_form_class = ParticipantVideoForm
     add_item_text = u"Добавить еще одну работу"
     template_name = 'events/participant_form.html'
 
@@ -347,10 +353,6 @@ class ParticipantMixin(object):
         else:
             self.object = self.get_object()
             self.event = self.object.event
-        if self.event.owner == request.user:
-            self.formset_form_class = ParticipantVideoFormForEventOwner
-        else:
-            self.formset_form_class = ParticipantVideoForm
         self.formset_form_class.event = self.event
         self.formset_form_class.request = request
         self.ModelFormSet = modelformset_factory(

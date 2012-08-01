@@ -16,6 +16,7 @@
 
 {% block left_column %}
     <section class="b-form b-form_smaller b-form_edit">
+    {% if event.owner != request.user %}
         <form name="editform" action="" method="post">
             {% csrf_token %}
             <div class="b-form__fields">
@@ -48,6 +49,14 @@
                 </div>
             </footer>
         </form>
+    {% else %}
+        <div class="b-form__fields">
+        <h3 class="title">
+            Недопустимое действие
+        </h3>
+            Организатор фестиваля не может принимать участие в нем
+        </div>
+    {% endif %}
     </section>
 
     <script type="text/javascript">

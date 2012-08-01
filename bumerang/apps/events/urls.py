@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
+from bumerang.apps.events.models import Event
 
 from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     EventDetailView, EventEditInfoView, EventCreateView, EventEditLogoView,
@@ -14,6 +15,18 @@ urlpatterns = patterns('',
     url(r'^$',
         EventListView.as_view(),
         name='event-list'
+    ),
+
+    url(r'^festivals/$',
+        EventListView.as_view(),
+        {'type': Event.FESTIVAL},
+        name='festival-list'
+    ),
+
+    url(r'^contests/$',
+        EventListView.as_view(),
+        {'type': Event.CONTEST},
+        'contest-list'
     ),
 
     url(r'^send-request/$',

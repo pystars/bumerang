@@ -41,7 +41,8 @@
                             </div>
                             <div>
                                 {% if item.is_accepting_requests %}
-                                    <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно (<a href="{% url event-request-form item.id %}">подать заявку</a>)
+                                    <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно
+                                    {% if item.owner != request.user %}(<a href="{% url event-request-form item.id %}">подать заявку</a>){% endif %}
                                 {% else %}
                                     <span class="dark-gray">Прием заявок: </span>окончен
                                 {% endif %}
@@ -166,10 +167,10 @@
                 <a href="{% url event-list %}">все</a>
             </li>
             <li>
-                <a href="#">фестивали</a>
+                <a href="{% url festival-list %}">фестивали</a>
             </li>
             <li>
-                <a href="#">конкурсы</a>
+                <a href="{% url contest-list %}">конкурсы</a>
             </li>
         </ul>
         <i class="d-indent__tl"></i>
