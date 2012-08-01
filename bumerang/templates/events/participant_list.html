@@ -39,7 +39,7 @@
                                     <hr />
                                 </div>
                                 {% for object in object_list %}
-                                    <a href="{% url participant-edit object.id %}">{{ object.owner.username }}</a>
+                                    <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>
                                 {% endfor %}
 
                             </div>

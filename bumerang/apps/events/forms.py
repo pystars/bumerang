@@ -84,7 +84,8 @@ class NominationForm(TemplatedForm):
             'title',
             'description',
             'age_from',
-            'age_to'
+            'age_to',
+            'sort_order',
         )
 
 
@@ -132,31 +133,32 @@ class ParticipantVideoForm(ModelForm):
         fields = (
             'age',
             'video',
-            'nominations'
+            'nomination'
         )
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
-        self.fields['nominations'] = forms.ModelChoiceField(
-            label=u'Номинации', queryset=self.event.nomination_set.all(),
-            widget=RadioSelect, empty_label=None)
-
-        self.fields['video'] = forms.ModelChoiceField(
-            label=u'Видео',
-            queryset=Video.objects.filter(
-            owner=self.request.user))
+        self.fields['nomination'].queryset=self.event.nomination_set.all()
+        self.fields['video'].queryset = self.fields['video'].queryset.filter(
+            owner=self.request.user)
 
 
-class ParticipantVideoFormForEventOwner(ParticipantVideoForm):
+class ParticipantVideoReviewForm(ModelForm):
     """
     before using this modelform, we need to setup class:
     event and request needed for properly work
     """
+    class Meta:
+        model = ParticipantVideo
+        fields = (
+            'id',
+            'nominations',
+            'is_accepted'
+        )
 
-    class Meta(ParticipantVideoForm.Meta):
-        widgets = {
-            'nominations': SelectMultiple
-        }
+    def __init__(self, *args, **kwargs):
+        super(ParticipantVideoReviewForm, self).__init__(*args, **kwargs)
+        self.fields['nominations'].queryset = self.event.nomination_set.all()
 
 
 class ParticipantApproveForm(ModelForm):

@@ -27,7 +27,7 @@ from bumerang.apps.events.models import (Event, Nomination, Participant,
     ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination)
 from bumerang.apps.events.forms import (FestivalGroupForm, EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
-    ParticipantVideoFormForEventOwner, GeneralRuleForm, NewsPostForm, JurorForm, ParticipantApproveForm)
+    ParticipantVideoReviewForm, GeneralRuleForm, NewsPostForm, JurorForm)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
 
@@ -251,6 +251,7 @@ class EventNewsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
 class ParticipantMixin(object):
     model = Participant
     formset_model = ParticipantVideo
+    formset_form_class = ParticipantVideoForm
     add_item_text = u"Добавить еще одну работу"
     template_name = 'events/participant_form.html'
 
@@ -268,10 +269,6 @@ class ParticipantMixin(object):
         else:
             self.object = self.get_object()
             self.event = self.object.event
-        if self.event.owner == request.user:
-            self.formset_form_class = ParticipantVideoFormForEventOwner
-        else:
-            self.formset_form_class = ParticipantVideoForm
         self.formset_form_class.event = self.event
         self.formset_form_class.request = request
         self.ModelFormSet = modelformset_factory(
@@ -296,6 +293,15 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
     def get_success_url(self):
         return reverse('participant-edit', args=(self.object.id,))
 
+    def get(self, request, *args, **kwargs):
+        try:
+            self.object = Participant.objects.get(event=self.event,
+                owner=request.user)
+            return HttpResponseRedirect(self.get_success_url())
+        except Participant.DoesNotExist:
+            return super(ParticipantCreateView, self).get(
+                request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         self.object = None
         formset = self.ModelFormSet(request.POST, prefix='participantvideo_set')
@@ -308,7 +314,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
                     self.object = self.model.objects.get(event=self.event,
                         owner=request.user)
                     return HttpResponseRedirect(self.get_success_url())
-                except request.user.DoesNotExist:
+                except Participant.DoesNotExist:
                     return self.render_to_response(
                         self.get_context_data(formset=formset))
             instances = formset.save(commit=False)
@@ -320,20 +326,13 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         return self.render_to_response(self.get_context_data(formset=formset))
 
 
-class ParticipantUpdateView(ParticipantMixin, GenericFormsetWithFKUpdateView):
-    formset_form_class = ParticipantVideoForm
+class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
+        GenericFormsetWithFKUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ParticipantUpdateView, self).get_context_data(**kwargs)
         context.update({'event': self.event})
         return context
-
-    def get_queryset(self):
-    # Если владелец - текущий пользователь, выбирутся
-    # все объекты, иначе ни одного
-        return super(ParticipantUpdateView, self).get_queryset().filter(
-            Q(owner=self.request.user) | Q(event__owner=self.request.user)
-        )
 
     def post(self, request, *args, **kwargs):
         self.object = None
@@ -345,7 +344,71 @@ class ParticipantUpdateView(ParticipantMixin, GenericFormsetWithFKUpdateView):
     #            the name of fk attribute must be same to lower case of fk model
                 setattr(instance, self.model_name, object)
                 instance.save()
+                if instance.nomination not in instance.nominations.all():
+                    instance.nominations.clear()
+                    vn = VideoNomination(nomination=instance.nomination,
+                        participant_video=instance)
+                    vn.save()
+            return HttpResponseRedirect(self.get_success_url())
+        return self.render_to_response(self.get_context_data(formset=formset))
 
+
+class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
+    model = Participant
+    formset_model = ParticipantVideo
+    formset_form_class = ParticipantVideoReviewForm
+    template_name = 'events/participant_review.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in self.http_method_names:
+            handler = getattr(self, request.method.lower(),
+                self.http_method_not_allowed)
+        else:
+            handler = self.http_method_not_allowed
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.object = self.get_object()
+        self.event = self.object.event
+        self.formset_form_class.event = self.event
+        self.ModelFormSet = modelformset_factory(
+            model=self.formset_model,
+            form=self.formset_form_class,
+            extra=0
+        )
+        return handler(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ParticipantReviewView, self).get_context_data(**kwargs)
+        context.update({'event': self.event})
+        return context
+
+    def get_queryset(self):
+    # Если текущий пользователь владелец события, то выбирутся
+    # все объекты, иначе ни одного
+        return super(ParticipantReviewView, self).get_queryset().filter(
+            event__owner=self.request.user
+        )
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        formset = self.ModelFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            for form in formset:
+                instance = form.save(commit=False)
+                instance.save()
+                print request.POST
+                if 'nominations' in form.changed_data:
+                    nominations = form.cleaned_data['nominations']
+                    currents = instance.nominations.values_list('id', flat=True)
+                    removed_nominations = list(set(currents) - set(nominations))
+                    added_nominations = list(set(nominations) - set(currents))
+                    VideoNomination.objects.filter(
+                        nomination__in=removed_nominations).delete()
+                    VideoNomination.objects.bulk_create([
+                        VideoNomination(nomination=nomination,
+                                participant_video=instance)
+                         for nomination in added_nominations])
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
 

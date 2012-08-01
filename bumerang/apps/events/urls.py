@@ -6,7 +6,7 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     EventDetailView, EventEditInfoView, EventCreateView, EventEditLogoView,
     ParticipantUpdateView, EventNominationsUpdateView,
     EventGeneralRuleUpdateView, EventNewsUpdateView, ParticipantListView,
-    EventJurorsUpdateView)
+    EventJurorsUpdateView, ParticipantReviewView)
 
 
 urlpatterns = patterns('',
@@ -68,5 +68,10 @@ urlpatterns = patterns('',
     url(r'^participant(?P<pk>[\d]+)/edit/$',
         login_required(ParticipantUpdateView.as_view()),
         name='participant-edit'
+    ),
+
+    url(r'^participant(?P<pk>[\d]+)/review/$',
+        login_required(ParticipantReviewView.as_view()),
+        name='participant-review'
     ),
 )

@@ -129,6 +129,7 @@ class Nomination(TitleUnicode, models.Model):
         **nullable)
     age_to = models.PositiveSmallIntegerField(u'Возраст до(включительно)',
         **nullable)
+    sort_order = models.PositiveSmallIntegerField(u'Сортировка')
 
     class Meta:
         verbose_name = u'Номинация'
@@ -158,13 +159,19 @@ class Participant(models.Model):
 class ParticipantVideo(models.Model):
     participant = models.ForeignKey(Participant,
         verbose_name=u'Заявка на фестиваль')
+    nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация',
+        related_name='user_selected_participantvideo_set')
     nominations = models.ManyToManyField(Nomination, verbose_name=u'Номинации',
         through='VideoNomination', blank=False)
     age = models.PositiveSmallIntegerField(u'Возраст автора', blank=False)
     video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False)
+    is_accepted = models.BooleanField(u'Видео принято', default=False)
 
     class Meta:
         unique_together = (("participant", "video"),)
+
+    def save(self, *args, **kwargs):
+        super(ParticipantVideo, self).save(*args, **kwargs)
 
 
 class VideoNomination(models.Model):
@@ -179,5 +186,5 @@ class VideoNomination(models.Model):
     participant_video = models.ForeignKey(ParticipantVideo,
         verbose_name=u'Видео участника')
     nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация')
-    is_accepted = models.BooleanField(u'Видео принято', default=False)
-    result = models.PositiveSmallIntegerField(u'Итог', choices=STATUS_CHOICES)
+    result = models.PositiveSmallIntegerField(u'Итог', choices=STATUS_CHOICES,
+        **nullable)
