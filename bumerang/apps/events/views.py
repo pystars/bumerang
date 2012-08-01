@@ -403,6 +403,11 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
             for instance in instances:
                 instance.participant = self.object
                 instance.save()
+                if instance.nomination not in instance.nominations.all():
+                    instance.nominations.clear()
+                    vn = VideoNomination(nomination=instance.nomination,
+                        participant_video=instance)
+                    vn.save()
             return HttpResponseRedirect(self.get_success_url())
 
         return self.render_to_response(self.get_context_data(formset=formset))
