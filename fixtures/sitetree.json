@@ -838,5 +838,28 @@
             "hidden": false,
             "urlaspattern": true
         }
+    },
+    {
+        "pk": 36,
+        "model": "sitetree.treeitem",
+        "fields": {
+            "parent": null,
+            "access_restricted": false,
+            "access_permissions": [],
+            "description": "",
+            "insitetree": true,
+            "hint": "",
+            "url": "event-edit-contacts event.id",
+            "inbreadcrumbs": true,
+            "title": "\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b",
+            "tree": 5,
+            "access_perm_type": 1,
+            "alias": null,
+            "sort_order": 36,
+            "inmenu": true,
+            "access_loggedin": false,
+            "hidden": false,
+            "urlaspattern": true
+        }
     }
 ]
