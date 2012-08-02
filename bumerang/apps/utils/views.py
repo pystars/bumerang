@@ -113,15 +113,15 @@ class GenericFormsetWithFKUpdateView(UpdateView):
         self.model_name = self.model.__name__.lower()
 
     def get_context_data(self, **kwargs):
-        context = kwargs
         object = self.get_object()
         qs = self.formset_model.objects.filter(**{self.model_name:object})
-        context.update({
+        ctx = {
             self.model_name: object,
             'formset': self.ModelFormSet(queryset=qs),
             'add_item_text': self.add_item_text,
-        })
-        return context
+        }
+        ctx.update(kwargs)
+        return ctx
 
     def get_success_url(self):
         return self.request.path
