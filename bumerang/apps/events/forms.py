@@ -24,6 +24,7 @@ class EventCreateForm(EditFormsMixin, TemplatedForm):
             'description',
             'text_rules',
             'file_rules',
+            'contacts_raw_text',
         )
 
 
