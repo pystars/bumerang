@@ -12,7 +12,7 @@ $(function() {
     if ($(festivalDetailPageSelector)) {
         /* Tabs handler */
         $('div.tabs a.b-button').on('click', function(e) {
-            e.preventDefault();
+//            e.preventDefault();
             window.location.hash = this.hash;
             var el = $(e.target);
             $('div.tabs a.b-button').removeClass('current');
