@@ -186,9 +186,10 @@
 
 {% block right_menu %}
     <nav class="b-side-nav d-indent">
+        {% if event.group %}
         <ul>
             <h4>Архив фестивалей</h4>
-            {% for item in festivals_archive %}
+            {% for item in event.group.event_set.all %}
                 <li>
                     <a href="{% url event-detail item.id %}" title="{{ item.title }}">{{ object.group.title }} {{ item.start_date.year }}</a>
                 </li>
@@ -198,6 +199,7 @@
         <i class="d-indent__tr"></i>
         <i class="d-indent__br"></i>
         <i class="d-indent__bl"></i>
+        {% endif %}
     </nav>
 {% endblock %}
 {##}

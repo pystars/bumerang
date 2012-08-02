@@ -16,32 +16,13 @@
 
 {% block left_column %}
     <section class="b-form b-form_smaller b-form_edit">
-    {% if event.owner != request.user %}
-        <form name="editform" action="" method="post">
+        <form name="editform" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="b-form__fields">
                 <h3 class="title">
                     Заполните форму подачи заявки
                 </h3>
-
-{#                {{ group_form }}#}
-{##}
-{#                {{ event_form }}#}
-
-                    {{ formset.management_form }}
-
-                    {% for form in formset %}
-                        <fieldset id="{{ form.prefix }}-row">
-                            {{ form }}
-{#                            {% for field in form %}#}
-{#                                {{ field }}#}
-{#                                {{ field|field_type }}#}
-{#                            {% endfor %}#}
-                        </fieldset>
-                    {% endfor %}
-
-                    {{ event_form }}
-
+                {{ event_form }}
             </div>
             <footer class="b-form__footer">
                 <div class="wrap">
@@ -49,28 +30,10 @@
                 </div>
             </footer>
         </form>
-    {% else %}
-        <div class="b-form__fields">
-        <h3 class="title">
-            Недопустимое действие
-        </h3>
-            Организатор фестиваля не может принимать участие в нем
-        </div>
-    {% endif %}
     </section>
-
-    <script type="text/javascript">
-        $(function() {
-            $('form fieldset').formset({
-                prefix: 'participantvideo_set',
-                addText: '{{ add_item_text }}'
-            })
-        })
-    </script>
 {% endblock %}
 
 {% block right_menu %}
 <nav class="b-side-nav d-indent">
-
 </nav>
 {% endblock %}

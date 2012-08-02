@@ -65,7 +65,7 @@ class TemplatedForm(forms.ModelForm):
 
         if widget_type == ClearableFileInput:
             if field.value():
-                val = basename(field.value())
+                val = basename(u'{0}'.format(field.value()))
                 file_text = u'Текущий загруженный файл: {0}'.format(val)
                 ctx['data'].update(file_text=file_text)
 

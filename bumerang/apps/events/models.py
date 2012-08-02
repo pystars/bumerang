@@ -8,13 +8,25 @@ from django.utils.timezone import now
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
-from bumerang.apps.accounts.models import get_mini_avatar_path
 from bumerang.apps.utils.media_storage import media_storage
-from bumerang.apps.utils.models import TitleUnicode
+from bumerang.apps.utils.models import TitleUnicode, FileModelMixin
 from bumerang.apps.video.models import Video
 
 
 nullable = dict(null=True, blank=True)
+
+def get_juror_avatar_path(instance, filename):
+    path = os.path.join(settings.MEDIA_ROOT, 'jurors', str(instance.id))
+    if not os.path.exists(path):
+        os.makedirs(path)
+    ext = os.path.splitext(filename)[1]
+    return 'jurors_avatars/{0}/min{1}'.format(instance.id, ext)
+
+def get_event_rules_path(instance, filename):
+    path = os.path.join(settings.MEDIA_ROOT, 'event_rules', str(instance.id))
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return 'event_rules/{0}/{1}'.format(instance.id, filename)
 
 def get_logo_path(instance, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'logos', str(instance.id))
@@ -40,7 +52,7 @@ class FestivalGroup(TitleUnicode, models.Model):
         verbose_name_plural = u'Группы фестивалей'
 
 
-class Event(TitleUnicode, models.Model):
+class Event(TitleUnicode, FileModelMixin, models.Model):
     CONTEST = 1
     FESTIVAL = 2
     TYPES_CHOICES = (
@@ -67,7 +79,7 @@ class Event(TitleUnicode, models.Model):
     description = models.TextField(u'Описание фестиваля')
     text_rules = models.TextField(u'Правила фестиваля', blank=False)
     file_rules = models.FileField(u'Правила фестиваля (документ)',
-        upload_to='rules', blank=True)
+        upload_to='events_rules', storage=media_storage, blank=True)
     contacts_raw_text = models.TextField(u'Контакты', **nullable)
 
     created = models.DateTimeField(u'Дата добавления', default=now,
@@ -86,7 +98,7 @@ class Event(TitleUnicode, models.Model):
         verbose_name_plural = u'События'
 
 
-class Juror(models.Model):
+class Juror(FileModelMixin, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
     email = models.EmailField(_('e-mail address'))
@@ -95,7 +107,7 @@ class Juror(models.Model):
     info_middle_name = models.CharField(u'Отчество', max_length=100)
     #TODO: just do it
     min_avatar = models.ImageField(u'Фото',
-        upload_to=get_mini_avatar_path, storage=media_storage, **nullable)
+        upload_to=get_juror_avatar_path, storage=media_storage, **nullable)
 
     class Meta:
         verbose_name = u'Член жюри'

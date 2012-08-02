@@ -19,7 +19,6 @@ from django.http import HttpResponseRedirect
 from django.forms.util import ErrorList
 from django.views.generic import ListView, View
 from django.views.generic.base import TemplateResponseMixin
-from django.views.generic.detail import DetailView
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 
@@ -91,24 +90,12 @@ class EventCreateView(TemplateResponseMixin, View):
                         group_form=group_form, event_form=event_form)
             event.owner = request.user
             event.save()
-
             self.template_name = \
                 'events/event_send_request_sended.html'
             return self.render_to_response(self.get_context_data())
         else:
             return self.forms_invalid(
                 group_form=group_form, event_form=event_form)
-
-
-class EventDetailView(DetailView):
-    model = Event
-
-    def get_context_data(self, **kwargs):
-        context = kwargs
-        festivals_archive = Event.objects.filter(
-            group=self.get_object().group).order_by('start_date')
-        context.update({'festivals_archive': festivals_archive})
-        return context
 
 
 class EventPressListView(ListView):

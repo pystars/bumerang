@@ -32,8 +32,8 @@
             <div class="l-cols__i cleared" style="padding-top: 16px;">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
-
                         <section class="b-form b-form_smaller b-form_edit">
+                            {% if event.owner != request.user %}
                             <form name="editform" action="" method="post">
                                 {% csrf_token %}
 
@@ -88,8 +88,16 @@
                                     </div>
                                 </footer>
                             </form>
-                        </section>
+                            {% else %}
+                                <div class="b-form__fields">
+                                    <h3 class="title">
+                                        Недопустимое действие
+                                    </h3>
+                                    Организатор фестиваля не может принимать участие в нем
+                                </div>
+                            {% endif %}
 
+                        </section>
                     </div>
                 </section>
             </div>

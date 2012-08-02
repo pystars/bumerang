@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
+from django.views.generic.detail import DetailView
 from bumerang.apps.events.models import Event
 
 from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
-    EventDetailView, EventEditInfoView, EventCreateView, EventEditLogoView,
+    EventEditInfoView, EventCreateView, EventEditLogoView,
     ParticipantUpdateView, EventNominationsUpdateView,
     EventGeneralRuleUpdateView, EventNewsUpdateView, ParticipantListView,
     EventJurorsUpdateView, EventPressListView, EventFilmsListView,
@@ -35,7 +36,7 @@ urlpatterns = patterns('',
     ),
 
     url(r'^event(?P<pk>[\d]+)/$',
-        EventDetailView.as_view(),
+        DetailView.as_view(model=Event),
         name='event-detail'
     ),
 
