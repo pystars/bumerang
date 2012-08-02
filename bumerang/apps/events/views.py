@@ -90,6 +90,7 @@ class EventCreateView(TemplateResponseMixin, View):
                         group_form=group_form, event_form=event_form)
             event.owner = request.user
             event.save()
+
             self.template_name = \
                 'events/event_send_request_sended.html'
             return self.render_to_response(self.get_context_data())
