@@ -1,7 +1,7 @@
 <div class="b-gallery__items">
     <form name="photoalbums" action="{% url photoalbums-delete %}" method="post">
         {% for photoalbum in object.photoalbum_set.all %}
-            <figure class="b-gallery__item photoalbum" id="photoalbums-item-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}">
+            <figure class="b-gallery__item photoalbum" data-item-id="{{ photoalbum.id }}">
             <a href="{% url photo-album-detail photoalbum.id %}">
                 <span class="gi-img">
                     <span>
@@ -19,7 +19,7 @@
             </figcaption>
                 {% if request.user.profile.id == photoalbum.owner_id %}
                     <div class="ui-checkbox">
-                    <input type="checkbox" name="photoalbums" value="{{ photoalbum.id }}" id="checkbox-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}" />
+                    <input type="checkbox" name="photoalbums" value="{{ photoalbum.id }}" id="checkbox-{{ photoalbum.id }}"/>
                     <label for="checkbox-{{ photoalbum.id }}"></label>
                 </div>
                     <div class="ui-menu">
@@ -29,7 +29,7 @@
                             <span class="b-dropdown__popup__i">
                                 <span class="b-dropdown__popup__i__i">
                                     <span class="b-dropdown__arr"></span>
-                                    <a href="#" class="b-dropdown__link" id="photoalbum-delete-{{ photoalbum.id }}" data-photoalbum-id="{{ photoalbum.id }}">Удалить</a>
+                                    <a href="#" class="b-dropdown__link photoalbum-menu-delete-link" data-item-id="{{ photoalbum.id }}">Удалить</a>
                                     <a href="{% url photo-album-edit photoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
                                 </span>
                             </span>

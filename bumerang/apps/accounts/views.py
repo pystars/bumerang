@@ -20,7 +20,7 @@ from django.contrib.sites.models import Site, get_current_site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
@@ -33,9 +33,12 @@ from bumerang.apps.utils.functions import random_string
 from bumerang.apps.video.models import Video
 from bumerang.apps.accounts.forms import (RegistrationForm,
       PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
-      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm, UserContactsForm, OrganizationContactsForm)
+      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm,
+      UserContactsForm, OrganizationContactsForm,
+      EventRegistrationRequestForm, FestivalProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
-from bumerang.apps.utils.email import send_activation_success, send_activation_link, send_new_password
+from bumerang.apps.utils.email import send_activation_success, \
+    send_activation_link, send_new_password, send_fest_registration_request
 #from bumerang.apps.utils.tasks import (send_new_password_task,
 #    send_activation_link_task)
 
@@ -78,21 +81,29 @@ def login(request, template_name='registration/login.html',
             Вы авторизованы. Пожалуйста, заполните имя вашего профиля.
             '''
 
-            if profile.type == 1:
+            if profile.type == Profile.TYPE_USER:
                 name = profile.nickname or profile.title
                 if name:
                     message = u'''
                     Добро пожаловать, {0}. Вы авторизованы.
                     '''.format(name)
-            if profile.type == 2:
+
+            if profile.type == Profile.TYPE_SCHOOL:
                 if profile.title:
                     message = u'''
                     Добро пожаловать. Вы авторизовались как школа «{0}».
                     '''.format(profile.title)
-            if profile.type == 3:
+
+            if profile.type == Profile.TYPE_STUDIO:
                 if profile.title:
                     message = u'''
                     Добро пожаловать. Вы авторизовались как студия «{0}».
+                    '''.format(profile.title)
+
+            if profile.type == Profile.TYPE_FESTIVAL:
+                if profile.title:
+                    message = u'''
+                    Добро пожаловать. Вы авторизовались как фестиваль «{0}».
                     '''.format(profile.title)
 
             notify_success(request, message)
@@ -139,31 +150,51 @@ class RegistrationFormView(CreateView):
     form_class = RegistrationForm
     template_name = "accounts/registration.html"
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_anonymous():
+            return super(RegistrationFormView, self).get(
+                request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('BumerangIndexView'))
+
     def get_success_url(self):
         return reverse('BumerangIndexView')
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.is_active = False
-        self.object.activation_code = random_string(32)
 
-        current_site = Site.objects.get_current()
-        url = reverse('activate-account', args=[self.object.activation_code])
+        # Festival user type
+        if self.object.type == 4:
+            self.object.save()
+            send_fest_registration_request()
 
-        full_activation_url = 'http://{0}{1}'.format(current_site, url)
-        self.object.activation_code_expire = now() + timedelta(days=1)
-        self.object.save()
+            self.request.session['event_profile_id'] = self.object.id
 
-#        send_activation_link_task.delay(full_activation_url,
-#                                  form.cleaned_data['username'])
+            notify_success(self.request, message=u'''
+                Заполните все поля чтобы отправить заявку на рассмотрение''')
 
-        send_activation_link(full_activation_url, form.cleaned_data['username'])
+            return HttpResponseRedirect(reverse('register-event-request'))
 
-        notify_success(self.request, message=u'''
-            Регистрация прошла успешно. Вам была отправлена ссылка
-            для активации аккаунта.
-            Проверьте почту и активируйте ваш аккаунт.
-        ''')
+        else:
+            self.object.activation_code = random_string(32)
+
+            current_site = Site.objects.get_current()
+            url = reverse('activate-account',
+                args=[self.object.activation_code])
+
+            full_activation_url = 'http://{0}{1}'.format(current_site, url)
+            self.object.activation_code_expire = now() + timedelta(days=1)
+            self.object.save()
+
+            send_activation_link(
+                full_activation_url, form.cleaned_data['username'])
+
+            notify_success(self.request, message=u'''
+                Регистрация прошла успешно. Вам была отправлена ссылка
+                для активации аккаунта.
+                Проверьте почту и активируйте ваш аккаунт.
+                ''')
 
         return super(RegistrationFormView, self).form_valid(form)
 
@@ -171,6 +202,38 @@ class RegistrationFormView(CreateView):
         notify_error(self.request, message=u'При регистрации произошла ошибка.')
 
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class RegisterEventRequestForm(FormView):
+    form_class = EventRegistrationRequestForm
+    template_name = "accounts/regisration_event_info_form.html"
+    profile_id = None
+
+    def _get_profile_id(self):
+        return self.request.session.get('event_profile_id')
+
+    def get(self, request, *args, **kwargs):
+        if self._get_profile_id():
+            return super(RegisterEventRequestForm, self).get(
+                request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('registration'))
+
+    def get_success_url(self):
+        return reverse('BumerangIndexView')
+
+    def get_form(self, form_class):
+        return form_class(self.request.POST, instance=Profile.objects.get(
+            id=self._get_profile_id()))
+
+    def form_valid(self, form):
+        form.save()
+
+        notify_success(self.request, message=u'''
+        Ваша заявка принята, мы с вами свяжемся.
+        ''')
+
+        return super(RegisterEventRequestForm, self).form_valid(form)
 
 
 class AccountActivationView(TemplateView):
@@ -225,8 +288,6 @@ class PasswordRecoveryView(FormView):
         profile.set_password(new_password)
         profile.save()
 
-#        send_new_password_task.delay(new_password, receiver_email)
-
         send_new_password(new_password, receiver_email)
         notify_success(self.request, message=u'''
             Ваш новый пароль был отправлен на указанный вами e-mail.
@@ -239,6 +300,14 @@ class PasswordRecoveryView(FormView):
 
 class ProfileView(DetailView):
     model = Profile
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProfileView, self).get_context_data(**kwargs)
+        ctx.update({
+            'hide_show_profile_link': True,
+        })
+
+        return ctx
 
     def get_object(self, queryset=None):
         if 'pk' not in self.kwargs:
@@ -307,6 +376,8 @@ class ProfileInfoEditView(UpdateView):
             return SchoolProfileInfoForm
         if self.request.user.profile.type == 3:
             return StudioProfileInfoForm
+        if self.request.user.profile.type == 4:
+            return FestivalProfileInfoForm
 
     def get_success_url(self):
         return reverse("profile-detail", args=[self.get_object().id])
@@ -462,7 +533,7 @@ class ProfileAvatarEditView(UpdateView):
         cropped_image.thumbnail((175, 175), Image.ANTIALIAS)
 
         temp_handle = StringIO()
-        cropped_image.save(temp_handle, 'jpeg')
+        cropped_image.save(temp_handle, 'jpeg', quality=100)
         temp_handle.seek(0)
 
         suf = SimpleUploadedFile('min.jpg',
@@ -568,3 +639,13 @@ class ProfileSettingsEditView(UpdateView):
 
         return self.render_to_response(
             self.get_context_data(**{form_name:form}))
+
+
+class ProfileEventListView(DetailView):
+    model = Profile
+    template_name = "accounts/profile_event_list.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProfileEventListView, self).get_context_data(**kwargs)
+        ctx['events'] = self.object.owned_events.all()
+        return ctx

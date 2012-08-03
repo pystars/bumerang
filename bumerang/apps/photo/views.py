@@ -13,7 +13,7 @@ from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
 from bumerang.apps.photo.models import PhotoCategory
 
-from bumerang.apps.utils.functions import thumb_img
+from bumerang.apps.utils.functions import thumb_img, thumb_crop_img
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import PhotoAlbum
 from models import Photo
@@ -24,7 +24,7 @@ from forms import (PhotoForm, PhotoUpdateAlbumForm, PhotoCreateForm,
 class PhotoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
     model = Photo
     form_class = PhotoUpdateAlbumForm
-    
+
     def get_queryset(self, **kwargs):
         return super(PhotoMoveView, self).get_queryset(**kwargs)
 
@@ -75,7 +75,7 @@ class PhotoEditMixin(object):
         img = img.convert('RGB')
         self.object.original_file.file.seek(0)
         self.object.image = thumb_img(img, 938)
-        self.object.thumbnail = thumb_img(img, 190)
+        self.object.thumbnail = thumb_crop_img(img, width=190, height=123)
         self.object.icon = thumb_img(img, 60)
         del img
         self.object.save()

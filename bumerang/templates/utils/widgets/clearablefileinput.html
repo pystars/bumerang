@@ -1,0 +1,27 @@
+<fieldset>
+    <div class="b-form__field">
+        <label>
+            <span class="f-title" style="width: 100%;">
+                {{ data.label }} {% if data.required %}<span class="sp-err">*</span>{% endif %}
+            </span>
+
+            <span class="f-file">
+                <input{{ data.attrs|safe }} type="file" name="{{ data.name }}" id="{{ data.id }}" />
+            </span>
+
+            {% if data.errors %}
+                <div class="sp-err"><span>{{ data.errors }}</span></div>
+            {% endif %}
+
+            <span class="f-title"></span>
+
+            {% if data.value != None %}
+                {% if data.value != '' %}
+                    <span style="font-style: italic; display: block;">{{ data.file_text }}</span>
+                    <input type="checkbox" name="{{ data.name }}-clear" id="{{ data.name }}-clear_id">
+                    <label for="{{ data.name }}-clear_id">Удалить файл</label>
+                {% endif %}
+            {% endif %}
+        </label>
+    </div>
+</fieldset>

@@ -2,10 +2,10 @@
 add-apt-repository -y ppa:shiki/mediainfo
 add-apt-repository -y ppa:stebbins/handbrake-snapshots
 echo """
-deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric multiverse
-deb-src http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric multiverse
-deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric-updates multiverse
-deb-src http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ oneiric-updates multiverse
+deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ precise multiverse
+deb-src http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ precise multiverse
+deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ precise-updates multiverse
+deb-src http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ precise-updates multiverse
 """ >> /etc/apt/sources.list
 apt-get update
 apt-get upgrade -y
@@ -44,7 +44,7 @@ pip install uwsgi
 git clone git://github.com/pystars/bumerang.git /home/ubuntu/bumerang
 mkdir /var/www
 mkdir /var/log/uwsgi
-virtualenv --no-site-packages --unzip-setuptools /var/www/.virtualenvs/bumerang
+virtualenv /var/www/.virtualenvs/bumerang
 pip -E /var/www/.virtualenvs/bumerang install -U -r /home/ubuntu/bumerang/requirements.txt
 chown -R www-data:adm /var/www
 chown -R www-data:adm /var/log/uwsgi
@@ -58,3 +58,11 @@ uwsgi --ini /home/ubuntu/bumerang/uwsgi.ini
 # on converter we need add this
 ln -s /home/ubuntu/bumerang/celery.sh /etc/init.d/celeryd
 ln -s /home/ubuntu/bumerang/celeryd.cnf /etc/default/celeryd
+#FOR RABBITMQ
+echo """
+deb http://www.rabbitmq.com/debian/ testing main
+""" >> /etc/apt/sources.list
+apt-get update
+apt-get install librabbitmq-dev rabbitmq-server
+
+#source /etc/bash_completion.d/virtualenvwrapper

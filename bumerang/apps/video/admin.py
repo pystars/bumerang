@@ -21,6 +21,7 @@ class VideoAdmin(admin.ModelAdmin):
     def get_duration(self, field):
         temp_file = tempfile.NamedTemporaryFile()
         temp_file.write(field.file.read())
+        field.file.seek(0)
         duration = video_duration(temp_file.name)
         temp_file.close()
         return duration

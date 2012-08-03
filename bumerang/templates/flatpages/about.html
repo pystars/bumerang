@@ -6,9 +6,6 @@
     <nav class="b-side-nav d-indent">
         <h4>Все разделы</h4>
         {% sitetree_menu from "main_menu" include "about" template "sitetree/topmenu.html" %}
-        <i class="d-indent__tl"></i>
-        <i class="d-indent__tr"></i>
-        <i class="d-indent__br"></i>
-        <i class="d-indent__bl"></i>
+        {% include 'snippets/round_frame.html' %}
     </nav>
 {% endblock %}

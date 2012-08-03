@@ -32,12 +32,21 @@ class MakeScreenShots(Task):
         for preview in video.preview_set.all():
             preview.delete()
         options = ConvertOptions.objects.get(title='hq_file')
-        size = '{0}x{1}'.format(options.width, options.height)
         source_file = NamedTemporaryFile(delete=False,
             suffix='.mp4', prefix='screen_shot_source')
         source_file.write(video.best_quality_file().read())
         logger.info("Downloaded best {0} ({1})".format(video, source_file.name))
         source_file.close()
+        try:
+            file_params = media_info(source_file.name)
+        except OSError:
+            self._error_handle(video)
+            return "Stop screenshoot - bad source file"
+        if not file_params.get('Video', None):
+            self._error_handle(video)
+            return "Stop screenshoot - bad source file"
+        options.update(file_params)
+        size = '{0}x{1}'.format(options.width, options.height)
         video.best_quality_file().open()
         duration = video.seconds_duration()
         if duration > 30:
@@ -59,6 +68,7 @@ class MakeScreenShots(Task):
                 range(offset, offset+step)), size, result_file.name)
             process = subprocess.call(cmd, shell=False)
             if process:
+                Video.objects.filter(pk=video_id).update(status=Video.ERROR)
                 logger.error("Some error during ffmpeging %s" % video.pk)
                 return "Stop making screen shoots - video is deleted"
             try:

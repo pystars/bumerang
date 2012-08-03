@@ -1,8 +1,13 @@
 function playlistitem_set_sorting() {
     var i = 0;
-    $.each($("#playlistitem_set-group .module.table.dynamic-form div.tbody.dynamic-form"),
+    $.each($("#playlistitem_set-group .module>table .dynamic-playlistitem_set"),
         function(index, elem)
     {
+        if (index % 2) {
+            $(elem).addClass("row2").removeClass("row1")
+        } else {
+            $(elem).addClass("row1").removeClass("row2")
+        }
         if ($(elem).find("[name$='video']").attr('value')) {
             $(elem).find("[name$='sort_order']").attr('value', index);
         } else {
@@ -17,8 +22,8 @@ function playlistitem_set_sorting() {
 }
 
 $(function() {
-    $("#playlist_form #playlistitem_set-group .module.table.dynamic-form").sortable({
-        items: "div.tbody.dynamic-form",
+    $("#playlist_form #playlistitem_set-group .module>table").sortable({
+        items: "tr.form-row",
         placeholder: "ui-state-highlight",
         stop: playlistitem_set_sorting
     });

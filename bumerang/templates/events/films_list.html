@@ -1,0 +1,71 @@
+{% extends "events/tabs_wrapper.html" %}
+
+{% block title %}Фильмы-участники{% endblock %}
+
+{% block head_js %}
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/tabs_menu.html' with selected='films' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+                {% if event.nomination_set.all %}
+                <h3>Номинации:</h3>
+                <ul>
+                    {% for item in event.nomination_set.all %}
+                        {% if item != nomination %}
+                            <li><a href="{% url event-films-by-id event.id item.id %}">{{ item.title }}</a></li>
+                        {% else %}
+                            <li>{{ item.title }}</li>
+                        {% endif %}
+
+                    {% endfor %}
+                </ul>
+
+                <div class="b-hr"><hr /></div>
+                {% endif %}
+
+                {% if object_list %}
+                    <h3>{{ nomination }}</h3>
+
+                    {% for object in object_list %}
+                        {% with item=object.video %}
+                        <div>
+                            <table>
+                                <tr>
+                                    <td style="width: 190px;">
+                                        <a href="{% url video-detail item.id %}" title="{{ item.title }}">
+                                            <span>
+                                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
+                                            </span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url video-detail item.id %}" title="{{ item.title }}"><h3>{{ item.title }}</h3></a>
+                                        <div>
+                                            <span class="dark-gray">Участник </span>
+                                            <a href="{% url profile-detail item.owner_id %}">{{ item.owner.profile.title }}</a>
+                                        </div>
+                                        <div>{{ item.description|truncatechars:200 }}</div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="b-hr"><hr /></div>
+                        </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <h3>Фильмов в данной номинации пока не заявлено</h3>
+                {% endif %}
+            </header>
+        </section>
+        {% if is_paginated %}
+        {% include 'paginator/paginator.html' %}
+        {% endif %}
+    </div></dd>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "events/tabs_wrapper.html" %}
+
+{% block title %}Пресс-центр{% endblock %}
+
+{% block head_js %}
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/tabs_menu.html' with selected='press' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+
+                {% for item in object_list %}
+                    <div>
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.description|linebreaks|striptags }}</p>
+                        <p>Опубликовано: {{ item.creation_date }}</p>
+                        <div class="b-hr"><hr /></div>
+                    </div>
+                {% endfor %}
+
+            </header>
+        </section>
+    </div></dd>
+{% endblock %}

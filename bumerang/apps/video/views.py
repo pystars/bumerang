@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-import json
-
+from django.utils import simplejson
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.db.models import Q, F
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.db.models import F
+from django.http import HttpResponseForbidden, \
+    HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
+from django.views.generic.edit import ModelFormMixin, \
+    UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
+from bumerang.apps.accounts.models import Profile
 
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
@@ -33,7 +35,7 @@ class VideoMixin(object):
 class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
     model = Video
     form_class = VideoUpdateAlbumForm
-    
+
     def get_queryset(self, **kwargs):
         return super(VideoMoveView, self).get_queryset(**kwargs)
 
@@ -43,7 +45,7 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
         except ValueError:
             try:
                 kwargs = dict(id__in=map(int,
-                    json.loads(form.cleaned_data['video_id'])))
+                    simplejson.loads(form.cleaned_data['video_id'])))
             except ValueError:
                 return HttpResponseForbidden()
         if 'album_id' in form.cleaned_data:
@@ -150,69 +152,47 @@ class VideoListView(VideoMixin, ListView):
         )
         return qs
 
-#def save_upload( uploaded, filename, raw_data ):
-#    '''
-#    raw_data: if True, uploaded is an HttpRequest object with the file being
-#              the raw post data
-#              if False, uploaded has been submitted via the basic form
-#              submission and is a regular Django UploadedFile in request.FILES
-#    '''
-#    try:
-#        from io import FileIO, BufferedWriter
-#
-#        with BufferedWriter(FileIO(VIDEO_UPLOAD_PATH + filename, "wb")) as dest:
-#            # if the "advanced" upload, read directly from the HTTP request
-#            # with the Django 1.3 functionality
-#            if raw_data:
-#                foo = uploaded.read(1024)
-#                while foo:
-#                    dest.write(foo)
-#                    foo = uploaded.read(1024)
-#                    # if not raw, it was a form upload so read in the normal
-#                    # Django chunks fashion
-#            else:
-#                for c in uploaded.chunks():
-#                    dest.write(c)
-#                # got through saving the upload, report success
-#            return True
-#    except IOError:
-#        # could not open the file most likely
-#        pass
-#    return False
 
-#def upload_view(request):
-#
-#    if request.method == 'GET':
-#        return render(request, 'video/upload.html')
-#
-#    if request.method == 'POST':
-#
-#        if request.is_ajax():
-#            upload = request
-#            is_raw = True
-#            try:
-#                filename = request.GET['qqfile']
-#            except KeyError:
-#                return HttpResponse(status=500)
-#        else:
-#            is_raw = False
-#            if len(request.FILES) == 1:
-#                upload = request.FILES.values()[0]
-#            else:
-#                raise Http404("Bad upload")
-#            filename = upload.name
-#
-#        success = save_upload(upload, filename, is_raw)
-#
-#        if success:
-#            video = Video(original_filename = filename)
-#            try:
-#                video.save()
-#            except Exception, e:
-#                print e
-#
-#            print 'Model created'
-#            return HttpResponse(json.dumps({
-#                'success': success
-#            }))
-#        return HttpResponse(json.dumps({'success': success}))
+class VideoListAjaxView(DetailView):
+    model = Profile
+    response_class = HttpResponse
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs['content_type'] = 'application/json'
+        return self.response_class(context, **response_kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        req_type = request.GET.get('type')
+
+        result = {}
+
+        if req_type == 'albums':
+
+            albums_fields = ['id', 'title', 'description', 'cover']
+            albums_qs = VideoAlbum.objects.filter(owner=self.object)
+            albums_list = albums_qs.values(*albums_fields)
+            result['albums_list'] = list(albums_list)
+
+        if req_type == 'videos' or req_type == 'videos_with_no_album':
+
+            videos_fields = ['id', 'title', 'description',
+                             'album', 'original_file']
+
+            filter = { 'owner': self.object }
+            if req_type == 'videos_with_no_album':
+                filter['album'] = None
+
+            videos_qs = Video.objects.filter(**filter)
+
+            videos_list = videos_qs.values(*videos_fields)
+            result['videos_list'] = list(videos_list)
+
+
+
+        serialized = simplejson.dumps(result)
+
+        from time import sleep
+        sleep(0.2)
+
+        return self.render_to_response(serialized)

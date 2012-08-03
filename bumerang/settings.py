@@ -9,13 +9,8 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '',
         'PORT': '',
-    }
+    },
 }
-
-try:
-    from bumerang.local_settings import *
-except ImportError:
-    pass
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -37,23 +32,11 @@ USE_L10N = True
 USE_TZ = True
 
 #Storage settings
-if LOCALHOST:
-    STATIC_URL = '/static/'
-    MEDIA_URL = '/media/'
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL[1:])
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL[1:])
-else:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    MEDIA_ROOT = ''
-    AWS_STORAGE_BUCKET_NAME = 'static.probumerang.tv'
-    AWS_MEDIA_STORAGE_BUCKET_NAME = 'media.probumerang.tv'
-    AWS_S3_SECURE_URLS = False
-    AWS_PRELOAD_METADATA = True
-    AWS_REDUCED_REDUNDANCY = True
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    MEDIA_URL = 'http://media.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
-    STATIC_ROOT = ''
-    STATIC_URL = 'http://static.probumerang.tv.s3-website-eu-west-1.amazonaws.com/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, MEDIA_URL[1:])
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL[1:])
+
 
 FILE_UPLOAD_TEMP_DIR = '/tmp'
 FILE_UPLOAD_PERMISSIONS = 0644
@@ -84,10 +67,14 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.static',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    # bumerang - specific ctx processors
     'bumerang.apps.accounts.context_processors.global_login_form',
 ]
 
 MIDDLEWARE_CLASSES = [
+#    'johnny.middleware.LocalStoreClearMiddleware',
+#    'johnny.middleware.QueryCacheMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -143,6 +130,7 @@ INSTALLED_APPS = [
     'django_ses',
     'django_wysiwyg',
     'django_extensions',
+    'django_coverage',
     # internal
     'bumerang.apps.accounts',
     'bumerang.apps.news',
@@ -156,7 +144,35 @@ INSTALLED_APPS = [
     'bumerang.apps.photo.albums',
     'bumerang.apps.utils',
     'bumerang.apps.messages',
+    'bumerang.apps.events'
 ]
+
+
+#if LOCALHOST:
+#CACHES = {
+#    'default' : dict(
+#        BACKEND = 'johnny.backends.locmem.LocMemCache',
+#        JOHNNY_CACHE = True,
+#        TIMEOUT = 1
+#    )
+#}
+#else:
+#    CACHES = {
+#        'default' : dict(
+#            BACKEND = 'johnny.backends.memcached.PyLibMCCache',
+#            LOCATION = [ELASTICACHE_ENDPOINT],
+#            JOHNNY_CACHE = True,
+#            TIMEOUT = 500,
+#            BINARY = True,
+#            OPTIONS = {  # Maps to pylibmc "behaviors"
+#               'tcp_nodelay': True,
+#               'ketama': True
+#            }
+#        )
+#    }
+
+
+#JOHNNY_MIDDLEWARE_KEY_PREFIX='jc_bumer'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
@@ -167,26 +183,6 @@ FIXTURE_DIRS = (
 )
 
 PREVIEWS_COUNT = 5
-
-if DEBUG:
-    INSTALLED_APPS += ('debug_toolbar',)
-
-    DEBUG_TOOLBAR_PANELS = (
-        'debug_toolbar.panels.version.VersionDebugPanel',
-        'debug_toolbar.panels.timer.TimerDebugPanel',
-        'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-        'debug_toolbar.panels.headers.HeaderDebugPanel',
-        'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-        'debug_toolbar.panels.template.TemplateDebugPanel',
-        'debug_toolbar.panels.sql.SQLDebugPanel',
-        'debug_toolbar.panels.signals.SignalDebugPanel',
-        'debug_toolbar.panels.logger.LoggingPanel',
-    )
-
-    INTERNAL_IPS = ('127.0.0.1',)
-    DEBUG_TOOLBAR_CONFIG = dict(
-        INTERCEPT_REDIRECTS=False
-    )
 
 EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
 EMAIL_BACKEND = 'django_ses.SESBackend'
@@ -227,3 +223,30 @@ CELERY_QUEUES = {
 }
 
 djcelery.setup_loader()
+
+try:
+    from bumerang.local_settings import *
+except ImportError:
+    pass
+
+if DEBUG:
+    INSTALLED_APPS += ('debug_toolbar',)
+
+    DEBUG_TOOLBAR_PANELS = (
+        'debug_toolbar.panels.version.VersionDebugPanel',
+        'debug_toolbar.panels.timer.TimerDebugPanel',
+        'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
+        'debug_toolbar.panels.headers.HeaderDebugPanel',
+        'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
+        'debug_toolbar.panels.template.TemplateDebugPanel',
+        'debug_toolbar.panels.sql.SQLDebugPanel',
+        'debug_toolbar.panels.signals.SignalDebugPanel',
+        'debug_toolbar.panels.logger.LoggingPanel',
+        )
+
+    INTERNAL_IPS = ('127.0.0.1',)
+    DEBUG_TOOLBAR_CONFIG = dict(
+        INTERCEPT_REDIRECTS=False
+    )
+
+    COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'coverage')

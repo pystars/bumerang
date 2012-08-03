@@ -92,7 +92,7 @@
                     var flashvars = {
                         "comment":"{{ object.title }}",
                         "st":"{{ STATIC_URL }}uppod/video113-881.txt",
-                        "file":"rtmp://shi52gcb3adlb.cloudfront.net/cfx/st/mp4:{{ object.best_quality_file.name }}"
+                        "file":"{{ object.rtmp_url }}"
                     };
                     var params = {
                         bgcolor:"#ffffff",
@@ -127,11 +127,15 @@
                 <div class="b-vote">
                     <div class="wrap">
                         <ul class="star-rate" data-total-rate="{{ object.rating.get_rating }}" data-item-id="{{ object.id }}">
+                            {% rating_by_request request on object.rating as vote %}
+
                             {% if perms.djangoratings.add_vote or perms.djangoratings.change_vote %}
                                 {{ object.rating|render_rating }}
                             {% else %}
                                 {{ object.rating|render_inactive_rating }}
                             {% endif %}
+
+                            {{ vote }}
                         </ul>
 
                         <script type="text/javascript">
@@ -166,14 +170,22 @@
 
                                 function setNewRateStars(count) {
                                     var count = parseInt(count);
-                                    $('.star-rate a').each(function(i, e){
-                                        var el = $(e);
-                                        var el_num = el.attr('data-rate');
-                                        if (el_num <= count) {
-                                            el.addClass('active');
-                                        } else {
-                                            el.removeClass('active');
-                                        }
+//                                    $('.star-rate a').each(function(i, e){
+//                                        var el = $(e);
+//                                        var el_num = el.attr('data-rate');
+//                                        if (el_num <= count) {
+//                                            el.addClass('active');
+//                                        } else {
+//                                            el.removeClass('active');
+//                                        }
+                                    $('.star-rate a').each(function(i, e) {
+                                        (function(el){
+                                            if (el.attr('data-rate') <= count) {
+                                                el.addClass('active');
+                                            } else {
+                                                el.removeClass('active');
+                                            }
+                                        }($(e)));
                                     });
                                 }
 

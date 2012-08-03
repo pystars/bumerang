@@ -1,0 +1,16 @@
+<fieldset>
+    <div class="b-form__field">
+        <label>
+            <span class="f-title">
+                {{ data.label }} {% if data.required %}<span class="sp-err">*</span>{% endif %}
+            </span>
+
+            <span class="f-input">
+                <input{{ data.attrs|safe }} type="text" name="{{ data.name }}" id="datepicker_{{ data.name }}" value="{{ data.value|date:'d.m.Y'|default_if_none:'' }}">
+            </span>
+        </label>
+        {% if data.errors %}
+            <div class="sp-err"><span>{{ data.errors }}</span></div>
+        {% endif %}
+    </div>
+</fieldset>

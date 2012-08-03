@@ -1,0 +1,111 @@
+
+/* General dropdown styles */
+.dropdown dd, .dropdown dt, .dropdown ul {
+    margin: 0px;
+    padding:0px;
+}
+.dropdown dd {
+    position: relative;
+}
+/* DT styles for sliding doors */
+.dropdown dt .dropdown-link {
+    display: table;
+    width: 100%;
+    border: 1px solid #ddd;
+    background: #fff;
+    text-decoration: none;
+}
+.dropdown dt .dropdown-link .drop-button {
+    display: table-cell;
+    width: 40px;
+    border-left: 1px solid #DDD;
+    vertical-align: middle;
+}
+.dropdown dt .dropdown-link .drop-button .arrow {
+    background: url(../i/darr.png) no-repeat scroll right center;
+}
+
+.dropdown dt .dropdown-link:hover,
+.dropdown dt .dropdown-link:hover .drop-button {
+    border-color: #bbb;
+}
+.dropdown dt .dropdown-link:hover .drop-button {
+    background: #feffe8; /* Old browsers */
+    background: -moz-linear-gradient(top, #feffe8 0%, #eeeeee 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#feffe8), color-stop(100%,#eeeeee)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #feffe8 0%,#eeeeee 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #feffe8 0%,#eeeeee 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #feffe8 0%,#eeeeee 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #feffe8 0%,#eeeeee 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffe8', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+    background-image: url(../i/darr.png) no-repeat scroll right center;
+}
+
+/*.dropdown .dropdown-link-container {*/
+    /*margin: 14px;*/
+    /*padding: 0px;*/
+    /*overflow: auto;*/
+/*}*/
+.dropdown .preview-container {
+    float: left;
+    border: 1px solid #ddd;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, .75);
+    margin: 0px 2px 2px 0px;
+}
+.dropdown img.preview {
+    display: block;
+    height: 60px;
+    width: 94px;
+}
+.dropdown .content {
+    float: left;
+    display: table;
+    margin: 14px;
+}
+.dropdown .content .text {
+    display: table-cell;
+    padding-left: 14px;
+    vertical-align: middle;
+}
+
+/* Dropdown items */
+.dropdown dd ul.items-list {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #ddd;
+    display: none;
+    list-style: none;
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.dropdown li.item {
+    margin: 0px;
+    padding: 0px;
+}
+.dropdown dd a.list-item-link {
+    float: left;
+    display: table;
+    width: 100%;
+    background: #fff;
+    text-decoration: none;
+}
+dd a.list-item-link .b-hr {
+    clear: both;
+    margin: 0px;
+}
+
+.dropdown dd a.list-item-link:hover{
+    background: #eee;
+}
+
+.ldr {
+    display: none;
+    height: 62px;
+    width: 32px;
+    background: transparent url(../i/dialog-loader.gif) no-repeat center;
+    float: left;
+    margin-left: 14px;
+}

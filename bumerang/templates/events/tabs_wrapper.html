@@ -1,0 +1,11 @@
+{% extends "events/event_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block left_column %}
+    {% block page_title %}{% endblock %}
+    <div class="b-tabs d-sh">
+    <dl>{% block tab %}{% endblock %}</dl>
+</div>
+{% endblock %}
