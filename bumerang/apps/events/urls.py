@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from bumerang.apps.events.models import Event
 
+from bumerang.apps.events.models import Event
 from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     EventEditInfoView, EventCreateView, EventEditLogoView,
     ParticipantUpdateView, EventNominationsUpdateView,

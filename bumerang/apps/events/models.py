@@ -43,24 +43,15 @@ def get_mini_logo_path(instance, filename):
     return u'logos/{0}/min{1}'.format(instance.id, ext)
 
 
-class FestivalGroup(TitleUnicode, models.Model):
-    owner = models.ForeignKey(User)
-    title = models.CharField(u'Название группы фестивалей', max_length=255)
-
-    class Meta:
-        verbose_name = u'Группа фестивалей'
-        verbose_name_plural = u'Группы фестивалей'
-
-
-class Event(TitleUnicode, FileModelMixin, models.Model):
+class Event(FileModelMixin, models.Model):
     CONTEST = 1
     FESTIVAL = 2
     TYPES_CHOICES = (
         (CONTEST, u'Конкурс'),
         (FESTIVAL, u'Фестиваль'),
     )
-    group = models.ForeignKey(FestivalGroup, verbose_name=u'Группа фестивалей',
-        **nullable)
+    parent = models.ForeignKey('self', verbose_name=u'В рамках фестиваля',
+        related_name='contest_set', **nullable)
     owner = models.ForeignKey(User, related_name='owned_events')
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
@@ -88,14 +79,31 @@ class Event(TitleUnicode, FileModelMixin, models.Model):
     jurors = models.ManyToManyField(User, verbose_name=u'Члены жюри',
         through='Juror', related_name='juror_events')
 
+    class Meta:
+        verbose_name = u'Событие'
+        verbose_name_plural = u'События'
+        ordering = ('start_date', 'end_date')
+
+    def __unicode__(self):
+        title = self.title
+        if self.type == self.FESTIVAL:
+            year_string = str(self.start_date.year)
+            if self.start_date.year != self.end_date.year:
+                year_string += '&mdash;{0}'.format(self.end_date.year)
+            title += ' {0}'.format(year_string)
+        return title
+
+    def chain(self):
+        return Event.objects.filter(title=self.title, owner=self.owner,
+            is_approved=True, type=self.FESTIVAL)
+
+    def contests(self):
+        return self.contest_set.filter(is_approved=True)
+
     def is_accepting_requests(self):
         if self.requesting_till > now().date():
             return True
         return False
-
-    class Meta:
-        verbose_name = u'Событие'
-        verbose_name_plural = u'События'
 
 
 class Juror(FileModelMixin, models.Model):
@@ -134,9 +142,10 @@ class NewsPost(TitleUnicode, models.Model):
     class Meta:
         verbose_name = u'Новость'
         verbose_name_plural = u'Новости'
+        ordering = ('creation_date',)
 
 
-class Nomination(TitleUnicode, models.Model):
+class Nomination(models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Фестиваль')
     title = models.CharField(u'Название', max_length=255)
     description = models.CharField(u'Описание', max_length=255, blank=True)
@@ -149,6 +158,19 @@ class Nomination(TitleUnicode, models.Model):
     class Meta:
         verbose_name = u'Номинация'
         verbose_name_plural = u'Номинации'
+        ordering = ('sort_order',)
+
+    def __unicode__(self):
+        if self.age_from or self.age_to:
+            age_postfix = u' ('
+            if self.age_from:
+                age_postfix += u'от {0} '.format(self.age_from)
+            if self.age_to:
+                age_postfix += u'до {0} '.format(self.age_to)
+            age_postfix += u'лет)'
+        else:
+            age_postfix = u' (без возрастных ограничений)'
+        return self.title + age_postfix
 
 
 class Participant(models.Model):
@@ -164,6 +186,9 @@ class Participant(models.Model):
             ('owner', 'event'),
             ('event', 'index_number')
         )
+
+    def __unicode__(self):
+        return u'{0} в {1}'.format(self.owner, self.event)
 
     def save(self, *args, **kwargs):
         self.index_number = (self.__class__.objects.filter(event=self.event
@@ -185,6 +210,9 @@ class ParticipantVideo(models.Model):
     class Meta:
         unique_together = (("participant", "video"),)
 
+    def __unicode__(self):
+        return u'{0}, {1} лет'.format(self.video, self.age)
+
     def save(self, *args, **kwargs):
         super(ParticipantVideo, self).save(*args, **kwargs)
 
@@ -203,3 +231,7 @@ class VideoNomination(models.Model):
     nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация')
     result = models.PositiveSmallIntegerField(u'Итог', choices=STATUS_CHOICES,
         **nullable)
+
+    def __unicode__(self):
+        return u'{0} в номинации {1}'.format(
+            self.participant_video, self.nomination)

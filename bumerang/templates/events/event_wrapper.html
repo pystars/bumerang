@@ -12,28 +12,44 @@
             {% endblock %}
         </div></section>
         <aside class="l-cols__side"><div class="l-cols__side__i">
-            {% if video_categories %}
-                <nav class="b-side-nav d-indent">
-                    <ul>
-                        <h4>{% if current_category %}<a href="{% url video-list %}">Фестивали</a>{% else %}Фестивали{% endif %}</h4>
-                        {% for category in video_categories %}
-                            {% ifequal category current_category %}
-                                <li>{{ category.title }}</li>
-                            {% else %}
-                                <li><a href="{% url video-list-category category.slug %}"
-                                       title="{{ category.title }}">{{ category.title }}</a></li>
-                            {% endifequal %}
-                        {% endfor %}
-                    </ul>
-                    <i class="d-indent__tl"></i>
-                    <i class="d-indent__tr"></i>
-                    <i class="d-indent__br"></i>
-                    <i class="d-indent__bl"></i>
-                </nav>
-            {% endif %}
 
             {% block right_column %}
-                {% block right_menu %}{% endblock %}
+                {% block right_menu %}
+                    {% if event.chain.count %}
+                        <nav class="b-side-nav d-indent">
+                            <ul>
+                                <h4>Архив фестивалей</h4>
+                                {% for item in event.chain %}
+                                    <li>
+                                        {% if item != event %}
+                                            <a href="{% url event-detail item.id %}" title="{{ item }}">{{ item }}</a>
+                                        {% else %}
+                                            {{ item }}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% include 'snippets/round_frame.html' %}
+                        </nav>
+                        {% endif %}
+                        {% if event.contests %}
+                        <nav class="b-side-nav d-indent">
+                            <ul>
+                                <h4>Конкурсы</h4>
+                                {% for item in event.contests %}
+                                    <li>
+                                        {% if item != event %}
+                                            <a href="{% url event-detail item.id %}" title="{{ item }}">{{ item }}</a>
+                                        {% else %}
+                                            {{ item }}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% include 'snippets/round_frame.html' %}
+                        </nav>
+                    {% endif %}
+                {% endblock %}
 
                 {% block right_adv %}
                 <section class="b-adv b-adv2">
