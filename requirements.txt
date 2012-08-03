@@ -3,7 +3,6 @@ Pillow==1.7.6
 South
 django-debug-toolbar
 django-filebrowser==3.4.0
-django-grappelli
 django-mptt
 django-sitetree==0.6
 django-tinymce==1.5.1b2
