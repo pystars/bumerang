@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.safestring import mark_safe
 import os
 
 from django.contrib.auth.models import User
@@ -69,7 +70,7 @@ class Event(FileModelMixin, models.Model):
     hold_place = models.TextField(u'Место проведения')
     description = models.TextField(u'Описание фестиваля')
     text_rules = models.TextField(u'Правила фестиваля', blank=False)
-    file_rules = models.FileField(u'Правила фестиваля (документ)',
+    file_rules = models.FileField(u'Правила фестиваля ( документ )',
         upload_to='events_rules', storage=media_storage, blank=True)
     contacts_raw_text = models.TextField(u'Контакты', **nullable)
 
@@ -91,7 +92,7 @@ class Event(FileModelMixin, models.Model):
             if self.start_date.year != self.end_date.year:
                 year_string += '&mdash;{0}'.format(self.end_date.year)
             title += ' {0}'.format(year_string)
-        return title
+        return mark_safe(title)
 
     def chain(self):
         return Event.objects.filter(title=self.title, owner=self.owner,

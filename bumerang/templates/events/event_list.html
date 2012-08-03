@@ -7,74 +7,83 @@
 
 {% block left_column %}
     <header class="b-page-head">
-        <h1>Фестивали</h1>
+        <h1>Фестивали и конкурсы</h1>
     </header>
 
     <section class="b-participants">
-        {% include 'snippets/sort_controls.html' %}
+        {% if object_list.count %}
+            {% include 'snippets/sort_controls.html' %}
 
-        {% for item in object_list %}
+            {% for item in object_list %}
                 <div class="b-tag d-rounded d-rounded_r10 d-sh">
-                <div class="b-tag__i">
-                    <section class="b-participants__item cleared">
-                        <div class="b-ava">
-                                <span>
-                                    {% if item.min_logo %}
-                                        <img src="{{ item.min_logo.url }}" width="100" height="100" alt="Логотип" />
+                    <div class="b-tag__i">
+                        <section class="b-participants__item cleared">
+                            <div class="b-ava">
+                                    <span>
+                                        {% if item.min_logo %}
+                                            <img src="{{ item.min_logo.url }}" width="100" height="100" alt="Логотип" />
+                                        {% else %}
+                                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="100" height="100" alt="" />
+                                        {% endif %}
+                                    </span>
+                                    <i class="b-ava__sh"></i>
+                                    {% with i=item %}
+                                    <div class="b-ava__caption
+                                    {% if i.type == i.FESTIVAL %}b-ava__caption_festival
+                                    {% elif i.type == i.CONTEST %}b-ava__caption_contest{% endif %}">
+                                        {{ item.get_type_display }}</div>
+                                    {% endwith %}
+                            </div>
+                            <header class="pi-head">
+                                <h3><a href="{% url event-detail item.id %}">{{ item }}</a></h3>
+                                <div>
+                                    <span class="dark-gray">Даты проведения: </span>{{ item.start_date }} &mdash; {{ item.end_date }}
+                                </div>
+                                <div>
+                                    {% if item.is_accepting_requests %}
+                                        <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно
+                                        {% if item.owner != request.user %}(<a href="{% url event-request-form item.id %}">подать заявку</a>){% endif %}
                                     {% else %}
-                                        <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="100" height="100" alt="" />
+                                        <span class="dark-gray">Прием заявок: </span>окончен
                                     {% endif %}
-                                </span>
-                            <i class="b-ava__sh"></i>
-                                <div class="b-ava__caption
-                                {% if item.type == item.FESTIVAL %}b-ava__caption_festival
-                                {% elif item.type == item.CONTEST %}b-ava__caption_contest{% endif %}">
-                                    {{ item.get_type_display }}</div>
-                        </div>
-                        <header class="pi-head">
-                            <h3><a href="{% url event-detail item.id %}">{{ item }}</a></h3>
-                            <div>
-                                <span class="dark-gray">Даты проведения: </span>{{ item.start_date }} &mdash; {{ item.end_date }}
-                            </div>
-                            <div>
-                                {% if item.is_accepting_requests %}
-                                    <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно
-                                    {% if item.owner != request.user %}(<a href="{% url event-request-form item.id %}">подать заявку</a>){% endif %}
-                                {% else %}
-                                    <span class="dark-gray">Прием заявок: </span>окончен
-                                {% endif %}
-                            </div>
-                        </header>
-                        <footer class="pi-foot">
-{#                            <ul class="b-stat">#}
-{#                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>#}
-{#                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>#}
-{#                            </ul>#}
-                        </footer>
-                    </section>
+                                </div>
+                            </header>
+    {#                        <footer class="pi-foot">#}
+    {#                            <ul class="b-stat">#}
+    {#                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>#}
+    {#                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>#}
+    {#                            </ul>#}
+    {#                        </footer>#}
+                        </section>
+                    </div>
+                    <i class="b-tag__hole"></i>
                 </div>
-                <i class="b-tag__hole"></i>
-            </div>
-{#            {% endif %}#}
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h3 class="title">Ни одного события ещё не запланировано</h3>
+        {% endif %}
     </section>
+
     {% include 'paginator/paginator.html' %}
+
 
 {% endblock %}
 
 {% block right_menu %}
-    <nav class="b-side-nav d-indent" style="margin-top: 3.7em;">
-        {% sitetree_menu from "event_lists_menu" include "trunk" template "events/snippets/event_lists_menu.html" %}
-        {% include 'snippets/round_frame.html' %}
-    </nav>
+{#    {% if object_list.count %}#}
+{#        <nav class="b-side-nav d-indent" style="margin-top: 3.7em;">#}
+{#            {% sitetree_menu from "event_lists_menu" include "trunk" template "events/snippets/event_lists_menu.html" %}#}
+{#            {% include 'snippets/round_frame.html' %}#}
+{#        </nav>#}
+{#    {% endif %}#}
 
-    <nav class="b-side-nav d-indent">
-    <ul>
-        <h4>Создать событие</h4>
-        <li>
-            <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
-        </li>
-    </ul>
-    {% include 'snippets/round_frame.html' %}
+    <nav class="b-side-nav d-indent" style="margin-top: 110px;">
+        <ul>
+            <h4>Создать событие</h4>
+            <li>
+                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+            </li>
+        </ul>
+        {% include 'snippets/round_frame.html' %}
     </nav>
 {% endblock %}

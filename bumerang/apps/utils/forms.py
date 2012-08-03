@@ -4,7 +4,7 @@ from django import forms
 from django.forms.fields import ClearableFileInput, FileField
 from django.forms.forms import BoundField
 from django.forms.util import flatatt
-from django.forms.widgets import Select
+from django.forms.widgets import Select, Textarea
 from django.template import Context
 from django.template import loader
 from django.utils.safestring import mark_safe
@@ -96,6 +96,20 @@ class EditFormsMixin(forms.ModelForm):
         for name, field in self.fields.items():
             if field.widget.__class__ == forms.widgets.Textarea or \
                field.widget.__class__ == forms.widgets.TextInput:
+                if 'class' in field.widget.attrs:
+                    field.widget.attrs['class'] += ' wide wide_descr2'
+                else:
+                    field.widget.attrs.update({'class': 'wide wide_descr2'})
+
+
+class WideTextareaMixin(forms.ModelForm):
+    """
+    Makes wide only textarea fields
+    """
+    def __init__(self, *args, **kwargs):
+        super(WideTextareaMixin, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if field.widget.__class__ == forms.widgets.Textarea:
                 if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide wide_descr2'
                 else:

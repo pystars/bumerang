@@ -1180,13 +1180,16 @@ $(function() {
 
         }).datepicker({ showOn: 'both' });
 
-        $('#datepicker_start_date,#datepicker_end_date,#datepicker_accept_requests_date').datepicker({
+        var dp_ids = '#datepicker_start_date,' +
+            '#datepicker_end_date,#datepicker_accept_requests_date,' +
+            '#id_start_date,#id_end_date,#id_requesting_till';
+
+        $(dp_ids).datepicker({
             minDate: new Date(),
             changeMonth: true,
             changeYear: true
 
         }).datepicker({ showOn: 'both' });
-
     }
 
     $('a.scroll-to-top').click(function(e) {

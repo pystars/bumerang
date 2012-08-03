@@ -1,3 +1,4 @@
+{% if is_paginated %}
 <nav class="b-pages">
     <div class="b-pages__title">
         {% if page_obj.has_previous %}
@@ -29,3 +30,4 @@
 
         <a href="?page=last">... {{ pages }}</a>
 </nav>
+{% endif %}

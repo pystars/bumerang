@@ -1,9 +1,24 @@
 {% extends "events/event_wrapper.html" %}
 
-{% block title %}Заявка принята{% endblock %}
+{% block title %}Заявка отправлена на рассмотрение{% endblock %}
 
-{% block content %}
-    <p>
-        Ваша заявка отправлена на рассмотрение модераторам.
-    </p>
+{% block left_column %}
+    <div class="b-tabs d-sh request-form">
+        <div class="l-cols__i cleared" style="padding-top: 16px;">
+            <section class="l-cols__section">
+                <div class="l-cols__section__i">
+
+                    <h3 class="title" style="padding-bottom: 16px;">
+                        Ваша заявка отправлена на рассмотрение модераторам.
+                    </h3>
+
+                    <div class="b-hr"><hr /></div>
+
+                    <div>
+                        <a href="{% url BumerangIndexView %}">Вернуться на главную</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 {% endblock %}

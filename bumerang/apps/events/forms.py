@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import ModelForm
-from django.forms.widgets import Textarea, TextInput
+from django.forms.widgets import Textarea, TextInput, Select
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
-    EditFormsMixin)
+    EditFormsMixin, WideTextareaMixin)
 
 
-class EventCreateForm(EditFormsMixin, TemplatedForm):
-    type = forms.ChoiceField(choices=Event.TYPES_CHOICES, label=u'Тип события')
+class EventCreateForm(WideTextareaMixin, ModelForm):
+    type = forms.ChoiceField(choices=Event.TYPES_CHOICES,
+        label=u'Тип события', widget=forms.RadioSelect)
 
     class Meta:
         model = Event
@@ -23,13 +24,18 @@ class EventCreateForm(EditFormsMixin, TemplatedForm):
             'requesting_till',
             'hold_place',
             'description',
-            'text_rules',
-            'file_rules',
+#            'text_rules',
+#            'file_rules',
             'contacts_raw_text',
         )
+        widgets = {
+            'title': TextInput(attrs={'class': 'medium'}),
+        }
 
     def __init__(self, request, *args, **kwargs):
         super(EventCreateForm, self).__init__(*args, **kwargs)
+        self.fields['type'].empty_label = None
+
         festivals_qs = request.user.owned_events.filter(is_approved=True,
             type=Event.FESTIVAL)
         if festivals_qs.count():
@@ -39,7 +45,7 @@ class EventCreateForm(EditFormsMixin, TemplatedForm):
             del self.fields['parent']
 
 
-class EventUpdateForm(EditFormsMixin, TemplatedForm):
+class EventUpdateForm(TemplatedForm):
 
     class Meta:
         model = Event

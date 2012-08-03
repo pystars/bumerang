@@ -2947,7 +2947,13 @@ textarea {
 .b-form__field textarea {min-width:240px;}
 
 /* special participant field styles */
-.participant-field .b-form__field input[type="text"] { min-width: 0; }
+.participant-field .b-form__field input[type="text"],
+.request-field .b-form__field input[type="text"] {
+    min-width: 0;
+}
+
+.request-form .b-form__field { margin-bottom: 10px; }
+
 
 .b-form__field .hint-wrap {
 	display:-moz-inline-box;display:inline-block;//display:inline;zoom:1;
@@ -5472,13 +5478,17 @@ div.ui-datepicker {
 .b-sort-nav__li:hover .sort-direction-arrow {color: white;}
 
 /********************/
+.request-form .l-cols__section {
+    width: 96%;
+    margin-right: -96%;
+}
+.request-form .l-cols__section__i { padding-right: 0; }
+
 .participant-form .l-cols__section {
     width: 96%;
     margin-right: -96%;
 }
-
 .participant-form .l-cols__section__i { padding-right: 0; }
-
 /*********************/
 section#rules .title {
     margin-top: 10px;
