@@ -76,7 +76,6 @@ class NominationForm(TemplatedForm):
         model = Nomination
         fields = (
             'title',
-            'description',
             'age_from',
             'age_to',
             'sort_order',
