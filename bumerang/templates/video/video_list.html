@@ -35,7 +35,10 @@
                         </p>
                     </header>
                     <footer class="ai-foot">
-                        <time class="date">{{ item.created|date:"d.m.Y, H:i" }}</time>
+                        <time class="date">
+                            {{ item.created|date:"d.m.Y" }}
+                            в {{ item.created|date:"H:i" }}
+                        </time>
                         <ul class="b-stat">
 {#                            <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>#}
                             <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>{{ item.views_count }}</span></li>
@@ -71,7 +74,11 @@
                     <div class="l-cols__section__i">
 
                         <h3 class="title">
-                            Ни один видеоролик не создан, либо еще не одобрен
+                            {% if not current_category %}
+                                Ни один видеоролик не создан, либо еще не одобрен
+                            {% else %}
+                                Ни один видеоролик в категории &laquo;{{ current_category|lower }}&raquo; не создан, либо еще не одобрен
+                            {% endif %}
                         </h3>
 
                         <div class="cleared"></div>

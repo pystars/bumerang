@@ -15,7 +15,13 @@
             {% if video_categories %}
                 <nav class="b-side-nav d-indent" style="margin-top: 60px;">
                     <ul>
-                        <h4>{% if current_category %}<a href="{% url video-list %}">Все видео</a>{% else %}Все видео{% endif %}</h4>
+{#                        <h4>{% if current_category %}<a href="{% url video-list %}">Все видео</a>{% else %}Все видео{% endif %}</h4>#}
+                        <h4>Категории</h4>
+
+                        <li>
+                            {% if current_category %}<a href="{% url video-list %}">Все видео</a>{% else %}Все видео{% endif %}
+                        </li>
+
                         {% for category in video_categories %}
                             {% ifequal category current_category %}
                                 <li>{{ category.title }}</li>
