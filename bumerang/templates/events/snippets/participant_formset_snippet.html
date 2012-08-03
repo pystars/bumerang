@@ -1,0 +1,32 @@
+<section class="b-form b-form_smaller b-form_left">
+    {% if event.owner != request.user %}
+        <form name="editform" action="{% url participant-edit event.id %}" method="post">
+            {% csrf_token %}
+
+             <div>
+
+{#                 <h3 class="title" style="margin-top: 14px;">#}
+{#                    Прикрепите ваши работы#}
+{#                </h3>#}
+
+                <div class="b-hr"><hr /></div>
+
+                {% include "events/snippets/formset.html" %}
+
+            </div>
+
+            <footer class="form-footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+    {% else %}
+        <div class="b-form__fields">
+            <h3 class="title">
+                Недопустимое действие
+            </h3>
+            Организатор фестиваля не может принимать участие в нем
+        </div>
+    {% endif %}
+</section>

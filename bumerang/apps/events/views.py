@@ -456,6 +456,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
 class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
     GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoForm
+    template_name = "events/participant_edit_form.html"
 
     def get_context_data(self, **kwargs):
         context = super(ParticipantUpdateView, self).get_context_data(**kwargs)
@@ -476,7 +477,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
             instances = formset.save(commit=False)
             object = self.get_object()
             for instance in instances:
-    #            the name of fk attribute must be same to lower case of fk model
+                # the name of fk attribute must be same to lower case of fk model
                 setattr(instance, self.model_name, object)
                 instance.save()
                 if instance.nomination not in instance.nominations.all():

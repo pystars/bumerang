@@ -1,7 +1,7 @@
 {% extends "events/event_wrapper.html" %}
 {% load sitetree %}
 
-{% block title %}Подача заявки на {{ event }}{% endblock %}
+{% block title %}Редактирование заявки на {{ event }}{% endblock %}
 
 {% block page_title %}
     <h1>{{ event.title }}</h1>
@@ -18,11 +18,11 @@
 {% endblock %}
 
 {% block left_column %}
-<header class="b-page-head">
+    <header class="b-page-head">
     <h1>{{ event.title }}</h1>
 </header>
 
-<div class="b-tabs d-sh participant-form">
+    <div class="b-tabs d-sh participant-form">
     <div class="l-cols__i cleared" style="padding-top: 16px;">
         <section class="l-cols__section">
             <div class="l-cols__section__i">
@@ -30,9 +30,9 @@
                 {% if event.is_accepting_requests %}
                     <a class="form-event-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
                     <h3 class="title">
-                        Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ event }}&raquo;
+                        Редактирование заявки на {{ event.get_type_display|lower }} &laquo;{{ event }}&raquo;
                     </h3>
-                    {% include "events/snippets/participant_form_snippet.html" %}
+                    {% include "events/snippets/participant_formset_snippet.html" %}
 
                 {% else %}
 
@@ -72,19 +72,4 @@
         <i class="d-indent__br"></i>
         <i class="d-indent__bl"></i>
     </nav>
-{% endblock %}
-
-{% block popup %}
-    <li class="item template" style="display: none;">
-        <a href="#" class="list-item-link">
-            <div class="content">
-                <div class="preview-container">
-                    <img class="preview" src="{{ STATIC_URL }}i/nophoto.png"/>
-                </div>
-
-                <p class="text"></p>
-            </div>
-            <div class="b-hr"><hr /></div>
-        </a>
-    </li>
 {% endblock %}

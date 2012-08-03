@@ -82,7 +82,7 @@ class NominationForm(TemplatedForm):
         )
 
 
-class GeneralRuleForm(TemplatedForm):
+class GeneralRuleForm(EditFormsMixin, ModelForm):
 
     class Meta:
         model = GeneralRule
