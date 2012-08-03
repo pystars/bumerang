@@ -18,92 +18,86 @@
 {% endblock %}
 
 {% block left_column %}
-{#    {% include 'events/snippets/edit_tabs_menu.html' with selected='event' object=event %}#}
-{#    <dd class="selected hdr-festival-send-request">#}
-{#        <div class="l-cols">#}
-{#            <div class="l-cols__bg-section">#}
-{#                <div></div>#}
-{#            </div>#}
-    <header class="b-page-head">
-        <h1>{{ event.title }}</h1>
-    </header>
+<header class="b-page-head">
+    <h1>{{ event.title }}</h1>
+</header>
 
-    <div class="b-tabs d-sh">
-            <div class="l-cols__i cleared" style="padding-top: 16px;">
-                <section class="l-cols__section">
-                    <div class="l-cols__section__i">
-                        <section class="b-form b-form_smaller b-form_edit">
-                            {% if event.owner != request.user %}
-                            <form name="editform" action="" method="post">
-                                {% csrf_token %}
+<div class="b-tabs d-sh participant-form">
+    <div class="l-cols__i cleared" style="padding-top: 16px;">
+        <section class="l-cols__section">
+            <div class="l-cols__section__i">
+{#                <section class="b-form b-form_smaller b-form_left">#}
+{#                    <a class="form-profile-view" href="{% url event-detail event.id %}">Вернуться к событию</a>#}
+{#                    {% if event.owner != request.user %}#}
+{##}
+{#                    <h3 class="title">Подача заявки на участие</h3>#}
+{#                    <form name="editform" action="{% url event-request-form event.id %}" method="post">#}
+{#                        {% csrf_token %}#}
+{#                        <div>#}
+{#                            {% with form=participant_form %}#}
+{#                                {% with field=form.accepted %}#}
+{#                                <fieldset>#}
+{#                                    <div class="b-form__field">#}
+{#                                        <label>#}
+{#                                            <span class="f-input" style="float: left; padding-right: 6px;">#}
+{#                                                {{ field }}#}
+{#                                            </span>#}
+{#                                            <span class="f-title">#}
+{#                                                С условиями подачи заявки ознакомплен (<a href="#">Перейти к условиям</a>)#}
+{#                                                <span class="sp-err">*</span>#}
+{#                                            </span>#}
+{#                                        </label>#}
+{#                                        {% if field.errors %}#}
+{#                                            <div class="sp-err"><span>{{ field.errors }}</span></div>#}
+{#                                        {% endif %}#}
+{#                                    </div>#}
+{#                                </fieldset>#}
+{#                                {% endwith %}#}
+{#                            {% endwith %}#}
+{##}
+{#                            <h3 class="title">Прикрепите ваши работы.</h3>#}
+{##}
+{#                            <div class="b-hr"><hr /></div>#}
+{##}
+{#                            {% include "events/snippets/formset.html" %}#}
+{##}
+{#                        </div>#}
+{##}
+{#                        <footer class="form-footer">#}
+{#                            <div class="wrap">#}
+{#                                <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>#}
+{#                            </div>#}
+{#                        </footer>#}
+{#                    </form>#}
+{#                    {% else %}#}
+{#                        <div class="b-form__fields">#}
+{#                            <h3 class="title">#}
+{#                                Недопустимое действие#}
+{#                            </h3>#}
+{#                            Организатор фестиваля не может принимать участие в нем#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{##}
+{#                </section>#}
 
-                                <a class="form-profile-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
+                {% if event.is_accepting_requests %}
+                    <a class="form-event-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
+                    <h3 class="title">
+                        Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ event }}&raquo;
+                    </h3>
+                    {% include "events/snippets/participant_form_snippet.html" %}
 
-                                <div>
-                                    <h3 class="title">
-                                        Подача заявки на участие
-                                    </h3>
-                                    <p>
-                                        Прикрепите ваши работы.
-                                    </p>
+                {% else %}
 
-                                    <div class="b-hr"><hr /></div>
+                    <h3 class="title">
+                        Прием заявок окончен.
+                    </h3>
 
-                                    {{ formset.management_form }}
+                {% endif %}
 
-                                    {% for form in formset %}
-                                        <fieldset class="field" id="{{ form.prefix }}-row">
-                                            {% for hidden in form.hidden_fields %}
-                                                {{ hidden }}
-                                            {% endfor %}
-
-                                            {% for field in form.visible_fields %}
-                                                <fieldset>
-                                                    <div class="b-form__field">
-                                                        <label>
-                                                            <span class="f-title">
-                                                                {{ field.label }} {% if field.field.required %}<span class="sp-err">*</span>{% endif %}
-                                                            </span>
-                                                            <span class="f-input">
-                                                                {{ field }}
-                                                            </span>
-                                                        </label>
-                                                        {% if field.errors %}
-                                                            <div class="sp-err"><span>{{ field.errors }}</span></div>
-                                                        {% endif %}
-                                                    </div>
-                                                </fieldset>
-                                            {% endfor %}
-
-                                            <div class="b-hr"><hr /></div>
-                                        </fieldset>
-
-                                    {% endfor %}
-
-                                </div>
-
-                                <footer class="form-footer">
-                                    <div class="wrap">
-                                        <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
-                                    </div>
-                                </footer>
-                            </form>
-                            {% else %}
-                                <div class="b-form__fields">
-                                    <h3 class="title">
-                                        Недопустимое действие
-                                    </h3>
-                                    Организатор фестиваля не может принимать участие в нем
-                                </div>
-                            {% endif %}
-
-                        </section>
-                    </div>
-                </section>
             </div>
-{#        </div>#}
-{#    </dd>#}
-
+        </section>
+    </div>
     <script type="text/javascript">
         $(function() {
             $('form fieldset.field').formset({
@@ -112,7 +106,7 @@
             })
         })
     </script>
-    </div>
+</div>
 {% endblock %}
 
 {% block right_menu %}

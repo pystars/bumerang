@@ -13,3 +13,7 @@ def widget_type(value):
 @register.filter()
 def form_type(value):
     return value.__class__.__name__
+
+@register.filter
+def is_false(arg):
+    return arg is False
