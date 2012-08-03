@@ -3130,7 +3130,7 @@ textarea {
 }
 
 .b-form_popup_confirm {
-	width:16.3em;
+	max-width: 400px;
 	padding:8px 17px 15px 17px;
 }
 

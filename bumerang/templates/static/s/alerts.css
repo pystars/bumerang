@@ -17,6 +17,7 @@
 .alert-message .close {
   font-family: Arial, sans-serif;
   line-height: 18px;
+  text-decoration: none;
 }
 .alert-message.danger, .alert-message.error {
   background-color: #c43c35;
