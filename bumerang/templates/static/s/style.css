@@ -5478,3 +5478,11 @@ div.ui-datepicker {
 }
 
 .participant-form .l-cols__section__i { padding-right: 0; }
+
+/*********************/
+section#rules .title {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+section#rules .title.first { margin-top: 0; }

@@ -111,37 +111,21 @@
 
             <div class="tab-block">
                 <section id="rules" class="current">
-
-                    {% if object.text_rules %}
-                        {{ object.text_rules }}
-{##}
-{#                        {% for item in object.festivalgeneralrule_set.all %}#}
-{#                            <h3>{{ item.title }}</h3>#}
-{#                            <p>{{ item.description }}</p>#}
-{#                        {% endfor %}#}
-{##}
+                    {% if object.generalrule_set.count %}
+                        {% for item in object.generalrule_set.all %}
+                            <h3 class="title{% if forloop.first %} first{% endif %}">{{ item.title }}</h3>
+                            <span>{{ item.description|linebreaksbr }}</span>
+                            {% if not forloop.last %}
+                                <div class="b-hr"><hr /></div>
+                            {% endif %}
+                        {% endfor %}
                     {% else %}
-
-                        <p>Раздел не заполнен</p>
-
+                        <h3 class="title">Раздел не заполнен</h3>
                     {% endif %}
                 </section>
 
                 {% if object.is_accepting_requests %}
                     <section id="request" class="hidden">
-{#                        {% if object.is_accepting_requests %}#}
-{##}
-{#                            <h3>Заявка на {{ object.title }}</h3>#}
-{##}
-{#                            <p>#}
-{#                                <a href="{% url event-request-form object.id %}">Подать заявку</a>. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.#}
-{#                            </p>#}
-{##}
-{#                        {% else %}#}
-{##}
-{#                            <p>Прием заявок окончен.</p>#}
-{##}
-{#                        {% endif %}#}
 
                         {% if object.is_accepting_requests %}
                             {% with event=object %}
