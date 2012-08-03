@@ -5456,7 +5456,7 @@ div.ui-datepicker {
 
 .b-sort-nav__li .sort-direction-arrow {color: orange; font-size: 0.7em;}
 
-.b-sort-nav__li .sort-link {color: blue;}
+.b-sort-nav__li .sort-link {color: #005A8C;}
 
 .b-sort-nav__li.current .sort-link,
 .b-sort-nav__li:hover .sort-link,
