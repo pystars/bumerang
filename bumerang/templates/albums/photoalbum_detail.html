@@ -42,7 +42,7 @@
                 </div>
             </header>
 
-            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container" data-items-count="{{ profile.photo_set.count|default:'0' }}" data-plurals="фотография,фотографии,фотографий">
+            <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container" data-items-count="{{ photos.count|default:'0' }}" data-plurals="фотография,фотографии,фотографий">
                 <header class="announs-head cleared">
                     {% if object.owner.id == request.user.id %}
                         <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-photo" id="photo-delete-button" style="display: none;">Удалить</a>

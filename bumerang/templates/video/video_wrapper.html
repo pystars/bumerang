@@ -13,7 +13,7 @@
         </div></section>
         <aside class="l-cols__side"><div class="l-cols__side__i">
             {% if video_categories %}
-                <nav class="b-side-nav d-indent">
+                <nav class="b-side-nav d-indent" style="margin-top: 60px;">
                     <ul>
                         <h4>{% if current_category %}<a href="{% url video-list %}">Все видео</a>{% else %}Все видео{% endif %}</h4>
                         {% for category in video_categories %}
@@ -29,10 +29,18 @@
                 </nav>
             {% endif %}
 
+            {% block right_menu %}
+                &nbsp;
+            {% endblock %}
+
             {% block right_column %}
+
+            {% endblock %}
+
+            {% block advert %}
                 <section class="b-adv b-adv2">
                     <header>
-{#                        <div class="b-adv__title">Реклама</div>#}
+                        <div class="b-adv__title">Реклама</div>
                     </header>
                     <p>
                         <a href="{% url registration %}">

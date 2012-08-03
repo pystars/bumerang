@@ -70,9 +70,9 @@
                             </strong>
                             <span>
                                 {% spaceless %}
-                                {% with owner=object.owner %}
+                                {% with owner=object.owner.profile %}
                                     <a href="{% url profile-detail owner.id %}">{{ owner.title }}</a>
-                                    ({{ owner.get_type_display|lower }})
+                                    ( {{ owner.get_type_display|lower }} )
                                 {% endwith %}
                                 {% endspaceless %}
                             </span>

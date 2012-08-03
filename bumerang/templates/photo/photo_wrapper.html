@@ -13,7 +13,7 @@
         </div></section>
         <aside class="l-cols__side"><div class="l-cols__side__i">
             {% if photo_categories %}
-                <nav class="b-side-nav d-indent">
+                <nav class="b-side-nav d-indent" style="margin-top: 60px;">
                     <ul>
                         <h4>{% if current_category %}<a href="{% url photo-list %}">Все фото</a>{% else %}Все фото{% endif %}</h4>
                         {% for category in photo_categories %}
@@ -29,10 +29,15 @@
                 </nav>
             {% endif %}
 
+            {% block right_menu %}
+                &nbsp;
+            {% endblock %}
+
             {% block right_column %}
-                {% block right_menu %}
-                    &nbsp;
-                {% endblock %}
+
+            {% endblock %}
+
+            {% block advert %}
                 <section class="b-adv b-adv2">
                     <header>
                         <div class="b-adv__title">Реклама</div>
@@ -45,5 +50,5 @@
                 </section>
             {% endblock %}
         </div></aside>
-    </div></div><!--l-cols-->
+    </div></div>
 {% endblock %}
