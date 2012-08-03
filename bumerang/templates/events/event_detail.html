@@ -1,0 +1,272 @@
+{% extends "events/tabs_wrapper.html" %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block head_js %}
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/tabs_menu.html' with selected='event' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+                <div class="b-profile__pic">
+                    <div class="b-ava b-ava_big">
+                        {% if object.min_logo %}
+                            <img src="{{ object.min_logo.url }}" width="60" height="60" alt="Логотип" />
+                        {% else %}
+                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="Логотип" />
+                        {% endif %}
+
+                        <i class="b-ava__sh"></i>
+                    </div>
+
+                </div>
+                <div class="b-profile__txt">
+                    {% include "events/snippets/service_buttons.html" %}
+
+                    <h2>{{ object.title }}</h2>
+
+                    <ul class="b-opts">
+                        <li>
+                            <strong>
+                                Даты проведения
+                            </strong>
+                            <span>
+                                с {{ object.start_date }} по {{ object.end_date }}
+                            </span>
+                        </li>
+
+                        {% if object.is_accepting_requests %}
+                        <li>
+                            <strong>
+                                Прием заявок
+                            </strong>
+                            <span>
+                                до {{ object.requesting_till }}
+                            </span>
+                        </li>
+                        {% else %}
+                        <li>
+                            <strong>Прием заявок окончен</strong>
+                        </li>
+                        {% endif %}
+
+                        <li>
+                            <strong>
+                                Место проведения
+                            </strong>
+                            <span>
+                                {{ object.hold_place }}
+                            </span>
+                        </li>
+
+                        <li>
+                            <strong>
+                                Организатор
+                            </strong>
+                            <span>
+                                {% spaceless %}
+                                {% with owner=object.owner %}
+                                    <a href="{% url profile-detail owner.id %}">{{ owner.title }}</a>
+                                    ({{ owner.get_type_display|lower }})
+                                {% endwith %}
+                                {% endspaceless %}
+                            </span>
+                        </li>
+                    </ul>
+
+                    {% if object.description %}
+                        <p class="smaller">
+                            {{ object.description|linebreaks }}
+                        </p>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="tab-button tabs">
+                <a href="#rules" class="b-button b-button_grey current">Общие положения</a>
+
+                {% if object.is_accepting_requests %}
+                    <a href="#request" class="b-button b-button_grey">Заявка</a>
+                {% endif %}
+
+{#                {% if object. %}#}
+                    <a href="#juror" class="b-button b-button_grey">Жюри</a>
+{#                {% endif %}#}
+
+                <a href="#contacts" class="b-button b-button_grey">Контакты</a>
+            </div>
+
+        </section>
+
+        <div class="tab-container">
+            <div class="b-hr"><hr /></div>
+
+            <div class="tab-block">
+                <section id="rules" class="current">
+                    {% if object.generalrule_set.count %}
+                        {% for item in object.generalrule_set.all %}
+                            <h3 class="title{% if forloop.first %} first{% endif %}">{{ item.title }}</h3>
+                            <span>{{ item.description|linebreaksbr }}</span>
+                            {% if not forloop.last %}
+                                <div class="b-hr"><hr /></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h3 class="title">Раздел не заполнен</h3>
+                    {% endif %}
+                </section>
+
+                {% if object.is_accepting_requests %}
+                    <section id="request" class="hidden">
+
+                        {% if object.is_accepting_requests %}
+                            {% with event=object %}
+                                <h3 class="title">
+                                    Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
+                                </h3>
+                                {% include "events/snippets/participant_form_snippet.html" %}
+
+                            {% endwith %}
+                        {% else %}
+
+                            <p>Прием заявок окончен.</p>
+
+                        {% endif %}
+
+                    </section>
+                {% endif %}
+
+                <section id="juror" class="hidden">
+
+                    {% if object.juror_set.count %}
+                        {% for item in object.juror_set.all %}
+
+                            <div class="b-resume__person cleared">
+                                <div class="rp__pic">
+                                    <div class="b-ava">
+                                        {% if item.min_avatar %}
+                                            <img src="{{ item.min_avatar.url }}" width="60" height="60" alt="" />
+                                        {% else %}
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
+                                        {% endif %}
+                                        <i class="b-ava__sh"></i>
+                                    </div>
+                                </div>
+                                <div class="rp__txt">
+                                    <h4>{{ item.info_name }} {{ item.info_middle_name }} {{ item.info_second_name }}</h4>
+{#                                    <p>{{ person.description|linebreaksbr }}</p>#}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                        <p>Жюри еще не назначено.</p>
+                    {% endif %}
+                </section>
+
+                <section id="contacts" class="hidden">
+
+                    {% if object.contacts_raw_text %}
+                        <h3>Контакты:</h3>
+                        <p>
+                            {{ object.contacts_raw_text|striptags|linebreaks }}
+                        </p>
+                    {% else %}
+                        <p>
+                            Контакты еще не заполнены.
+                        </p>
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+            <div class="tab-button">
+                <div class="b-hr"><hr /></div>
+                <a href="#" class="b-button b-button_grey scroll-to-top">↑ Наверх</a>
+            </div>
+        </div>
+
+    </div></dd>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form fieldset.field').formset({
+                prefix: 'participantvideo_set',
+                addText: '{{ add_item_text }}'
+            })
+        })
+    </script>
+{% endblock %}
+
+{#{% block right_menu %}#}
+{#    <nav class="b-side-nav d-indent">#}
+{#        {% include 'events/snippets/festival_archive_menu.html' %}#}
+{#    </nav>#}
+{#{% endblock %}#}
+{##}
+{#{% block popup %}#}
+{#    <div class="clean-modal" id="modal-request-video-list">#}
+{#        <form>#}
+{#            <header>#}
+{#                <a href="#" class="close">×</a>#}
+{#                <h3>Список видео</h3>#}
+{#            </header>#}
+{#            <section class="content">#}
+{##}
+{#                <p id="#result"></p>#}
+{##}
+{#                <dl class="dropdown">#}
+{#                    <dt>#}
+{#                        <a href="#">#}
+{#                            <span>#}
+{#                                <p>#}
+{#                                    Выберите видеоальбом#}
+{#                                </p>#}
+{#                            </span>#}
+{#                        </a>#}
+{#                    </dt>#}
+{#                    <dd>#}
+{#                        <ul>#}
+{#                        {% if request.user.profile.video_set.count %}#}
+{#                            {% for item in request.user.profile.video_set.all %}#}
+{#                                <li>#}
+{#                                <article class="announ-item">#}
+{#                                    <div class="ai-img d-sh">#}
+{#                                        <a href="#">#}
+{#                                            <span>#}
+{#                                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />#}
+{#                                                <span class="time">{{ item.duration|default_if_none:0 }}</span>#}
+{#                                            </span>#}
+{#                                        </a>#}
+{#                                    </div>#}
+{#                                    <header class="ai-head">#}
+{#                                        <h3>{{ item.title|truncatechars:60 }}</h3>#}
+{#                                    </header>#}
+{#                                    <footer class="ai-foot">#}
+{#                                        <time class="date">{{ item.created|date:"d.m.Y, H:i" }}</time>#}
+{#                                    </footer>#}
+{#                                </article>#}
+{#                                </li>#}
+{#                            {% endfor %}#}
+{#                        {% else %}#}
+{#                            <li>#}
+{#                                <p>У вас нет ни одного видео</p>#}
+{#                            </li>#}
+{#                        {% endif %}#}
+{#                        </ul>#}
+{#                    </dd>#}
+{#                </dl>#}
+{##}
+{#            </section>#}
+{#            <footer>#}
+{#                <a href="#" class="b-button b-button_yellow">Добавить</a>#}
+{#            </footer>#}
+{#        </form>#}
+{#    </div>#}
+{#{% endblock %}#}

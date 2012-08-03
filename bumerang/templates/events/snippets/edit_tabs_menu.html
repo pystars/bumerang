@@ -1,0 +1,100 @@
+{# Вкладка редактирования феста #}
+<dt class="first{% ifequal selected 'event' %} selected{% endifequal %}">
+    {% spaceless %}
+        <a href="{% url event-edit-info event.id %}">
+            <span>{{ event.get_type_display }}</span>
+        </a>
+    {% endspaceless %}
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+
+{# Вкладка просмотра заявок феста #}
+{% if request.user.id == event.owner.id %}
+<dt class="{% ifequal selected 'requests' %} selected{% endifequal %}">
+    {% spaceless %}
+        <a href="{% url participant-list event.id %}">
+            <span>Заявки</span>
+        </a>
+    {% endspaceless %}
+    <small>{{ event.participant_set.count }}</small>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+{% endif %}
+{#<dt class="first{% ifequal selected 'profile' %} selected{% endifequal %}">#}
+{#    <a href="{% url profile-detail profile.id %}">#}
+{#        <span>Профиль</span>#}
+{#    </a>#}
+{#    <i class="l"></i>#}
+{#    <i class="r"></i>#}
+{#</dt>#}
+{#<dd>#}
+{#    <div class="b-tabs__tab-content">#}
+{#    </div>#}
+{#</dd>#}
+{#<dt{% ifequal selected 'video' %} class="selected"{% endifequal %}>#}
+{#    {% spaceless %}#}
+{#        <a href="{% url profile-video-detail profile.id %}">#}
+{#            <span>Видео</span>#}
+{#        </a>#}
+{#    {% endspaceless %}#}
+{#    <small>{{ profile.video_set.count }}</small>#}
+{#    <i class="l"></i>#}
+{#    <i class="r"></i>#}
+{#</dt>#}
+{#<dd>#}
+{#    <div class="b-tabs__tab-content">#}
+{#    </div>#}
+{#</dd>#}
+{#<dt{% ifequal selected 'photo' %} class="selected"{% endifequal %}>#}
+{#    <a href="{% url profile-photo-detail profile.id %}">#}
+{#        <span>Фото</span>#}
+{#    </a>#}
+{#    <small>{{ profile.photo_set.count }}</small>#}
+{#    <i class="l"></i>#}
+{#    <i class="r"></i>#}
+{#</dt>#}
+{#<dd>#}
+{#    <div class="b-tabs__tab-content">#}
+{#    </div>#}
+{#</dd>#}
+{#{% if request.user.is_authenticated %}#}
+{#    {% ifequal profile request.user.profile %}#}
+{#        <dt{% ifequal selected 'messages' %} class="selected"{% endifequal %}>#}
+{#        {% spaceless %}#}
+{#            <a href="{% url messages_redirect %}">#}
+{#                <span>Сообщения</span>#}
+{#            </a>#}
+{#        {% endspaceless %}#}
+{#            {% if profile.inbox_count %}<small>{{ profile.inbox_count }}</small>{% endif %}#}
+{#        <i class="l"></i>#}
+{#        <i class="r"></i>#}
+{#        </dt>#}
+{#    {% endifequal %}#}
+{#{% endif %}#}
+{##}
+{#{% if profile.festival_set.count %}#}
+{#    <dt{% ifequal selected 'festival' %} class="selected"{% endifequal %}>#}
+{#    {% spaceless %}#}
+{#        <a href="{% url profile-event-list profile.id %}">#}
+{#            <span>Фестивали</span>#}
+{#        </a>#}
+{#    {% endspaceless %}#}
+{#        <small>{{ profile.festival_set.count }}</small>#}
+{#    <i class="l"></i>#}
+{#    <i class="r"></i>#}
+{#</dt>#}
+{#    <dd>#}
+{#    <div class="b-tabs__tab-content">#}
+{#    </div>#}
+{#</dd>#}
+{#{% endif %}#}

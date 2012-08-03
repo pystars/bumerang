@@ -2,6 +2,7 @@
 from django.template import loader, Context
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
+from django.conf import settings
 
 from bumerang.settings import EMAIL_NOREPLY_ADDR
 
@@ -41,3 +42,18 @@ def send_new_password(password, to_addr):
     }
     send_single_email("email/new_password.html", ctx, ctx['subject'],
                       EMAIL_NOREPLY_ADDR, [to_addr])
+
+
+def send_fest_registration_request():
+    """
+    Send email to moderators with request to approve fest account
+    """
+    ctx = {
+        'subject': u'Подана заявка на регистрацию фестиваля',
+        'header': u'Зарегистрирован новый фестиваль'
+    }
+
+    to_addr = [x[1] for x in settings.MANAGERS]
+
+    send_single_email("email/fest_registratin_request.html", ctx, ctx['subject'],
+        EMAIL_NOREPLY_ADDR, to_addr)

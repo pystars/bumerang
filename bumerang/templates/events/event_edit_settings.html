@@ -1,0 +1,65 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Редактирование настроек события{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+
+{#    {% if form|form_type in 'StudioProfileInfoForm SchoolProfileInfoForm UserProfileInfoForm' %}#}
+{#        <section class="b-form b-form_smaller b-form_edit">#}
+{#    {% else %}#}
+{#        <section class="b-form b-form_smaller b-form_edit b-form_left">#}
+{#    {% endif %}#}
+<section class="b-form b-form_smaller b-form_edit b-form_left">
+    <form name="editform" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <a class="form-profile-view" href="{% url profile-detail profile.id %}">Просмотр профиля</a>
+            <div class="b-form__fields">
+                <h3 class="title">
+                    {% sitetree_page_title from "event_edit_menu" %}
+                </h3>
+
+                {{ form }}
+
+{#                {% for item in form %}#}
+{#                    <fieldset>#}
+{#                    <div class="b-form__field">#}
+{#                        <label>#}
+{#                            <span class="f-title">#}
+{#                                <span>#}
+{#                                    {{ item.label }}#}
+{#                                    {% if item.field.required %}#}
+{#                                        <span class="sp-err">*</span>#}
+{#                                    {% endif %}#}
+{#                                </span>#}
+{#                            </span>#}
+{#                            {% if item|widget_type in 'TextInput DateInput' %}#}
+{#                                <span class="f-input">#}
+{#                            {% endif %}{% if item|widget_type == 'Textarea' %}#}
+{#                            <span class="f-textarea">#}
+{#                        {% endif %}{% if item|widget_type == 'Select' %}#}
+{#                            <span class="f-select">#}
+{#                        {% endif %}#}
+{#                            {{ item }}#}
+{#                            </span>#}
+{#                        </label>#}
+{#                        {% if item.errors %}#}
+{#                            <div class="f-err" style="margin-left: 0px;"><span>{{ item.errors }}</span></div>#}
+{#                        {% endif %}#}
+{##}
+{#                    </div>#}
+{#                    </fieldset>#}
+{#                {% endfor %}#}
+            </div>
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+</section>
+{% endblock %}

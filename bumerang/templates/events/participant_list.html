@@ -1,0 +1,61 @@
+{% extends "events/event_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Редактирование события {{ object.title }}{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-ui-1.8.21.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
+{% endblock %}
+
+{% block page_title %}
+    <h1>{{ event.title }}</h1>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/edit_tabs_menu.html' with selected='requests' %}
+    <dd class="selected">
+        <div class="l-cols l-cols_tab">
+            <div class="l-cols__bg-section">
+                <div></div>
+            </div>
+            <div class="l-cols__i cleared">
+                <section class="l-cols__section">
+                    <div class="l-cols__section__i">
+                        <section class="b-form b-form_smaller b-form_edit">
+                            <div class="b-form__fields">
+                                <h3 class="title">
+                                    Заявки на участие в событии
+                                </h3>
+                            <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+                                {% include 'snippets/sort_controls.html' %}
+                                <div class="b-hr">
+                                    <hr />
+                                </div>
+                                {% for object in object_list %}
+                                    <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>
+                                {% endfor %}
+
+                            </div>
+                        </section>
+                    </div>
+                </section>
+                <aside class="l-cols__side">
+                    <div class="l-cols__side__i">
+                        <nav class="b-tab-sidenav">
+                            {% block edit_side_nav %}
+                                {% sitetree_menu from "event_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+                            {% endblock %}
+                        </nav>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </dd>
+{% endblock %}

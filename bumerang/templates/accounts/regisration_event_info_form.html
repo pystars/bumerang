@@ -1,0 +1,49 @@
+{% extends "accounts/accounts_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block left_column %}
+    <section class="b-form b-form_register">
+        <form name="registration_request_form" action="{% url register-event-request %}" method="post">
+        {% csrf_token %}
+        <header class="b-form__header">
+            <h1>
+                Информация о событии
+            </h1>
+            <p>
+                Пожалуйста, заполните все необходимые поля и мы свяжемся с вами. Контактные телефоны будут сохранены
+                в профиле, но вы сможете изменить их в профиле, в случае успешного рассмотрения заявки.
+            </p>
+        </header>
+        <div class="b-form__fields">
+            {% for item in form %}
+                <div class="b-form__field">
+                    <p>{{ item.label }}
+                        {% if item.field.required %}
+                            <span style="color: #DC291E">*</span>
+                        {% endif %}
+                    </p>
+
+                    {% if item.errors %}
+                        <div class="f-err" style="margin-left: 0;"><span>{{ item.errors }}</span></div>
+                    {% endif %}
+
+                    <p>
+                        {{ item }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <footer>
+            <div class="wrap">
+                <a href="#" class="b-button b-button_yellow button-submit">Отправить заявку</a>
+            </div>
+        </footer>
+        </form>
+    </section><!--b-form-->
+{% endblock %}
+
+{% block right_column %}
+{% endblock %}

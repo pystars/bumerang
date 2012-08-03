@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models.deletion import ProtectedError
 from django.utils.timezone import now
 from djangoratings import RatingField
 
@@ -31,7 +33,7 @@ class VideoGenre(models.Model, TitleUnicode):
         verbose_name_plural = u'Жанры видео'
 
 
-class Video(FileModelMixin, models.Model, TitleUnicode):
+class Video(models.Model, TitleUnicode):
     SLUG_LENGTH = 12
 
     FREE_FOR_ALL = 1
@@ -146,6 +148,21 @@ class Video(FileModelMixin, models.Model, TitleUnicode):
             slug = random_string(cls.SLUG_LENGTH)
             if not cls.objects.filter(slug=slug).exists():
                 return slug
+
+    def rtmp_url(self):
+        return settings.RTMP_SERVER_FORMAT.format(self.best_quality_file().name)
+
+    def delete(self, *args, **kwargs):
+        try:
+            super(Video, self).delete(*args, **kwargs)
+            s3bucket = self.original_file.storage.bucket
+            s3bucket.delete_keys(
+                s3bucket.get_all_keys(prefix='videos/{0}'.format(self.slug)),
+                True
+            )
+        except ProtectedError:
+            #TODO: notice user about it
+            pass
 
 
 class Preview(FileModelMixin, models.Model):

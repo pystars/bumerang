@@ -1,0 +1,41 @@
+{% extends "accounts/tabs_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}
+    Список фестивалей {{ profile.get_title }}
+{% endblock %}
+
+{% block tab %}
+    {% include 'snippets/menu.html' with selected='event' %}
+    <dd class="selected"><div class="b-tabs__tab-content">
+        <h3>Ваши фестивали и конкурсы</h3>
+        <section class="b-gallery b-gallery_ui b-gallery_album b-gallery_album_v">
+            <header class="b-gallery__head">
+                <div class="b-hr">
+                    <hr />
+                </div>
+                {% if events.count %}
+                    {% for item in events %}
+                        {% if profile.id == request.user.id %}
+                            <ul class="b-service-buttons">
+                                <li>
+                                    <i></i>
+                                    <a href="{% url event-edit-info item.id %}">Управление событием</a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                        <h3><a href="{% url event-detail item.id %}" title="{{ item.title }}">{{ item.title }}</a></h3>
+                        <p>{{ item.description|linebreaks|truncatechars:500 }}</p>
+                        <div class="b-hr">
+                            <hr />
+                        </div>
+                        <div class="clear"></div>
+                    {% endfor %}
+                {% else %}
+                    <p>Участник не проводил фестивалей</p>
+                {% endif %}
+            </header>
+        </section>
+    </div>
+    </dd>
+{% endblock %}

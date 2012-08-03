@@ -1,0 +1,10 @@
+<fieldset>
+    <div class="b-form__field">
+        <div class="f-checkbox" style="margin-left: 0;">
+            <label for="{{ data.id }}">
+                {{ data.label }} {% if data.required %}<span class="sp-err">*</span>{% endif %}
+            </label>
+            <input type="checkbox"{{ data.attrs|safe }} name="{{ data.name }}" {% if data.value %}checked="checked"{% endif %} id="{{ data.id }}" />
+        </div>
+    </div>
+</fieldset>

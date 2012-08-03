@@ -32,16 +32,13 @@
                             <li><a href="{% url studios-list %}" title="Студии">Студии</a></li>
                         {% endifequal %}
                     </ul>
-                    <i class="d-indent__tl"></i>
-                    <i class="d-indent__tr"></i>
-                    <i class="d-indent__br"></i>
-                    <i class="d-indent__bl"></i>
+                    {% include 'snippets/round_frame.html' %}
                 </nav>
             {% endblock %}
             {% block right_column %}
                 <section class="b-adv b-adv2">
                     <header>
-{#                        <div class="b-adv__title">Реклама</div>#}
+                        <div class="b-adv__title">Реклама</div>
                     </header>
                     <p>
                         <a href="{% url registration %}">

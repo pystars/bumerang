@@ -1,0 +1,46 @@
+<dt class="first{% ifequal selected 'event' %} selected{% endifequal %}">
+    <a href="{% url event-detail event.id %}">
+        <span>
+
+            {% if event.type == event.FESTIVAL %}
+                Фестиваль
+            {% elif event.type == event.CONTEST %}
+                Конкурс
+            {% endif %}
+        </span>
+    </a>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+
+<dt{% ifequal selected 'press' %} class="selected"{% endifequal %}>
+    {% spaceless %}
+        <a href="{% url event-press event.id %}">
+            <span>Пресс—центр</span>
+        </a>
+    {% endspaceless %}
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+
+<dt{% ifequal selected 'films' %} class="selected"{% endifequal %}>
+    {% spaceless %}
+        <a href="{% url event-films event.id %}">
+            <span>Фильмы-участники</span>
+        </a>
+    {% endspaceless %}
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>

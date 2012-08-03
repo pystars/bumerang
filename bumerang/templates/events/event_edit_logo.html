@@ -1,0 +1,69 @@
+{% extends "events/event_edit_wrapper.html" %}
+
+{% block title %}Логотип фестиваля{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/cusel.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/jquery.Jcrop.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/cusel-min-2.4.1.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.Jcrop.min.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+    <section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_photo2">
+    <form name="logo_form" action="{% url event-edit-logo object.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+        <div class="b-form__fields">
+
+                <h3 class="title">Редактирование логотипа</h3>
+
+                <div class="b-hr">
+                    <hr />
+                </div>
+
+                <fieldset>
+                    <div class="b-form__pic">
+                        <div class="b-ava b-ava_big">
+                            {% if object.min_logo %}
+                                <img src="{{ object.min_logo.url }}?{% now 'su' %}" width="175" height="175" alt="Добавьте фото" />
+                            {% else %}
+                                <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте логотип" />
+                            {% endif %}
+                            <i class="b-ava__sh"></i>
+                        </div>
+                    </div>
+                    <div class="b-form__txt">
+
+                        <p>
+                            Загрузите изображение и выберите область, которая будет использована для логотипа.
+                        </p>
+
+                            <span class="f-input">
+                                <input type="file" name="logo" id="id_logo" style="margin-top: 8px;" />
+                                <input type="hidden" name="avatar_coords" value='{"x":0,"y":0,"x2":175,"y2":175,"w":175,"h":175}' id="id_avatar_coords" />
+                            </span>
+                        {% if form.logo.errors %}
+                            <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.logo.errors }}</span></div>
+                        {% endif %}
+                    </div>
+                    <div class="clear" style="height: 18px;"></div>
+
+                    {% if object.logo and not form.logo.errors %}
+                        <img src="{{ object.logo.url }}?{% now 'su' %}" id="current_avatar" style="max-width: 500px;" />
+                    {% endif %}
+
+                </fieldset>
+
+            </div>
+        <footer class="b-form__footer">
+            <div class="wrap">
+                <a href="#" class="b-button b-button_yellow button-submit">Обновить</a>
+            </div>
+        </footer>
+    </form>
+</section>
+{% endblock %}

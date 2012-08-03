@@ -1,0 +1,15 @@
+<nav class="b-sort-nav">
+    <div class="b-sort-nav__i">
+        <span class="b-sort-nav__title">Сортировка</span>
+        <ul class="b-sort-nav__ul">
+        {% for param in sort_params %}
+            <li class="b-sort-nav__li {% if param.is_current %}current{% endif %}">
+                <span class="sort-direction-arrow">
+                    {% if param.sort_direction == 'asc' %}&#9660;{% else %}&#9650;{% endif %}
+                </span>
+                <a class="sort-link" href="{{ param.url }}">{{ param.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</nav>
