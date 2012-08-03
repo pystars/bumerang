@@ -14,12 +14,25 @@ def thumb_img(img, width=None, height=None, name='thumb.jpg'):
     io = TemporaryFile()
     thumb = img.copy()
     thumb.thumbnail(image_width_height(img, width, height), Image.ANTIALIAS)
-    thumb.save(io, format='JPEG')
+    thumb.save(io, format='JPEG', quality=100)
     del thumb
     size = io.tell()
     io.seek(0)
     return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)
 
+def thumb_crop_img(img, width=None, height=None, name='thumb.jpg'):
+    io = TemporaryFile()
+    thumb = img.copy()
+    thumb.thumbnail(image_width_height(img, width=width), Image.ANTIALIAS)
+    if thumb.size[1] >= height:
+        thumb = thumb.crop((0, 0, width, height))
+    else:
+        thumb = thumb.resize((width, height), Image.ANTIALIAS)
+    thumb.save(io, format='JPEG', quality=100)
+    del thumb
+    size = io.tell()
+    io.seek(0)
+    return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)
 
 def image_width_height(img, width=None, height=None):
     try:
