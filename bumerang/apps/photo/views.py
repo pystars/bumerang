@@ -11,7 +11,7 @@ from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
-from bumerang.apps.photo.models import PhotoCategory
+from bumerang.apps.photo.albums.models import PhotoCategory
 
 from bumerang.apps.utils.functions import thumb_img, thumb_crop_img
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
