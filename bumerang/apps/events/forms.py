@@ -93,7 +93,7 @@ class GeneralRuleForm(TemplatedForm):
         )
 
 
-class NewsPostForm(TemplatedForm):
+class NewsPostForm(EditFormsMixin, TemplatedForm):
 
     class Meta:
         model = NewsPost
