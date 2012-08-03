@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import ModelForm
-from django.forms.widgets import Textarea, TextInput, RadioFieldRenderer
+from django.forms.widgets import Textarea, TextInput
 
-from bumerang.apps.events.models import (Event, FestivalGroup, Nomination,
-    ParticipantVideo, GeneralRule, NewsPost, Juror, Participant)
+from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
+    GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin)
 
@@ -17,6 +17,7 @@ class EventCreateForm(EditFormsMixin, TemplatedForm):
         fields = (
             'type',
             'title',
+            'parent',
             'start_date',
             'end_date',
             'requesting_till',
@@ -26,6 +27,16 @@ class EventCreateForm(EditFormsMixin, TemplatedForm):
             'file_rules',
             'contacts_raw_text',
         )
+
+    def __init__(self, request, *args, **kwargs):
+        super(EventCreateForm, self).__init__(*args, **kwargs)
+        festivals_qs = request.user.owned_events.filter(is_approved=True,
+            type=Event.FESTIVAL)
+        if festivals_qs.count():
+            self.fields['parent'].queryset = festivals_qs
+            self.fields['parent'].empty_label = u'Не связан с фестивалем'
+        else:
+            del self.fields['parent']
 
 
 class EventUpdateForm(EditFormsMixin, TemplatedForm):
@@ -51,15 +62,6 @@ class EventContactsUpdateForm(EditFormsMixin, TemplatedForm):
     class Meta:
         fields = (
             'contacts_raw_text',
-        )
-
-
-class FestivalGroupForm(TemplatedForm):
-
-    class Meta:
-        model = FestivalGroup
-        fields = (
-            'title',
         )
 
 

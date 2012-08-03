@@ -8,16 +8,13 @@
 {% endblock %}
 
 {% block tab %}
-    {% with event=object %}
     {% include 'events/snippets/tabs_menu.html' with selected='event' %}
-    {% endwith %}
 
     <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
         <section class="b-profile">
             <header class="b-profile__head cleared">
                 <div class="b-profile__pic">
                     <div class="b-ava b-ava_big">
-
                         {% if object.min_logo %}
                             <img src="{{ object.min_logo.url }}" width="60" height="60" alt="Логотип" />
                         {% else %}
@@ -73,7 +70,7 @@
                             </strong>
                             <span>
                                 {% spaceless %}
-                                {% with owner=object.owner.profile %}
+                                {% with owner=object.owner %}
                                     <a href="{% url profile-detail owner.id %}">{{ owner.title }}</a>
                                     ({{ owner.get_type_display|lower }})
                                 {% endwith %}
@@ -207,24 +204,11 @@
     </script>
 {% endblock %}
 
-{% block right_menu %}
-    <nav class="b-side-nav d-indent">
-        {% if event.group %}
-        <ul>
-            <h4>Архив фестивалей</h4>
-            {% for item in event.group.event_set.all %}
-                <li>
-                    <a href="{% url event-detail item.id %}" title="{{ item.title }}">{{ object.group.title }} {{ item.start_date.year }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <i class="d-indent__tl"></i>
-        <i class="d-indent__tr"></i>
-        <i class="d-indent__br"></i>
-        <i class="d-indent__bl"></i>
-        {% endif %}
-    </nav>
-{% endblock %}
+{#{% block right_menu %}#}
+{#    <nav class="b-side-nav d-indent">#}
+{#        {% include 'events/snippets/festival_archive_menu.html' %}#}
+{#    </nav>#}
+{#{% endblock %}#}
 {##}
 {#{% block popup %}#}
 {#    <div class="clean-modal" id="modal-request-video-list">#}

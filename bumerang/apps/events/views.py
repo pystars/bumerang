@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
-from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic.detail import DetailView
-
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -18,8 +14,7 @@ from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect
 from django.forms.util import ErrorList
-from django.views.generic import ListView, View
-from django.views.generic.base import TemplateResponseMixin
+from django.views.generic import ListView, DetailView
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 
@@ -27,16 +22,14 @@ from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.events.models import (Event, Nomination, Participant,
     ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination)
-from bumerang.apps.events.forms import (FestivalGroupForm, EventCreateForm,
+from bumerang.apps.events.forms import (EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
     EventContactsUpdateForm, ParticipantForm)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
 
-"""
-    Mixins classes
-"""
+
 class ParticipantMixin(object):
     model = Participant
     formset_model = ParticipantVideo
@@ -68,12 +61,8 @@ class ParticipantMixin(object):
         return handler(request, *args, **kwargs)
 
 
-"""
-    App views classes
-"""
 class EventDetailView(DetailView):
     model = Event
-
     rel_model = Participant
     formset_model = ParticipantVideo
     formset_form_class = ParticipantVideoForm
@@ -123,50 +112,22 @@ class EventListView(SortingMixin, ListView):
             is_approved=True, **self.get_filter())
 
 
-class EventCreateView(TemplateResponseMixin, View):
+class EventCreateView(CreateView):
+    model = Event
     template_name = 'events/event_send_request.html'
-    group_form_class = FestivalGroupForm
-    event_form_class = EventCreateForm
+    form_class = EventCreateForm
 
-    def get_context_data(self, **kwargs):
-        ctx = {
-            'group_form': self.group_form_class(prefix='group'),
-            'event_form': self.event_form_class(prefix='event'),
-        }
-        ctx.update(kwargs)
-        return ctx
+    def get_form(self, form_class):
+        return form_class(self.request, **self.get_form_kwargs())
 
-    def forms_invalid(self, **kwargs):
-        return self.render_to_response(self.get_context_data(**kwargs))
-
-    def get(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.owner = self.request.user
+        if self.object.type == Event.FESTIVAL:
+            self.object.parent = None
+        self.object.save()
+        self.template_name = 'events/event_send_request_sended.html'
         return self.render_to_response(self.get_context_data())
-
-    def post(self, request, *args, **kwargs):
-        group_form =self.group_form_class(request.POST, prefix='group')
-        event_form = self.event_form_class(
-            request.POST, request.FILES, prefix='event')
-
-        if event_form.is_valid():
-            event = event_form.save(commit=False)
-            if event.type == Event.FESTIVAL:
-                if group_form.is_valid():
-                    group = group_form.save(commit=False)
-                    group.owner = request.user
-                    group.save()
-                    event.group = group
-                else:
-                    self.forms_invalid(
-                        group_form=group_form, event_form=event_form)
-            event.owner = request.user
-            event.save()
-
-            self.template_name = \
-                'events/event_send_request_sended.html'
-            return self.render_to_response(self.get_context_data())
-        else:
-            return self.forms_invalid(
-                group_form=group_form, event_form=event_form)
 
 
 class EventPressListView(ListView):
@@ -179,11 +140,8 @@ class EventPressListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(EventPressListView, self).get_context_data(**kwargs)
         event = get_object_or_404(Event, pk=self.kwargs.get('event_pk'))
-        festivals_archive = Event.objects.filter(
-            group=event.group).order_by('start_date')
         context.update({
             'event': event,
-            'festivals_archive': festivals_archive
         })
         return context
 
@@ -193,45 +151,30 @@ class EventFilmsListView(ListView):
     template_name = 'events/films_list.html'
     paginate_by = 10
 
-    def get_queryset(self):
-        event = get_object_or_404(Event, pk=self.kwargs.get('event_pk'))
-        participants = event.participant_set.all()
-
+    def get(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, pk=self.kwargs.get('event_pk'))
         if 'nomination_pk' in self.kwargs:
-            nomination = get_object_or_404(Nomination,
-                id=self.kwargs['nomination_pk'])
+            self.nomination = get_object_or_404(Nomination,
+                id=self.kwargs['nomination_pk'], event=self.event)
         else:
-            nomination = event.nomination_set.all()[0]
+            try:
+                self.nomination = self.event.nomination_set.all()[0]
+            except IndexError:
+                self.nomination = None
+        return super(EventFilmsListView, self).get(request, *args, **kwargs)
 
-        films = ParticipantVideo.objects.filter(
-            participant=participants,
-            nominations=nomination
-        )
-
-        return films
+    def get_queryset(self):
+        qs = ParticipantVideo.objects.filter(is_accepted=True,
+            participant__in=self.event.participant_set.all())
+        if self.nomination:
+            return qs.filter(nominations=self.nomination.pk)
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(EventFilmsListView, self).get_context_data(**kwargs)
-        event = get_object_or_404(Event, pk=self.kwargs.get('event_pk'))
-        festivals_archive = Event.objects.filter(
-            group=event.group).order_by('start_date')
-
-        try:
-            nominations = event.nomination_set.all()
-        except ObjectDoesNotExist:
-            nominations = None
-
-        if 'nomination_pk' in self.kwargs:
-            nomination = event.nomination_set.get(
-                pk=self.kwargs['nomination_pk'])
-        else:
-            nomination = event.nomination_set.all()[0]
-
         context.update({
-            'event': event,
-            'festivals_archive': festivals_archive,
-            'nominations': nominations,
-            'nomination': nomination
+            'event': self.event,
+            'nomination': self.nomination
         })
         return context
 
@@ -351,7 +294,6 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                 try:
                     user = User.objects.get(username=instance.email)
                 except User.DoesNotExist:
-                    #TODO: create users for jurors
                     profile = Profile(
                         username = instance.email,
                         info_second_name = instance.info_second_name,
