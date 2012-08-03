@@ -1,4 +1,4 @@
-django==1.4
+django==1.4.1
 Pillow==1.7.6
 South
 django-debug-toolbar
@@ -11,7 +11,7 @@ wsgiref==0.1.2
 django-extensions
 django-ratings==0.3.6
 fabric
-boto==2.3.0
+boto
 django-storages
 ipython
 mysql-python
@@ -20,7 +20,7 @@ pydkim
 pytz
 dnspython
 django-kombu==0.9.4
-django-celery-with-redis==2.5
+django-celery
 django-wysiwyg
 simplejson
 johnny-cache
