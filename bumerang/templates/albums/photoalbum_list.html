@@ -13,48 +13,62 @@
     <header class="b-page-head">
         <h1>Фотоархив</h1>
     </header>
-    <section class="b-gallery b-gallery_album">
-        <div class="b-gallery__items">
-            {% for item in object_list %}
-                <figure class="b-gallery__item">
-                    <a href="{% url photo-album-detail item.id %}">
-                        <span class="gi-img">
-                            <span>
-                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
+
+    {% if object_list.count %}
+        <section class="b-gallery b-gallery_album">
+            <div class="b-gallery__items">
+                {% for item in object_list %}
+                    <figure class="b-gallery__item">
+                        <a href="{% url photo-album-detail item.id %}">
+                            <span class="gi-img">
+                                <span>
+                                    <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
+                                </span>
                             </span>
-                        </span>
-                        <strong class="gi-title">{{ item.title|truncatechars:60 }}</strong>
-                    </a>
-                    <figcaption class="gi-caption">
-                        {{ item.description|truncatechars:150|linebreaksbr }}
-                    </figcaption>
-                </figure>
-            {% endfor %}
-        </div>
-        {% if is_paginated %}
-            <div class="pagination" style="margin-top: 40px;">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
-                {% endif %}
-
-                <span class="current">
-                    Страница {{ page_obj.number }} из {{ paginator.num_pages }}.
-                </span>
-
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
-                {% endif %}
-            </span>
+                            <strong class="gi-title">{{ item.title|truncatechars:60 }}</strong>
+                        </a>
+                        <figcaption class="gi-caption">
+                            {{ item.description|truncatechars:150|linebreaksbr }}
+                        </figcaption>
+                    </figure>
+                {% endfor %}
             </div>
-        {% endif %}
-        {% include 'paginator/paginator.html' %}
-    </section>
+            {% if is_paginated %}
+                <div class="pagination" style="margin-top: 40px;">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                    {% endif %}
 
+                    <span class="current">
+                        Страница {{ page_obj.number }} из {{ paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                    {% endif %}
+                </span>
+                </div>
+            {% endif %}
+            {% include 'paginator/paginator.html' %}
+        </section>
+    {% else %}
+        <h3 class="title"></h3>
+
+        <div class="b-tabs d-sh request-form">
+        <div class="l-cols__i cleared" style="padding-top: 16px;">
+            <section class="l-cols__section">
+                <div class="l-cols__section__i">
+
+                    <h3 class="title">
+                        Ни один фотоальбом не создан, либо еще не одобрен
+                    </h3>
+
+                    <div class="cleared"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
 
-{% block right_col %}
-    <nav class="b-side-nav d-indent">
-        {% include 'snippets/round_frame.html' %}
-    </nav>
-{% endblock %}
