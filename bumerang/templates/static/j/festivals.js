@@ -19,9 +19,11 @@ $(function() {
             el.addClass('current').removeClass('hidden');
 
             $('.tab-block section').addClass('hidden');
-            $('.tab-block section[id='+el.attr('href').replace('#', '')+']')
-                .addClass('current')
-                .removeClass('hidden');
+            var tab_section = $('.tab-block section[id='+el.attr('href').replace('#', '')+']');
+
+            tab_section.addClass('current')
+                .removeClass('hidden')
+                .find('.b-form').removeClass('hidden');
         });
         $('.tab-block section:not(.current)').addClass('hidden');
         $('div.tabs a.b-button[href='+location.hash+']').trigger('click');

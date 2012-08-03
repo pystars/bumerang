@@ -2946,6 +2946,8 @@ textarea {
 .b-form__field input[type="text"] {min-width:240px;}
 .b-form__field textarea {min-width:240px;}
 
+/* special participant field styles */
+.participant-field .b-form__field input[type="text"] { min-width: 0; }
 
 .b-form__field .hint-wrap {
 	display:-moz-inline-box;display:inline-block;//display:inline;zoom:1;
@@ -5368,6 +5370,11 @@ h3.title+.b-form_edit_login-pass {
     font-size: 14px;
 }
 
+.form-event-view {
+    float: right;
+    font-size: 14px;
+}
+
 .vk_comments {margin-top: 30px !important;}
 
 .photo-deleted {
@@ -5387,6 +5394,7 @@ h3.title+.b-form_edit_login-pass {
 .dark-gray {color: #666;}
 
 .sp-err {
+    font-size: 1em;
     display: inline !important;
     color:#dc291e;
 }
@@ -5462,3 +5470,11 @@ div.ui-datepicker {
 .b-sort-nav__li:hover .sort-link,
 .b-sort-nav__li.current .sort-direction-arrow,
 .b-sort-nav__li:hover .sort-direction-arrow {color: white;}
+
+/********************/
+.participant-form .l-cols__section {
+    width: 96%;
+    margin-right: -96%;
+}
+
+.participant-form .l-cols__section__i { padding-right: 0; }

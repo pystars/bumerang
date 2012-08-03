@@ -1,0 +1,52 @@
+{{ formset.management_form }}
+{% for form in formset %}
+    <fieldset class="field" id="{{ form.prefix }}-row">
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            {% ifnotequal field.name 'DELETE' %}
+                <fieldset class="participant-field">
+                    <div class="b-form__field">
+                        <label>
+                            <span class="f-title">
+                                {{ field.label }} {% if field.field.required %}<span class="sp-err">*</span>{% endif %}
+                            </span>
+                            <span class="f-input">
+                                {{ field }}
+                            </span>
+                        </label>
+                        {% if field.errors %}
+                            <div class="sp-err"><span>{{ field.errors }}</span></div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+            {% endifnotequal %}
+
+{#            Handle delete checkbox field #}
+            {% ifequal field.name 'DELETE' %}
+                <fieldset class="participant-field">
+                    <div class="b-form__field">
+                        <label>
+                            <div style="float: left; padding-right: 4px;">
+                                <img src="{{ STATIC_URL }}i/trash-can.png" alt="">
+                            </div>
+                            <span class="f-input" style="float: left; padding-right: 2px;">
+                                {{ field }}
+                            </span>
+                            <span class="f-title">
+                                {{ field.label }} {% if field.field.required %}<span class="sp-err">*</span>{% endif %}
+                            </span>
+                        </label>
+                        {% if field.errors %}
+                            <div class="sp-err"><span>{{ field.errors }}</span></div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+            {% endifequal %}
+        {% endfor %}
+
+        <div class="b-hr"><hr /></div>
+    </fieldset>
+{% endfor %}

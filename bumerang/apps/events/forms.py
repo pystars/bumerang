@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import ModelForm
-from django.forms.widgets import Textarea
+from django.forms.widgets import Textarea, TextInput, RadioFieldRenderer
 
 from bumerang.apps.events.models import (Event, FestivalGroup, Nomination,
     ParticipantVideo, GeneralRule, NewsPost, Juror, Participant)
@@ -115,6 +115,12 @@ class JurorForm(TemplatedForm):
         )
 
 
+class ParticipantForm(forms.Form):
+    accepted = forms.BooleanField(required=True, error_messages={
+        'required': u'Вы должны ознакомиться и согласиться с условиями.'
+    })
+
+
 class ParticipantVideoForm(ModelForm):
     """
     before using this modelform, we need to setup class:
@@ -128,10 +134,15 @@ class ParticipantVideoForm(ModelForm):
             'video',
             'nomination'
         )
+        widgets = {
+            'age': TextInput(attrs={ 'size': 2, 'maxlength': 2 }),
+            'nomination': forms.RadioSelect
+        }
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
-        self.fields['nomination'].queryset=self.event.nomination_set.all()
+        self.fields['nomination'].queryset = self.event.nomination_set.all()
+        self.fields['nomination'].empty_label = None
         self.fields['video'].queryset = self.fields['video'].queryset.filter(
             owner=self.request.user)
 

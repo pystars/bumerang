@@ -1,0 +1,52 @@
+<section class="b-form b-form_smaller b-form_left">
+    {% if event.owner != request.user %}
+        <form name="editform" action="{% url event-request-form event.id %}" method="post">
+            {% csrf_token %}
+
+             <div>
+                {% with form=participant_form %}
+                    {% with field=form.accepted %}
+                        <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-input" style="float: left; padding-right: 6px;">
+                                    {{ field }}
+                                </span>
+                                <span class="f-title">
+                                    С условиями подачи заявки на {{ event.get_type_display|lower }} ознакомлен и согласен. ( <a href="#">Перейти к условиям</a> )
+                                    <span class="sp-err">*</span>
+                                </span>
+                            </label>
+                            {% if field.errors %}
+                                <div class="sp-err"><span>{{ field.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                    {% endwith %}
+                {% endwith %}
+
+                <h3 class="title" style="margin-top: 14px;">
+                    Прикрепите ваши работы
+                </h3>
+
+                <div class="b-hr"><hr /></div>
+
+                {% include "events/snippets/formset.html" %}
+
+            </div>
+
+            <footer class="form-footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Отправить</a>
+                </div>
+            </footer>
+        </form>
+    {% else %}
+        <div class="b-form__fields">
+            <h3 class="title">
+                Недопустимое действие
+            </h3>
+            Организатор фестиваля не может принимать участие в нем
+        </div>
+    {% endif %}
+</section>

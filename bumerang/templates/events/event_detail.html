@@ -4,6 +4,7 @@
 
 {% block head_js %}
     <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
 {% endblock %}
 
 {% block tab %}
@@ -65,6 +66,20 @@
                                 {{ object.hold_place }}
                             </span>
                         </li>
+
+                        <li>
+                            <strong>
+                                Организатор
+                            </strong>
+                            <span>
+                                {% spaceless %}
+                                {% with owner=object.owner.profile %}
+                                    <a href="{% url profile-detail owner.id %}">{{ owner.title }}</a>
+                                    ({{ owner.get_type_display|lower }})
+                                {% endwith %}
+                                {% endspaceless %}
+                            </span>
+                        </li>
                     </ul>
 
                     {% if object.description %}
@@ -114,19 +129,34 @@
 
                 {% if object.is_accepting_requests %}
                     <section id="request" class="hidden">
+{#                        {% if object.is_accepting_requests %}#}
+{##}
+{#                            <h3>Заявка на {{ object.title }}</h3>#}
+{##}
+{#                            <p>#}
+{#                                <a href="{% url event-request-form object.id %}">Подать заявку</a>. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.#}
+{#                            </p>#}
+{##}
+{#                        {% else %}#}
+{##}
+{#                            <p>Прием заявок окончен.</p>#}
+{##}
+{#                        {% endif %}#}
+
                         {% if object.is_accepting_requests %}
+                            {% with event=object %}
+                                <h3 class="title">
+                                    Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
+                                </h3>
+                                {% include "events/snippets/participant_form_snippet.html" %}
 
-                            <h3>Заявка на {{ object.title }}</h3>
-
-                            <p>
-                                <a href="{% url event-request-form object.id %}">Подать заявку</a>. В зависимости от выбранного фестиваля или конкурса к заявке разрешается прикреплять либо видео, либо фото материалы.
-                            </p>
-
+                            {% endwith %}
                         {% else %}
 
                             <p>Прием заявок окончен.</p>
 
                         {% endif %}
+
                     </section>
                 {% endif %}
 
@@ -182,6 +212,15 @@
         </div>
 
     </div></dd>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form fieldset.field').formset({
+                prefix: 'participantvideo_set',
+                addText: '{{ add_item_text }}'
+            })
+        })
+    </script>
 {% endblock %}
 
 {% block right_menu %}

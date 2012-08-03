@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic.detail import DetailView
 
 try:
     from cStringIO import StringIO
@@ -29,9 +30,78 @@ from bumerang.apps.events.models import (Event, Nomination, Participant,
 from bumerang.apps.events.forms import (FestivalGroupForm, EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
-    EventContactsUpdateForm)
+    EventContactsUpdateForm, ParticipantForm)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
+
+"""
+    Mixins classes
+"""
+class ParticipantMixin(object):
+    model = Participant
+    formset_model = ParticipantVideo
+    formset_form_class = ParticipantVideoForm
+    add_item_text = u"Добавить еще одну работу"
+    template_name = 'events/participant_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in self.http_method_names:
+            handler = getattr(self, request.method.lower(),
+                self.http_method_not_allowed)
+        else:
+            handler = self.http_method_not_allowed
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        if 'event_pk' in kwargs:
+            self.event = Event.objects.get(id=kwargs['event_pk'])
+        else:
+            self.object = self.get_object()
+            self.event = self.object.event
+        self.formset_form_class.event = self.event
+        self.formset_form_class.request = request
+        self.ModelFormSet = modelformset_factory(
+            model=self.formset_model,
+            form=self.formset_form_class,
+            can_delete=True
+        )
+        return handler(request, *args, **kwargs)
+
+
+"""
+    App views classes
+"""
+class EventDetailView(DetailView):
+    model = Event
+
+    rel_model = Participant
+    formset_model = ParticipantVideo
+    formset_form_class = ParticipantVideoForm
+    add_item_text = u"Добавить еще одну работу"
+
+    def get_context_data(self, **kwargs):
+        context = super(EventDetailView, self).get_context_data(**kwargs)
+        context.update({
+            'participant_form': ParticipantForm(prefix='accept',
+                initial={ 'accepted': False }),
+            'formset': self.ModelFormSet(prefix='participantvideo_set'),
+            'add_item_text': self.add_item_text,
+        })
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        self.formset_form_class.event = self.object
+        self.formset_form_class.request = request
+        self.ModelFormSet = modelformset_factory(
+            model=self.formset_model,
+            form=self.formset_form_class,
+            can_delete=True
+        )
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 
 class EventListView(SortingMixin, ListView):
@@ -320,41 +390,12 @@ class EventContactsUpdateView(UpdateView):
         return reverse('event-edit-contacts', kwargs = { 'pk': self.object.pk })
 
 
-class ParticipantMixin(object):
-    model = Participant
-    formset_model = ParticipantVideo
-    formset_form_class = ParticipantVideoForm
-    add_item_text = u"Добавить еще одну работу"
-    template_name = 'events/participant_form.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(),
-                self.http_method_not_allowed)
-        else:
-            handler = self.http_method_not_allowed
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
-        if 'event_pk' in kwargs:
-            self.event = Event.objects.get(id=kwargs['event_pk'])
-        else:
-            self.object = self.get_object()
-            self.event = self.object.event
-        self.formset_form_class.event = self.event
-        self.formset_form_class.request = request
-        self.ModelFormSet = modelformset_factory(
-            model=self.formset_model,
-            form=self.formset_form_class,
-            can_delete=True
-        )
-        return handler(request, *args, **kwargs)
-
-
 class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = {
+            'participant_form': ParticipantForm(prefix='accept',
+                initial={ 'accepted': False }),
             'formset': self.ModelFormSet(prefix='participantvideo_set'),
             'add_item_text': self.add_item_text,
             'event': self.event
@@ -376,29 +417,38 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        formset = self.ModelFormSet(request.POST, prefix='participantvideo_set')
-        if formset.is_valid():
-            self.object = self.model(owner=request.user, event=self.event)
-            try:
-                self.object.save()
-            except IntegrityError:
+
+        participant_form = ParticipantForm(request.POST, prefix='accept')
+        formset = self.ModelFormSet(request.POST,
+            prefix='participantvideo_set')
+
+        if participant_form.is_valid():
+            if formset.is_valid():
+                self.object = self.model(owner=request.user, event=self.event)
                 try:
-                    self.object = self.model.objects.get(event=self.event,
-                        owner=request.user)
-                    return HttpResponseRedirect(self.get_success_url())
-                except request.user.DoesNotExist:
-                    return self.render_to_response(
-                        self.get_context_data(formset=formset))
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.participant = self.object
-                instance.save()
-                if instance.nomination not in instance.nominations.all():
-                    instance.nominations.clear()
-                    vn = VideoNomination(nomination=instance.nomination,
-                        participant_video=instance)
-                    vn.save()
-            return HttpResponseRedirect(self.get_success_url())
+                    self.object.save()
+                except IntegrityError:
+                    try:
+                        self.object = self.model.objects.get(event=self.event,
+                            owner=request.user)
+                        return HttpResponseRedirect(self.get_success_url())
+                    except request.user.DoesNotExist:
+                        return self.render_to_response(
+                            self.get_context_data(formset=formset))
+                instances = formset.save(commit=False)
+                for instance in instances:
+                    instance.participant = self.object
+                    instance.save()
+                    if instance.nomination not in instance.nominations.all():
+                        instance.nominations.clear()
+                        vn = VideoNomination(nomination=instance.nomination,
+                            participant_video=instance)
+                        vn.save()
+                return HttpResponseRedirect(self.get_success_url())
+
+        else:
+            return self.render_to_response(self.get_context_data(
+                formset=formset, participant_form=participant_form))
 
         return self.render_to_response(self.get_context_data(formset=formset))
 
