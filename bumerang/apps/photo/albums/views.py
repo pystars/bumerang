@@ -3,10 +3,24 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+from bumerang.apps.photo.albums.models import PhotoCategory
 
 from bumerang.apps.utils.views import OwnerMixin, AjaxView
 from forms import PhotoAlbumForm, PhotoAlbumCoverForm
 from models import PhotoAlbum
+
+
+class PhotoMixin(object):
+    def get_context_data(self, **kwargs):
+        ctx = super(PhotoMixin, self).get_context_data(**kwargs)
+        ctx['photo_categories'] = PhotoCategory.objects.all()
+        try:
+            ctx['current_category'] = self.current_category
+        except AttributeError:
+            pass
+
+        return ctx
 
 
 class PhotoSetCoverView(AjaxView, OwnerMixin, UpdateView):
@@ -56,3 +70,24 @@ class PhotoAlbumDetailView(DetailView):
         ctx = super(PhotoAlbumDetailView, self).get_context_data(**kwargs)
         ctx['photos'] = photos
         return ctx
+
+
+class PhotoAlbumListView(PhotoMixin, ListView):
+    model = PhotoAlbum
+    paginate_by = 25
+
+    def get_queryset(self):
+        qs = super(PhotoAlbumListView, self).get_queryset()
+        try:
+            self.current_category = PhotoCategory.objects.get(
+                slug=self.kwargs['category'])
+            qs = qs.filter(category=self.current_category)
+        except PhotoCategory.DoesNotExist:
+            return qs.none()
+        except KeyError:
+            pass
+
+        qs = qs.filter(
+            published_in_archive=True,
+        )
+        return qs.order_by('-created')

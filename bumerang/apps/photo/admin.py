@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from models import Photo, PhotoCategory, PhotoGenre
+from models import Photo, PhotoGenre
 
 
 class PhotoAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     readonly_fields = ['original_file', 'created']
-    list_display = ['title', 'category', 'created', 'owner',
+    list_display = ['title', 'created', 'owner',
                     'published_in_archive']
     list_editable = ['published_in_archive']
 
@@ -18,4 +18,3 @@ class TitleSlugAdmin(admin.ModelAdmin):
 
 admin.site.register(Photo, PhotoAdmin)
 admin.site.register(PhotoGenre, TitleSlugAdmin)
-admin.site.register(PhotoCategory, TitleSlugAdmin)

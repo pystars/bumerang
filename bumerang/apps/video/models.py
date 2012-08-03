@@ -18,10 +18,12 @@ from utils import (original_upload_to, hq_upload_to, screenshot_upload_to,
 class VideoCategory(models.Model, TitleUnicode):
     title = models.CharField(max_length=255, verbose_name=u"Имя")
     slug = models.SlugField()
+    sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
 
     class Meta:
         verbose_name = u'Категория видео'
         verbose_name_plural = u'Категории видео'
+        ordering = ('sort_order',)
 
 
 class VideoGenre(models.Model, TitleUnicode):

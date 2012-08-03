@@ -23,7 +23,6 @@ class PhotoCreateForm(BasePhotoForm):
             'title',
             'original_file',
             'album',
-            'category',
             'description'
         )
 
@@ -40,7 +39,6 @@ class AlbumPhotoCreateForm(BasePhotoForm):
         fields = (
             'title',
             'original_file',
-            'category',
             'description'
         )
 
@@ -54,7 +52,6 @@ class PhotoForm(BasePhotoForm):
             'title',
             'album',
             'original_file',
-            'category',
             'description',
             'year',
             'genre',

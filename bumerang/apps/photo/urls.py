@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, url
 from django.contrib.auth.decorators import login_required
-from django.views.generic.detail import DetailView
-from bumerang.apps.photo.albums.views import PhotoAlbumDetailView
-from bumerang.apps.photo.views import increase_views_count, PhotoAlbumListView
+from bumerang.apps.photo.albums.views import PhotoAlbumDetailView, \
+    PhotoAlbumListView
+from bumerang.apps.photo.views import increase_views_count
 
 from bumerang.apps.utils.views import ObjectsDeleteView
 from models import Photo
@@ -46,6 +46,10 @@ urlpatterns = patterns('',
     url(r'^$',
         PhotoAlbumListView.as_view(),
         name='photo-list'
+    ),
+    url(r'^~(?P<category>[\w\-]+)/$',
+        PhotoAlbumListView.as_view(),
+        name='photo-list-category'
     ),
     url(r'^photos-delete/$',
         login_required(ObjectsDeleteView.as_view(model=Photo)),
