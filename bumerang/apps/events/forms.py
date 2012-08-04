@@ -68,7 +68,7 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
             'contacts_raw_text',
         )
         widgets = {
-            'title': TextInput(attrs={'class': 'medium'}),
+            'title': TextInput(attrs={'class': 'wide'}),
         }
 
     def __init__(self, request, *args, **kwargs):

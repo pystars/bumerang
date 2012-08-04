@@ -51,6 +51,7 @@
                     row.append('<p class="smaller"><a class="b-pseudolink ' + options.deleteCssClass +'" href="javascript:void(0)">' + options.deleteText + '</a></p>');
                 }
                 * */
+
                 row.find('a.' + options.deleteCssClass).click(function() {
                     var row = $(this).parents('.' + options.formCssClass),
                         del = row.find('input:hidden[id $= "-DELETE"]');
@@ -80,8 +81,9 @@
             };
 
         $$.each(function(i) {
-            var row = $(this),
-                del = row.find('input:checkbox[id $= "-DELETE"]');
+            var row = $(this);
+            var del = row.find('input:checkbox[id$="-DELETE"]');
+
             if (del.length) {
                 // If you specify "can_delete = True" when creating an inline formset,
                 // Django adds a checkbox to each form in the formset.
@@ -110,10 +112,11 @@
                 // Otherwise, use the last form in the formset; this works much better if you've got
                 // extra (>= 1) forms (thnaks to justhamade for pointing this out):
                 template = $('.' + options.formCssClass + ':last').clone(true).removeAttr('id');
-                template.find('input:hidden[id $= "-DELETE"]').remove();
-                
-                template.find('span.del-checkbox').remove();
-                
+
+//                template.find('input:hidden[id $= "-DELETE"]').remove();
+//
+//                template.find('span.del-checkbox').remove();
+
                 template.find('input,select,textarea,label').each(function() {
                     var elem = $(this);
                     // If this is a checkbox or radiobutton, uncheck it.
@@ -128,35 +131,38 @@
             // FIXME: Perhaps using $.data would be a better idea?
             options.formTemplate = template;
 
-            if ($$.attr('tagName') == 'TR') {
-                // If forms are laid out as table rows, insert the
-                // "add" button in a new table row:
-                var numCols = $$.eq(0).children().length;
-                //$$.parent().append('<tr><td colspan="' + numCols + '"><a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a></tr>');
-                
-                //<p class="smaller new-lnk"><i></i><span class="b-pseudolink">Новый факультет</span></p>
-                $$.parent().append('<p class="smaller new-lnk"><i></i><span class="b-pseudolink ' + options.addCssClass + '">' + options.addText + '</span></p>');
-                
-                addButton = $$.parent().find('tr:last a');
-                addButton.parents('tr').addClass(options.formCssClass + '-add');
-            } else {
+//            if ($$.attr('tagName') == 'TR') {
+//                // If forms are laid out as table rows, insert the
+//                // "add" button in a new table row:
+//                var numCols = $$.eq(0).children().length;
+//                //$$.parent().append('<tr><td colspan="' + numCols + '"><a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a></tr>');
+//
+//                $$.parent().append('<p class="smaller new-lnk"><i></i><span class="b-pseudolink ' + options.addCssClass + '">' + options.addText + '</span></p>');
+//
+//                addButton = $$.parent().find('tr:last a');
+//                addButton.parents('tr').addClass(options.formCssClass + '-add');
+//            } else {
                 // Otherwise, insert it immediately after the last form:
                 //$$.filter(':last').after('<a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a>');
-                
-                //<p class="smaller new-lnk"><i></i><span class="b-pseudolink">Новый факультет</span></p>
-                $$.filter(':last').after('<p class="smaller new-lnk"><i></i><span class="b-pseudolink ' + options.addCssClass + '">' + options.addText + '</span></p>');
-                
+                //$$.filter(':last').after('<p class="smaller new-lnk"><i></i><span class="b-pseudolink ' + options.addCssClass + '">' + options.addText + '</span></p>');
+
+                $$.filter(':last').after('<a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a>');
+
                 addButton = $$.filter(':last').next();
-            }
+
+//            }
+
             addButton.click(function() {
-                var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val()),
+                var formCount = parseInt($('#id_' + options.prefix + '-TOTAL_FORMS').val(), 10),
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $(this).parents('tr.' + options.formCssClass + '-add').get(0) || this;
+
                 applyExtraClasses(row, formCount);
                 row.insertBefore($(buttonRow)).show();
                 row.find('input,select,textarea,label').each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
                 });
+
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);
                 // If a post-add callback was supplied, call it with the added form:
                 if (options.added) options.added(row);

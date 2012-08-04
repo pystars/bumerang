@@ -42,7 +42,7 @@
                                 <div>
                                     {% if item.is_accepting_requests %}
                                         <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно
-                                        {% if item.owner != request.user %}(<a href="{% url event-request-form item.id %}">подать заявку</a>){% endif %}
+                                        {% if item.owner != request.user %}( <a href="{% url event-request-form item.id %}">подать заявку</a> ){% endif %}
                                     {% else %}
                                         <span class="dark-gray">Прием заявок: </span>окончен
                                     {% endif %}
