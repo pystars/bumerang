@@ -12,28 +12,27 @@
     <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
         <section class="b-profile">
             <header class="b-profile__head cleared">
-                {% if event.nomination_set.all %}
-                <h3>Номинации:</h3>
-                <ul>
-                    {% for item in event.nomination_set.all %}
-                        {% if item != nomination %}
-                            <li><a href="{% url event-films-by-id event.id item.id %}">{{ item.title }}</a></li>
-                        {% else %}
-                            <li>{{ item.title }}</li>
-                        {% endif %}
+                <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+                {% if event.nomination_set.count %}
+                    <h3>Номинации:</h3>
+                    <ul>
+                        {% for item in event.nomination_set.all %}
+                            {% if item != nomination %}
+                                <li><a href="{% url event-films-by-id event.id item.id %}">{{ item.title }}</a></li>
+                            {% else %}
+                                <li>{{ item.title }}</li>
+                            {% endif %}
 
-                    {% endfor %}
-                </ul>
+                        {% endfor %}
+                    </ul>
+                    <div class="b-hr"><hr /></div>
 
-                <div class="b-hr"><hr /></div>
-                {% endif %}
+                    {% if object_list %}
+                        <h3>{{ nomination }}</h3>
 
-                {% if object_list %}
-                    <h3>{{ nomination }}</h3>
-
-                    {% for object in object_list %}
-                        {% with item=object.video %}
-                        <div>
+                        {% for object in object_list %}
+                            {% with item=object.video %}
+                                <div>
                             <table>
                                 <tr>
                                     <td style="width: 190px;">
@@ -57,10 +56,24 @@
 
                             <div class="b-hr"><hr /></div>
                         </div>
-                        {% endwith %}
-                    {% endfor %}
+                            {% endwith %}
+                        {% endfor %}
+                    {% else %}
+                        <h3>Фильмов в данной номинации пока не заявлено</h3>
+                    {% endif %}
                 {% else %}
-                    <h3>Фильмов в данной номинации пока не заявлено</h3>
+                    <h3 class="title">Номинации еще не созданы</h3>
+                    {% if request.user == event.owner %}
+                        <p>
+                            Так как вы являетесь организатором события, вы можете добавить номинации перейдя по ссылке ниже.
+                        </p>
+                        <div class="cleared">
+                            <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                            <a class="form-event-service" href="{% url event-edit-nominations event.id %}">
+                                Добавить номинации
+                            </a>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </header>
         </section>
