@@ -511,6 +511,7 @@ class ParticipantListView(SortingMixin, ListView):
     DEFAULT_SORT_FIELD = 'id'
     sort_fields = [
         ('id', u'по дате'),
+        ('is_accepted', u'по состоянию')
     ]
 
     def get_queryset(self):

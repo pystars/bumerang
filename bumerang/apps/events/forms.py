@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.forms import DateInput
+from django.forms import DateInput, CheckboxInput
 from django.forms.models import ModelForm
-from django.forms.widgets import Textarea, TextInput, RadioSelect, Select
+from django.forms.widgets import Textarea, TextInput, RadioSelect, Select, Widget, SelectMultiple
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin, WideTextareaMixin)
+
+
+class WidgetParametersMixin(Widget):
+    def __init__(self, attrs=None, parameters=None):
+        if attrs is not None:
+            self.attrs = attrs.copy()
+            self.parameters = parameters.copy()
+        else:
+            self.attrs = {}
+            self.parameters = {}
 
 
 class TextInputWidget(TextInput):
@@ -219,6 +229,10 @@ class ParticipantVideoReviewForm(ModelForm):
             'nominations',
             'is_accepted'
         )
+        widgets = {
+            'nominations': SelectMultiple(
+                attrs={'class': 'medium-select'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoReviewForm, self).__init__(*args, **kwargs)

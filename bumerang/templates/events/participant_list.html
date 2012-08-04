@@ -24,45 +24,63 @@
     <dd class="selected">
         <div class="b-tabs__tab-content wide-form">
 
-{#        <div class="l-cols l-cols_tab">#}
-{#            <div class="l-cols__bg-section">#}
-{#                <div></div>#}
-{#            </div>#}
-
             <div class="l-cols__i cleared">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
 
                         <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
-                        <h3 class="title">
+                        <h3 class="title" style="margin-bottom: 0;">
                             Заявки на участие в событии
                         </h3>
 
                         <section class="b-form b-form_smaller b-form_edit settings-edit-form">
 
                             {% include 'snippets/sort_controls.html' %}
-                            <div class="b-hr"><hr /></div>
 
-{#                            {% for object in object_list %}#}
-{#                                <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>#}
-{#                            {% endfor %}#}
-                            {% for object in object_list %}
-                                <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>
-                            {% endfor %}
+                            <table class="participant-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>Номер заявки</th>
+                                        <th>Заявка принята</th>
+                                        <th>Участник</th>
+                                        <th>Действие</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for object in object_list %}
+                                        {% with profile=object.owner.profile %}
+                                            <tr>
+                                                <td>{{ object.index_number }}</td>
+                                                <td>
+                                                    {% if object.is_accepted %}
+                                                        Да
+                                                    {% else %}
+                                                        Нет
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url profile-detail profile.id %}">{{ profile.title }}</a>
+                                                    ( {{ profile.get_type_display|lower }} )
+                                                </td>
+                                                <td>
+                                                    <a href="{% url participant-review object.id %}">
+                                                        Рассмотреть
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endwith %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
 
                         </section>
+                        {% include 'paginator/paginator.html' %}
+
                     </div>
                 </section>
-{#                <aside class="l-cols__side">#}
-{#                    <div class="l-cols__side__i">#}
-{#                        <nav class="b-tab-sidenav">#}
-{#                            {% block edit_side_nav %}#}
-{#                                {% sitetree_menu from "event_edit_menu" include "trunk" template "accounts/left_menu.html" %}#}
-{#                            {% endblock %}#}
-{#                        </nav>#}
-{#                    </div>#}
-{#                </aside>#}
             </div>
+
         </div>
     </dd>
 {% endblock %}

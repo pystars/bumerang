@@ -28,33 +28,45 @@
         <h1>{{ event.title }}</h1>
     </header>
 
-    <div class="b-tabs d-sh">
+    <div class="b-tabs d-sh wide-form">
             <div class="l-cols__i cleared" style="padding-top: 16px;">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
 
-                        <section class="b-form b-form_smaller b-form_edit">
+                        <a class="form-event-view" href="{% url participant-list event.id %}">Вернуться к списку заявок</a>
+                        <h3 class="title">
+                            Рассмотрение заявки на участие
+                        </h3>
+
+                        <div class="b-hr"><hr /></div>
+                        <section class="b-form b-form_smaller b-form_left">
                             <form name="editform" action="" method="post">
                                 {% csrf_token %}
 
-                                <a class="form-profile-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
+                                {{ formset.management_form }}
+                                {% for form in formset %}
+                                    <fieldset class="field" id="{{ form.prefix }}-row">
+                                        {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
 
-                                <div>
-                                    <h3 class="title">
-                                        Рассмотрение заявки на участие
-                                    </h3>
+                                        {% with video=form.instance.video %}
+                                            <fieldset>
+                                                <div class="b-form__field">
+                                                    <label>
+                                                        <span class="f-title">
+                                                            Видео: &laquo;{{ video.title }}&raquo;
+                                                            <a href="{% url video-detail video.id %}" target="_blank">
+                                                                Просмотреть
+                                                            </a>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </fieldset>
+                                        {% endwith %}
 
-                                    <div class="b-hr"><hr /></div>
+                                        {% for field in form.visible_fields %}
 
-                                    {{ formset.management_form }}
-
-                                    {% for form in formset %}
-                                        <fieldset class="field" id="{{ form.prefix }}-row">
-                                            {% for hidden in form.hidden_fields %}
-                                                {{ hidden }}
-                                            {% endfor %}
-
-                                            {% for field in form.visible_fields %}
                                                 <fieldset>
                                                     <div class="b-form__field">
                                                         <label>
@@ -70,14 +82,11 @@
                                                         {% endif %}
                                                     </div>
                                                 </fieldset>
-                                            {% endfor %}
 
-                                            <div class="b-hr"><hr /></div>
-                                        </fieldset>
-
-                                    {% endfor %}
-
-                                </div>
+                                        {% endfor %}
+                                        <div class="b-hr"><hr /></div>
+                                    </fieldset>
+                                {% endfor %}
 
                                 <footer class="form-footer">
                                     <div class="wrap">

@@ -5532,3 +5532,7 @@ select.medium-select {
 }
 
 .settings-edit-form h3.title {margin-top: 0;}
+
+.participant-list-table tbody tr:hover {
+    background-color: #eee;
+}
