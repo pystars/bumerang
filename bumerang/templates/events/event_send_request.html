@@ -34,7 +34,49 @@
                             {% csrf_token %}
                             <div class="b-hr"><hr /></div>
 
-                                {% include "events/snippets/form.html" %}
+                                <fieldset id="event-send-request-form" class="field">
+                                    {% for hidden in form.hidden_fields %}
+                                        {{ hidden }}
+                                    {% endfor %}
+
+                                    {% for field in form.visible_fields %}
+                                        {% if field.name != 'parent' %}
+                                            <fieldset>
+                                                <div class="b-form__field">
+                                                    <label>
+                                                        <span class="f-title">
+                                                            {{ field.label }} {% if field.field.required %}<span class="sp-err">*</span>{% endif %}
+                                                        </span>
+                                                        <span class="f-input">
+                                                            {{ field }}
+                                                        </span>
+                                                    </label>
+                                                    {% if field.errors %}
+                                                        <div class="sp-err"><span>{{ field.errors }}</span></div>
+                                                    {% endif %}
+                                                </div>
+                                            </fieldset>
+                                        {% endif %}
+
+                                        {% if field.name == 'parent' %}
+                                            <fieldset id="parent-fest-selector" class="hidden">
+                                                <div class="b-form__field">
+                                                    <label>
+                                                        <span class="f-title">
+                                                            {{ field.label }} {% if field.field.required %}<span class="sp-err">*</span>{% endif %}
+                                                        </span>
+                                                        <span class="f-input">
+                                                            {{ field }}
+                                                        </span>
+                                                    </label>
+                                                    {% if field.errors %}
+                                                        <div class="sp-err"><span>{{ field.errors }}</span></div>
+                                                    {% endif %}
+                                                </div>
+                                            </fieldset>
+                                        {% endif %}
+                                    {% endfor %}
+                                </fieldset>
 
                             <div class="b-hr"><hr /></div>
                             <footer class="form-footer">

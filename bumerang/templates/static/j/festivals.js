@@ -40,6 +40,27 @@ $(function() {
 
     } /* end festival request handler */
 
+    if ($('#event-send-request-form')) {
+        var form = $('#event-send-request-form');
+        var checked = parseInt(form.find('input[name=type]:checked').val());
+
+        if (checked == 1) {
+            form.find('#parent-fest-selector').removeClass('hidden');
+        } else if (checked == 2) {
+            form.find('#parent-fest-selector').addClass('hidden');
+        }
+
+        form.on('click', 'input[name=type]', function(e) {
+            var type = parseInt($(this).val(), 10);
+
+            if (type == 1) {
+                form.find('#parent-fest-selector').removeClass('hidden');
+            } else if (type == 2) {
+                form.find('#parent-fest-selector').addClass('hidden');
+            }
+        });
+    }
+
 });
 
 (function($) {

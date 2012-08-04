@@ -58,8 +58,8 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
         model = Event
         fields = (
             'type',
-            'title',
             'parent',
+            'title',
             'start_date',
             'end_date',
             'requesting_till',
@@ -74,6 +74,7 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(EventCreateForm, self).__init__(*args, **kwargs)
         self.fields['type'].empty_label = None
+        self.fields['type'].default = None
 
         festivals_qs = request.user.owned_events.filter(is_approved=True,
             type=Event.FESTIVAL)
