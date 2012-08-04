@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# do not touch this import for correct work with avatar
+from __future__ import division
+
 try:
     from cStringIO import StringIO
 except ImportError:
