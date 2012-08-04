@@ -20,41 +20,48 @@
 
 {% block tab %}
     {% include 'events/snippets/edit_tabs_menu.html' with selected='requests' %}
+
     <dd class="selected">
-        <div class="l-cols l-cols_tab">
-            <div class="l-cols__bg-section">
-                <div></div>
-            </div>
+        <div class="b-tabs__tab-content wide-form">
+
+{#        <div class="l-cols l-cols_tab">#}
+{#            <div class="l-cols__bg-section">#}
+{#                <div></div>#}
+{#            </div>#}
+
             <div class="l-cols__i cleared">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
-                        <section class="b-form b-form_smaller b-form_edit">
-                            <div class="b-form__fields">
-                                <h3 class="title">
-                                    Заявки на участие в событии
-                                </h3>
-                            <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
-                                {% include 'snippets/sort_controls.html' %}
-                                <div class="b-hr">
-                                    <hr />
-                                </div>
-                                {% for object in object_list %}
-                                    <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>
-                                {% endfor %}
 
-                            </div>
+                        <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+                        <h3 class="title">
+                            Заявки на участие в событии
+                        </h3>
+
+                        <section class="b-form b-form_smaller b-form_edit settings-edit-form">
+
+                            {% include 'snippets/sort_controls.html' %}
+                            <div class="b-hr"><hr /></div>
+
+{#                            {% for object in object_list %}#}
+{#                                <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>#}
+{#                            {% endfor %}#}
+                            {% for object in object_list %}
+                                <a href="{% url participant-review object.id %}">{{ object.owner.username }}</a>
+                            {% endfor %}
+
                         </section>
                     </div>
                 </section>
-                <aside class="l-cols__side">
-                    <div class="l-cols__side__i">
-                        <nav class="b-tab-sidenav">
-                            {% block edit_side_nav %}
-                                {% sitetree_menu from "event_edit_menu" include "trunk" template "accounts/left_menu.html" %}
-                            {% endblock %}
-                        </nav>
-                    </div>
-                </aside>
+{#                <aside class="l-cols__side">#}
+{#                    <div class="l-cols__side__i">#}
+{#                        <nav class="b-tab-sidenav">#}
+{#                            {% block edit_side_nav %}#}
+{#                                {% sitetree_menu from "event_edit_menu" include "trunk" template "accounts/left_menu.html" %}#}
+{#                            {% endblock %}#}
+{#                        </nav>#}
+{#                    </div>#}
+{#                </aside>#}
             </div>
         </div>
     </dd>

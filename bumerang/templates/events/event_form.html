@@ -8,29 +8,56 @@
 {% endblock %}
 
 {% block head_js %}
-    {#    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-1.7.2.min.js"></script>#}
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-ui-1.8.21.custom.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
 {% endblock %}
+{##}
+{#{% block edit_form %}#}
+{#    <section class="b-form b-form_smaller b-form_edit">#}
+{#        <form name="editform" action="" method="post" enctype="multipart/form-data">#}
+{#            {% csrf_token %}#}
+{#            <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>#}
+{#            <div class="b-form__fields">#}
+{#                <h3 class="title">#}
+{#                    {% sitetree_page_title from "event_edit_menu" %}#}
+{#                </h3>#}
+{##}
+{#                <div class="b-hr"><hr /></div>#}
+{##}
+{#                {{ form }}#}
+{##}
+{#            </div>#}
+{#            <footer class="b-form__footer">#}
+{#                <div class="wrap">#}
+{#                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>#}
+{#                </div>#}
+{#            </footer>#}
+{#        </form>#}
+{#    </section>#}
+{#{% endblock %}#}
+
+{% block page_title %}
+    <h1>{{ event.title }}</h1>
+{% endblock %}
 
 {% block edit_form %}
-    <section class="b-form b-form_smaller b-form_edit">
-        <form name="editform" action="" method="post" enctype="multipart/form-data">
+    <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+
+    <section class="b-form b-form_smaller b-form_left settings-edit-form">
+        <form name="editform" action="" method="post">
             {% csrf_token %}
-            <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
-            <div class="b-form__fields">
+
                 <h3 class="title">
                     {% sitetree_page_title from "event_edit_menu" %}
                 </h3>
 
-                <div class="b-hr">
-                    <hr />
-                </div>
+                <div class="b-hr"><hr /></div>
 
-                {{ form }}
+                {% with field_class="" %}
+                    {% include "events/snippets/form.html" %}
+                {% endwith %}
 
-            </div>
             <footer class="b-form__footer">
                 <div class="wrap">
                     <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
@@ -38,4 +65,13 @@
             </footer>
         </form>
     </section>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form fieldset.field').formset({
+                prefix: 'form',
+                addText: '{{ add_item_text }}'
+            })
+        })
+    </script>
 {% endblock %}

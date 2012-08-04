@@ -1,0 +1,9 @@
+{{ formset.management_form }}
+{% for form in formset %}
+    <fieldset class="field" id="{{ form.prefix }}-row">
+
+        {% include "events/snippets/form.html" %}
+
+        <div class="b-hr"><hr /></div>
+    </fieldset>
+{% endfor %}

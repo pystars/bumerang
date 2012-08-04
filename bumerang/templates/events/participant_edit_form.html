@@ -30,8 +30,9 @@
                 {% if event.is_accepting_requests %}
                     <a class="form-event-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
                     <h3 class="title">
-                        Редактирование заявки на {{ event.get_type_display|lower }} &laquo;{{ event }}&raquo;
+                        Редактирование заявки
                     </h3>
+
                     {% include "events/snippets/participant_formset_snippet.html" %}
 
                 {% else %}

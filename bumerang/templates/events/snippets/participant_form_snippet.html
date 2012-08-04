@@ -31,7 +31,9 @@
 
                 <div class="b-hr"><hr /></div>
 
-                {% include "events/snippets/formset.html" %}
+                {% with form_fields_classname='participant-field' %}
+                    {% include "events/snippets/formset.html" %}
+                {% endwith %}
 
             </div>
 

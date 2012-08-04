@@ -69,9 +69,11 @@ class Event(FileModelMixin, models.Model):
     requesting_till = models.DateField(u'Прием заявок до')
     hold_place = models.TextField(u'Место проведения')
     description = models.TextField(u'Описание фестиваля')
-    text_rules = models.TextField(u'Правила фестиваля', blank=False)
-    file_rules = models.FileField(u'Правила фестиваля ( документ )',
-        upload_to='events_rules', storage=media_storage, blank=True)
+#    text_rules = models.TextField(u'Правила фестиваля', blank=False)
+#    file_rules = models.FileField(u'Правила фестиваля ( документ )',
+#        upload_to='events_rules', storage=media_storage, blank=True)
+    participant_conditions = models.TextField(u'Условия подачи заявок',
+        blank=False)
     contacts_raw_text = models.TextField(u'Контакты', **nullable)
 
     created = models.DateTimeField(u'Дата добавления', default=now,
@@ -125,7 +127,7 @@ class Juror(FileModelMixin, models.Model):
 
 class GeneralRule(TitleUnicode, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
-    title = models.CharField(u'Положение', max_length=255)
+    title = models.CharField(u'Заголовок', max_length=255)
     description = models.TextField(u'Описание')
 
     class Meta:
@@ -150,9 +152,9 @@ class Nomination(models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Фестиваль')
     title = models.CharField(u'Название номинации', max_length=255)
     description = models.CharField(u'Описание', max_length=255, blank=True)
-    age_from = models.PositiveSmallIntegerField(u'Возраст от(включительно)',
-        **nullable)
-    age_to = models.PositiveSmallIntegerField(u'Возраст до(включительно)',
+    age_from = models.PositiveSmallIntegerField(
+        u'Возраст от (включительно)', **nullable)
+    age_to = models.PositiveSmallIntegerField(u'Возраст до (включительно)',
         **nullable)
     sort_order = models.PositiveSmallIntegerField(u'Сортировка')
 

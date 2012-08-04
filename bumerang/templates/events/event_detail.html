@@ -133,25 +133,46 @@
 
                         {% if object.is_accepting_requests %}
                             {% with event=object %}
-                                {% if object.nomination_set.count %}
+                                {% if request.user.is_authenticated %}
+                                    {% if object.nomination_set.count %}
 
-                                    <h3 class="title">
-                                        Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
-                                    </h3>
-                                    {% include "events/snippets/participant_form_snippet.html" %}
+                                        {% if not participant %}
 
-                                {% else %}
-                                    <h3 class="title">Организатор события еще не создал ни одной номинации</h3>
+                                            <h3 class="title">
+                                                Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
+                                            </h3>
+                                            {% include "events/snippets/participant_form_snippet.html" %}
 
-                                    {% if request.user == object.owner %}
-                                        <div class="cleared">
+                                        {% else %}
+
+                                            <h3 class="title">
+                                                Вы уже подавали заявку
+                                            </h3>
+
+                                            Вы можете
+                                            <a href="{% url participant-edit participant.id %}">просмотреть или изменить</a>
+                                            поданную ранее заявку
+
+                                        {% endif %}
+
+                                    {% else %}
+                                        <h3 class="title">Организатор события еще не создал ни одной номинации</h3>
+
+                                        {% if request.user == object.owner %}
+                                            <div class="cleared">
                                             <img src="{{ STATIC_URL }}i/ico-plus.gif">
                                             <a class="form-event-service" href="{% url event-edit-nominations event.id %}">
                                                 Добавить номинации
                                             </a>
                                         </div>
+                                        {% endif %}
                                     {% endif %}
-
+                                {% else %}
+                                    <h3 class="title">Вы не авторизованы</h3>
+                                    <a href="{% url login %}">Войдите</a>
+                                    или
+                                    <a href="{% url registration %}">зарегистрируйтесь</a>
+                                    чтобы отправить заявку
                                 {% endif %}
                             {% endwith %}
 

@@ -2952,17 +2952,19 @@ textarea {
     min-width: 0;
 }
 
+.zero-width-field {min-width: 0 !important;}
+
 .participant-field .f-title {
     margin-top: 0;
     margin-bottom: 0;
 }
 
-.participant-field .b-form__field.table-field label { display: table; }
+.b-form__field.table-field label { display: table; }
 
-.participant-field .b-form__field.table-field .f-title,
-.participant-field .b-form__field.table-field .f-input { display: table-cell; }
+.b-form__field.table-field .f-title,
+.b-form__field.table-field .f-input { display: table-cell; }
 
-.participant-field .b-form__field.table-field .sp-err { margin-right: 16px; }
+.b-form__field.table-field .sp-err { margin-right: 16px; }
 
 .request-form .b-form__field { margin-bottom: 10px; }
 
@@ -5505,6 +5507,17 @@ div.ui-datepicker {
     margin-right: -96%;
 }
 .participant-form .l-cols__section__i { padding-right: 0; }
+
+.wide-form .l-cols__section {
+    width: 96%;
+    margin-right: -96%;
+}
+.wide-form .l-cols__section__i { padding-right: 0; }
+
+.wide-form.b-tabs__tab-content {
+    padding-left: 0;
+    padding-right: 0;
+}
 /*********************/
 /*section#rules .title {*/
     /*margin-top: 10px;*/
@@ -5517,3 +5530,5 @@ select.medium-select {
     width: 50%;
     min-width: 50% !important;
 }
+
+.settings-edit-form h3.title {margin-top: 0;}

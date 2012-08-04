@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.forms import DateInput
 from django.forms.models import ModelForm
 from django.forms.widgets import Textarea, TextInput, RadioSelect, Select
 
@@ -7,6 +8,36 @@ from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin, WideTextareaMixin)
+
+
+class TextInputWidget(TextInput):
+    def __init__(self, attrs=None, parameters=None):
+        if attrs is not None:
+            self.attrs = attrs.copy()
+            self.parameters = parameters.copy()
+        else:
+            self.attrs = {}
+            self.parameters = {}
+
+
+two_symbols_widget = TextInput(attrs={
+    'size': 2,
+    'maxlength': 2,
+    'class': 'zero-width-field',
+})
+
+two_symbols_table_widget = TextInputWidget(attrs={
+    'size': 2,
+    'maxlength': 2,
+    'class': 'zero-width-field',
+    }, parameters={
+    'render_type': 'table',
+})
+
+date_widget = DateInput(attrs={
+    'class': 'short',
+    'input_formats': '%d.%m.%Y',
+})
 
 
 class EventCreateForm(WideTextareaMixin, ModelForm):
@@ -24,8 +55,6 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
             'requesting_till',
             'hold_place',
             'description',
-#            'text_rules',
-#            'file_rules',
             'contacts_raw_text',
         )
         widgets = {
@@ -45,7 +74,7 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
             del self.fields['parent']
 
 
-class EventUpdateForm(TemplatedForm):
+class EventUpdateForm(WideTextareaMixin, TemplatedForm):
 
     class Meta:
         model = Event
@@ -56,10 +85,14 @@ class EventUpdateForm(TemplatedForm):
             'requesting_till',
             'hold_place',
             'description',
-            'text_rules',
-            'file_rules',
+            'participant_conditions'
         )
-
+        widgets = {
+            'title': TextInput(attrs={'class': 'wide'}),
+            'start_date': date_widget,
+            'end_date': date_widget,
+            'requesting_till': date_widget,
+        }
 
 class EventContactsUpdateForm(EditFormsMixin, TemplatedForm):
     contacts_raw_text = forms.CharField(label=u'Контакты',
@@ -89,8 +122,10 @@ class NominationForm(TemplatedForm):
             'sort_order',
         )
         widgets = {
-            'age_from': TextInput(attrs={ 'size': 2, 'maxlength': 2 }),
-            'age_to': TextInput(attrs={ 'size': 2, 'maxlength': 2 }),
+            'title': TextInput(attrs={'class': 'medium'}),
+            'age_from': two_symbols_widget,
+            'age_to': two_symbols_widget,
+            'sort_order': two_symbols_widget
         }
 
 
@@ -104,7 +139,7 @@ class GeneralRuleForm(EditFormsMixin, ModelForm):
         )
 
 
-class NewsPostForm(EditFormsMixin, TemplatedForm):
+class NewsPostForm(WideTextareaMixin, TemplatedForm):
 
     class Meta:
         model = NewsPost
@@ -112,6 +147,9 @@ class NewsPostForm(EditFormsMixin, TemplatedForm):
             'title',
             'description',
         )
+        widgets = {
+            'title': TextInput(attrs={'class': 'wide'})
+        }
 
 
 class JurorForm(TemplatedForm):
@@ -125,6 +163,12 @@ class JurorForm(TemplatedForm):
             'info_middle_name',
             'min_avatar',
         )
+        widgets = {
+            'email': TextInput(attrs={'class': 'wide'}),
+            'info_second_name': TextInput(attrs={'class': 'wide'}),
+            'info_name': TextInput(attrs={'class': 'wide'}),
+            'info_middle_name': TextInput(attrs={'class': 'wide'}),
+        }
 
 
 class ParticipantForm(forms.Form):
@@ -150,15 +194,17 @@ class ParticipantVideoForm(ModelForm):
         widgets = {
             'video': Select(attrs={'class': 'medium-select'}),
             'nomination': Select(attrs={'class': 'medium-select'}),
-            'age': TextInput(attrs={'size': 2, 'maxlength': 2}),
+            'age': two_symbols_table_widget,
         }
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
-        self.fields['nomination'].queryset = self.event.nomination_set.all()
         self.fields['nomination'].empty_label = None
-        self.fields['video'].queryset = self.fields['video'].queryset.filter(
-            owner=self.request.user)
+
+        if self.request.user.is_authenticated():
+            self.fields['nomination'].queryset = self.event.nomination_set.all()
+            self.fields['video'].queryset = self.fields['video'].queryset.filter(
+                owner=self.request.user)
 
 
 class ParticipantVideoReviewForm(ModelForm):
