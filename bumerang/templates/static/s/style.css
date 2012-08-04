@@ -2964,7 +2964,7 @@ textarea {
 .b-form__field.table-field .f-title,
 .b-form__field.table-field .f-input { display: table-cell; }
 
-.b-form__field.table-field .sp-err { margin-right: 16px; }
+.b-form__field.table-field .sp-err { margin-right: 16px !important; }
 
 .request-form .b-form__field { margin-bottom: 10px; }
 
@@ -5418,7 +5418,7 @@ h3.title+.b-form_edit_login-pass {
 .dark-gray {color: #666;}
 
 .sp-err {
-    font-size: 16px;
+    font-size: 16px !important;
     display: inline !important;
     color:#dc291e;
 }
@@ -5535,4 +5535,10 @@ select.medium-select {
 
 .participant-list-table tbody tr:hover {
     background-color: #eee;
+}
+
+input[type="text"].mini,
+input[type="password"].mini {
+    width:80px;
+    min-width:80px !important;
 }

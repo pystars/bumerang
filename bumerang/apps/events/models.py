@@ -57,21 +57,18 @@ class Event(FileModelMixin, models.Model):
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
 
-    logo = models.ImageField(u'Логотип фестиваля',
+    logo = models.ImageField(u'Логотип события',
         upload_to=get_logo_path, storage=media_storage, **nullable)
-    min_logo = models.ImageField(u'Уменьшенный логотип фестиваля',
+    min_logo = models.ImageField(u'Уменьшенный логотип события',
         upload_to=get_mini_logo_path, storage=media_storage, **nullable)
 
     title = models.CharField(u'Название события', max_length=255)
-    opened = models.BooleanField(u'Фестиваль открыт', default=True)
+    opened = models.BooleanField(u'Событие открыто ', default=True)
     start_date = models.DateField(u'Дата начала')
     end_date = models.DateField(u'Дата окончания')
     requesting_till = models.DateField(u'Прием заявок до')
     hold_place = models.TextField(u'Место проведения')
-    description = models.TextField(u'Описание фестиваля')
-#    text_rules = models.TextField(u'Правила фестиваля', blank=False)
-#    file_rules = models.FileField(u'Правила фестиваля ( документ )',
-#        upload_to='events_rules', storage=media_storage, blank=True)
+    description = models.TextField(u'Описание события')
     participant_conditions = models.TextField(u'Условия подачи заявок',
         blank=False)
     contacts_raw_text = models.TextField(u'Контакты', **nullable)

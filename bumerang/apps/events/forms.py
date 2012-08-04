@@ -69,6 +69,9 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
         )
         widgets = {
             'title': TextInput(attrs={'class': 'wide'}),
+            'start_date': TextInput(attrs={'class': 'mini'}),
+            'end_date': TextInput(attrs={'class': 'mini'}),
+            'requesting_till': TextInput(attrs={'class': 'mini'}),
         }
 
     def __init__(self, request, *args, **kwargs):

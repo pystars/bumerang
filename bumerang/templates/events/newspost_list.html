@@ -12,16 +12,18 @@
     <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
         <section class="b-profile">
             <header class="b-profile__head cleared">
-
-                {% for item in object_list %}
-                    <div>
-                        <h3>{{ item.title }}</h3>
-                        <p>{{ item.description|linebreaks|striptags }}</p>
-                        <p>Опубликовано: {{ item.creation_date }}</p>
-                        <div class="b-hr"><hr /></div>
-                    </div>
-                {% endfor %}
-
+                {% if object_list.count %}
+                    {% for item in object_list %}
+                        <div>
+                            <h3>{{ item.title }}</h3>
+                            <p>{{ item.description|linebreaks|striptags }}</p>
+                            <p>Опубликовано: {{ item.creation_date }}</p>
+                            <div class="b-hr"><hr /></div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h3 class="title">Новостей пока нет</h3>
+                {% endif %}
             </header>
         </section>
     </div></dd>
