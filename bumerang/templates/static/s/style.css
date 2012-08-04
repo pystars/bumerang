@@ -2952,8 +2952,19 @@ textarea {
     min-width: 0;
 }
 
-.request-form .b-form__field { margin-bottom: 10px; }
+.participant-field .f-title {
+    margin-top: 0;
+    margin-bottom: 0;
+}
 
+.participant-field .b-form__field.table-field label { display: table; }
+
+.participant-field .b-form__field.table-field .f-title,
+.participant-field .b-form__field.table-field .f-input { display: table-cell; }
+
+.participant-field .b-form__field.table-field .sp-err { margin-right: 16px; }
+
+.request-form .b-form__field { margin-bottom: 10px; }
 
 .b-form__field .hint-wrap {
 	display:-moz-inline-box;display:inline-block;//display:inline;zoom:1;
@@ -5381,6 +5392,11 @@ h3.title+.b-form_edit_login-pass {
     font-size: 14px;
 }
 
+.form-event-service {
+    font-size: 14px;
+    padding-left: 2px;
+}
+
 .vk_comments {margin-top: 30px !important;}
 
 .photo-deleted {
@@ -5400,7 +5416,7 @@ h3.title+.b-form_edit_login-pass {
 .dark-gray {color: #666;}
 
 .sp-err {
-    font-size: 1em;
+    font-size: 16px;
     display: inline !important;
     color:#dc291e;
 }
@@ -5490,9 +5506,14 @@ div.ui-datepicker {
 }
 .participant-form .l-cols__section__i { padding-right: 0; }
 /*********************/
-section#rules .title {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+/*section#rules .title {*/
+    /*margin-top: 10px;*/
+    /*margin-bottom: 10px;*/
+/*}*/
 
-section#rules .title.first { margin-top: 0; }
+/*section#rules .title.first { margin-top: 0; }*/
+
+select.medium-select {
+    width: 50%;
+    min-width: 50% !important;
+}

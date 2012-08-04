@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import ModelForm
-from django.forms.widgets import Textarea, TextInput, Select
+from django.forms.widgets import Textarea, TextInput, RadioSelect, Select
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
@@ -88,6 +88,10 @@ class NominationForm(TemplatedForm):
             'age_to',
             'sort_order',
         )
+        widgets = {
+            'age_from': TextInput(attrs={ 'size': 2, 'maxlength': 2 }),
+            'age_to': TextInput(attrs={ 'size': 2, 'maxlength': 2 }),
+        }
 
 
 class GeneralRuleForm(EditFormsMixin, ModelForm):
@@ -125,7 +129,8 @@ class JurorForm(TemplatedForm):
 
 class ParticipantForm(forms.Form):
     accepted = forms.BooleanField(required=True, error_messages={
-        'required': u'Вы должны ознакомиться и согласиться с условиями.'
+        'required': u'''Вы должны ознакомиться и согласиться
+                    с условиями подачи заявки.'''
     })
 
 
@@ -138,13 +143,14 @@ class ParticipantVideoForm(ModelForm):
     class Meta:
         model = ParticipantVideo
         fields = (
-            'age',
             'video',
-            'nomination'
+            'nomination',
+            'age',
         )
         widgets = {
-            'age': TextInput(attrs={ 'size': 2, 'maxlength': 2 }),
-            'nomination': forms.RadioSelect
+            'video': Select(attrs={'class': 'medium-select'}),
+            'nomination': Select(attrs={'class': 'medium-select'}),
+            'age': TextInput(attrs={'size': 2, 'maxlength': 2}),
         }
 
     def __init__(self, *args, **kwargs):

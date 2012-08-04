@@ -94,9 +94,9 @@
                     <a href="#request" class="b-button b-button_grey">Заявка</a>
                 {% endif %}
 
-{#                {% if object. %}#}
-                    <a href="#juror" class="b-button b-button_grey">Жюри</a>
-{#                {% endif %}#}
+
+                <a href="#juror" class="b-button b-button_grey">Жюри</a>
+
 
                 <a href="#contacts" class="b-button b-button_grey">Контакты</a>
             </div>
@@ -118,6 +118,13 @@
                         {% endfor %}
                     {% else %}
                         <h3 class="title">Раздел не заполнен</h3>
+
+                        {% if request.user == object.owner %}
+                            <div class="cleared">
+                                <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                <a class="form-event-service" href="{% url event-edit-rules event.id %}">Заполнить раздел</a>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </section>
 
@@ -126,16 +133,30 @@
 
                         {% if object.is_accepting_requests %}
                             {% with event=object %}
-                                <h3 class="title">
-                                    Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
-                                </h3>
-                                {% include "events/snippets/participant_form_snippet.html" %}
+                                {% if object.nomination_set.count %}
 
+                                    <h3 class="title">
+                                        Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
+                                    </h3>
+                                    {% include "events/snippets/participant_form_snippet.html" %}
+
+                                {% else %}
+                                    <h3 class="title">Организатор события еще не создал ни одной номинации</h3>
+
+                                    {% if request.user == object.owner %}
+                                        <div class="cleared">
+                                            <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                            <a class="form-event-service" href="{% url event-edit-nominations event.id %}">
+                                                Добавить номинации
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                {% endif %}
                             {% endwith %}
+
                         {% else %}
-
-                            <p>Прием заявок окончен.</p>
-
+                            <h3 class="title">Прием заявок окончен</h3>
                         {% endif %}
 
                     </section>
@@ -165,21 +186,37 @@
 
                         {% endfor %}
                     {% else %}
-                        <p>Жюри еще не назначено.</p>
+                        <h3 class="title">Жюри еще не назначено</h3>
+
+                        {% if request.user == object.owner %}
+                            <div class="cleared">
+                                <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                <a class="form-event-service" href="{% url event-edit-jurors event.id %}">
+                                    Назначить жюри
+                                </a>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </section>
 
                 <section id="contacts" class="hidden">
 
                     {% if object.contacts_raw_text %}
-                        <h3>Контакты:</h3>
+                        <h3 class="title">Контакты</h3>
                         <p>
                             {{ object.contacts_raw_text|striptags|linebreaks }}
                         </p>
                     {% else %}
-                        <p>
-                            Контакты еще не заполнены.
-                        </p>
+                        <h3 class="title">Контакты еще не заполнены</h3>
+
+                        {% if request.user == object.owner %}
+                            <div class="cleared">
+                                <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                <a class="form-event-service" href="{% url event-edit-contacts event.id %}">
+                                    Заполнить контакты
+                                </a>
+                            </div>
+                        {% endif %}
                     {% endif %}
 
                 </section>

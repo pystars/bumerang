@@ -148,7 +148,7 @@ class NewsPost(TitleUnicode, models.Model):
 
 class Nomination(models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Фестиваль')
-    title = models.CharField(u'Название', max_length=255)
+    title = models.CharField(u'Название номинации', max_length=255)
     description = models.CharField(u'Описание', max_length=255, blank=True)
     age_from = models.PositiveSmallIntegerField(u'Возраст от(включительно)',
         **nullable)
