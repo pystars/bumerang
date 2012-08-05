@@ -1,47 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.utils.safestring import mark_safe
-import os
-
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Max
 from django.db import models
 from django.utils.timezone import now
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from bumerang.apps.utils.functions import get_path
 from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.utils.models import TitleUnicode, FileModelMixin
 from bumerang.apps.video.models import Video
 
 
 nullable = dict(null=True, blank=True)
-
-def get_juror_avatar_path(instance, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'jurors', str(instance.id))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    ext = os.path.splitext(filename)[1]
-    return 'jurors_avatars/{0}/min{1}'.format(instance.id, ext)
-
-def get_event_rules_path(instance, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'event_rules', str(instance.id))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return 'event_rules/{0}/{1}'.format(instance.id, filename)
-
-def get_logo_path(instance, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'logos', str(instance.id))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    ext = os.path.splitext(filename)[1]
-    return u'logos/{0}/full{1}'.format(instance.id, ext)
-
-def get_mini_logo_path(instance, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'logos', str(instance.id))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    ext = os.path.splitext(filename)[1]
-    return u'logos/{0}/min{1}'.format(instance.id, ext)
 
 
 class Event(FileModelMixin, models.Model):
@@ -57,10 +28,10 @@ class Event(FileModelMixin, models.Model):
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
 
-    logo = models.ImageField(u'Логотип события',
-        upload_to=get_logo_path, storage=media_storage, **nullable)
-    min_logo = models.ImageField(u'Уменьшенный логотип события',
-        upload_to=get_mini_logo_path, storage=media_storage, **nullable)
+    logo = models.ImageField(u'Логотип события', upload_to=
+        get_path(u'logos/{0}/full{1}'), storage=media_storage, **nullable)
+    min_logo = models.ImageField(u'Уменьшенный логотип события', upload_to=
+        get_path(u'logos/{0}/min{1}'), storage=media_storage, **nullable)
 
     title = models.CharField(u'Название события', max_length=255)
     opened = models.BooleanField(u'Событие открыто ', default=True)
@@ -113,9 +84,10 @@ class Juror(FileModelMixin, models.Model):
     info_second_name = models.CharField(u'Фамилия', max_length=100)
     info_name = models.CharField(u'Имя', max_length=100)
     info_middle_name = models.CharField(u'Отчество', max_length=100)
+    description = models.TextField(u'О члене жюри')
     #TODO: just do it
-    min_avatar = models.ImageField(u'Фото',
-        upload_to=get_juror_avatar_path, storage=media_storage, **nullable)
+    min_avatar = models.ImageField(u'Фото', storage=media_storage,
+        upload_to=get_path(u'jurors_avatars/{0}/min{1}'), **nullable)
 
     class Meta:
         verbose_name = u'Член жюри'
