@@ -298,7 +298,7 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
     model = Event
     formset_model = Juror
     formset_form_class = JurorForm
-    template_name = "events/event_edit_formset.html"
+    template_name = "events/event_juror_formset.html"
     add_item_text = u'Добавить члена жюри'
 
     def post(self, request, *args, **kwargs):
@@ -311,8 +311,14 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                 try:
                     user = User.objects.get(username=instance.email)
                 except User.DoesNotExist:
+                    title = u'{0} {1} {2}'.format(
+                        instance.info_second_name,
+                        instance.info_name,
+                        instance.info_middle_name
+                    )
                     profile = Profile(
                         username = instance.email,
+                        title = title,
                         info_second_name = instance.info_second_name,
                         info_name = instance.info_name,
                         info_middle_name = instance.info_middle_name,

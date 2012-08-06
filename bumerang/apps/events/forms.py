@@ -4,6 +4,7 @@ from django.forms import DateInput
 from django.forms.models import ModelForm, BaseModelFormSet
 from django.forms.widgets import (Textarea, TextInput, Select, Widget,
     SelectMultiple)
+from filebrowser.widgets import FileInput
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
@@ -166,7 +167,7 @@ class NewsPostForm(WideTextareaMixin, TemplatedForm):
         }
 
 
-class JurorForm(TemplatedForm):
+class JurorForm(forms.ModelForm):
 
     class Meta:
         model = Juror
@@ -175,13 +176,15 @@ class JurorForm(TemplatedForm):
             'info_second_name',
             'info_name',
             'info_middle_name',
+            'description',
             'min_avatar',
         )
         widgets = {
-            'email': TextInput(attrs={'class': 'wide'}),
-            'info_second_name': TextInput(attrs={'class': 'wide'}),
-            'info_name': TextInput(attrs={'class': 'wide'}),
-            'info_middle_name': TextInput(attrs={'class': 'wide'}),
+            'email': TextInput(attrs={'class': 'medium'}),
+            'info_second_name': TextInput(attrs={'class': 'medium'}),
+            'info_name': TextInput(attrs={'class': 'medium'}),
+            'info_middle_name': TextInput(attrs={'class': 'medium'}),
+            'description': Textarea(attrs={'class': 'medium'}),
         }
 
 

@@ -219,6 +219,11 @@ input[type="password"].short {
 	min-width:200px !important;
 }
 
+textarea.short {
+    width:200px;
+    min-width:200px !important;
+}
+
 input[type="text"].wide,
 input[type="password"].wide,
 textarea.wide {
@@ -5541,4 +5546,10 @@ input[type="text"].mini,
 input[type="password"].mini {
     width:80px;
     min-width:80px !important;
+}
+
+/**********/
+table.compact td .f-title {
+    margin-top: 0 !important;
+    margin-bottom: 2px !important;
 }

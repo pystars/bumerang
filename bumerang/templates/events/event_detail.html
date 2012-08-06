@@ -186,24 +186,27 @@
                 <section id="juror" class="hidden">
 
                     {% if object.juror_set.exists %}
+                        <h3 class="title">
+                            Члены жюри
+                        </h3>
                         {% for item in object.juror_set.all %}
                             <div class="b-resume__person cleared">
                                 <div class="rp__pic">
                                     <div class="b-ava">
                                         {% if item.min_avatar %}
-                                            <img src="{{ item.min_avatar.url }}" width="60" height="60" alt="" />
+                                            <img src="{{ item.min_avatar.url }}" width="125" height="125" alt="" />
                                         {% else %}
-                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="" />
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="125" height="125" alt="" />
                                         {% endif %}
                                         <i class="b-ava__sh"></i>
                                     </div>
                                 </div>
                                 <div class="rp__txt">
                                     <h4>{{ item.info_name }} {{ item.info_middle_name }} {{ item.info_second_name }}</h4>
-{#                                    <p>{{ person.description|linebreaksbr }}</p>#}
+                                    <p>{{ item.description|linebreaksbr }}</p>
                                 </div>
                             </div>
-
+                            <div class="b-hr"><hr /></div>
                         {% endfor %}
                     {% else %}
                         <h3 class="title">Жюри еще не назначено</h3>
