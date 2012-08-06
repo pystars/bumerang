@@ -14,7 +14,7 @@
             <header class="b-profile__head cleared">
                 <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
 
-                {% if event.nomination_set.count %}
+                {% if event.nomination_set.exists %}
                     <h3>Номинации:</h3>
                     <ul>
                         {% for item in event.nomination_set.all %}

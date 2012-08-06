@@ -21,7 +21,7 @@
             <span>Заявки</span>
         </a>
     {% endspaceless %}
-    <small>{{ event.participant_set.count }}</small>
+    <small>{{ event.participant_set.exists }}</small>
     <i class="l"></i>
     <i class="r"></i>
 </dt>

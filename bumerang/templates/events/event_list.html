@@ -11,7 +11,7 @@
     </header>
 
     <section class="b-participants">
-        {% if object_list.count %}
+        {% if object_list.exists %}
             {% include 'snippets/sort_controls.html' %}
 
             {% for item in object_list %}

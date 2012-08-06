@@ -53,7 +53,7 @@
                         <div id="photos-plurals" style="display: none;">фото,фото,фото</div>
                     </p>
                 </header>
-                <div id="photo-empty-block" class="b-empty b-empty_photo" {% if photos.count %}style="display: none;"{% endif %}>
+                <div id="photo-empty-block" class="b-empty b-empty_photo" {% if photos.exists %}style="display: none;"{% endif %}>
                     <div class="b-empty__pic"></div>
                     <strong class="b-empty__text">Нет фотографий</strong>
                     <div><a href="{% url album-photo-add object.id %}" class="b-button b-button_yellow">Загрузить фото</a></div>
@@ -391,10 +391,10 @@
                 </header>
                 <div class="b-form__fields">
                     <div class="b-form__field" id="albums-list">
-                        {% if object.owner.profile.photoalbum_set.count %}
+                        {% if object.owner.profile.photoalbum_set.exists %}
                             {% for item in object.owner.profile.photoalbum_set.all %}
                                 <div class="b-form__field b-form__field_radio">
-                                <div class="f-radio" style="margin-left: 0px;">
+                                <div class="f-radio" style="margin-left: 0;">
                                     <div>
                                         <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
                                         <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>

@@ -14,7 +14,7 @@
         <h1>Фотоархив</h1>
     </header>
 
-    {% if object_list.count %}
+    {% if object_list.exists %}
         <section class="b-gallery b-gallery_album">
             <div class="b-gallery__items">
                 {% for item in object_list %}

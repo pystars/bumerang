@@ -34,7 +34,7 @@
             </ul>
             <h3>Видеоальбомы</h3>
             <div class="clear"></div>
-            {% if profile.videoalbum_set.count %}
+            {% if profile.videoalbum_set.exists %}
                 {% if profile.id == request.user.id %}
                 <a href="#" id="videoalbum-delete-button" class="b-button b-button_red b-button_small l-button-del" style="display: none;">Удалить</a>
                 {% endif %}
@@ -45,7 +45,7 @@
             {% endif %}
         </header>
 
-        <div id="videoalbum-empty-block" class="b-empty b-empty_video-album" {% if profile.videoalbum_set.count %}style="display: none;"{% endif %}>
+        <div id="videoalbum-empty-block" class="b-empty b-empty_video-album" {% if profile.videoalbum_set.exists %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет видеоальбомов</strong>
             {% if profile.id == request.user.id %}
@@ -56,7 +56,7 @@
         </div>
         {% include "snippets/videoalbums_list.html" %}
     </section>
-    {% if profile.id == request.user.id or videos.count %}
+    {% if profile.id == request.user.id or videos.exists %}
     <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="videos-container">
         <header class="announs-head">
             {% if profile.id == request.user.id %}
@@ -69,7 +69,7 @@
             {% endif %}
             <h3>Видеоролики без альбомов</h3>
             <div class="clear"></div>
-            {% if videos.count %}
+            {% if videos.exists %}
                 {% if profile.id == request.user.id %}
                     <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="video-delete-button" style="display: none;">Удалить</a>
                     <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="video-move-button" style="display: none;">Переместить в альбом...</a>
@@ -89,7 +89,7 @@
 {#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
 {#            </div>#}
         </header>
-        <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.count %}style="display: none;"{% endif %}>
+        <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.exists %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет видеороликов</strong>
             {% if profile.id == request.user.id %}
@@ -185,7 +185,7 @@
         {% endif %}
     </div>
 
-    {% if profile.id == request.user.id and not videos.count %}
+    {% if profile.id == request.user.id and not videos.exists %}
     <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеороликов</strong>

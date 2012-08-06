@@ -108,7 +108,7 @@
 
             <div class="tab-block">
                 <section id="rules" class="current">
-                    {% if object.generalrule_set.count %}
+                    {% if object.generalrule_set.exists %}
                         {% for item in object.generalrule_set.all %}
                             <h3 class="title{% if forloop.first %} first{% endif %}">{{ item.title }}</h3>
                             <span>{{ item.description|linebreaksbr }}</span>
@@ -134,7 +134,7 @@
                         {% if object.is_accepting_requests %}
                             {% with event=object %}
                                 {% if request.user.is_authenticated %}
-                                    {% if object.nomination_set.count %}
+                                    {% if object.nomination_set.exists %}
 
                                         {% if not participant %}
 
@@ -185,7 +185,7 @@
 
                 <section id="juror" class="hidden">
 
-                    {% if object.juror_set.count %}
+                    {% if object.juror_set.exists %}
                         {% for item in object.juror_set.all %}
                             <div class="b-resume__person cleared">
                                 <div class="rp__pic">

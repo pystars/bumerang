@@ -12,7 +12,7 @@
     <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
         <section class="b-profile">
             <header class="b-profile__head cleared">
-                {% if object_list.count %}
+                {% if object_list.exists %}
                     {% for item in object_list %}
                         <div>
                             <h3>{{ item.title }}</h3>

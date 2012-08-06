@@ -14,7 +14,7 @@
                 <div class="b-hr">
                     <hr />
                 </div>
-                {% if events.count %}
+                {% if events.exists %}
                     {% for item in events %}
                         {% if profile.id == request.user.id %}
                             <ul class="b-service-buttons">

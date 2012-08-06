@@ -17,7 +17,7 @@
 {% endif %}
 
 {#Если это школа#}
-{% if object.type == 2 and object.faculty_set.count or object.teacher_set.count %}
+{% if object.type == 2 and object.faculty_set.exists or object.teacher_set.exists %}
     <div class="tab-container js-toggle2-container js-toggle2-container_resume">
         <div class="b-hr"><hr /></div>
         <div class="tab-block js-toggle2-block">
@@ -26,7 +26,7 @@
                     {% include "accounts/snippets/resume_item.html" %}
                 {% endfor %}
 
-                {% if object.teacher_set.count %}
+                {% if object.teacher_set.exists %}
                     <h2>Преподаватели</h2>
                     {% for person in object.teacher_set.all %}
                         {% include 'accounts/snippets/resume_person_item.html' %}
@@ -42,7 +42,7 @@
 {% endif %}
 
 {#Если это студия#}
-{% if object.type == 3 and object.service_set.count or object.teammate_set.count %}
+{% if object.type == 3 and object.service_set.exists or object.teammate_set.exists %}
     <div class="tab-container js-toggle2-container js-toggle2-container_resume">
         <div class="b-hr"><hr /></div>
         <div class="tab-block js-toggle2-block">
@@ -51,7 +51,7 @@
                     {% include "accounts/snippets/resume_item.html" %}
                 {% endfor %}
 
-                {% if object.teammate_set.count %}
+                {% if object.teammate_set.exists %}
                     <h2>Команда</h2>
                     <div class="b-resume__persons">
                         {% for person in object.teammate_set.all %}

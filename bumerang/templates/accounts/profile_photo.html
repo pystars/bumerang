@@ -53,7 +53,7 @@
             </ul>
             <h3>Фотоальбомы</h3>
             <div class="clear"></div>
-            {% if profile.photoalbum_set.count %}
+            {% if profile.photoalbum_set.exists %}
                 {% if profile.id == request.user.id %}
                     <a href="#" id="photoalbum-delete-button" class="b-button b-button_red b-button_small l-button-del" style="display: none;">Удалить</a>
                 {% endif %}
@@ -64,7 +64,7 @@
             {% endif %}
         </header>
 
-        <div id="photoalbum-empty-block" class="b-empty b-empty_photo-album" {% if profile.photoalbum_set.count %}style="display: none;"{% endif %}>
+        <div id="photoalbum-empty-block" class="b-empty b-empty_photo-album" {% if profile.photoalbum_set.exists %}style="display: none;"{% endif %}>
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет фотоальбомов</strong>
             {% if profile.id == request.user.id %}
@@ -75,7 +75,7 @@
         </div>
         {% include "snippets/photoalbums_list.html" %}
         </section>
-        {% if profile.id == request.user.id or photos.count %}
+        {% if profile.id == request.user.id or photos.exists %}
             <section class="b-announs b-announs_movie b-announs_movie_cols b-announs_movie_ui" id="photos-container" data-items-count="{{ profile.photo_set.count|default:'0' }}" data-plurals="фотография,фотографии,фотографий">
                 <header class="announs-head">
                     {% if profile.id == request.user.id %}
@@ -88,7 +88,7 @@
                     {% endif %}
                     <h3>Фотографии без альбомов</h3>
                     <div class="clear"></div>
-                    {% if photos.count %}
+                    {% if photos.exists %}
                         {% if profile.id == request.user.id %}
                             <a href="#" class="b-button b-button_red b-button_small l-button-del" rel="popup-del-video" id="photo-delete-button" style="display: none;">Удалить</a>
                             <a href="#" class="b-button b-button_yellow b-button_small l-button-move" rel="popup-del-video" id="photo-move-button" style="display: none;">Переместить в альбом...</a>
@@ -107,7 +107,7 @@
         {#                <label class="b-sort__handle" for="sort3"><span>по дате добавления</span></label>#}
         {#            </div>#}
                 </header>
-                <div id="photo-empty-block" class="b-empty b-empty_video" {% if photos.count %}style="display: none;"{% endif %}>
+                <div id="photo-empty-block" class="b-empty b-empty_video" {% if photos.exists %}style="display: none;"{% endif %}>
                     <div class="b-empty__pic"></div>
                     <strong class="b-empty__text">Нет фотографий</strong>
                     {% if profile.id == request.user.id %}
@@ -457,10 +457,10 @@
                     </header>
                     <div class="b-form__fields">
                         <div class="b-form__field" id="albums-list">
-                            {% if profile.photoalbum_set.count %}
+                            {% if profile.photoalbum_set.exists %}
                                 {% for item in profile.photoalbum_set.all %}
                                     <div class="b-form__field b-form__field_radio">
-                                    <div class="f-radio" style="margin-left: 0px;">
+                                    <div class="f-radio" style="margin-left: 0;">
                                         <div>
                                             <input {% if item == object %}disabled="disabled"{% endif %} type="radio" name="album" value="{{ item.id }}" id="album{{ item.id }}" data-album-to-move="{{ item.id }}" />
                                             <label for="album{{ item.id }}" {% if item == object %}style="color: #666;"{% endif %}>
@@ -505,7 +505,7 @@
         {% endif %}
     </div>
 
-        {% if profile.id == request.user.id and not videos.count %}
+        {% if profile.id == request.user.id and not videos.exists %}
             <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеороликов</strong>

@@ -34,7 +34,7 @@
                         <div id="videos-plurals" style="display: none;">видео,видео,видео</div>
                     </p>
                 </header>
-                <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.count %}style="display: none;"{% endif %}>
+                <div id="video-empty-block" class="b-empty b-empty_video" {% if videos.exists %}style="display: none;"{% endif %}>
                     <div class="b-empty__pic"></div>
                     <strong class="b-empty__text">Нет видеороликов</strong>
                     <div><a href="{% url album-video-add object.id %}" class="b-button b-button_yellow">Загрузить видео</a></div>

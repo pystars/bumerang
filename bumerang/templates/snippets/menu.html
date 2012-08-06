@@ -36,7 +36,7 @@
     </div>
 </dd>
 
-{% if profile.owned_events.count %}
+{% if profile.owned_events.exists %}
     <dt{% ifequal selected 'event' %} class="selected"{% endifequal %}>
     {% spaceless %}
         <a href="{% url profile-event-list profile.id %}">
