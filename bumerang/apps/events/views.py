@@ -55,13 +55,13 @@ class ParticipantMixin(View):
         else:
             self.object = self.get_object()
             self.event = self.object.event
+            queryset = getattr(self.object,
+                self.formset_model.__name__.lower() + '_set', None)
+            if queryset:
+                if queryset.exists():
+                    self.formset_extra = 0
         self.formset_form_class.event = self.event
         self.formset_form_class.request = request
-        queryset = getattr(self.object,
-            self.formset_model.__name__.lower() + '_set', None)
-        if queryset:
-            if queryset.exists():
-                self.formset_extra = 0
         self.ModelFormSet = self.get_model_formset()
         return handler(request, *args, **kwargs)
 
@@ -428,9 +428,9 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
     template_name = "events/participant_edit_form.html"
 
     def get_context_data(self, **kwargs):
-        context = super(ParticipantUpdateView, self).get_context_data(**kwargs)
-        context.update({'event': self.event})
-        return context
+        ctx = super(ParticipantUpdateView, self).get_context_data(**kwargs)
+        ctx['event'] = self.event
+        return ctx
 
     def get_queryset(self):
     # Если владелец - текущий пользователь, выбирутся
@@ -440,8 +440,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
         )
 
     def post(self, request, *args, **kwargs):
-#        self.object = None
-        formset = self.ModelFormSet(request.POST, request.FILES)
+        formset = self.ModelFormSet(request.POST, prefix=self.formset_prefix)
         if formset.is_valid():
             instances = formset.save(commit=False)
             self.object.is_approved = False
@@ -449,6 +448,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
             for instance in instances:
                 # the name of fk attribute must be same to lower case of fk model
                 setattr(instance, self.model_name, self.object)
+                instance.is_accepted = False
                 instance.save()
                 if instance.nomination not in instance.nominations.all():
                     instance.nominations.clear()
@@ -457,6 +457,11 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
                     vn.save()
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
+
+    def get_model_formset(self):
+        return modelformset_factory(self.formset_model, self.formset_form_class,
+            formset=ParticipantVideoFormSet, extra=self.formset_extra,
+            can_delete=True)
 
 
 class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
@@ -467,7 +472,7 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ParticipantReviewView, self).get_context_data(**kwargs)
-        context.update({'event': self.event})
+        context['event'] = self.event
         return context
 
     def get_queryset(self):
@@ -478,7 +483,7 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         )
 
     def post(self, request, *args, **kwargs):
-        formset = self.ModelFormSet(request.POST, request.FILES)
+        formset = self.ModelFormSet(request.POST, self.formset_prefix)
         if formset.is_valid():
             self.object.is_accepted = True
             self.object.save()

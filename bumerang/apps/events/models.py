@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Max
@@ -186,6 +187,12 @@ class ParticipantVideo(models.Model):
 
     def save(self, *args, **kwargs):
         super(ParticipantVideo, self).save(*args, **kwargs)
+
+    def clean_fields(self, exclude=None):
+        super(ParticipantVideo, self).clean_fields(exclude)
+        if self.age and not ((self.nomination.age_from or 0) <= self.age
+        <= (self.nomination.age_to or 100)):
+            raise ValidationError({'age': [u'Возраст автора не подходит']})
 
 
 class VideoNomination(models.Model):

@@ -111,13 +111,15 @@ class GenericFormsetWithFKUpdateView(UpdateView):
             can_delete=True
         )
         self.model_name = self.model.__name__.lower()
+        self.formset_prefix = self.formset_model.__name__.lower() + '_set'
 
     def get_context_data(self, **kwargs):
         object = self.get_object()
-        qs = self.formset_model.objects.filter(**{self.model_name:object})
+        self.qs = self.formset_model.objects.filter(**{self.model_name:object})
         ctx = {
             self.model_name: object,
-            'formset': self.ModelFormSet(queryset=qs),
+            'formset': self.ModelFormSet(queryset=self.qs,
+                prefix=self.formset_prefix),
             'add_item_text': self.add_item_text,
         }
         ctx.update(kwargs)
@@ -128,7 +130,8 @@ class GenericFormsetWithFKUpdateView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        formset = self.ModelFormSet(request.POST, request.FILES)
+        formset = self.ModelFormSet(request.POST, request.FILES,
+            prefix=self.formset_prefix)
         if formset.is_valid():
             instances = formset.save(commit=False)
             object = self.get_object()

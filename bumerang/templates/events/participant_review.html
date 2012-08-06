@@ -46,9 +46,9 @@
                                                     <label>
                                                         <span class="f-title">
                                                             Видео: &laquo;{{ video.title }}&raquo;
-                                                            <a href="{% url video-detail video.id %}" target="_blank">
+                                                            {% if video.id %}<a href="{% url video-detail video.id %}" target="_blank">
                                                                 Просмотреть
-                                                            </a>
+                                                            </a>{% endif %}
                                                         </span>
                                                     </label>
                                                 </div>

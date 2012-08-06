@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import DateInput
 from django.forms.models import ModelForm, BaseModelFormSet
 from django.forms.widgets import (Textarea, TextInput, Select, Widget,
@@ -251,4 +252,26 @@ class ParticipantApproveForm(ModelForm):
 
 
 class ParticipantVideoFormSet(BaseModelFormSet):
-    pass
+
+    def full_clean(self):
+        """
+        Cleans all of self.data and populates self._errors.
+        """
+        self._errors = []
+        if not self.is_bound: # Stop further processing.
+            return
+        video_ids = []
+        for i in range(0, self.total_form_count()):
+            form = self.forms[i]
+            form.full_clean()
+            if getattr(form, 'cleaned_data', None):
+                video_id = form.cleaned_data['video'].pk
+                if video_id in video_ids:
+                    form._update_errors({'video' :
+                                     [u'Видео уже добавлено к этой заявке']})
+                video_ids.append(video_id)
+            self._errors.append(form.errors)
+        try:
+            self.clean()
+        except ValidationError, e:
+            self._non_form_errors = self.error_class(e.messages)
