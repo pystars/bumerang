@@ -1,7 +1,7 @@
 {% extends "events/event_edit_wrapper.html" %}
 {% load sitetree formtags %}
 
-{% block title %}Редактирование фестиваля {{ object.title }}{% endblock %}
+{% block title %}Редактирование {{ object.get_type_display }} {{ object }}{% endblock %}
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
@@ -11,10 +11,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery-ui-1.8.21.custom.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.ui.datepicker-ru.js"></script>
-{% endblock %}
-
-{% block page_title %}
-    <h1>{{ event.title }}</h1>
 {% endblock %}
 
 {% block edit_form %}

@@ -1,11 +1,7 @@
-{% extends "events/event_wrapper.html" %}
+{% extends "events/event_edit_wrapper.html" %}
 {% load sitetree %}
 
-{% block title %}Рассмотрение заявки на {{ event.title }}{% endblock %}
-
-{% block page_title %}
-    <h1>{{ event.title }}</h1>
-{% endblock %}
+{% block title %}Рассмотрение заявки на {{ event }}{% endblock %}
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/dropdown.css" />
@@ -18,14 +14,8 @@
 {% endblock %}
 
 {% block left_column %}
-{#    {% include 'events/snippets/edit_tabs_menu.html' with selected='event' object=event %}#}
-{#    <dd class="selected hdr-festival-send-request">#}
-{#        <div class="l-cols">#}
-{#            <div class="l-cols__bg-section">#}
-{#                <div></div>#}
-{#            </div>#}
     <header class="b-page-head">
-        <h1>{{ event.title }}</h1>
+        <h1>{{ event }}</h1>
     </header>
 
     <div class="b-tabs d-sh wide-form">
@@ -109,9 +99,6 @@
     <nav class="b-side-nav d-indent" style="margin-top: 60px;">
         <ul>
             <h4>Управление</h4>
-            <li>
-{#                <a href="{% url profile-event-list request.user.id %}" title="Заполнить заявку">Ваши конкурсы и фестивали</a>#}
-            </li>
             <li>
                 <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
             </li>

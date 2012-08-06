@@ -1,7 +1,7 @@
 {% extends "events/event_edit_wrapper.html" %}
 {% load sitetree formtags %}
 
-{% block title %}Редактирование события {{ object.title }}{% endblock %}
+{% block title %}Рассмотрение заявок на {{ event }}{% endblock %}
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block page_title %}
-    <h1>{{ event.title }}</h1>
+    <h1>{{ event }}</h1>
 {% endblock %}
 
 {% block tab %}
@@ -41,7 +41,7 @@
                                 <thead>
                                     <tr>
                                         <th>Номер заявки</th>
-                                        <th>Заявка принята</th>
+                                        <th>Заявка рассмотрена</th>
                                         <th>Участник</th>
                                         <th>Действие</th>
                                     </tr>
