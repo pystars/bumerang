@@ -73,26 +73,20 @@ class EventDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(EventDetailView, self).get_context_data(**kwargs)
-        participant = None
         if self.request.user.is_authenticated():
             try:
-                participant_qs = Participant.objects.filter(
+                context['participant'] = Participant.objects.filter(
                     owner=self.request.user,
                     event=context['object']
-                )
-                if participant_qs.count():
-                    participant = participant_qs[0]
-
-            except Participant.DoesNotExist:
+                )[0]
+            except IndexError:
                 pass
-
-        context.update({
-            'participant': participant,
-            'participant_form': ParticipantForm(prefix='accept',
-                initial={ 'accepted': False }),
-            'formset': self.ModelFormSet(prefix='participantvideo_set'),
-            'add_item_text': self.add_item_text,
-        })
+            context.update({
+                'participant_form': ParticipantForm(prefix='accept',
+                    initial={ 'accepted': False }),
+                'formset': self.ModelFormSet(prefix='participantvideo_set'),
+                'add_item_text': self.add_item_text,
+            })
         return context
 
     def get(self, request, *args, **kwargs):

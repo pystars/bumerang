@@ -78,10 +78,9 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
         super(EventCreateForm, self).__init__(*args, **kwargs)
         self.fields['type'].empty_label = None
         self.fields['type'].default = None
-
         festivals_qs = request.user.owned_events.filter(is_approved=True,
             type=Event.FESTIVAL)
-        if festivals_qs.count():
+        if festivals_qs.exists():
             self.fields['parent'].queryset = festivals_qs
             self.fields['parent'].empty_label = u'Не связан с фестивалем'
         else:
@@ -214,11 +213,9 @@ class ParticipantVideoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoForm, self).__init__(*args, **kwargs)
         self.fields['nomination'].empty_label = None
-
-        if self.request.user.is_authenticated():
-            self.fields['nomination'].queryset = self.event.nomination_set.all()
-            self.fields['video'].queryset = self.fields['video'].queryset.filter(
-                owner=self.request.user)
+        self.fields['nomination'].queryset = self.event.nomination_set.all()
+        self.fields['video'].queryset = self.fields['video'].queryset.filter(
+            owner=self.request.user)
 
 
 class ParticipantVideoReviewForm(ModelForm):
