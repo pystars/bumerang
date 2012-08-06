@@ -11,6 +11,7 @@ import json
 from PIL import Image
 from django.db.utils import IntegrityError
 from django.forms.models import modelformset_factory
+from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -18,7 +19,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect
 from django.forms.util import ErrorList
 from django.views.generic import ListView, DetailView
-from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 
 from bumerang.apps.accounts.models import Profile
@@ -28,17 +28,18 @@ from bumerang.apps.events.models import (Event, Nomination, Participant,
 from bumerang.apps.events.forms import (EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
-    EventContactsUpdateForm, ParticipantForm)
+    EventContactsUpdateForm, ParticipantForm, ParticipantVideoFormSet)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
 
 
-class ParticipantMixin(object):
+class ParticipantMixin(View):
     model = Participant
     formset_model = ParticipantVideo
     formset_form_class = ParticipantVideoForm
     add_item_text = u"Добавить еще одну работу"
     template_name = 'events/participant_form.html'
+    formset_extra = 1
 
     def dispatch(self, request, *args, **kwargs):
         if request.method.lower() in self.http_method_names:
@@ -50,18 +51,23 @@ class ParticipantMixin(object):
         self.args = args
         self.kwargs = kwargs
         if 'event_pk' in kwargs:
-            self.event = Event.objects.get(id=kwargs['event_pk'])
+            self.event = get_object_or_404(Event, id=kwargs['event_pk'])
         else:
             self.object = self.get_object()
             self.event = self.object.event
         self.formset_form_class.event = self.event
         self.formset_form_class.request = request
-        self.ModelFormSet = modelformset_factory(
-            model=self.formset_model,
-            form=self.formset_form_class,
-            can_delete=True
-        )
+        queryset = getattr(self.object,
+            self.formset_model.__name__.lower() + '_set', None)
+        if queryset:
+            if queryset.exists():
+                self.formset_extra = 0
+        self.ModelFormSet = self.get_model_formset()
         return handler(request, *args, **kwargs)
+
+    def get_model_formset(self):
+        return modelformset_factory(self.formset_model, self.formset_form_class,
+            extra=self.formset_extra, can_delete=True)
 
 
 class EventDetailView(DetailView):
@@ -398,12 +404,16 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
                             participant_video=instance)
                         vn.save()
                 return HttpResponseRedirect(self.get_success_url())
-
         else:
             return self.render_to_response(self.get_context_data(
                 formset=formset, participant_form=participant_form))
 
         return self.render_to_response(self.get_context_data(formset=formset))
+
+    def get_model_formset(self):
+        return modelformset_factory(self.formset_model, self.formset_form_class,
+            formset=ParticipantVideoFormSet, extra=self.formset_extra,
+            can_delete=True)
 
 
 class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
@@ -420,18 +430,19 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
     # Если владелец - текущий пользователь, выбирутся
     # все объекты, иначе ни одного
         return super(ParticipantUpdateView, self).get_queryset().filter(
-            Q(owner=self.request.user) | Q(event__owner=self.request.user)
+            owner=self.request.user
         )
 
     def post(self, request, *args, **kwargs):
-        self.object = None
+#        self.object = None
         formset = self.ModelFormSet(request.POST, request.FILES)
         if formset.is_valid():
             instances = formset.save(commit=False)
-            object = self.get_object()
+            self.object.is_approved = False
+            self.object.save()
             for instance in instances:
                 # the name of fk attribute must be same to lower case of fk model
-                setattr(instance, self.model_name, object)
+                setattr(instance, self.model_name, self.object)
                 instance.save()
                 if instance.nomination not in instance.nominations.all():
                     instance.nominations.clear()
@@ -448,25 +459,6 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoReviewForm
     template_name = 'events/participant_review.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(),
-                self.http_method_not_allowed)
-        else:
-            handler = self.http_method_not_allowed
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
-        self.object = self.get_object()
-        self.event = self.object.event
-        self.formset_form_class.event = self.event
-        self.ModelFormSet = modelformset_factory(
-            model=self.formset_model,
-            form=self.formset_form_class,
-            extra=0
-        )
-        return handler(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(ParticipantReviewView, self).get_context_data(**kwargs)
         context.update({'event': self.event})
@@ -480,13 +472,13 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         )
 
     def post(self, request, *args, **kwargs):
-        self.object = None
         formset = self.ModelFormSet(request.POST, request.FILES)
         if formset.is_valid():
+            self.object.is_accepted = True
+            self.object.save()
             for form in formset:
                 instance = form.save(commit=False)
                 instance.save()
-                print request.POST
                 if 'nominations' in form.changed_data:
                     nominations = form.cleaned_data['nominations']
                     currents = instance.nominations.values_list('id', flat=True)

@@ -84,8 +84,7 @@ class Juror(FileModelMixin, models.Model):
     info_second_name = models.CharField(u'Фамилия', max_length=100)
     info_name = models.CharField(u'Имя', max_length=100)
     info_middle_name = models.CharField(u'Отчество', max_length=100)
-    description = models.TextField(u'О члене жюри')
-    #TODO: just do it
+    description = models.TextField(u'Описание')
     min_avatar = models.ImageField(u'Фото', storage=media_storage,
         upload_to=get_path(u'jurors_avatars/{0}/min{1}'), **nullable)
 

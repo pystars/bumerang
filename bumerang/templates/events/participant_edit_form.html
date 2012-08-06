@@ -26,7 +26,7 @@
                 {% if event.is_accepting_requests %}
                     <a class="form-event-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
                     <h3 class="title">
-                        Редактирование заявки
+                        Редактирование заявки на &laquo;{{ event }}&raquo;
                     </h3>
 
                     {% include "events/snippets/participant_formset_snippet.html" %}
@@ -53,20 +53,17 @@
 </div>
 {% endblock %}
 
-{% block right_menu %}
-    <nav class="b-side-nav d-indent" style="margin-top: 60px;">
-        <ul>
-            <h4>Управление</h4>
-            <li>
-{#                <a href="{% url profile-event-list request.user.id %}" title="Заполнить заявку">Ваши конкурсы и фестивали</a>#}
-            </li>
-            <li>
-                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
-            </li>
-        </ul>
-        <i class="d-indent__tl"></i>
-        <i class="d-indent__tr"></i>
-        <i class="d-indent__br"></i>
-        <i class="d-indent__bl"></i>
-    </nav>
-{% endblock %}
+{#{% block right_menu %}#}
+{#    <nav class="b-side-nav d-indent" style="margin-top: 60px;">#}
+{#        <ul>#}
+{#            <h4>Управление</h4>#}
+{#            <li>#}
+{#                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>#}
+{#            </li>#}
+{#        </ul>#}
+{#        <i class="d-indent__tl"></i>#}
+{#        <i class="d-indent__tr"></i>#}
+{#        <i class="d-indent__br"></i>#}
+{#        <i class="d-indent__bl"></i>#}
+{#    </nav>#}
+{#{% endblock %}#}

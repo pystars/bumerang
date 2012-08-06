@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.forms import DateInput, CheckboxInput
-from django.forms.models import ModelForm
-from django.forms.widgets import Textarea, TextInput, RadioSelect, Select, Widget, SelectMultiple
+from django.forms import DateInput
+from django.forms.models import ModelForm, BaseModelFormSet
+from django.forms.widgets import (Textarea, TextInput, Select, Widget,
+    SelectMultiple)
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
@@ -244,3 +245,7 @@ class ParticipantApproveForm(ModelForm):
 
     class Meta:
         model = Participant
+
+
+class ParticipantVideoFormSet(BaseModelFormSet):
+    pass

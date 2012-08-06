@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block left_column %}
-<header class="b-page-head">
+    <header class="b-page-head">
     <h1>{{ event }}</h1>
 </header>
 
@@ -52,20 +52,17 @@
 </div>
 {% endblock %}
 
-{% block right_menu %}
-    <nav class="b-side-nav d-indent" style="margin-top: 60px;">
-        <ul>
-            <h4>Управление</h4>
-            <li>
-{#                <a href="{% url profile-event-list request.user.id %}" title="Заполнить заявку">Ваши конкурсы и фестивали</a>#}
-            </li>
-            <li>
-                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
-            </li>
-        </ul>
-        {% include 'snippets/round_frame.html' %}
-    </nav>
-{% endblock %}
+{#{% block right_menu %}#}
+{#    <nav class="b-side-nav d-indent" style="margin-top: 60px;">#}
+{#        <ul>#}
+{#            <h4>Управление</h4>#}
+{#            <li>#}
+{#                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>#}
+{#            </li>#}
+{#        </ul>#}
+{#        {% include 'snippets/round_frame.html' %}#}
+{#    </nav>#}
+{#{% endblock %}#}
 
 {% block popup %}
     <li class="item template" style="display: none;">
