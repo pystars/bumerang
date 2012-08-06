@@ -175,7 +175,8 @@ class ParticipantVideo(models.Model):
         related_name='user_selected_participantvideo_set')
     nominations = models.ManyToManyField(Nomination, verbose_name=u'Номинации',
         through='VideoNomination', blank=False)
-    age = models.PositiveSmallIntegerField(u'Возраст автора', blank=False)
+    age = models.PositiveSmallIntegerField(u'Возраст автора', blank=False,
+        help_text=u'(полных лет)')
     video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False)
     is_accepted = models.BooleanField(u'Видео принято', default=False)
 

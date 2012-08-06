@@ -2607,6 +2607,11 @@ textarea {
 .b-form_left .b-form__field .f-title {
 	margin-top:.4em;
 	margin-bottom:.4em;
+    font-weight: bold;
+}
+
+.b-form_left .b-form__field .f-help_text {
+    color: #999;
 }
 
 .b-form_left h3.title+.b-form__field {
