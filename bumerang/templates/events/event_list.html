@@ -1,7 +1,7 @@
 {% extends "events/event_wrapper.html" %}
 {% load sitetree truncatechars %}
 
-{% block title %}Фестивали{% endblock %}
+{% block title %}Конкурсы и фестивали{% endblock %}
 
 {% block breadcrumbs %}{% endblock %}
 
@@ -70,12 +70,12 @@
 {% endblock %}
 
 {% block right_menu %}
-{#    {% if object_list.count %}#}
-{#        <nav class="b-side-nav d-indent" style="margin-top: 3.7em;">#}
-{#            {% sitetree_menu from "event_lists_menu" include "trunk" template "events/snippets/event_lists_menu.html" %}#}
-{#            {% include 'snippets/round_frame.html' %}#}
-{#        </nav>#}
-{#    {% endif %}#}
+    {% if object_list.exists %}
+        <nav class="b-side-nav d-indent" style="margin-top: 3.7em;">
+            {% sitetree_menu from "event_lists_menu" include "trunk" template "events/snippets/event_lists_menu.html" %}
+            {% include 'snippets/round_frame.html' %}
+        </nav>
+    {% endif %}
 
     <nav class="b-side-nav d-indent" style="margin-top: 110px;">
         <ul>
