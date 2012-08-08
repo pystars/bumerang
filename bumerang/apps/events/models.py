@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
+from django.template.defaultfilters import default_if_none
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
-from django.db.models.aggregates import Max
+from django.db.models.aggregates import Max, Avg
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +15,12 @@ from bumerang.apps.video.models import Video
 
 
 nullable = dict(null=True, blank=True)
+
+def validate_score(value):
+    if value < 1:
+        raise ValidationError(u'Оценка не может быть меньше единицы')
+    if value > 10:
+        raise ValidationError(u'Оценка не может быть больше 10')
 
 
 class Event(FileModelMixin, models.Model):
@@ -169,6 +176,8 @@ class Participant(models.Model):
 
 
 class ParticipantVideo(models.Model):
+    score_nums = range(1, 11)#[i for i in xrange(1, 11)]
+
     participant = models.ForeignKey(Participant,
         verbose_name=u'Заявка на фестиваль')
     nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация',
@@ -185,6 +194,14 @@ class ParticipantVideo(models.Model):
 
     def __unicode__(self):
         return u'{0}, {1} лет'.format(self.video, self.age)
+
+    def get_average_score(self):
+        """
+        returns average score for current video
+        or 0 if there is no score at all
+        """
+        result = self.participantvideoscore_set.all().aggregate(Avg('score'))
+        return default_if_none(result['score__avg'], 0)
 
     def save(self, *args, **kwargs):
         super(ParticipantVideo, self).save(*args, **kwargs)
@@ -214,3 +231,15 @@ class VideoNomination(models.Model):
     def __unicode__(self):
         return u'{0} в номинации {1}'.format(
             self.participant_video, self.nomination)
+
+
+class ParticipantVideoScore(models.Model):
+    owner = models.ForeignKey(User, verbose_name=u'Участник')
+    participant_video = models.ForeignKey(ParticipantVideo,
+        verbose_name=u'Видео участника')
+    score = models.SmallIntegerField(u'Оценка', validators=[validate_score])
+
+    class Meta:
+        verbose_name = u'Оценка фильма-участника'
+        verbose_name_plural = u'Оценки фильмов-участников'
+

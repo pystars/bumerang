@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # do not touch this import for correct work with avatar
 from __future__ import division
+from django.core import serializers
+from django.utils.simplejson.encoder import JSONEncoder
 
 try:
     from cStringIO import StringIO
@@ -16,7 +18,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.util import ErrorList
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
@@ -24,7 +26,7 @@ from django.shortcuts import get_object_or_404
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.events.models import (Event, Nomination, Participant,
-    ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination)
+    ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination, ParticipantVideoScore)
 from bumerang.apps.events.forms import (EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
@@ -184,14 +186,24 @@ class EventFilmsListView(ListView):
         qs = ParticipantVideo.objects.filter(is_accepted=True,
             participant__in=self.event.participant_set.all())
         if self.nomination:
-            return qs.filter(nominations=self.nomination.pk)
+            qs = qs.filter(nominations=self.nomination.pk)
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(EventFilmsListView, self).get_context_data(**kwargs)
+        for item in context['object_list']:
+            try:
+                obj = ParticipantVideoScore.objects.get(
+                    owner=self.request.user,
+                    participant_video=item
+                )
+            except ParticipantVideoScore.DoesNotExist:
+                obj = None
+            item.current_score = obj
+
         context.update({
             'event': self.event,
-            'nomination': self.nomination
+            'nomination': self.nomination,
         })
         return context
 
@@ -526,3 +538,32 @@ class ParticipantListView(SortingMixin, ListView):
         ctx = super(ParticipantListView, self).get_context_data(**kwargs)
         ctx['event'] = self.event
         return ctx
+
+
+class ParticipantVideoRatingUpdate(UpdateView):
+    model = ParticipantVideo
+    response_class = HttpResponse
+
+    def get_object(self, queryset=None):
+        self.video = super(ParticipantVideoRatingUpdate, self).get_object(queryset)
+
+        kwargs = dict(
+            owner=self.request.user,
+            participant_video=self.video
+        )
+        if not ParticipantVideoScore.objects.filter(**kwargs).update(
+            score=self.kwargs['rate']):
+            obj = ParticipantVideoScore(score=self.kwargs['rate'], **kwargs)
+            obj.save()
+        else:
+            obj = ParticipantVideoScore.objects.get(**kwargs)
+        return obj
+
+    def render_to_response(self, context, **response_kwargs):
+        response = {
+            'average': self.video.get_average_score(),
+            'current': context['object'].score,
+            'object_id': self.video.id
+        }
+        json = JSONEncoder().encode(response)
+        return HttpResponse(json, mimetype="application/json")

@@ -8,7 +8,7 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     ParticipantUpdateView, EventNominationsUpdateView,
     EventGeneralRuleUpdateView, EventNewsUpdateView, ParticipantListView,
     EventJurorsUpdateView, EventPressListView, EventFilmsListView,
-    ParticipantReviewView, EventContactsUpdateView, EventDetailView)
+    ParticipantReviewView, EventContactsUpdateView, EventDetailView, ParticipantVideoRatingUpdate)
 
 
 urlpatterns = patterns('',
@@ -108,4 +108,9 @@ urlpatterns = patterns('',
         login_required(ParticipantReviewView.as_view()),
         name='participant-review'
     ),
+
+    url(r'^participant-video(?P<pk>[\d]+)/(?P<rate>[\d]+)/$',
+        ParticipantVideoRatingUpdate.as_view(),
+        name='participant-video'
+    )
 )

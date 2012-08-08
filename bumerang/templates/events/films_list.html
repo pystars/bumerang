@@ -1,4 +1,5 @@
 {% extends "events/tabs_wrapper.html" %}
+{% load ratingsutils %}
 
 {% block title %}Фильмы-участники{% endblock %}
 
@@ -29,11 +30,12 @@
 
                     <div class="cleared">&nbsp;</div>
 
-                    {% if object_list %}
+                    {% if object_list.exists %}
                         <h3 class="title">{{ nomination }}</h3>
                         <div class="b-hr"><hr /></div>
                         {% for object in object_list %}
                             {% with item=object.video %}
+                                {% csrf_token %}
                                 <div>
                                     <table>
                                         <tr>
@@ -52,6 +54,35 @@
                                                     <a href="{% url profile-detail item.owner_id %}">{{ item.owner.profile.title }}</a>
                                                 </div>
                                                 <div>{{ item.description|truncatechars:200 }}</div>
+                                                <footer class="ai-foot">
+                                                    <ul class="b-stat">
+                                                        <li class="rating">
+                                                            <i class="ico b-ico_star"><i></i></i>
+                                                            <span id="video-{{ object.id }}-score">{{ object.get_average_score|floatformat:'-1' }}</span>
+                                                        </li>
+                                                        <li class="viewed">
+                                                            <i class="b-ico b-ico_eye"><i></i></i>
+                                                            <span>{{ item.views_count }}</span>
+                                                        </li>
+                                                    </ul>
+                                                </footer>
+                                                {% if request.user in event.jurors.all %}
+                                                <div>
+                                                    <span class="dark-gray">Ваша оценка: </span>
+                                                    <span class="dark-gray" id="your-{{ object.id }}-score">{{ object.current_score.score|default:'Не выставлена' }}</span>
+                                                </div>
+                                                <div class="b-vote">
+                                                    <div class="wrap">
+                                                    <ul class="star-rate" data-total-rate="{{ object.current_score.score }}" data-item-id="{{ object.id }}">
+                                                        {% for item in object.score_nums %}
+                                                            <li>
+                                                                <a href="#" data-rate="{{ item }}">&nbsp;</a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     </table>
@@ -83,4 +114,121 @@
         {% include 'paginator/paginator.html' %}
         {% endif %}
     </div></dd>
+
+    <script type="text/javascript">
+        $(function() {
+//            $('.star-rate').each(function() {
+//                $rate = $(this);
+//                $(this).find('a').hover(function(e) {
+//                    var el = $(this);
+//                    var star_num = parseInt(el.attr('data-rate'));
+//
+//                    $rate.find('a').each(function(i, e){
+//                        var el = $(e);
+//                        var el_num = el.attr('data-rate');
+//                        if (el_num < star_num) {
+//                            el.addClass('active');
+//                        } else {
+//                            el.removeClass('active');
+//                        }
+//                    });
+//
+//                }, function(e) {
+//                    //var el = $(e.target || e.srcElement);
+//                    var star_num = parseInt($('.star-rate').attr('data-total-rate'));
+//                    $rate.find('a').each(function(i, e) {
+//                        var el = $(e);
+//                        var el_num = el.attr('data-rate');
+//                        if (el_num <= star_num) {
+//                            el.addClass('active');
+//                        } else {
+//                            el.removeClass('active');
+//                        }
+//                    });
+//                });
+//            });
+
+//            $('.star-rate').find('a').hover(function(e) {
+//                var el = $(e.target || e.srcElement);
+//                var star_num = parseInt(el.attr('data-rate'));
+//
+//                $('.star-rate a').each(function(i, e){
+//                    var el = $(e);
+//                    var el_num = el.attr('data-rate');
+//                    if (el_num < star_num) {
+//                        el.addClass('active');
+//                    } else {
+//                        el.removeClass('active');
+//                    }
+//                });
+//
+//            }, function(e) {
+//                //var el = $(e.target || e.srcElement);
+//                var star_num = parseInt($('.star-rate').attr('data-total-rate'));
+//                $('.star-rate a').each(function(i, e) {
+//                    var el = $(e);
+//                    var el_num = el.attr('data-rate');
+//                    if (el_num <= star_num) {
+//                        el.addClass('active');
+//                    } else {
+//                        el.removeClass('active');
+//                    }
+//                });
+//            });
+
+//            $('.star-rate a').hover(function(e) {
+//                var el = $(e.target || e.srcElement);
+//                var star_num = parseInt(el.attr('data-rate'));
+//
+//                $('.star-rate a').each(function(i, e){
+//                    var el = $(e);
+//                    var el_num = el.attr('data-rate');
+//                    if (el_num < star_num) {
+//                        el.addClass('active');
+//                    } else {
+//                        el.removeClass('active');
+//                    }
+//                });
+//
+//            }, function(e) {
+//                //var el = $(e.target || e.srcElement);
+//                var star_num = parseInt($('.star-rate').attr('data-total-rate'));
+//                $('.star-rate a').each(function(i, e) {
+//                    var el = $(e);
+//                    var el_num = el.attr('data-rate');
+//                    if (el_num <= star_num) {
+//                        el.addClass('active');
+//                    } else {
+//                        el.removeClass('active');
+//                    }
+//                });
+//            });
+
+            function setNewRateStars(count) {
+                var count = parseInt(count);
+                $('.star-rate a').each(function(i, e) {
+                    (function(el){
+                        if (el.attr('data-rate') <= count) {
+                            el.addClass('active');
+                        } else {
+                            el.removeClass('active');
+                        }
+                    }($(e)));
+                });
+            }
+
+//            $('.star-rate a').on('click', function(e){
+//                e.preventDefault();
+//                var item_id = $('.star-rate').attr('data-item-id');
+//                var rate = $(e.target || e.srcElement).attr('data-rate');
+//                $.ajax({
+//                    type: 'GET',
+//                    url: '/video/rate/'+item_id+'/'+rate+'/',
+//                    success: function() {
+//                        setNewRateStars(rate);
+//                    }
+//                });
+//            });
+        });
+    </script>
 {% endblock %}

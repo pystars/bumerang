@@ -206,7 +206,9 @@
                                     <p>{{ item.description|linebreaksbr }}</p>
                                 </div>
                             </div>
+                            {% if not forloop.last %}
                             <div class="b-hr"><hr /></div>
+                            {% endif %}
                         {% endfor %}
                     {% else %}
                         <h3 class="title">Жюри еще не назначено</h3>

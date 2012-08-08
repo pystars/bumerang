@@ -5558,3 +5558,42 @@ table.compact td .f-title {
     margin-top: 0 !important;
     margin-bottom: 2px !important;
 }
+
+/**********/
+.ico {
+    position:relative;
+    /*display:-moz-inline-box;display:inline-block;//display:inline;zoom:1;*/
+    vertical-align:top;
+    overflow:hidden;
+    width:16px;
+    height:16px;
+}
+
+.ico i {
+    display:block;
+    position:relative;
+    /*background:url(../i/icons-sprt.png) no-repeat;*/
+    width:511px;
+    height:511px;
+    left:0;
+    top:0;
+}
+
+.b-ico_star {
+    width:18px;
+    height:16px;
+    margin-left: -19px !important;
+    background:url(../i/blue_star.png) no-repeat;
+}
+
+.rating {
+    margin:0 0 0 37px;
+    position:relative;
+    font-size:18px;
+}
+
+.rating .ico {
+    position:absolute;
+    top:0;
+    margin:0 0 0 -37px;
+}
