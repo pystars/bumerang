@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # do not touch this import for correct work with avatar
 from __future__ import division
-from django.core import serializers
 from django.utils.simplejson.encoder import JSONEncoder
+from bumerang.apps.utils.functions import thumb_crop_img
 
 try:
     from cStringIO import StringIO
@@ -315,7 +315,8 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        formset = self.ModelFormSet(request.POST, request.FILES)
+        formset = self.ModelFormSet(request.POST, request.FILES,
+            prefix='juror_set')
         if formset.is_valid():
             instances = formset.save(commit=False)
             object = self.get_object()
@@ -328,13 +329,17 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                         instance.info_name,
                         instance.info_middle_name
                     )
+
+                    instance.save()
+
                     profile = Profile(
                         username = instance.email,
                         title = title,
                         info_second_name = instance.info_second_name,
                         info_name = instance.info_name,
                         info_middle_name = instance.info_middle_name,
-                        min_avatar = instance.min_avatar,
+                        avatar = instance.min_avatar,
+                        min_avatar = min_avatar,
                     )
                     password = User.objects.make_random_password()
                     profile.set_password(password)
@@ -343,9 +348,47 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                     #TODO: send letter to new juror with links to password
                     # and event
                 instance.user = user
+                avatar = Image.open(instance.min_avatar)
+                min_avatar = thumb_crop_img(avatar, 175, 175)
+
+                profile = user.profile
+                instance.min_avatar = min_avatar
+                instance.save()
+                print('name', instance.min_avatar.name)
+                profile.avatar = instance.min_avatar.save(
+                    instance.min_avatar.name,
+                    min_avatar
+                )
+                profile.min_avatar = instance.min_avatar.save(
+                    instance.min_avatar.name,
+                    min_avatar
+                )
+                profile.save()
+                user.save()
                 #the name of fk attribute must be same to lower case of fk model
                 setattr(instance, self.model_name, object)
                 instance.save()
+
+                # resizing avatar
+                avatar_img = Image.open(instance.min_avatar.file)
+                name = instance.min_avatar.name
+
+                # crops avatar_img, min_avatar is memory uploaded file
+                min_avatar = thumb_crop_img(avatar_img, 175, 175)
+
+                temp_handle = StringIO()
+                min_avatar = avatar_img.save(temp_handle, 'jpeg', quality=100)
+                temp_handle.seek(0)
+
+                suf = SimpleUploadedFile(name,
+                    temp_handle.read(), content_type='image/jpg')
+
+                instance.min_avatar.save(name, suf, save=False)
+                user.profile.min_avatar.save(name, suf, save=False)
+
+                instance.save()
+                user.profile.save()
+
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
 
