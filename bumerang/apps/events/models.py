@@ -84,6 +84,13 @@ class Event(FileModelMixin, models.Model):
             return True
         return False
 
+    def clean_fields(self, exclude=None):
+        super(Event, self).clean_fields(exclude)
+        if self.type == self.FESTIVAL and self.parent:
+            raise ValidationError({
+                'parent': [u'Только конкурс может проходить в рамках фестиваля']
+            })
+
 
 class Juror(FileModelMixin, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
