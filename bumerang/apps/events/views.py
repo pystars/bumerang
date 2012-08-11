@@ -494,7 +494,7 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         )
 
     def post(self, request, *args, **kwargs):
-        formset = self.ModelFormSet(request.POST, self.formset_prefix)
+        formset = self.ModelFormSet(request.POST, prefix=self.formset_prefix)
         if formset.is_valid():
             self.object.is_accepted = True
             self.object.save()
