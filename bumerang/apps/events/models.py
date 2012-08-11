@@ -95,13 +95,14 @@ class Event(FileModelMixin, models.Model):
 class Juror(FileModelMixin, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
-    email = models.EmailField(_('e-mail address'))
+    email = models.EmailField(_('e-mail address'), unique=True)
     info_second_name = models.CharField(u'Фамилия', max_length=100)
     info_name = models.CharField(u'Имя', max_length=100)
     info_middle_name = models.CharField(u'Отчество', max_length=100)
     description = models.TextField(u'Описание')
     min_avatar = models.ImageField(u'Фото', storage=media_storage,
-        upload_to=get_path(u'jurors_avatars/{0}/min{1}'), **nullable)
+        upload_to=get_path(u'jurors_avatars/{0}/min{1}'), blank=False,
+        null=True)
 
     class Meta:
         verbose_name = u'Член жюри'
@@ -183,7 +184,7 @@ class Participant(models.Model):
 
 
 class ParticipantVideo(models.Model):
-    score_nums = range(1, 11)#[i for i in xrange(1, 11)]
+    score_nums = range(1, 11)
 
     participant = models.ForeignKey(Participant,
         verbose_name=u'Заявка на фестиваль')

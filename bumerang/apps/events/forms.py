@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
+from PIL import Image
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import DateInput
 from django.forms.models import ModelForm, BaseModelFormSet
 from django.forms.widgets import (Textarea, TextInput, Select, Widget,
     SelectMultiple)
-from filebrowser.widgets import FileInput
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin, WideTextareaMixin)
+from bumerang.apps.utils.functions import thumb_crop_img
 
 
 class WidgetParametersMixin(Widget):
@@ -187,6 +188,16 @@ class JurorForm(forms.ModelForm):
             'info_middle_name': TextInput(attrs={'class': 'medium'}),
             'description': Textarea(attrs={'class': 'medium'}),
         }
+
+    def save(self, commit=True):
+        if 'min_avatar' in self.changed_data:
+            if self.instance.id:
+                juror = Juror.objects.get(pk=self.instance.id)
+                if juror.min_avatar:
+                    juror.min_avatar.delete()
+            self.instance.min_avatar = thumb_crop_img(
+                Image.open(self.instance.min_avatar.file), 150, 150)
+        return super(JurorForm, self).save(commit)
 
 
 class ParticipantForm(forms.Form):

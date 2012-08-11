@@ -23,6 +23,9 @@ def thumb_img(img, width=None, height=None, name='thumb.jpg'):
     return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)
 
 def thumb_crop_img(img, width=None, height=None, name='thumb.jpg'):
+    """
+    Resizes image and crop him if it due proportions
+    """
     io = TemporaryFile()
     thumb = img.copy()
     thumb.thumbnail(image_width_height(img, width=width), Image.ANTIALIAS)
@@ -55,7 +58,7 @@ def image_width_height(img, width=None, height=None):
 def get_path(pattern):
     def inner(instance, filename):
         ext = os.path.splitext(filename)[1]
-        rel_path = pattern.format(instance.id, ext)
+        rel_path = pattern.format(random_string(12), ext)
         path = os.path.split(os.path.join(settings.MEDIA_ROOT, rel_path))[0]
         if not os.path.exists(path):
             try:

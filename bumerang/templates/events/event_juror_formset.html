@@ -39,13 +39,11 @@
                         <tr>
                             <td rowspan="5" width="40%">
                                 <div class="b-form__field" style="margin-bottom: 0;">
-                                {% if not form.errors %}
                                     {% if form.min_avatar.value %}
                                         <img src='{{ MEDIA_URL }}{{ form.min_avatar.value }}' style="max-width: 150px; display: block;">
                                     {% else %}
                                         <img src='{{ STATIC_URL }}i/add-user-foto.png' style="max-width: 150px; display: block;">
                                     {% endif %}
-                                {% endif %}
 
                                 <div class="cleared"><br /></div>
 

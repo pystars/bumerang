@@ -76,7 +76,6 @@ def login(request, template_name='registration/login.html',
 
             profile = Profile.objects.get(
                 username=form.cleaned_data['username'])
-
             message = u'''
             Вы авторизованы. Пожалуйста, заполните имя вашего профиля.
             '''
@@ -163,38 +162,24 @@ class RegistrationFormView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.is_active = False
+        self.object.activation_code = random_string(32)
 
-        # Festival user type
-        if self.object.type == 4:
-            self.object.save()
-            send_fest_registration_request()
+        current_site = Site.objects.get_current()
+        url = reverse('activate-account',
+            args=[self.object.activation_code])
 
-            self.request.session['event_profile_id'] = self.object.id
+        full_activation_url = 'http://{0}{1}'.format(current_site, url)
+        self.object.activation_code_expire = now() + timedelta(days=1)
+        self.object.save()
 
-            notify_success(self.request, message=u'''
-                Заполните все поля чтобы отправить заявку на рассмотрение''')
+        send_activation_link(
+            full_activation_url, form.cleaned_data['username'])
 
-            return HttpResponseRedirect(reverse('register-event-request'))
-
-        else:
-            self.object.activation_code = random_string(32)
-
-            current_site = Site.objects.get_current()
-            url = reverse('activate-account',
-                args=[self.object.activation_code])
-
-            full_activation_url = 'http://{0}{1}'.format(current_site, url)
-            self.object.activation_code_expire = now() + timedelta(days=1)
-            self.object.save()
-
-            send_activation_link(
-                full_activation_url, form.cleaned_data['username'])
-
-            notify_success(self.request, message=u'''
-                Регистрация прошла успешно. Вам была отправлена ссылка
-                для активации аккаунта.
-                Проверьте почту и активируйте ваш аккаунт.
-                ''')
+        notify_success(self.request, message=u'''
+            Регистрация прошла успешно. Вам была отправлена ссылка
+            для активации аккаунта.
+            Проверьте почту и активируйте ваш аккаунт.
+            ''')
 
         return super(RegistrationFormView, self).form_valid(form)
 

@@ -61,7 +61,6 @@ class Profile(FileModelMixin, User):
     avatar_coords = models.CharField(max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
-    views_count = models.IntegerField(u'Просмотров', default=0, editable=False)
     friends_count = models.IntegerField(u'Друзей', default=0, editable=False)
     activation_code = models.CharField(max_length=32, editable=False,
                                        **nullable)

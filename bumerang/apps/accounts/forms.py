@@ -58,6 +58,18 @@ class RegistrationForm(forms.ModelForm):
         widget=forms.PasswordInput,
         help_text = _("Enter the same password as above, for verification."))
 
+    class Meta:
+        model = Profile
+        fields = ('username', 'type')
+        widgets = {'type': forms.RadioSelect()}
+
+    def save(self, commit=True):
+        profile = super(RegistrationForm, self).save(commit=False)
+        profile.set_password(self.cleaned_data['password1'])
+        if commit:
+            profile.save()
+        return profile
+
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
@@ -86,18 +98,6 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError(
                 u'Пользователь с таким адресом уже существует')
         return self.cleaned_data['username']
-
-    def save(self, commit=True):
-        profile = super(RegistrationForm, self).save(commit=False)
-        profile.set_password(self.cleaned_data['password1'])
-        if commit:
-            profile.save()
-        return profile
-
-    class Meta:
-        model = Profile
-        fields = ('username', 'type')
-        widgets = {'type': forms.RadioSelect()}
 
 
 class PasswordRecoveryForm(forms.Form):
@@ -189,6 +189,7 @@ class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
     """
     title = forms.CharField(max_length=255, label=u'Название')
     description = forms.CharField(label=u'О себе', widget=forms.Textarea)
+
     class Meta:
         model = Profile
         fields = ('title', 'country',
