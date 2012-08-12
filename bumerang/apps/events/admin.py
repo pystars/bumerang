@@ -3,4 +3,11 @@ from django.contrib import admin
 
 from bumerang.apps.events.models import Event
 
-admin.site.register(Event)
+
+class EventAdmin(admin.ModelAdmin):
+    readonly_fields = ('owner',)
+    list_display = ('id', '__unicode__', 'created', 'owner_name', 'owner')
+    list_filter = ('is_approved', 'opened')
+
+
+admin.site.register(Event, EventAdmin)

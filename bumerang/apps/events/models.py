@@ -37,7 +37,8 @@ class Event(FileModelMixin, models.Model):
         (FESTIVAL, u'Фестиваль'),
     )
     parent = models.ForeignKey('self', verbose_name=u'В рамках фестиваля',
-        related_name='contest_set', **nullable)
+        related_name='contest_set', limit_choices_to={'type':FESTIVAL},
+        **nullable)
     owner = models.ForeignKey(User, related_name='owned_events')
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
@@ -110,6 +111,10 @@ class Event(FileModelMixin, models.Model):
                 'requesting_till': [u'''
                 Прием заявок должен заканчиваться до окончания фестиваля''']
             })
+
+    def owner_name(self):
+        return self.owner.profile.get_title()
+    owner_name.short_description = u'Имя владельца'
 
 
 class Juror(FileModelMixin, models.Model):
