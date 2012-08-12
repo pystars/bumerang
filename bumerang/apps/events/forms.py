@@ -8,7 +8,7 @@ from django.forms.widgets import (Textarea, TextInput, Select, Widget,
     SelectMultiple)
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
-    GeneralRule, NewsPost, Juror, Participant)
+    GeneralRule, NewsPost, Juror, Participant, VideoNomination)
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin, WideTextareaMixin)
 from bumerang.apps.utils.functions import thumb_crop_img
@@ -258,12 +258,6 @@ class ParticipantVideoReviewForm(ModelForm):
         self.fields['nominations'].queryset = self.event.nomination_set.all()
 
 
-class ParticipantApproveForm(ModelForm):
-
-    class Meta:
-        model = Participant
-
-
 class ParticipantVideoFormSet(BaseModelFormSet):
 
     def full_clean(self):
@@ -288,3 +282,10 @@ class ParticipantVideoFormSet(BaseModelFormSet):
             self.clean()
         except ValidationError, e:
             self._non_form_errors = self.error_class(e.messages)
+
+
+class SetWinnersForm(ModelForm):
+
+    class Meta:
+        model = VideoNomination
+        fields = ('result',)

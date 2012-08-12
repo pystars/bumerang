@@ -16,20 +16,23 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.forms.util import ErrorList
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.utils.simplejson.encoder import JSONEncoder
+from django.utils.translation import ugettext as _
 
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.events.models import (Event, Nomination, Participant,
-    ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination, ParticipantVideoScore)
+    ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination,
+    ParticipantVideoScore)
 from bumerang.apps.events.forms import (EventCreateForm,
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
-    EventContactsUpdateForm, ParticipantForm, ParticipantVideoFormSet)
+    EventContactsUpdateForm, ParticipantForm, ParticipantVideoFormSet,
+    SetWinnersForm)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
 
@@ -564,8 +567,8 @@ class ParticipantVideoRatingUpdate(UpdateView):
     response_class = HttpResponse
 
     def get_object(self, queryset=None):
-        self.video = super(ParticipantVideoRatingUpdate, self).get_object(queryset)
-
+        self.video = super(
+            ParticipantVideoRatingUpdate, self).get_object(queryset)
         kwargs = dict(
             owner=self.request.user,
             participant_video=self.video
@@ -591,3 +594,25 @@ class ParticipantVideoRatingUpdate(UpdateView):
 class EventConditionsDetailView(DetailView):
     model = Event
     template_name = 'events/event_request_conditions.html'
+
+
+class SetWinnersView(UpdateView):
+    model = VideoNomination
+    form_class = SetWinnersForm
+
+    def get_queryset(self):
+        return super(SetWinnersView, self).get_object(queryset).filter(
+            participant_video = self.kwargs['participant_video'],
+            nomination = self.kwargs['nomination'],
+            nomination__event__owner = self.request.user
+        )
+
+    def get_object(self, queryset=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get()
+        except self.model.DoesNotExist:
+            raise Http404(_(u"No %(verbose_name)s found matching the query") %
+                      {'verbose_name': queryset.model._meta.verbose_name})
+
+        return obj
