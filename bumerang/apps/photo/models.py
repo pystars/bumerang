@@ -14,10 +14,12 @@ from bumerang.apps.utils.media_storage import media_storage
 class PhotoGenre(models.Model, TitleUnicode):
     title = models.CharField(max_length=255, verbose_name=u"Имя")
     slug = models.SlugField()
+    sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
 
     class Meta:
         verbose_name = u'Жанр фото'
         verbose_name_plural = u'Жанры фото'
+        ordering = ('sort_order', 'title')
 
 
 class Photo(FileModelMixin, models.Model, TitleUnicode):

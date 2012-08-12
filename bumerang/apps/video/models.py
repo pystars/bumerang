@@ -23,16 +23,18 @@ class VideoCategory(models.Model, TitleUnicode):
     class Meta:
         verbose_name = u'Категория видео'
         verbose_name_plural = u'Категории видео'
-        ordering = ('sort_order',)
+        ordering = ('sort_order', 'title')
 
 
 class VideoGenre(models.Model, TitleUnicode):
     title = models.CharField(max_length=255, verbose_name=u"Имя")
     slug = models.SlugField()
+    sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
 
     class Meta:
         verbose_name = u'Жанр видео'
         verbose_name_plural = u'Жанры видео'
+        ordering = ('sort_order', 'title')
 
 
 class Video(models.Model, TitleUnicode):

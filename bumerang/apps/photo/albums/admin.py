@@ -2,9 +2,7 @@
 from django.contrib import admin
 
 from models import PhotoAlbum, PhotoCategory
-
-class TitleSlugAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("title",)}
+from bumerang.apps.utils.admin import TitleSlugAdmin
 
 
 admin.site.register(PhotoCategory, TitleSlugAdmin)

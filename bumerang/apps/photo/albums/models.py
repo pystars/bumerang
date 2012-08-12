@@ -15,7 +15,7 @@ class PhotoCategory(models.Model, TitleUnicode):
     class Meta:
         verbose_name = u'Категория фото'
         verbose_name_plural = u'Категории фото'
-        ordering = ('sort_order',)
+        ordering = ('sort_order', 'title')
 
 
 class PhotoAlbum(models.Model, TitleUnicode):

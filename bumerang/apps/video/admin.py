@@ -6,6 +6,7 @@ import tempfile
 from django.contrib import admin
 #from django.contrib.admin.actions import delete_selected as _delete_selected
 
+from bumerang.apps.utils.admin import TitleSlugAdmin
 from bumerang.apps.video.mediainfo import video_duration
 from bumerang.apps.video.models import Video, VideoCategory, VideoGenre
 from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
@@ -57,10 +58,6 @@ class VideoAdmin(admin.ModelAdmin):
 #                shutil.rmtree(folder)
 #        return result
 #    delete_selected.short_description = u'Удалить вместе с файлами'
-
-
-class TitleSlugAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("title",)}
 
 
 admin.site.register(Video, VideoAdmin)
