@@ -42,7 +42,8 @@ class Event(FileModelMixin, models.Model):
     owner = models.ForeignKey(User, related_name='owned_events')
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
-
+    publish_winners = models.BooleanField(u'Публиковать победителей',
+        default=False)
     logo = models.ImageField(u'Логотип события', upload_to=
         get_path(u'logos/{0}/full{1}'), storage=media_storage, **nullable)
     min_logo = models.ImageField(u'Уменьшенный логотип события', upload_to=
