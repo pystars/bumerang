@@ -7,6 +7,7 @@ from django.db.models.aggregates import Max, Avg
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+import os
 
 from bumerang.apps.utils.functions import get_path
 from bumerang.apps.utils.media_storage import media_storage
@@ -21,6 +22,11 @@ def validate_score(value):
         raise ValidationError(u'Оценка не может быть меньше единицы')
     if value > 10:
         raise ValidationError(u'Оценка не может быть больше 10')
+
+def get_rules_path(instance, filename):
+    ext = os.path.splitext(filename)[1]
+    return u'event_rules/правила_подачи_заявки_на_{0}{1}'.format(
+        instance, ext)
 
 
 class Event(FileModelMixin, models.Model):
@@ -51,6 +57,9 @@ class Event(FileModelMixin, models.Model):
     participant_conditions = models.TextField(u'Условия подачи заявок',
         blank=False)
     contacts_raw_text = models.TextField(u'Контакты', **nullable)
+    rules_document = models.FileField(
+        u'Общие положения (загрузить документ)',
+        upload_to=get_rules_path, **nullable)
 
     created = models.DateTimeField(u'Дата добавления', default=now,
         editable=False)

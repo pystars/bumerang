@@ -102,7 +102,8 @@ class EventUpdateForm(WideTextareaMixin, TemplatedForm):
             'requesting_till',
             'hold_place',
             'description',
-            'participant_conditions'
+            'participant_conditions',
+            'rules_document'
         )
         widgets = {
             'title': TextInput(attrs={'class': 'wide'}),
