@@ -616,3 +616,13 @@ class SetWinnersView(UpdateView):
                       {'verbose_name': queryset.model._meta.verbose_name})
 
         return obj
+
+    def form_valid(self, form):
+        return self.render_to_response({'success': True})
+
+    def form_invalid(self, form):
+        return self.render_to_response({'success': False})
+
+    def render_to_response(self, context, **response_kwargs):
+        json = JSONEncoder().encode(context)
+        return HttpResponse(json, mimetype="application/json")
