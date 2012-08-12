@@ -83,6 +83,12 @@
                                                     </div>
                                                 </div>
                                                 {% endif %}
+
+                                                {% if request.user == event.owner %}
+                                                    <div>
+                                                        <a class="make-winner" href="#" data-event-id="{{ event.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
+                                                    </div>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     </table>
@@ -114,6 +120,8 @@
         {% include 'paginator/paginator.html' %}
         {% endif %}
     </div></dd>
+
+    {% csrf_token %}
 
     <script type="text/javascript">
         $(function() {

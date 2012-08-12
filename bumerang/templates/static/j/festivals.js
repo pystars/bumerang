@@ -143,6 +143,22 @@ $(function() {
 
 $(function() {
     $('.star-rate').starRating();
+
+    $(document).on('click', 'a.make-winner', function(e) {
+        e.preventDefault();
+        var event_id = $(this).attr('data-event-id');
+        var participant_video_id = $(this).attr('data-participant-video-id')
+
+        $.post('/events/nomination'+event_id+'/'+participant_video_id+'/', {
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        }).success(function(response) {
+            if (response.success) {
+                Notify(NF_SUCCESS, 'Победитель выбран');
+            } else {
+                Notify(NF_ERROR, 'Произошла ошибка');
+            }
+        });
+    });
 });
 
 
