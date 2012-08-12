@@ -601,7 +601,7 @@ class SetWinnersView(UpdateView):
     form_class = SetWinnersForm
 
     def get_queryset(self):
-        return super(SetWinnersView, self).get_object(queryset).filter(
+        return super(SetWinnersView, self).get_queryset().filter(
             participant_video = self.kwargs['participant_video'],
             nomination = self.kwargs['nomination'],
             nomination__event__owner = self.request.user
