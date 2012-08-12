@@ -12,6 +12,7 @@ from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
 from bumerang.apps.utils.forms import (S3StorageFormMixin, TemplatedForm,
     EditFormsMixin, WideTextareaMixin)
 from bumerang.apps.utils.functions import thumb_crop_img
+from bumerang.apps.video.models import Video
 
 
 class WidgetParametersMixin(Widget):
@@ -232,7 +233,7 @@ class ParticipantVideoForm(ModelForm):
         self.fields['nomination'].empty_label = None
         self.fields['nomination'].queryset = self.event.nomination_set.all()
         self.fields['video'].queryset = self.fields['video'].queryset.filter(
-            owner=self.request.user)
+            owner=self.request.user, status=Video.READY)
 
 
 class ParticipantVideoReviewForm(ModelForm):

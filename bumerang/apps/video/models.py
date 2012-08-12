@@ -105,7 +105,7 @@ class Video(models.Model, TitleUnicode):
     created = models.DateTimeField(u'Дата добавления', default=now)
     views_count = models.IntegerField(u'Количество просмотров видео', default=0,
                                       editable=False, **nullable)
-    status = models.IntegerField(u'статус', choices=STATUS_CHOICES,#TODO: remove
+    status = models.IntegerField(u'статус', choices=STATUS_CHOICES,
         default=PENDING)
 
     rating = RatingField(range=10, can_change_vote=True)
