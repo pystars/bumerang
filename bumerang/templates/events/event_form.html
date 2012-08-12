@@ -1,7 +1,7 @@
 {% extends "events/event_edit_wrapper.html" %}
 {% load sitetree formtags %}
 
-{% block title %}Редактирование {{ object.get_type_display }} {{ object }}{% endblock %}
+{% block title %}Редактирование {{ object.get_type_display|lower }} {{ object }}{% endblock %}
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/start/jquery-ui-1.8.21.custom.css" />
