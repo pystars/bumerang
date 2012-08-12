@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # do not touch this import for correct work with avatar
 from __future__ import division
-from django.utils.simplejson.encoder import JSONEncoder
-from bumerang.apps.utils.functions import thumb_crop_img
 
 try:
     from cStringIO import StringIO
@@ -22,6 +20,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.util import ErrorList
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
+from django.utils.simplejson.encoder import JSONEncoder
 
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
@@ -391,7 +390,10 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         context = {
             'participant_form': ParticipantForm(prefix='accept',
                 initial={ 'accepted': False }),
-            'formset': self.ModelFormSet(prefix='participantvideo_set'),
+            'formset': self.ModelFormSet(
+                prefix='participantvideo_set',
+                queryset=self.formset_model.objects.get_empty_query_set()
+            ),
             'add_item_text': self.add_item_text,
             'event': self.event
         }
