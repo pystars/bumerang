@@ -22,7 +22,7 @@ class InfoEditFormsMixin(forms.ModelForm):
                     field.widget.attrs['class'] += ' wide'
                 else:
                     field.widget.attrs.update({'class': 'wide'})
-            if (field.widget.__class__ == forms.widgets.Textarea):
+            if field.widget.__class__ == forms.widgets.Textarea:
                 if field.widget.attrs.has_key('class'):
                     field.widget.attrs['class'] += ' wide wide_about'
                 else:
@@ -44,7 +44,7 @@ class EditFormsMixin(forms.ModelForm):
                     field.widget.attrs['class'] += ' wide'
                 else:
                     field.widget.attrs.update({'class': 'wide'})
-            if (field.widget.__class__ == forms.widgets.Textarea):
+            if field.widget.__class__ == forms.widgets.Textarea:
                 if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide wide_descr2'
                 else:

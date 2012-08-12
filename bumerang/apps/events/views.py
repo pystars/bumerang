@@ -585,3 +585,8 @@ class ParticipantVideoRatingUpdate(UpdateView):
         }
         json = JSONEncoder().encode(response)
         return HttpResponse(json, mimetype="application/json")
+
+
+class EventConditionsDetailView(DetailView):
+    model = Event
+    template_name = 'events/event_request_conditions.html'

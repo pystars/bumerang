@@ -9,7 +9,8 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     EventGeneralRuleUpdateView, EventNewsUpdateView, ParticipantListView,
     EventJurorsUpdateView, EventPressListView, EventFilmsListView,
     ParticipantReviewView, EventContactsUpdateView, EventDetailView,
-    ParticipantVideoRatingUpdate, EventNewsPostUpdateView)
+    ParticipantVideoRatingUpdate, EventNewsPostUpdateView,
+    EventConditionsDetailView)
 
 
 urlpatterns = patterns('',
@@ -53,6 +54,11 @@ urlpatterns = patterns('',
     url(r'^event(?P<event_pk>[\d]+)/films/(?P<nomination_pk>[\d]+)$',
         EventFilmsListView.as_view(),
         name='event-films-by-id'
+    ),
+
+    url(r'^event(?P<pk>[\d]+)/request-conditions/$',
+        EventConditionsDetailView.as_view(),
+        name='event-request-conditions'
     ),
 
     url(r'^event(?P<pk>[\d]+)/edit/$',
