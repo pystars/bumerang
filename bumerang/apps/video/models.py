@@ -166,6 +166,10 @@ class Video(models.Model, TitleUnicode):
             #TODO: notice user about it
             pass
 
+    def is_protected(self):
+        return (self.participantvideo_set.exists()
+            or self.playlistitem_set.exists())
+
 
 class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)

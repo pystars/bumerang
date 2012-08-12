@@ -203,7 +203,8 @@ class ParticipantVideo(models.Model):
         through='VideoNomination', blank=False)
     age = models.PositiveSmallIntegerField(u'Возраст автора', blank=False,
         help_text=u'(полных лет)')
-    video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False)
+    video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False,
+        on_delete=models.PROTECT)
     is_accepted = models.BooleanField(u'Видео принято', default=False)
 
     class Meta:
@@ -214,8 +215,7 @@ class ParticipantVideo(models.Model):
 
     def get_average_score(self):
         """
-        returns average score for current video
-        or 0 if there is no score at all
+        Returns average score for current video or 0 if there is no score at all
         """
         result = self.participantvideoscore_set.all().aggregate(Avg('score'))
         return default_if_none(result['score__avg'], 0)
