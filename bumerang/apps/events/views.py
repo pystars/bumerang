@@ -358,6 +358,26 @@ class EventNewsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
     add_item_text = u'Добавить новость'
 
 
+class EventNewsPostUpdateView(UpdateView):
+    model = NewsPost
+    form_class = NewsPostForm
+
+    def get_queryset(self):
+    # Если владелец события - текущий пользователь, выберутся все новости,
+    # иначе ни одного
+        return super(EventNewsPostUpdateView, self).get_queryset().filter(
+            event__owner=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(EventNewsPostUpdateView, self).get_context_data(**kwargs)
+        ctx['event'] = self.object.event
+        return ctx
+
+    def get_success_url(self):
+        return reverse('event-press', args=(self.object.event.id,))
+#    template_name = "events/event_edit_formset.html"
+
+
 class EventContactsUpdateView(UpdateView):
     model = Event
     form_class = EventContactsUpdateForm
@@ -393,7 +413,6 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-
         participant_form = ParticipantForm(request.POST, prefix='accept')
         formset = self.ModelFormSet(request.POST,
             prefix='participantvideo_set')
