@@ -1,13 +1,9 @@
 <section class="b-form b-form_smaller b-form_left">
     {% if event.owner != request.user %}
-        <form name="editform" action="{% url participant-edit event.id %}" method="post">
+        <form name="editform" action="{% url participant-edit participant.id %}" method="post">
             {% csrf_token %}
 
              <div>
-
-{#                 <h3 class="title" style="margin-top: 14px;">#}
-{#                    Прикрепите ваши работы#}
-{#                </h3>#}
 
                 <div class="b-hr"><hr /></div>
 

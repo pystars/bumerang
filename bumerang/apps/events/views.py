@@ -375,7 +375,6 @@ class EventNewsPostUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('event-press', args=(self.object.event.id,))
-#    template_name = "events/event_edit_formset.html"
 
 
 class EventContactsUpdateView(UpdateView):
