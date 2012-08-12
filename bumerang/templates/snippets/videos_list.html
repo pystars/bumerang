@@ -29,7 +29,9 @@
                 </footer>
                 {% if request.user.profile.id == video.owner_id %}
                     <div class="ui-checkbox">
-                        <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox-{{ video.id }}" data-video-id="{{ video.id }}" />
+                        {% if not video.is_protected %}
+                            <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox-{{ video.id }}" data-video-id="{{ video.id }}"/>
+                        {% endif %}
                         <label for="checkbox-{{ video.id }}"></label>
                     </div>
                     <div class="ui-menu">
@@ -39,7 +41,11 @@
                                 <span class="b-dropdown__popup__i">
                                     <span class="b-dropdown__popup__i__i">
                                         <span class="b-dropdown__arr"></span>
-                                        <a href="#" class="b-dropdown__link" id="video-delete-{{ video.id }}" data-video-id="{{ video.id }}">Удалить</a>
+                                        {% if not video.is_protected %}
+                                            <a href="#" class="b-dropdown__link" id="video-delete-{{ video.id }}" data-video-id="{{ video.id }}">Удалить</a>
+                                        {% else %}
+                                            <span class="b-dropdown__link disabled">Удаление невозможно</span>
+                                        {% endif %}
                                         <a href="{% url video-edit video.id %}" class="b-dropdown__link {% if not videoalbum %}last{% endif %}">Редактировать</a>
                                         <a href="#" class="b-dropdown__link" id="move-video-{{ video.id }}" data-video-id="{{ video.id }}">Переместить...</a>
                                         {% if videoalbum %}

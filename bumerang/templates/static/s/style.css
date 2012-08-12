@@ -4547,6 +4547,10 @@ textarea {
 	margin:0 0 .4em 0;
 }
 
+.b-dropdown__link.disabled {
+    color:#999 !important;
+}
+
 .b-dropdown__link:last-child {
 	margin-bottom:0;
 }
@@ -4561,6 +4565,11 @@ textarea {
 	background:-webkit-gradient(linear, left top, left bottom, from(#fa9600), to(#bb7000));
 	background:-o-linear-gradient(rgb(250,150,0),rgb(187,112,0));
 	color:#fff !important;
+}
+
+.b-dropdown__link.disabled:hover {
+    background:#999;
+    color:#fff !important;
 }
 
 *+html .b-dropdown__link:hover {
