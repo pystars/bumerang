@@ -40,7 +40,7 @@
     <script type="text/javascript">
         $(function() {
             $('form fieldset.field').formset({
-                prefix: 'form',
+                prefix: '{{ formset.prefix }}',
                 addText: '{{ add_item_text }}'
             })
         })
