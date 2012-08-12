@@ -99,6 +99,17 @@ class Event(FileModelMixin, models.Model):
             raise ValidationError({
                 'parent': [u'Только конкурс может проходить в рамках фестиваля']
             })
+        if self.start_date > self.end_date:
+            raise ValidationError({
+                'end_date': [u'''
+                Событие не может закончиться прежде, чем начнется.
+                Утром деньги, вечером стулья''']
+            })
+        if self.requesting_till > self.end_date:
+            raise ValidationError({
+                'requesting_till': [u'''
+                Прием заявок должен заканчиваться до окончания фестиваля''']
+            })
 
 
 class Juror(FileModelMixin, models.Model):
