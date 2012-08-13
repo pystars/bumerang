@@ -30,6 +30,7 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+PLAYLIST_START_TIME_SHIFT = {'days': -1, 'hours': 23}
 
 #Storage settings
 MEDIA_URL = '/media/'
@@ -126,7 +127,6 @@ INSTALLED_APPS = [
     'djcelery',
     'storages',
     'djkombu',
-    'djangoratings',
     'django_ses',
     'django_wysiwyg',
     'django_extensions',

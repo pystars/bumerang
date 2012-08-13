@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
+from django.db.models.aggregates import Avg
 from django.utils import simplejson
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import F
-from django.http import HttpResponseForbidden, \
-    HttpResponseRedirect, HttpResponse
+from django.http import (HttpResponseForbidden, HttpResponseRedirect,
+    HttpResponse)
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import ModelFormMixin, \
-    UpdateView, BaseFormView
+from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
-from bumerang.apps.accounts.models import Profile
 
+from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
 from models import Video, VideoCategory
@@ -28,7 +28,6 @@ class VideoMixin(object):
             ctx['current_category'] = self.current_category
         except AttributeError:
             pass
-
         return ctx
 
 
@@ -65,7 +64,8 @@ class VideoDetailView(VideoMixin, DetailView):
 
     def get_queryset(self):
         return super(VideoDetailView, self).get_queryset().filter(
-            status=self.model.READY)
+            status=self.model.READY).annotate(avg_score=Avg(
+            'participantvideo__participantvideoscore__score'))
 
     def get(self, request, **kwargs):
         response = super(VideoDetailView, self).get(request, **kwargs)
@@ -144,12 +144,13 @@ class VideoListView(VideoMixin, ListView):
             return qs.none()
         except KeyError:
             pass
-
         qs = qs.filter(
             hq_file__isnull=False,
             published_in_archive=True,
             status=Video.READY
         )
+        qs = qs.annotate(avg_score=Avg(
+            'participantvideo__participantvideoscore__score'))
         return qs
 
 
