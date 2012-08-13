@@ -71,6 +71,7 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
             'hold_place',
             'description',
             'contacts_raw_text',
+            'participant_conditions',
             'rules_document',
         )
         widgets = {
