@@ -56,9 +56,8 @@ class Event(FileModelMixin, models.Model):
     hold_place = models.TextField(u'Место проведения')
     description = models.TextField(u'Описание события')
     participant_conditions = models.TextField(u'Условия подачи заявок')
-    contacts_raw_text = models.TextField(u'Контакты', **nullable)
-    rules_document = models.FileField(
-        u'Общие положения (загрузить документ)',
+    contacts_raw_text = models.TextField(u'Контакты')
+    rules_document = models.FileField(u'Положение официальный документ',
         upload_to=get_rules_path, **nullable)
 
     created = models.DateTimeField(u'Дата добавления', default=now,
