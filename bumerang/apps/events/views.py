@@ -579,7 +579,9 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
                         VideoNomination(nomination_id=nomination,
                             participant_video=instance)
                         for nomination in added_nominations])
+            notify_success(request, u'Данные сохранены')
             return HttpResponseRedirect(self.get_success_url())
+        notify_error(request, u'При сохранении произошла ошибка')
         return self.render_to_response(self.get_context_data(formset=formset))
 
 
