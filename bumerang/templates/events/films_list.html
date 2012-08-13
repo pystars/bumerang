@@ -14,7 +14,6 @@
         <section class="b-profile">
             <header class="b-profile__head cleared">
                 <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
-
                 {% if event.nomination_set.exists %}
                     <h3>Номинации:</h3>
                     <ul>
@@ -24,7 +23,6 @@
                             {% else %}
                                 <li>{{ item.title }}</li>
                             {% endif %}
-
                         {% endfor %}
                     </ul>
 
@@ -58,7 +56,8 @@
                                                     <ul class="b-stat">
                                                         <li class="rating">
                                                             <i class="ico b-ico_star"><i></i></i>
-                                                            <span id="video-{{ object.id }}-score">{{ object.get_average_score|floatformat:'-1' }}</span>
+                                                            <span id="video-{{ object.id }}-score">
+                                                                {{ object.average_score|default_if_none:0|floatformat:'-1' }}</span>
                                                         </li>
                                                         <li class="viewed">
                                                             <i class="b-ico b-ico_eye"><i></i></i>
@@ -92,7 +91,6 @@
                                             </td>
                                         </tr>
                                     </table>
-
                                     <div class="b-hr"><hr /></div>
                                 </div>
                             {% endwith %}
@@ -125,93 +123,6 @@
 
     <script type="text/javascript">
         $(function() {
-//            $('.star-rate').each(function() {
-//                $rate = $(this);
-//                $(this).find('a').hover(function(e) {
-//                    var el = $(this);
-//                    var star_num = parseInt(el.attr('data-rate'));
-//
-//                    $rate.find('a').each(function(i, e){
-//                        var el = $(e);
-//                        var el_num = el.attr('data-rate');
-//                        if (el_num < star_num) {
-//                            el.addClass('active');
-//                        } else {
-//                            el.removeClass('active');
-//                        }
-//                    });
-//
-//                }, function(e) {
-//                    //var el = $(e.target || e.srcElement);
-//                    var star_num = parseInt($('.star-rate').attr('data-total-rate'));
-//                    $rate.find('a').each(function(i, e) {
-//                        var el = $(e);
-//                        var el_num = el.attr('data-rate');
-//                        if (el_num <= star_num) {
-//                            el.addClass('active');
-//                        } else {
-//                            el.removeClass('active');
-//                        }
-//                    });
-//                });
-//            });
-
-//            $('.star-rate').find('a').hover(function(e) {
-//                var el = $(e.target || e.srcElement);
-//                var star_num = parseInt(el.attr('data-rate'));
-//
-//                $('.star-rate a').each(function(i, e){
-//                    var el = $(e);
-//                    var el_num = el.attr('data-rate');
-//                    if (el_num < star_num) {
-//                        el.addClass('active');
-//                    } else {
-//                        el.removeClass('active');
-//                    }
-//                });
-//
-//            }, function(e) {
-//                //var el = $(e.target || e.srcElement);
-//                var star_num = parseInt($('.star-rate').attr('data-total-rate'));
-//                $('.star-rate a').each(function(i, e) {
-//                    var el = $(e);
-//                    var el_num = el.attr('data-rate');
-//                    if (el_num <= star_num) {
-//                        el.addClass('active');
-//                    } else {
-//                        el.removeClass('active');
-//                    }
-//                });
-//            });
-
-//            $('.star-rate a').hover(function(e) {
-//                var el = $(e.target || e.srcElement);
-//                var star_num = parseInt(el.attr('data-rate'));
-//
-//                $('.star-rate a').each(function(i, e){
-//                    var el = $(e);
-//                    var el_num = el.attr('data-rate');
-//                    if (el_num < star_num) {
-//                        el.addClass('active');
-//                    } else {
-//                        el.removeClass('active');
-//                    }
-//                });
-//
-//            }, function(e) {
-//                //var el = $(e.target || e.srcElement);
-//                var star_num = parseInt($('.star-rate').attr('data-total-rate'));
-//                $('.star-rate a').each(function(i, e) {
-//                    var el = $(e);
-//                    var el_num = el.attr('data-rate');
-//                    if (el_num <= star_num) {
-//                        el.addClass('active');
-//                    } else {
-//                        el.removeClass('active');
-//                    }
-//                });
-//            });
-
             function setNewRateStars(count) {
                 var count = parseInt(count);
                 $('.star-rate a').each(function(i, e) {
@@ -224,19 +135,6 @@
                     }($(e)));
                 });
             }
-
-//            $('.star-rate a').on('click', function(e){
-//                e.preventDefault();
-//                var item_id = $('.star-rate').attr('data-item-id');
-//                var rate = $(e.target || e.srcElement).attr('data-rate');
-//                $.ajax({
-//                    type: 'GET',
-//                    url: '/video/rate/'+item_id+'/'+rate+'/',
-//                    success: function() {
-//                        setNewRateStars(rate);
-//                    }
-//                });
-//            });
         });
     </script>
 {% endblock %}

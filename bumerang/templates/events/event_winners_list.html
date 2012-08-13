@@ -1,0 +1,91 @@
+{% extends "events/tabs_wrapper.html" %}
+{% load ratingsutils %}
+
+{% block title %}Фильмы-участники{% endblock %}
+
+{% block head_js %}
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/tabs_menu.html' with selected='winners' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+                <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+                <div class="cleared">&nbsp;</div>
+                {% for object in object_list %}
+                    {% ifchanged object.nomination %}
+                    <h3 class="title">{{ object.nomination }}</h3>
+                    {% endifchanged %}
+                    <div class="b-hr"><hr /></div>
+                    {% with item=object.participant_video.video %}
+                        {% csrf_token %}
+                        <div>
+                            <table>
+                                <tr>
+                                    <td style="width: 190px;">
+                                        <a href="{% url video-detail item.id %}" title="{{ item.title }}">
+                                            <span>
+                                                <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
+                                            </span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url video-detail item.id %}" title="{{ item.title }}"><h3>{{ item.title }}</h3></a>
+                                        <div>
+                                            <span class="dark-gray">Участник </span>
+                                            <a href="{% url profile-detail item.owner_id %}">{{ item.owner.profile.title }}</a>
+                                        </div>
+                                        <div>{{ item.description|truncatechars:200 }}</div>
+                                        <footer class="ai-foot">
+                                            <ul class="b-stat">
+                                                <li class="rating">
+                                                    <i class="ico b-ico_star"><i></i></i>
+                                                    <span id="video-{{ object.id }}-score">{{ object.get_average_score|floatformat:'-1' }}</span>
+                                                </li>
+                                                <li class="viewed">
+                                                    <i class="b-ico b-ico_eye"><i></i></i>
+                                                    <span>{{ item.views_count }}</span>
+                                                </li>
+                                            </ul>
+                                        </footer>
+                                        {% if request.user in event.jurors.all %}
+                                        <div>
+                                            <span class="dark-gray">Ваша оценка: </span>
+                                            <span class="dark-gray" id="your-{{ object.id }}-score">{{ object.current_score.score|default:'Не выставлена' }}</span>
+                                        </div>
+                                        <div class="b-vote">
+                                            <div class="wrap">
+                                            <ul class="star-rate" data-total-rate="{{ object.current_score.score }}" data-item-id="{{ object.id }}">
+                                                {% for item in object.score_nums %}
+                                                    <li>
+                                                        <a href="#" data-rate="{{ item }}">&nbsp;</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if request.user == event.owner %}
+                                            <div>
+                                                <a class="make-winner" href="#" data-event-id="{{ event.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="b-hr"><hr /></div>
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            </header>
+        </section>
+        {% if is_paginated %}
+        {% include 'paginator/paginator.html' %}
+        {% endif %}
+    </div></dd>
+{% endblock %}

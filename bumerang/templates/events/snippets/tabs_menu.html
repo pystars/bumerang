@@ -45,3 +45,19 @@
     <div class="b-tabs__tab-content">
     </div>
 </dd>
+{% if event.publish_winners %}
+<dt{% ifequal selected 'winners' %} class="selected"{% endifequal %}>
+    {% spaceless %}
+        <a href="{% url event-winners-list event.id %}">
+            <span>Победители</span>
+        </a>
+    {% endspaceless %}
+    <small></small>
+    <i class="l"></i>
+    <i class="r"></i>
+</dt>
+<dd>
+    <div class="b-tabs__tab-content">
+    </div>
+</dd>
+{% endif %}

@@ -10,6 +10,7 @@ except ImportError:
 import json
 from PIL import Image
 from django.db.utils import IntegrityError
+from django.db.models.aggregates import Avg
 from django.forms.models import modelformset_factory
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
@@ -189,23 +190,54 @@ class EventFilmsListView(ListView):
             participant__in=self.event.participant_set.all())
         if self.nomination:
             qs = qs.filter(nominations=self.nomination.pk)
+        qs = qs.annotate(average_score=Avg('participantvideoscore__score'))
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(EventFilmsListView, self).get_context_data(**kwargs)
+        winners = {}
+        if self.event.publish_winners:
+            winners = dict(self.nomination.videonomination_set.values_list(
+                'participant_video_id', 'result'))
         for item in context['object_list']:
-            try:
-                obj = ParticipantVideoScore.objects.get(
-                    owner=self.request.user,
-                    participant_video=item
-                )
-            except ParticipantVideoScore.DoesNotExist:
-                obj = None
-            item.current_score = obj
-
+            if self.request.user in self.event.jurors.all():
+                try:
+                    item.current_score = ParticipantVideoScore.objects.get(
+                        owner=self.request.user,
+                        participant_video=item
+                    )
+                except ParticipantVideoScore.DoesNotExist:
+                    item.current_score = None
+            if item.id in winners.keys():
+                item.result = winners[item.id]
         context.update({
             'event': self.event,
             'nomination': self.nomination,
+        })
+        return context
+
+
+class EventWinnersListView(ListView):
+    model = VideoNomination
+    template_name = 'events/event_winners_list.html'
+
+    def get(self, request, *args, **kwargs):
+        self.event = get_object_or_404(
+            Event,
+            pk=self.kwargs.get('event_pk'),
+            publish_winners=True)
+        return super(EventWinnersListView, self).get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return VideoNomination.objects.filter(
+            nomination__event=self.event,
+            result__isnull=False).select_related('participant_video',
+            'participant_video__video').order_by('nomination__sort_order')
+
+    def get_context_data(self, **kwargs):
+        context = super(EventWinnersListView, self).get_context_data(**kwargs)
+        context.update({
+            'event': self.event,
         })
         return context
 
@@ -583,7 +615,8 @@ class ParticipantVideoRatingUpdate(UpdateView):
 
     def render_to_response(self, context, **response_kwargs):
         response = {
-            'average': self.video.get_average_score(),
+            'average': self.video.participantvideoscore_set.all().aggregate(
+                Avg('score'))['score__avg'] or 0,
             'current': context['object'].score,
             'object_id': self.video.id
         }
@@ -614,7 +647,6 @@ class SetWinnersView(UpdateView):
         except self.model.DoesNotExist:
             raise Http404(_(u"No %(verbose_name)s found matching the query") %
                       {'verbose_name': queryset.model._meta.verbose_name})
-
         return obj
 
     def form_valid(self, form):

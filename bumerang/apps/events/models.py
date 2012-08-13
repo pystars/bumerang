@@ -230,13 +230,6 @@ class ParticipantVideo(models.Model):
     def __unicode__(self):
         return u'{0}, {1} лет'.format(self.video, self.age)
 
-    def get_average_score(self):
-        """
-        Returns average score for current video or 0 if there is no score at all
-        """
-        result = self.participantvideoscore_set.all().aggregate(Avg('score'))
-        return default_if_none(result['score__avg'], 0)
-
     def save(self, *args, **kwargs):
         super(ParticipantVideo, self).save(*args, **kwargs)
 
