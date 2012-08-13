@@ -24,7 +24,7 @@
                             </ul>
                             {% endif %}
                             <h3>{{ item.title }}</h3>
-                            <p>{{ item.description|linebreaks|striptags }}</p>
+                            <p>{{ item.description|striptags|linebreaksbr }}</p>
                             <p>Опубликовано: {{ item.creation_date }}</p>
                             <div class="b-hr"><hr /></div>
                         </div>
