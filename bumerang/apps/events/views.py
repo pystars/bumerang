@@ -197,8 +197,9 @@ class EventFilmsListView(ListView):
         context = super(EventFilmsListView, self).get_context_data(**kwargs)
         winners = {}
         if self.event.publish_winners:
-            winners = dict(self.nomination.videonomination_set.values_list(
-                'participant_video_id', 'result'))
+            winners = dict(self.nomination.videonomination_set.filter(
+                result__isnull=False).values_list(
+                'participant_video', 'result'))
         for item in context['object_list']:
             if self.request.user in self.event.jurors.all():
                 try:
@@ -650,6 +651,7 @@ class SetWinnersView(UpdateView):
         return obj
 
     def form_valid(self, form):
+        self.object = form.save()
         return self.render_to_response({'success': True})
 
     def form_invalid(self, form):
