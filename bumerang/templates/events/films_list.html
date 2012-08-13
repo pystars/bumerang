@@ -54,7 +54,7 @@
                                                 <div>{{ item.description|truncatechars:200 }}</div>
                                                 <footer class="ai-foot">
                                                     <ul class="b-stat">
-                                                        <li class="rating">
+                                                        <li class="rating" title="Средняя оценка мэтров жюри">
                                                             <i class="ico b-ico_star"><i></i></i>
                                                             <span id="video-{{ object.id }}-score">
                                                                 {{ object.average_score|default_if_none:0|floatformat:'-1' }}</span>
