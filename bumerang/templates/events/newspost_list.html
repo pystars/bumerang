@@ -6,6 +6,10 @@
     <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
 {% endblock %}
 
+{% block page_title %}
+    <h1>{{ event }}</h1>
+{% endblock %}
+
 {% block tab %}
     {% include 'events/snippets/tabs_menu.html' with selected='press' %}
 
