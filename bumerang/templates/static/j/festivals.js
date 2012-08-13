@@ -123,7 +123,8 @@ $(function() {
                         type: 'POST',
                         url: '/events/participant-video'+item_id+'/'+rate+'/',
                         data: {
-                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            result: 1
                         },
                         success: function(response) {
                             setNewRateStars(response.current);
@@ -132,7 +133,8 @@ $(function() {
                             );
                             $('#your-'+response.object_id+'-score').text(
                                 response.current
-                            )
+                            );
+                            Notify(NF_SUCCESS, 'Оценка поставлена')
                         }
                     });
                 });
@@ -146,10 +148,10 @@ $(function() {
 
     $(document).on('click', 'a.make-winner', function(e) {
         e.preventDefault();
-        var event_id = $(this).attr('data-event-id');
+        var nomination_id = $(this).attr('data-nomination-id');
         var participant_video_id = $(this).attr('data-participant-video-id')
 
-        $.post('/events/nomination'+event_id+'/'+participant_video_id+'/', {
+        $.post('/events/nomination'+nomination_id+'/'+participant_video_id+'/', {
             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
         }).success(function(response) {
             if (response.success) {

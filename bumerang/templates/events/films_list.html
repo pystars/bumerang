@@ -85,7 +85,7 @@
 
                                                 {% if request.user == event.owner %}
                                                     <div>
-                                                        <a class="make-winner" href="#" data-event-id="{{ event.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
+                                                        <a class="make-winner" href="#" data-nomination-id="{{ nomination.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
                                                     </div>
                                                 {% endif %}
                                             </td>
@@ -121,20 +121,4 @@
 
     {% csrf_token %}
 
-    <script type="text/javascript">
-        $(function() {
-            function setNewRateStars(count) {
-                var count = parseInt(count);
-                $('.star-rate a').each(function(i, e) {
-                    (function(el){
-                        if (el.attr('data-rate') <= count) {
-                            el.addClass('active');
-                        } else {
-                            el.removeClass('active');
-                        }
-                    }($(e)));
-                });
-            }
-        });
-    </script>
 {% endblock %}
