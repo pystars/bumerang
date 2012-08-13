@@ -75,7 +75,6 @@ $(function() {
                 var count = parseInt(count, 10);
                 $this.find('a').each(function(i, e) {
                     (function(el) {
-                        console.log('data-rate', el.attr('data-rate'));
                         if (el.attr('data-rate') <= count) {
                             el.addClass('active');
                         } else {
@@ -148,18 +147,41 @@ $(function() {
 
     $(document).on('click', 'a.make-winner', function(e) {
         e.preventDefault();
+        var el = $(this);
+        var nomination_id = $(this).attr('data-nomination-id');
+        var participant_video_id = $(this).attr('data-participant-video-id')
+
+        $.post('/events/nomination'+nomination_id+'/'+participant_video_id+'/', {
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            result: 1
+        }).success(function(response) {
+            if (response.success) {
+                Notify(NF_SUCCESS, 'Победитель выбран');
+
+                el.removeClass('make-winner').addClass('unmake-winner').text('Убрать из победителей');
+            } else {
+                Notify(NF_ERROR, 'Произошла ошибка');
+            }
+        });
+    });
+
+    $(document).on('click', 'a.unmake-winner', function(e) {
+        e.preventDefault();
+        var el = $(this);
         var nomination_id = $(this).attr('data-nomination-id');
         var participant_video_id = $(this).attr('data-participant-video-id')
 
         $.post('/events/nomination'+nomination_id+'/'+participant_video_id+'/', {
             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
         }).success(function(response) {
-            if (response.success) {
-                Notify(NF_SUCCESS, 'Победитель выбран');
-            } else {
-                Notify(NF_ERROR, 'Произошла ошибка');
-            }
-        });
+                if (response.success) {
+                    Notify(NF_SUCCESS, 'Работа убрана из победителей');
+
+                    el.removeClass('unmake-winner').addClass('make-winner').text('Выбрать победителем');
+                } else {
+                    Notify(NF_ERROR, 'Произошла ошибка');
+                }
+            });
     });
 });
 
