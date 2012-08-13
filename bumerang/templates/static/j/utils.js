@@ -38,6 +38,9 @@ document.__DEBUG = true;
             return function() {};
         }
     };
+    window.log = function() {
+        return 'console' in window ? console.log.apply(console, arguments) : null;
+    };
     // Argument to integer, in decimal number system
     window.toi = function(value) {
         return parseInt(value, 10);

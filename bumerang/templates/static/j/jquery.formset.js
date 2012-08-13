@@ -1,15 +1,4 @@
-/**
- * jQuery Formset 1.2
- * @author Stanislaus Madueke (stan DOT madueke AT gmail DOT com)
- * @requires jQuery 1.2.6 or later
- *
- * Copyright (c) 2009, Stanislaus Madueke
- * All rights reserved.
- *
- * Licensed under the New BSD License
- * See: http://www.opensource.org/licenses/bsd-license.php
- */
-;(function($) {
+(function($) {
     $.fn.formset = function(opts)
     {
         var options = $.extend({}, $.fn.formset.defaults, opts),
@@ -157,6 +146,10 @@
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $(this).parents('tr.' + options.formCssClass + '-add').get(0) || this;
 
+                console.log({
+                    selector: '#id_' + options.prefix + '-TOTAL_FORMS'
+                });
+
                 applyExtraClasses(row, formCount);
                 row.insertBefore($(buttonRow)).show();
                 row.find('input,select,textarea,label').each(function() {
@@ -186,4 +179,4 @@
         added: null,                     // Function called each time a new form is added
         removed: null                    // Function called each time a form is deleted
     };
-})(jQuery)
+})(jQuery);
