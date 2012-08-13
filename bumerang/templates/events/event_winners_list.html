@@ -15,6 +15,11 @@
             <header class="b-profile__head cleared">
                 <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
                 <div class="cleared">&nbsp;</div>
+                {% if not event.publish_winners %}
+                    В настоящий момент эта страница доступна для просмотра только Вам как организатору {{ event.get_type_display|lower }}.
+                    Чтобы сделать ее открытой для остальных посетителей нажмите ссылку
+                    <a href="{% url event-publish-winners event.id %}">Опубликовать победителей</a>
+                {% endif %}
                 {% for object in object_list %}
                     {% ifchanged object.nomination %}
                     <h3 class="title">{{ object.nomination }}</h3>

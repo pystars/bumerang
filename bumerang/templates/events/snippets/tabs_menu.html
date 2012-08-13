@@ -45,7 +45,7 @@
     <div class="b-tabs__tab-content">
     </div>
 </dd>
-{% if event.publish_winners %}
+{% if event.publish_winners or event.owner == request.user %}
 <dt{% ifequal selected 'winners' %} class="selected"{% endifequal %}>
     {% spaceless %}
         <a href="{% url event-winners-list event.id %}">

@@ -11,6 +11,7 @@ import json
 from PIL import Image
 from django.db.utils import IntegrityError
 from django.db.models.aggregates import Avg
+from django.db.models.query_utils import Q
 from django.forms.models import modelformset_factory
 from django.views.generic.base import View
 from django.views.generic.edit import CreateView, UpdateView
@@ -223,10 +224,13 @@ class EventWinnersListView(ListView):
     template_name = 'events/event_winners_list.html'
 
     def get(self, request, *args, **kwargs):
-        self.event = get_object_or_404(
-            Event,
-            pk=self.kwargs.get('event_pk'),
-            publish_winners=True)
+        try:
+            self.event = Event.objects.get(
+                Q(publish_winners=True) | Q(owner=request.user),
+                pk=self.kwargs.get('event_pk')
+            )
+        except Event.DoesNotExist:
+            Http404(u"Страница не найдена")
         return super(EventWinnersListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -514,7 +518,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
         formset = self.ModelFormSet(request.POST, prefix=self.formset_prefix)
         if formset.is_valid():
             instances = formset.save(commit=False)
-            self.object.is_approved = False
+            self.object.is_accepted = False
             self.object.save()
             for instance in instances:
                 # the name of fk attribute must be same to lower case of fk model
@@ -666,3 +670,14 @@ class SetWinnersView(UpdateView):
     def render_to_response(self, context, **response_kwargs):
         json = JSONEncoder().encode(context)
         return HttpResponse(json, mimetype="application/json")
+
+
+class EventPublishWinners(OwnerMixin, DetailView):
+    model = Event
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.publish_winners = True
+        self.object.save()
+        return HttpResponseRedirect(reverse(
+            'event-winners-list', args=(self.object.pk,)))
