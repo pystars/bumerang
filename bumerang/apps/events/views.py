@@ -96,7 +96,8 @@ class EventDetailView(DetailView):
             context.update({
                 'participant_form': ParticipantForm(prefix='accept',
                     initial={ 'accepted': False }),
-                'formset': self.ModelFormSet(prefix='participantvideo_set'),
+                'formset': self.ModelFormSet(prefix='participantvideo_set',
+                    queryset=ParticipantVideo.objects.get_empty_query_set()),
                 'add_item_text': self.add_item_text,
             })
         return context
