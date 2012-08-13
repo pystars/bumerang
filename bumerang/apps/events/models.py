@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
-from django.template.defaultfilters import default_if_none
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
-from django.db.models.aggregates import Max, Avg
+from django.db.models.aggregates import Max
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -91,7 +90,7 @@ class Event(FileModelMixin, models.Model):
         return self.contest_set.filter(is_approved=True)
 
     def is_accepting_requests(self):
-        if self.requesting_till > now().date():
+        if self.requesting_till >= now().date():
             return True
         return False
 

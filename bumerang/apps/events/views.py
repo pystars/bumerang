@@ -449,6 +449,8 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
                 request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        if not self.event.is_accepting_requests():
+            raise Http404(u'Страница не найдена')
         self.object = None
         participant_form = ParticipantForm(request.POST, prefix='accept')
         formset = self.ModelFormSet(request.POST,
@@ -507,6 +509,8 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
         )
 
     def post(self, request, *args, **kwargs):
+        if not self.event.is_accepting_requests():
+            raise Http404(u'Страница не найдена')
         formset = self.ModelFormSet(request.POST, prefix=self.formset_prefix)
         if formset.is_valid():
             instances = formset.save(commit=False)
