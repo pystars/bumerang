@@ -562,14 +562,16 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
                 instance = form.save(commit=False)
                 instance.save()
                 if 'nominations' in form.changed_data:
-                    nominations = form.cleaned_data['nominations']
+                    nominations = [nomination.id for nomination
+                                   in form.cleaned_data['nominations']]
                     currents = instance.nominations.values_list('id', flat=True)
                     removed_nominations = list(set(currents) - set(nominations))
                     added_nominations = list(set(nominations) - set(currents))
                     VideoNomination.objects.filter(
+                        participant_video=instance,
                         nomination__in=removed_nominations).delete()
                     VideoNomination.objects.bulk_create([
-                        VideoNomination(nomination=nomination,
+                        VideoNomination(nomination_id=nomination,
                             participant_video=instance)
                         for nomination in added_nominations])
             return HttpResponseRedirect(self.get_success_url())
