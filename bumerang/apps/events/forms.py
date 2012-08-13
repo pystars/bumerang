@@ -71,6 +71,7 @@ class EventCreateForm(WideTextareaMixin, ModelForm):
             'hold_place',
             'description',
             'contacts_raw_text',
+            'rules_document',
         )
         widgets = {
             'title': TextInput(attrs={'class': 'wide'}),
