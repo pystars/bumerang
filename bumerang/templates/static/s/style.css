@@ -5606,3 +5606,11 @@ table.compact td .f-title {
     top:0;
     margin:0 0 0 -37px;
 }
+
+/***************/
+.winner-title h3 {
+    background-color: #51A351;
+    color: #fff;
+    font-weight: normal;
+    line-height: 1.4;
+}

@@ -148,8 +148,8 @@ $(function() {
     $(document).on('click', 'a.make-winner', function(e) {
         e.preventDefault();
         var el = $(this);
-        var nomination_id = $(this).attr('data-nomination-id');
-        var participant_video_id = $(this).attr('data-participant-video-id')
+        var nomination_id = el.attr('data-nomination-id');
+        var participant_video_id = el.attr('data-participant-video-id')
 
         $.post('/events/nomination'+nomination_id+'/'+participant_video_id+'/', {
             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
@@ -159,6 +159,7 @@ $(function() {
                 Notify(NF_SUCCESS, 'Победитель выбран');
 
                 el.removeClass('make-winner').addClass('unmake-winner').text('Убрать из победителей');
+                $('.winner-title[data-participant-video-id='+participant_video_id+']').html('<h3>Победитель</h3>');
             } else {
                 Notify(NF_ERROR, 'Произошла ошибка');
             }
@@ -178,6 +179,7 @@ $(function() {
                     Notify(NF_SUCCESS, 'Работа убрана из победителей');
 
                     el.removeClass('unmake-winner').addClass('make-winner').text('Выбрать победителем');
+                    $('.winner-title[data-participant-video-id='+participant_video_id+']').empty();
                 } else {
                     Notify(NF_ERROR, 'Произошла ошибка');
                 }

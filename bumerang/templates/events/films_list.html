@@ -47,9 +47,11 @@
                                                         <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
                                                     </span>
                                                 </a>
+                                                <div class="winner-title" data-participant-video-id="{{ object.id }}">
                                                 {% if object.result %}
-                                                    <h3 style="background-color: #51A351; color: #fff;">Победитель</h3>
+                                                    <h3>Победитель</h3>
                                                 {% endif %}
+                                                </div>
                                             </td>
 
                                             <td>
