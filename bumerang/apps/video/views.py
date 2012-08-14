@@ -69,7 +69,7 @@ class VideoDetailView(VideoMixin, DetailView):
 
     def get(self, request, **kwargs):
         response = super(VideoDetailView, self).get(request, **kwargs)
-        self.get_queryset().filter(pk=self.object.id).update(
+        Video.objects.filter(pk=self.object.id).update(
             views_count=F('views_count') + 1)
         return response
 

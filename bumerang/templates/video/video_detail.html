@@ -53,7 +53,11 @@
                 <div class="b-vote">
                     <div class="wrap">
                         <ul class="star-rate">
-                            Средняя оценка {{ object.avg_score }}
+                            <li class="rating" title="Средняя оценка мэтров жюри">
+                                                            <i class="ico b-ico_star"><i></i></i>
+                                                            <span id="video-{{ object.id }}-score">
+                                                                {{ object.avg_score|default_if_none:0|floatformat:'-1' }}</span>
+                                                        </li>
                         </ul>
                     </div>
                 </div>
