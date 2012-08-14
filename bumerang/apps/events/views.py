@@ -240,7 +240,9 @@ class EventWinnersListView(ListView):
         return VideoNomination.objects.filter(
             nomination__event=self.event,
             result__isnull=False).select_related('participant_video',
-            'participant_video__video').order_by('nomination__sort_order')
+            'participant_video__video').annotate(
+            average_score=Avg('participant_video__participantvideoscore__score')
+        ).order_by('nomination__sort_order')
 
     def get_context_data(self, **kwargs):
         context = super(EventWinnersListView, self).get_context_data(**kwargs)

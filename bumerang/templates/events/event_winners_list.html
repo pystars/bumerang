@@ -1,7 +1,7 @@
 {% extends "events/tabs_wrapper.html" %}
 {% load ratingsutils %}
 
-{% block title %}Фильмы-участники{% endblock %}
+{% block title %}Победители {{ event.get_type_display }} {{ event }}{% endblock %}
 
 {% block head_js %}
     <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
@@ -26,11 +26,9 @@
                 {% endif %}
                 {% for object in object_list %}
                     {% ifchanged object.nomination %}
-                        <div class="b-hr">
-                            <hr />
-                            <br/>
-                            <br/>
-                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
                         <h3 class="title">{{ object.nomination }}</h3>
                     {% endifchanged %}
                     {% with item=object.participant_video.video %}
@@ -57,7 +55,7 @@
                                             <ul class="b-stat">
                                                 <li class="rating">
                                                     <i class="ico b-ico_star"><i></i></i>
-                                                    <span id="video-{{ object.id }}-score">{{ object.get_average_score|floatformat:'-1' }}</span>
+                                                    <span id="video-{{ object.id }}-score">{{ object.average_score|floatformat:'-1' }}</span>
                                                 </li>
                                                 <li class="viewed">
                                                     <i class="b-ico b-ico_eye"><i></i></i>
@@ -65,29 +63,6 @@
                                                 </li>
                                             </ul>
                                         </footer>
-                                        {% if request.user in event.jurors.all %}
-                                        <div>
-                                            <span class="dark-gray">Ваша оценка: </span>
-                                            <span class="dark-gray" id="your-{{ object.id }}-score">{{ object.current_score.score|default:'Не выставлена' }}</span>
-                                        </div>
-                                        <div class="b-vote">
-                                            <div class="wrap">
-                                            <ul class="star-rate" data-total-rate="{{ object.current_score.score }}" data-item-id="{{ object.id }}">
-                                                {% for item in object.score_nums %}
-                                                    <li>
-                                                        <a href="#" data-rate="{{ item }}">&nbsp;</a>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                            </div>
-                                        </div>
-                                        {% endif %}
-
-                                        {% if request.user == event.owner %}
-                                            <div>
-                                                <a class="make-winner" href="#" data-event-id="{{ event.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
-                                            </div>
-                                        {% endif %}
                                     </td>
                                 </tr>
                             </table>
