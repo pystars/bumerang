@@ -7,6 +7,7 @@ from exceptions import TypeError, OSError
 
 from PIL import Image
 from django.conf import settings
+from django.core.files.storage import get_storage_class, FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 def random_string(length, letters=string.ascii_letters+string.digits):
@@ -59,11 +60,12 @@ def get_path(pattern):
     def inner(instance, filename):
         ext = os.path.splitext(filename)[1]
         rel_path = pattern.format(random_string(12), ext)
-        path = os.path.split(os.path.join(settings.MEDIA_ROOT, rel_path))[0]
-        if not os.path.exists(path):
-            try:
-                os.makedirs(path)
-            except OSError:
-                pass
+        if issubclass(get_storage_class(), FileSystemStorage):
+            path = os.path.split(os.path.join(settings.MEDIA_ROOT, rel_path))[0]
+            if not os.path.exists(path):
+                try:
+                    os.makedirs(path)
+                except OSError:
+                    pass
         return rel_path
     return inner
