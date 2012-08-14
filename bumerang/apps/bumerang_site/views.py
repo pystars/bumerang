@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
+from django.utils.timezone import UTC
 from django.views.generic.base import TemplateView
 from django.db.models.aggregates import Min
 from django.utils import timezone
+from django.conf import settings
 
+from bumerang.apps.video.models import Video
 from bumerang.apps.video.playlists.models import PlayList, Channel
 
 
@@ -17,7 +20,12 @@ class BumerangIndexView(TemplateView):
 
         ctx = super(BumerangIndexView, self).get_context_data(**kwargs)
         main_channel = Channel.objects.get(slug='main')
-        today = date.today()
+        d = settings.PLAYLIST_START_TIME_SHIFT
+        now = timezone.now()
+        today = date(now.year, now.month, now.day)
+        td = timedelta(days=d['days'], hours=d['hours'])
+        if now < datetime(now.year, now.month, now.day, tzinfo=UTC()) + td:
+            today += timedelta(days=1)
         ctx['current_item'] = None
         try:
             playlist = PlayList.objects.filter(
@@ -40,13 +48,18 @@ class BumerangIndexView(TemplateView):
         next_days = [(today + timedelta(days=i)).timetuple()[0:3]
                      for i in xrange(min_day, SCHEDULE_RANGE)]
         if playlist:
-            now = timezone.now()
             for item in playlist.playlistitem_set.all():
                 item.playlist = playlist
                 if item.play_from() <= now < item.play_till():
                     ctx['current_item'] = item
                     break
+        new_movies = Video.objects.filter(published_in_archive=True,
+            status=Video.READY)[:2]
+        top_viewed = Video.objects.filter(published_in_archive=True,
+            status=Video.READY).order_by('-views_count',)[:2]
         ctx.update(
+            new_movies = new_movies,
+            top_viewed = top_viewed,
             playlist = playlist,
             next_days = next_days,
         )

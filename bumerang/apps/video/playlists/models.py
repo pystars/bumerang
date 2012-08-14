@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta, datetime
 
+from django.conf import settings
 from django.db import models
 from django.utils.timezone import now, UTC
 
@@ -63,4 +64,6 @@ class PlayList(models.Model):
     @property
     def rotate_from(self):
         year, month, day = self.rotate_from_date.timetuple()[0:3]
-        return datetime(year, month, day, 0, tzinfo=UTC())
+        d = settings.PLAYLIST_START_TIME_SHIFT
+        td = timedelta(days=d['days'], hours=d['hours'])
+        return datetime(year, month, day, tzinfo=UTC()) + td

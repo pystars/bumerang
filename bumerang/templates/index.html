@@ -60,34 +60,34 @@
                             {% include 'snippets/playlist_items.html' with playlistitem_set=playlist.playlistitem_set %}
                         </article>
                     </div></section>
-                    <aside class="l-cols__side"><div class="l-cols__side__i">
-                        <section class="b-announs b-announs_tv">
-                            <article class="announ-item">
-                                <div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ1.jpg" alt="" /></div>
-                                <header class="ai-head">
-                                    <time class="date">5 августа, Пятница, 22:40-0:30</time>
-                                    <h4>Неоконченный урок</h4>
-                                    <p>
-                                        Jeremy was trying to get me to pound his
-                                        first, but I was too into taking the photo.
-                                        The second of these
-                                    </p>
-                                </header>
-                            </article>
-                            <article class="announ-item">
-                                <div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ2.jpg" alt="" /></div>
-                                <header class="ai-head">
-                                    <time class="date">5 августа, Пятница, 22:40-0:30</time>
-                                    <h4>Неоконченный урок</h4>
-                                    <p>
-                                        Jeremy was trying to get me to pound his
-                                        first, but I was too into taking the photo.
-                                        The second of these
-                                    </p>
-                                </header>
-                            </article>
-                        </section>
-                    </div></aside>
+{#                    <aside class="l-cols__side"><div class="l-cols__side__i">#}
+{#                        <section class="b-announs b-announs_tv">#}
+{#                            <article class="announ-item">#}
+{#                                <div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ1.jpg" alt="" /></div>#}
+{#                                <header class="ai-head">#}
+{#                                    <time class="date">5 августа, Пятница, 22:40-0:30</time>#}
+{#                                    <h4>Неоконченный урок</h4>#}
+{#                                    <p>#}
+{#                                        Jeremy was trying to get me to pound his#}
+{#                                        first, but I was too into taking the photo.#}
+{#                                        The second of these#}
+{#                                    </p>#}
+{#                                </header>#}
+{#                            </article>#}
+{#                            <article class="announ-item">#}
+{#                                <div class="ai-img"><img src="{{ STATIC_URL }}i/fake/announ2.jpg" alt="" /></div>#}
+{#                                <header class="ai-head">#}
+{#                                    <time class="date">5 августа, Пятница, 22:40-0:30</time>#}
+{#                                    <h4>Неоконченный урок</h4>#}
+{#                                    <p>#}
+{#                                        Jeremy was trying to get me to pound his#}
+{#                                        first, but I was too into taking the photo.#}
+{#                                        The second of these#}
+{#                                    </p>#}
+{#                                </header>#}
+{#                            </article>#}
+{#                        </section>#}
+{#                    </div></aside>#}
                 </div></div><!--l-cols-->
             </div></div><!--b-tv__body-->
         </section><!--b-tv-->
@@ -120,7 +120,6 @@
                     set_shedule(data['id']);
                 }
                 uppodSend(playerID, "seek:"+data['offset']);
-
             }
         });
     };
@@ -182,11 +181,6 @@
                             <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
                         </a>
                     </p>
-                    <p>
-                        <a href="{% url registration %}">
-                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
-                        </a>
-                    </p>
                 </section>
             </div></aside>
         </div></div><!--l-cols-->
@@ -198,56 +192,9 @@
                     <h2>Новые работы участников</h2>
                 </header>
                 <div class="announs-items">
-                    <article class="announ-item cleared">
-                        <div class="ai-img d-sh">
-                            <a href="">
-                                <span>
-                                    <img src="{{ STATIC_URL }}i/fake/mov2.png" width="165" height="107" alt="" />
-                                    <span class="time">1:54</span>
-                                </span>
-                            </a>
-                        </div>
-                        <header class="ai-head">
-                            <hgroup>
-                                <h3><a href="">BACKSTAGE</a></h3>
-                                <h4>Студия &laquo;<a href="">12South</a>&raquo;</h4>
-                            </hgroup>
-                            <p>
-                                Jeremy was trying to get me to pound his
-                                first, but I was too into
-                            </p>
-                        </header>
-                        <footer class="ai-foot">
-                            <time class="date">21.09.2011, 15:35</time>
-                            <ul class="b-stat">
-                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                            </ul>
-                        </footer>
-                    </article>
-                    <article class="announ-item cleared">
-                        <div class="ai-img d-sh">
-                            <a href="">
-                                <span>
-                                    <img src="{{ STATIC_URL }}i/fake/mov1.png" width="165" height="107" alt="" />
-                                    <span class="time">1:54</span>
-                                </span>
-                            </a>
-                        </div>
-                        <header class="ai-head">
-                            <hgroup>
-                                <h3><a href="">Edit</a></h3>
-                                <h4>Школа &laquo;<a href="">1249</a>&raquo;</h4>
-                            </hgroup>
-                        </header>
-                        <footer class="ai-foot">
-                            <time class="date">21.09.2011, 15:35</time>
-                            <ul class="b-stat">
-                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                            </ul>
-                        </footer>
-                    </article>
+                    {% for video in new_movies %}
+                        {% include 'video/snippets/video_widget.html' %}
+                    {% endfor %}
                 </div>
             </section>
         </div></section>
@@ -257,56 +204,9 @@
                     <h2>Популярное видео</h2>
                 </header>
                 <div class="announs-items">
-                    <article class="announ-item cleared">
-                        <div class="ai-img d-sh">
-                            <a href="">
-                                <span>
-                                    <img src="{{ STATIC_URL }}i/fake/mov2.png" width="165" height="107" alt="" />
-                                    <span class="time">1:54</span>
-                                </span>
-                            </a>
-                        </div>
-                        <header class="ai-head">
-                            <hgroup>
-                                <h3><a href="">BACKSTAGE</a></h3>
-                                <h4>Студия &laquo;<a href="">12South</a>&raquo;</h4>
-                            </hgroup>
-                            <p>
-                                Jeremy was trying to get me to pound his
-                                first, but I was too into
-                            </p>
-                        </header>
-                        <footer class="ai-foot">
-                            <time class="date">21.09.2011, 15:35</time>
-                            <ul class="b-stat">
-                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                            </ul>
-                        </footer>
-                    </article>
-                    <article class="announ-item cleared">
-                        <div class="ai-img d-sh">
-                            <a href="">
-                                <span>
-                                    <img src="{{ STATIC_URL }}i/fake/mov1.png" width="165" height="107" alt="" />
-                                    <span class="time">1:54</span>
-                                </span>
-                            </a>
-                        </div>
-                        <header class="ai-head">
-                            <hgroup>
-                                <h3><a href="">Edit</a></h3>
-                                <h4>Школа &laquo;<a href="">1249</a>&raquo;</h4>
-                            </hgroup>
-                        </header>
-                        <footer class="ai-foot">
-                            <time class="date">21.09.2011, 15:35</time>
-                            <ul class="b-stat">
-                                <li class="like"><i class="b-ico b-ico_heart"><i></i></i><span>1 564</span></li>
-                                <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>25 878</span></li>
-                            </ul>
-                        </footer>
-                    </article>
+                    {% for video in top_viewed %}
+                        {% include 'video/snippets/video_widget.html' %}
+                    {% endfor %}
                 </div>
             </section>
         </div></section>
