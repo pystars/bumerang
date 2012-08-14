@@ -684,3 +684,28 @@ class EventPublishWinners(OwnerMixin, DetailView):
         self.object.save()
         return HttpResponseRedirect(reverse(
             'event-winners-list', args=(self.object.pk,)))
+
+
+class ParticipantListCSVView(ListView):
+    model = ParticipantVideo
+    template_name_suffix = '_csv'
+
+    def get_queryset(self):
+        return super(ParticipantListCSVView, self).get_queryset().filter(
+            participant__event=self.event,
+            participant__event__owner=self.request.user
+        ).select_related(
+        ).annotate(average_score=Avg('participantvideoscore__score'))
+
+    def get(self, request, *args, **kwargs):
+        self.event = Event.objects.get(pk=self.kwargs['event_pk'])
+        return super(ParticipantListCSVView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ParticipantListCSVView, self).get_context_data(**kwargs)
+        ctx['event'] = self.event
+        return ctx
+
+    def render_to_response(self, context, **response_kwargs):
+        return super(ParticipantListCSVView, self).render_to_response(
+            context, mimetype="application/vnd.ms-excel")

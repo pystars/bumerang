@@ -172,6 +172,9 @@ class Video(models.Model, TitleUnicode):
         return (self.participantvideo_set.exists()
             or self.playlistitem_set.exists())
 
+    def get_absolute_url(self):
+        return reverse('video-detail', args=(self.id,))
+
 
 class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)

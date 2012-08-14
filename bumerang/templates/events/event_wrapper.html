@@ -31,8 +31,8 @@
                             </ul>
                             {% include 'snippets/round_frame.html' %}
                         </nav>
-                        {% endif %}
-                        {% if event.contests %}
+                    {% endif %}
+                    {% if event.contests %}
                         <nav class="b-side-nav d-indent">
                             <ul>
                                 <h4>Конкурсы</h4>
@@ -45,6 +45,15 @@
                                         {% endif %}
                                     </li>
                                 {% endfor %}
+                            </ul>
+                            {% include 'snippets/round_frame.html' %}
+                        </nav>
+                    {% endif %}
+                    {% if event.owner == request.user %}
+                        <nav class="b-side-nav d-indent">
+                            <ul>
+                                <h4>Список участников</h4>
+                                <li><a href="{% url participant-video-list-csv event.id %}">Скачать</a></li>
                             </ul>
                             {% include 'snippets/round_frame.html' %}
                         </nav>

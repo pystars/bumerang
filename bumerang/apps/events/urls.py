@@ -11,7 +11,7 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     ParticipantReviewView, EventContactsUpdateView, EventDetailView,
     ParticipantVideoRatingUpdate, EventNewsPostUpdateView,
     EventConditionsDetailView, SetWinnersView, EventWinnersListView,
-    EventPublishWinners)
+    EventPublishWinners, ParticipantListCSVView)
 
 
 urlpatterns = patterns('',
@@ -137,8 +137,13 @@ urlpatterns = patterns('',
         name='nomination-set-winner'
     ),
 
-    url(r'^evemt(?P<pk>[\d]+)/publish-winners/$',
+    url(r'^event(?P<pk>[\d]+)/publish-winners/$',
         login_required(EventPublishWinners.as_view()),
         name='event-publish-winners'
+    ),
+
+    url(r'^event(?P<event_pk>[\d]+)/participant_video_list.csv$',
+        login_required(ParticipantListCSVView.as_view()),
+        name='participant-video-list-csv'
     ),
 )

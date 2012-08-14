@@ -2,15 +2,10 @@
     {% if event.owner != request.user %}
         <form name="editform" action="{% url participant-edit participant.id %}" method="post">
             {% csrf_token %}
-
              <div>
-
                 <div class="b-hr"><hr /></div>
-
                 {% include "events/snippets/formset.html" %}
-
             </div>
-
             <footer class="form-footer">
                 <div class="wrap">
                     <a href="#" class="b-button b-button_yellow button-submit">Обновить заявку</a>
