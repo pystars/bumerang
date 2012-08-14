@@ -201,8 +201,9 @@ class Participant(models.Model):
         return u'{0} в {1}'.format(self.owner, self.event)
 
     def save(self, *args, **kwargs):
-        self.index_number = (self.__class__.objects.filter(event=self.event
-            ).aggregate(Max('index_number'))['index_number__max'] or 0) + 1
+        if not self.index_number:
+            self.index_number = (self.__class__.objects.filter(event=self.event
+                ).aggregate(Max('index_number'))['index_number__max'] or 0) + 1
         super(Participant, self).save(*args, **kwargs)
 
 
