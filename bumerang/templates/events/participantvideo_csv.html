@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+{% load videotags %}<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -33,6 +33,7 @@
                 <th>Правовая форма орг</th>
                 <th>Описание фильма</th>
                 <th>Ссылка на видео</th>
+                <th>Номинация</th>
             </tr>
         </thead>
         <tbody>
@@ -44,7 +45,7 @@
                 <td>{{ object.video.owner.profile.title|default_if_none:"" }}</td>
                 <td>{{ object.video.title|default_if_none:"" }}</td>
                 <td>{{ object.average_score }}</td>
-                <td>{{ object.video.duration }}</td>
+                <td>{{ object.video.duration|default_if_none:0|to_hms }}</td>
                 <td>{{ object.participant.age }}</td>
                 <td>{{ object.video.category|default_if_none:"" }}</td>
                 <td>{{ object.video.genre|default_if_none:"" }}</td>
@@ -65,6 +66,7 @@
                 <td>{{ object.video.owner.profile.info_organization_form|default_if_none:"" }}</td>
                 <td>{{ object.video.description }}</td>
                 <td>{{ request.HTTP_HOST }}{{ object.video.get_absolute_url }}</td>
+                <td>{{ object.nomination }}</td>
             </tr>
             {% endwith %}
         {% endfor %}
