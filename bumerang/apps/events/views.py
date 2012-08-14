@@ -463,7 +463,8 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         formset = self.ModelFormSet(request.POST,
             prefix='participantvideo_set')
 
-        if participant_form.is_valid():
+        if (participant_form.is_valid() and
+        (formset.total_form_count() > len(formset.deleted_forms))):
             if formset.is_valid():
                 self.object = self.model(owner=request.user, event=self.event)
                 try:
@@ -520,6 +521,10 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
             raise Http404(u'Страница не найдена')
         formset = self.ModelFormSet(request.POST, prefix=self.formset_prefix)
         if formset.is_valid():
+            if not (formset.total_form_count() > len(formset.deleted_forms)):
+                self.object.delete()
+                return HttpResponseRedirect(reverse('event-detail',
+                    args=(self.event.id,)))
             instances = formset.save(commit=False)
             self.object.is_accepted = False
             self.object.save()
