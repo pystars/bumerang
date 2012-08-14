@@ -26,9 +26,13 @@
                 {% endif %}
                 {% for object in object_list %}
                     {% ifchanged object.nomination %}
-                    <h3 class="title">{{ object.nomination }}</h3>
+                        <div class="b-hr">
+                            <hr />
+                            <br/>
+                            <br/>
+                        </div>
+                        <h3 class="title">{{ object.nomination }}</h3>
                     {% endifchanged %}
-                    <div class="b-hr"><hr /></div>
                     {% with item=object.participant_video.video %}
                         {% csrf_token %}
                         <div>
