@@ -198,7 +198,7 @@ class EventFilmsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(EventFilmsListView, self).get_context_data(**kwargs)
         winners = {}
-        if self.event.publish_winners:
+        if self.event.publish_winners or self.event.owner == self.request.user:
             winners = dict(self.nomination.videonomination_set.filter(
                 result__isnull=False).values_list(
                 'participant_video', 'result'))
