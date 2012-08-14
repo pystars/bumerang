@@ -225,13 +225,15 @@ class EventWinnersListView(ListView):
     template_name = 'events/event_winners_list.html'
 
     def get(self, request, *args, **kwargs):
+        qs = Event.objects.filter(pk=self.kwargs.get('event_pk'))
+        if request.user.is_authenticated():
+            qs = qs.filter(Q(publish_winners=True) | Q(owner=request.user))
+        else:
+            qs = qs.filter(publish_winners=True)
         try:
-            self.event = Event.objects.get(
-                Q(publish_winners=True) | Q(owner=request.user),
-                pk=self.kwargs.get('event_pk')
-            )
+            self.event = qs.get()
         except Event.DoesNotExist:
-            Http404(u"Страница не найдена")
+            raise Http404(u"Страница не найдена")
         return super(EventWinnersListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
