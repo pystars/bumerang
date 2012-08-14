@@ -194,16 +194,18 @@ function confirmMoveModalDialog() {
         };
 
         var showServiceButtons = function() {
-            $('#photoalbum-delete-button').show(300, 'linear');
-            $('#photoalbum-move-button').show(300, 'linear');
+            $('#photo-delete-button').show(300, 'linear');
+            $('#photo-move-button').show(300, 'linear');
         };
 
         var hideServiceButtons = function() {
-            $('#photoalbum-delete-button').hide(300, 'linear');
-            $('#photoalbum-move-button').hide(300, 'linear');
+            $('#photo-delete-button').hide(300, 'linear');
+            $('#photo-move-button').hide(300, 'linear');
         };
 
         var updatePage = function() {
+            console.log('items_list', items_list);
+            console.log('getItems()', getItems());
             if (getItems().length) {
                 showServiceButtons();
             } else {
