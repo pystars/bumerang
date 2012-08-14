@@ -142,7 +142,7 @@ urlpatterns = patterns('',
         name='event-publish-winners'
     ),
 
-    url(r'^event(?P<event_pk>[\d]+)/participant_video_list.csv$',
+    url(r'^event(?P<event_pk>[\d]+)/participant_video_list.xls$',
         login_required(ParticipantListCSVView.as_view()),
         name='participant-video-list-csv'
     ),
