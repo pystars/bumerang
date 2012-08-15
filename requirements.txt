@@ -14,7 +14,7 @@ boto
 django-storages
 ipython
 mysql-python
-git+git://github.com/hmarr/django-ses.git#django-ses
+git+git://github.com/hmarr/django-ses.git
 pydkim
 pytz
 dnspython
