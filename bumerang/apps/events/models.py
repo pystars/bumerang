@@ -187,7 +187,8 @@ class Participant(models.Model):
     owner = models.ForeignKey(User, verbose_name=u'Участник')
     event = models.ForeignKey(Event, verbose_name=u'Фестиваль')
     index_number = models.IntegerField(u'Номер заявки', editable=False)
-    is_accepted = models.BooleanField(u'Заявка принята', default=False)
+    is_accepted = models.BooleanField(u'Заявка принята', default=False,
+        db_index=True)
     videos = models.ManyToManyField(Video,
         verbose_name=u'Видео', through='ParticipantVideo')
 
@@ -220,7 +221,8 @@ class ParticipantVideo(models.Model):
         help_text=u'(полных лет)')
     video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False,
         on_delete=models.PROTECT)
-    is_accepted = models.BooleanField(u'Видео принято', default=False)
+    is_accepted = models.BooleanField(u'Видео принято', default=False,
+        db_index=True)
 
     class Meta:
         unique_together = (("participant", "video"),)
@@ -251,7 +253,7 @@ class VideoNomination(models.Model):
         verbose_name=u'Видео участника')
     nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация')
     result = models.PositiveSmallIntegerField(u'Итог', choices=STATUS_CHOICES,
-        **nullable)
+        db_index=True, **nullable)
 
     def __unicode__(self):
         return u'{0} в номинации {1}'.format(
