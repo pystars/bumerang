@@ -573,21 +573,27 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
             self.object.is_accepted = True
             self.object.save()
             for form in formset:
-                instance = form.save(commit=False)
-                instance.save()
-                if 'nominations' in form.changed_data:
-                    nominations = [nomination.id for nomination
-                                   in form.cleaned_data['nominations']]
-                    currents = instance.nominations.values_list('id', flat=True)
-                    removed_nominations = list(set(currents) - set(nominations))
-                    added_nominations = list(set(nominations) - set(currents))
-                    VideoNomination.objects.filter(
-                        participant_video=instance,
-                        nomination__in=removed_nominations).delete()
-                    VideoNomination.objects.bulk_create([
-                        VideoNomination(nomination_id=nomination,
-                            participant_video=instance)
-                        for nomination in added_nominations])
+                if form in formset.deleted_forms:
+                    ParticipantVideo.objects.get(pk=form.instance.id).delete()
+                else:
+                    instance = form.save(commit=False)
+                    instance.save()
+                    if 'nominations' in form.changed_data:
+                        nominations = [nomination.id for nomination
+                                       in form.cleaned_data['nominations']]
+                        currents = instance.nominations.values_list(
+                            'id', flat=True)
+                        removed_nominations = list(
+                            set(currents) - set(nominations))
+                        added_nominations = list(
+                            set(nominations) - set(currents))
+                        VideoNomination.objects.filter(
+                            participant_video=instance,
+                            nomination__in=removed_nominations).delete()
+                        VideoNomination.objects.bulk_create([
+                            VideoNomination(nomination_id=nomination,
+                                participant_video=instance)
+                            for nomination in added_nominations])
             notify_success(request, u'Данные сохранены')
             return HttpResponseRedirect(self.get_success_url())
         notify_error(request, u'При сохранении произошла ошибка')
