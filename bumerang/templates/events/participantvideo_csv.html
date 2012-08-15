@@ -14,6 +14,7 @@
                 <th>Название студии/ФИО участника</th>
                 <th>Название фильма</th>
                 <th>Оценка метра</th>
+                <th>Номинация</th>
                 <th>Хронометраж</th>
                 <th>Возраст</th>
                 <th>Категория видео</th>
@@ -33,7 +34,6 @@
                 <th>Правовая форма орг</th>
                 <th>Описание фильма</th>
                 <th>Ссылка на видео</th>
-                <th>Номинация</th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +45,7 @@
                 <td>{{ object.video.owner.profile.title|default_if_none:"" }}</td>
                 <td>{{ object.video.title|default_if_none:"" }}</td>
                 <td>{{ object.average_score }}</td>
+                <td>{{ object.nomination }}</td>
                 <td>{{ object.video.duration|default_if_none:0|to_hms }}</td>
                 <td>{{ object.participant.age }}</td>
                 <td>{{ object.video.category|default_if_none:"" }}</td>
@@ -66,7 +67,6 @@
                 <td>{{ object.video.owner.profile.info_organization_form|default_if_none:"" }}</td>
                 <td>{{ object.video.description }}</td>
                 <td>{{ request.HTTP_HOST }}{{ object.video.get_absolute_url }}</td>
-                <td>{{ object.nomination }}</td>
             </tr>
             {% endwith %}
         {% endfor %}
