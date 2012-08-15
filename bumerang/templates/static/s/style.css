@@ -5589,16 +5589,22 @@ table.compact td .f-title {
 }
 
 .b-ico_star {
-    width:18px;
-    height:16px;
+    width:25px;
+    height:23px;
     margin-left: -19px !important;
-    background:url(../i/blue_star.png) no-repeat;
+    background:url(../i/rating_icon.png) no-repeat;
 }
 
 .rating {
     margin:0 0 0 37px;
     position:relative;
     font-size:18px;
+    line-height: 23px;
+}
+
+.rating span {
+    margin-left: 10px;
+    line-height: 25px;
 }
 
 .rating .ico {
