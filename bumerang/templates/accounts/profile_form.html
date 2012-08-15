@@ -30,31 +30,29 @@
                     {% include "accounts/snippets/profile_edit_left_menu_current.html" %}
                 </h3>
 
-                {{ form }}
-
-{#                {% for item in form %}#}
-{#                    <fieldset>#}
-{#                        <div class="b-form__field">#}
-{#                            <label>#}
-{#                                <span class="f-title">#}
-{#                                    <span>{{ item.label }}</span>#}
-{#                                </span>#}
-{#                                {% if item|widget_type in 'TextInput DateInput' %}#}
-{#                                    <span class="f-input">#}
-{#                                {% endif %}{% if item|widget_type == 'Textarea' %}#}
-{#                                    <span class="f-textarea">#}
-{#                                {% endif %}{% if item|widget_type == 'Select' %}#}
-{#                                    <span class="f-select">#}
-{#                                {% endif %}#}
-{#                                    {{ item }}#}
-{#                                </span>#}
-{#                            </label>#}
-{#                            {% if item.errors %}#}
-{#                                <div class="f-err"><span>{{ item.errors }}</span></div>#}
-{#                            {% endif %}#}
-{#                        </div>#}
-{#                    </fieldset>#}
-{#                {% endfor %}#}
+                {% for item in form %}
+                    <fieldset>
+                        <div class="b-form__field">
+                            <label>
+                                <span class="f-title">
+                                    <span>{{ item.label }}</span>
+                                </span>
+                                {% if item|widget_type in 'TextInput DateInput' %}
+                                    <span class="f-input">
+                                {% endif %}{% if item|widget_type == 'Textarea' %}
+                                    <span class="f-textarea">
+                                {% endif %}{% if item|widget_type == 'Select' %}
+                                    <span class="f-select">
+                                {% endif %}
+                                    {{ item }}
+                                </span>
+                            </label>
+                            {% if item.errors %}
+                                <div class="f-err"><span>{{ item.errors }}</span></div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                {% endfor %}
             </div>
             <footer class="b-form__footer">
                 <div class="wrap">
