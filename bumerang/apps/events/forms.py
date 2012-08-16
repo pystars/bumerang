@@ -235,7 +235,7 @@ class ParticipantVideoForm(ModelForm):
         self.fields['nomination'].empty_label = None
         self.fields['nomination'].queryset = self.event.nomination_set.all()
         self.fields['video'].queryset = self.fields['video'].queryset.filter(
-            owner=self.request.user, status=Video.READY)
+            owner=self.request.user, status=Video.READY).order_by('title')
 
 
 class ParticipantVideoReviewForm(ModelForm):
