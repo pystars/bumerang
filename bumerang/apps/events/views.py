@@ -465,10 +465,9 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         formset = self.ModelFormSet(request.POST,
             prefix='participantvideo_set')
 
-        if (participant_form.is_valid() and
-        (formset.total_form_count() > len(formset.deleted_forms))):
-            if formset.is_valid():
-                self.object = self.model(owner=request.user, event=self.event)
+        if participant_form.is_valid():
+            if (formset.is_valid()
+            and (formset.total_form_count() > len(formset.deleted_forms))):
                 try:
                     self.object.save()
                 except IntegrityError:
