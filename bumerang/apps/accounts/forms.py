@@ -105,7 +105,9 @@ class PasswordRecoveryForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('email', None)
-        if not (email and Profile.objects.filter(email=email).exists()):
+        if not email:
+            raise ValidationError(u'Укажите почту для восстановления пароля')
+        elif Profile.objects.filter(email=email).exists():
             raise ValidationError(u'Пользователь с таким адресом не существует')
 
 
