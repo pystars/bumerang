@@ -269,7 +269,7 @@ class PasswordRecoveryView(FormView):
     def form_valid(self, form):
         receiver_email = form.data['email']
         new_password = uuid4().get_hex()[:8]
-        profile = Profile.objects.get(email=receiver_email)
+        profile = Profile.objects.get(username=receiver_email)
         profile.set_password(new_password)
         profile.save()
 
