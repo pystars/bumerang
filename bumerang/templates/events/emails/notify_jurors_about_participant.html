@@ -1,0 +1,19 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <td>
+        <p style="margin: 4px 0;"><b>Событие</b> - {{ participant.event }}</p>
+        <p style="margin: 4px 0;"><b>Участник</b> - {{ participant.owner.profile.title }}</p>
+        <p style="margin: 4px 0;">
+            <b>Видео для выставления оценок:</b></p>
+        <ul>
+            {% for video in videos %}
+                <li>{{ video.video.title }}</li>
+            {% endfor %}
+        </ul>
+        <p style="margin: 4px 0;">Для просмотра видео перейдите по указанным
+            выше ссылкам с названиями видео.</p>
+        <p style="margin: 4px 0;">Для выставления оценки перейдите на страницу
+            http://www.probumerang.tv{% url event-films participant.event_id %} и выставите оценку видео из списка работ.</p>
+    </td>
+{% endblock %}

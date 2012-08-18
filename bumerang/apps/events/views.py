@@ -37,6 +37,8 @@ from bumerang.apps.events.forms import (EventCreateForm,
     SetWinnersForm)
 from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
     GenericFormsetWithFKUpdateView)
+from signals import (event_created, winners_public,  participant_reviewed,
+    juror_added)
 
 
 class ParticipantMixin(View):
@@ -150,6 +152,7 @@ class EventCreateView(CreateView):
         if self.object.type == Event.FESTIVAL:
             self.object.parent = None
         self.object.save()
+        event_created.send(self, event=self.object)
         self.template_name = 'events/event_send_request_sended.html'
         return self.render_to_response(self.get_context_data())
 
@@ -367,7 +370,12 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                 instance.event = self.object
                 try:
                     instance.user = User.objects.get(username=instance.email)
-                    instance.save()
+                    try:
+                        instance.save()
+                    except IntegrityError:
+                        pass
+                    juror_added.send(self, juror=instance, created=False,
+                        password='')
                 except User.DoesNotExist:
                     title = u'{0} {1} {2}'.format(
                         instance.info_second_name,
@@ -388,8 +396,8 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                     instance.save()
                     profile.min_avatar = instance.min_avatar
                     profile.save()
-                    #TODO: send letter to new juror with links to password
-                    # and event
+                    juror_added.send(self, juror=instance, created=True,
+                        password=password)
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
 
@@ -595,6 +603,7 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
                                 participant_video=instance)
                             for nomination in added_nominations])
             notify_success(request, u'Данные сохранены')
+            participant_reviewed.send(self, participant=self.object)
             return HttpResponseRedirect(self.get_success_url())
         notify_error(request, u'При сохранении произошла ошибка')
         return self.render_to_response(self.get_context_data(formset=formset))
@@ -697,6 +706,7 @@ class EventPublishWinners(OwnerMixin, DetailView):
         self.object = self.get_object()
         self.object.publish_winners = True
         self.object.save()
+        winners_public.send(self, event=self.object)
         return HttpResponseRedirect(reverse(
             'event-winners-list', args=(self.object.pk,)))
 

@@ -1,0 +1,18 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <td>
+        <p style="margin: 4px 0;">
+            Поздравляем! Вы стали победителем события "{{ event.get_type_display }} {{ event }}".
+        </p>
+        <ul>
+        {% for video_nomination in video_nominations %}
+            <li><a href="http://www.probumerang.tv{% url video-detail video_nomination.participant_video.video.id %}">
+            {{ video_nomination.participant_video.video.title }}</a> в номинации {{ video_nomination.nomination }}</li>
+        {% endfor %}
+        </ul>
+        <p style="margin: 4px 0;">
+            Ссылка для просмотра победителей события: http://www.probumerang.tv{% url event-winners-list event.id %}.
+        </p>
+    </td>
+{% endblock %}

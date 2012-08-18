@@ -18,7 +18,8 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = [
     ('Iljin', 'alexei.iljin@gmail.com'),
-    ('Bolshakov', 'va.bolshakov@gmail.com')
+    ('Bolshakov', 'va.bolshakov@gmail.com'),
+    ('Dashkov', 'dashkov.a@mail.ru')
 ]
 
 MANAGERS = ADMINS

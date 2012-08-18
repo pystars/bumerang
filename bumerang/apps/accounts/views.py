@@ -38,9 +38,7 @@ from bumerang.apps.accounts.forms import (RegistrationForm,
       EventRegistrationRequestForm, FestivalProfileInfoForm)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.email import send_activation_success, \
-    send_activation_link, send_new_password, send_fest_registration_request
-#from bumerang.apps.utils.tasks import (send_new_password_task,
-#    send_activation_link_task)
+    send_activation_link, send_new_password
 
 # TODO: рефакторить нотификации
 
@@ -97,12 +95,6 @@ def login(request, template_name='registration/login.html',
                 if profile.title:
                     message = u'''
                     Добро пожаловать. Вы авторизовались как студия «{0}».
-                    '''.format(profile.title)
-
-            if profile.type == Profile.TYPE_FESTIVAL:
-                if profile.title:
-                    message = u'''
-                    Добро пожаловать. Вы авторизовались как фестиваль «{0}».
                     '''.format(profile.title)
 
             notify_success(request, message)

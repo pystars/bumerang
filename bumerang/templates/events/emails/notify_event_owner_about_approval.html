@@ -1,0 +1,9 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <td>
+        <p style="margin: 4px 0 4px 0;">
+            Ваша заявка на регистрацию события "{{ event.get_type_display }} {{ event }}" одобрена
+        </p>
+    </td>
+{% endblock %}

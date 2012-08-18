@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
+import os
+
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Max
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-import os
 
+from signals import (approve_event, winners_public, event_created,
+    participant_reviewed, juror_added)
+from notifications import (notify_admins_about_event_request, notify_winners,
+    notify_event_owner_about_approve, notify_jurors_about_participant,
+    notify_participant_about_review, notify_event_owner_about_participant,
+    notify_juror_about_registration)
 from bumerang.apps.utils.functions import get_path
 from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.utils.models import TitleUnicode, FileModelMixin
@@ -118,7 +126,7 @@ class Event(FileModelMixin, models.Model):
 class Juror(FileModelMixin, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
     user = models.ForeignKey(User, verbose_name=u'Пользователь')
-    email = models.EmailField(_('e-mail address'), unique=True)
+    email = models.EmailField(_('e-mail address'))
     info_second_name = models.CharField(u'Фамилия', max_length=100)
     info_name = models.CharField(u'Имя', max_length=100)
     info_middle_name = models.CharField(u'Отчество', max_length=100)
@@ -130,6 +138,7 @@ class Juror(FileModelMixin, models.Model):
     class Meta:
         verbose_name = u'Член жюри'
         verbose_name_plural = u'Члены жюри'
+        unique_together = (('event', 'user'),)
 
 
 class GeneralRule(TitleUnicode, models.Model):
@@ -185,7 +194,7 @@ class Nomination(models.Model):
 
 class Participant(models.Model):
     owner = models.ForeignKey(User, verbose_name=u'Участник')
-    event = models.ForeignKey(Event, verbose_name=u'Фестиваль')
+    event = models.ForeignKey(Event, verbose_name=u'Событие')
     index_number = models.IntegerField(u'Номер заявки', editable=False)
     is_accepted = models.BooleanField(u'Заявка принята', default=False,
         db_index=True)
@@ -197,6 +206,8 @@ class Participant(models.Model):
             ('owner', 'event'),
             ('event', 'index_number')
         )
+        verbose_name = u'Участник события'
+        verbose_name_plural = u'Участники события'
 
     def __unicode__(self):
         return u'{0} в {1}'.format(self.owner, self.event)
@@ -270,3 +281,17 @@ class ParticipantVideoScore(models.Model):
         verbose_name = u'Оценка фильма-участника'
         verbose_name_plural = u'Оценки фильмов-участников'
 
+
+event_created.connect(notify_admins_about_event_request,
+    dispatch_uid='notice_admins_about_event_request')
+approve_event.connect(notify_event_owner_about_approve,
+    dispatch_uid='notify_event_owner_about_approve')
+winners_public.connect(notify_winners, dispatch_uid='notify_winners')
+participant_reviewed.connect(notify_participant_about_review,
+    dispatch_uid='notify_participant_about_review')
+participant_reviewed.connect(notify_jurors_about_participant,
+    dispatch_uid='notify_jurors_about_participant')
+post_save.connect(notify_event_owner_about_participant, sender=Participant,
+    dispatch_uid='notify_event_owner_about_participant')
+juror_added.connect(notify_juror_about_registration,
+    dispatch_uid='notify_juror_about_registration')

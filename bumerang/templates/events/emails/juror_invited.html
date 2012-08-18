@@ -1,0 +1,16 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <td>
+        <p style="margin: 4px 0;">
+            Здравствуйте, уважаемый {{ juror.user.profile.title }},
+            вы были добавлены в мэтры жюри {{ juror.event }} http://www.probumerang.tv{% url event-detail juror.event_id %}.
+        </p>
+        <p style="margin: 4px 0;">Что бы оценивать работы участриков, вам необходимо перейти на
+            страницу события в раздел "Фестивали и конкурсы" http://www.probumerang.tv{% url event-films juror.event_id %}.</p>
+        <p style="margin: 4px 0;">По мере поступления новых заявок на этот эллектронный адрес будут
+            приходить уведомления для перехода к просмотру видео и выставления оценки.</p>
+
+        {#        <p>Раздел обучение: "Выставление оценок жюри".</p>#}
+    </td>
+{% endblock %}
