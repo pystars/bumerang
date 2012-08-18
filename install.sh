@@ -44,6 +44,7 @@ pip install uwsgi
 git clone git://github.com/pystars/bumerang.git /home/ubuntu/bumerang
 mkdir /var/www
 mkdir /var/log/uwsgi
+mkdir /var/log/celery
 virtualenv /var/www/.virtualenvs/bumerang
 pip -E /var/www/.virtualenvs/bumerang install -U -r /home/ubuntu/bumerang/requirements.txt
 chown -R www-data:adm /var/www
