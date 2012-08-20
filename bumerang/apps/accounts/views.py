@@ -256,15 +256,14 @@ class PasswordRecoveryView(FormView):
     template_name = "accounts/password_recovery.html"
 
     def get_success_url(self):
-        return '/'
+        return reverse('BumerangIndexView')
 
     def form_valid(self, form):
-        receiver_email = form.data['email']
+        receiver_email = form.cleaned_data['email']
         new_password = uuid4().get_hex()[:8]
-        profile = Profile.objects.get(username=receiver_email)
-        profile.set_password(new_password)
-        profile.save()
-
+        user = User.objects.get(username=receiver_email)
+        user.set_password(new_password)
+        user.save()
         send_new_password(new_password, receiver_email)
         notify_success(self.request, message=u'''
             Ваш новый пароль был отправлен на указанный вами e-mail.
