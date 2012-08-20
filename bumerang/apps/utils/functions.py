@@ -56,10 +56,14 @@ def image_width_height(img, width=None, height=None):
         height = int(img_height * float(width) / img_width)
     return width, height
 
-def get_path(pattern):
+def get_path(pattern, pk_dir_name=False):
     def inner(instance, filename):
         ext = os.path.splitext(filename)[1]
-        rel_path = pattern.format(random_string(12), ext)
+        if pk_dir_name:
+            dir_name = instance.id
+        else:
+            dir_name = random_string(12)
+        rel_path = pattern.format(dir_name, ext)
         if issubclass(get_storage_class(), FileSystemStorage):
             path = os.path.split(os.path.join(settings.MEDIA_ROOT, rel_path))[0]
             if not os.path.exists(path):

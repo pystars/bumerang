@@ -1,29 +1,13 @@
 # -*- coding: utf-8 -*-
-import os
-
-from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.db import models
 
+from bumerang.apps.utils.functions import get_path
 from bumerang.apps.utils.models import FileModelMixin
 from bumerang.apps.utils.media_storage import media_storage
 
 
 nullable = dict(null=True, blank=True)
-
-def get_avatar_path(instance, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(instance.id))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    ext = os.path.splitext(filename)[1]
-    return 'avatars/{0}/full{1}'.format(instance.id, ext)
-
-def get_mini_avatar_path(instance, filename):
-    path = os.path.join(settings.MEDIA_ROOT, 'avatars', str(instance.id))
-    if not os.path.exists(path):
-        os.makedirs(path)
-    ext = os.path.splitext(filename)[1]
-    return 'avatars/{0}/min{1}'.format(instance.id, ext)
 
 
 class Profile(FileModelMixin, User):
@@ -55,9 +39,11 @@ class Profile(FileModelMixin, User):
                                db_index=True)
     title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
     avatar = models.ImageField(u'Фотография профиля',
-        upload_to=get_avatar_path, storage=media_storage, **nullable)
+        upload_to=get_path('avatars/{0}/full{1}', pk_dir_name=True),
+        storage=media_storage, **nullable)
     min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
-        upload_to=get_mini_avatar_path, storage=media_storage, **nullable)
+        upload_to=get_path('avatars/{0}/min{1}', pk_dir_name=True),
+        storage=media_storage, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
