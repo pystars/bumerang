@@ -109,6 +109,7 @@ class PasswordRecoveryForm(forms.Form):
             raise ValidationError(u'Укажите почту для восстановления пароля')
         elif not User.objects.filter(username=email).exists():
             raise ValidationError(u'Пользователь с таким адресом не существует')
+        return email
 
 
 class ProfileInfoEditForm(InfoEditFormsMixin, forms.ModelForm):
