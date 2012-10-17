@@ -11,7 +11,7 @@
     </div>
     <header class="ai-head">
         <hgroup>
-            <h3><a href="">{{ video.title }}</a></h3>
+            <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
             <h4>{% if object.type != pf.TYPE_USER %}{{ object.get_type_display }}
                 &laquo;{{ object.title }}&raquo;{% else %}{{ object.title|truncatechars:60 }}{% endif %}</h4>
         </hgroup>
