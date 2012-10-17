@@ -54,9 +54,9 @@ class BumerangIndexView(TemplateView):
                     ctx['current_item'] = item
                     break
         new_movies = Video.objects.filter(published_in_archive=True,
-            status=Video.READY)[:2]
+            status=Video.READY)[:5]
         top_viewed = Video.objects.filter(published_in_archive=True,
-            status=Video.READY).order_by('-views_count',)[:2]
+            status=Video.READY).order_by('-views_count',)[:5]
         ctx.update(
             new_movies = new_movies,
             top_viewed = top_viewed,
