@@ -1,4 +1,4 @@
-{% load videotags %}
+{% load videotags truncatechars %}
 <article class="announ-item cleared">
     <div class="ai-img d-sh">
         <a href="{% url video-detail video.id %}">
@@ -13,10 +13,10 @@
         <hgroup>
             <h3><a href="">{{ video.title }}</a></h3>
             <h4>{% if object.type != pf.TYPE_USER %}{{ object.get_type_display }}
-                &laquo;{{ object.title }}&raquo;{% else %}{{ object.title }}{% endif %}</h4>
+                &laquo;{{ object.title }}&raquo;{% else %}{{ object.title|truncatechars:60 }}{% endif %}</h4>
         </hgroup>
         <p>
-            {{ video.description|linebreaksbr }}
+            {{ video.description|truncatechars:150|linebreaksbr }}
         </p>
     </header>
     <footer class="ai-foot">
