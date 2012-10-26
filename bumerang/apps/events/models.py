@@ -118,6 +118,15 @@ class Event(FileModelMixin, models.Model):
                 Прием заявок должен заканчиваться до окончания фестиваля''']
             })
 
+    def get_genetive_name(self):
+        if self.type == self.CONTEST:
+            return u'конкурса'
+
+        if self.type == self.FESTIVAL:
+            return u'фестиваля'
+
+        return u'события'
+
     def owner_name(self):
         return self.owner.profile.get_title()
     owner_name.short_description = u'Имя владельца'
