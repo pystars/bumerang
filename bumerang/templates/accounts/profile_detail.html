@@ -1,6 +1,14 @@
 {% extends "accounts/tabs_wrapper.html" %}
 {% load sitetree %}
 
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/easybox/default/easybox.min.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/easybox/distrib.min.js"></script>
+{% endblock %}
+
 {% block tab %}
 {% include 'snippets/menu.html' with selected='profile' %}
 {% with type=object.type pf=object %}

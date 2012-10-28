@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+from PIL import Image
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
@@ -49,6 +56,7 @@ class EditFormsMixin(forms.ModelForm):
                     field.widget.attrs['class'] += ' wide wide_descr2'
                 else:
                     field.widget.attrs.update({'class': 'wide wide_descr2'})
+
 
 
 class RegistrationForm(forms.ModelForm):
@@ -270,15 +278,16 @@ class ServiceForm(EditFormsMixin, forms.ModelForm):
 
 
 class TeammateForm(S3StorageFormMixin, EditFormsMixin, forms.ModelForm):
+
     class Meta:
         model = Teammate
-        fields = ('photo', 'name', 'description')
+        fields = ('photo', 'photo_min', 'name', 'description')
 
 
 class TeacherForm(S3StorageFormMixin, EditFormsMixin, forms.ModelForm):
     class Meta:
         model = Teammate
-        fields = ('photo', 'name', 'description')
+        fields = ('photo', 'photo_min', 'name', 'description')
 
 
 class UserContactsForm(EditFormsMixin, forms.ModelForm):

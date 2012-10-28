@@ -13,6 +13,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 def random_string(length, letters=string.ascii_letters+string.digits):
     return u''.join(random.choice(letters) for i in xrange(length))
 
+
 def thumb_img(img, width=None, height=None, name='thumb.jpg'):
     io = TemporaryFile()
     thumb = img.copy()
@@ -22,6 +23,7 @@ def thumb_img(img, width=None, height=None, name='thumb.jpg'):
     size = io.tell()
     io.seek(0)
     return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)
+
 
 def thumb_crop_img(img, width=None, height=None, name='thumb.jpg'):
     """
@@ -40,6 +42,7 @@ def thumb_crop_img(img, width=None, height=None, name='thumb.jpg'):
     io.seek(0)
     return InMemoryUploadedFile(io, None, name, 'image/jpeg', size, None)
 
+
 def image_width_height(img, width=None, height=None):
     try:
         width, height = int(width), int(height)
@@ -55,6 +58,42 @@ def image_width_height(img, width=None, height=None):
     elif not height:
         height = int(img_height * float(width) / img_width)
     return width, height
+
+
+def image_crop_rectangle_center(img):
+    '''
+    Crops rectangle region from center of given image
+    '''
+    width = img.size[0]
+    height = img.size[1]
+
+    if height > width:
+        diff = height - width
+        half_diff = int(round(diff/2))
+
+        img = img.crop((
+            0,
+            half_diff,
+            width,
+            width + half_diff
+        ))
+
+    if height < width:
+        diff = width - height
+        half_diff = int(round(diff/2))
+
+        img = img.crop((
+            half_diff,
+            0,
+            height + half_diff,
+            height
+        ))
+
+    if height == width:
+        pass
+
+    return img
+
 
 def get_path(pattern, pk_dir_name=False):
     def inner(instance, filename):
