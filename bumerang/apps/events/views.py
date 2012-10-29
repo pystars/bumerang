@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # do not touch this import for correct work with avatar
 from __future__ import division
+from django.core.files.base import ContentFile
+from bumerang.apps.utils.functions import image_crop_rectangle_center
 
 try:
     from cStringIO import StringIO
@@ -395,7 +397,27 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                     profile.save()
                     instance.user_id = profile.id
                     instance.save()
-                    profile.min_avatar = instance.min_avatar
+
+                    instance.min_avatar.seek(0)
+
+                    minified_image = Image.open(instance.min_avatar)
+
+                    minified_image = image_crop_rectangle_center(minified_image)
+
+                    minified_image.thumbnail((125, 125), Image.ANTIALIAS)
+
+                    # reinitialize memory file
+                    memory_file = StringIO()
+                    minified_image.save(memory_file, 'jpeg')
+                    memory_file.seek(0)
+
+                    profile.min_avatar.save(
+                        '{id}-min-avatar.jpg'.format(
+                            id=profile.id
+                        ),
+                        ContentFile(memory_file.read())
+                    )
+
                     profile.save()
                     juror_added.send(self, juror=instance, created=True,
                         password=password)
