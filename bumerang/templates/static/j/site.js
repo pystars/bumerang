@@ -1376,18 +1376,18 @@ $(function() {
     /*
      * JCrop handler
      * */
-    if ($.Jcrop) {
-        $('#current_avatar').Jcrop({
-            onChange: function(c){
-                $('#id_avatar_coords').val(JSON.stringify(c));
-            },
-            bgColor:     'black',
-            bgOpacity:   .5,
-            minSize: [175, 175],
-            setSelect: [0, 0, 175, 175],
-            aspectRatio: 1
-        });
-    }
+//    if ($.Jcrop) {
+//        $('#current_avatar').Jcrop({
+//            onChange: function(c){
+//                $('#id_avatar_coords').val(JSON.stringify(c));
+//            },
+//            bgColor:     'black',
+//            bgOpacity:   .5,
+//            minSize: [175, 175],
+//            setSelect: [0, 0, 175, 175],
+//            aspectRatio: 1
+//        });
+//    }
 
     $(window).bind('hashchange', function(e) {
         var hash = location.hash.replace('#','');

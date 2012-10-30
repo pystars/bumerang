@@ -536,8 +536,8 @@ class ProfileAvatarEditView(UpdateView):
             coords = json.loads(form.cleaned_data['avatar_coords'])
         except ValueError:
             coords = {
-                'x': 0,
-                'y': 0,
+                'x1': 0,
+                'y1': 0,
                 'x2': 175,
                 'y2': 175,
             }
@@ -564,8 +564,8 @@ class ProfileAvatarEditView(UpdateView):
             img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
 
         # Иначе просто обрезаем
-        cropped_image = img.crop((coords['x'],
-                                  coords['y'],
+        cropped_image = img.crop((coords['x1'],
+                                  coords['y1'],
                                   coords['x2'],
                                   coords['y2']))
         cropped_image.thumbnail((175, 175), Image.ANTIALIAS)

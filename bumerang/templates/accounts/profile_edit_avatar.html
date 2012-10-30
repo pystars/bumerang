@@ -4,12 +4,12 @@
 
 {% block head_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}s/cusel.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}s/jquery.Jcrop.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/imgareaselect/imgareaselect-animated.css" />
 {% endblock %}
 
 {% block head_js %}
     <script type="text/javascript" src="{{ STATIC_URL }}j/cusel-min-2.4.1.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/imgareaselect/jquery.imgareaselect.pack.js"></script>
 {% endblock %}
 
 {% block edit_form %}
@@ -57,7 +57,7 @@
 
                             <span class="f-input">
                                 <input type="file" name="avatar" id="id_avatar" style="margin-top: 8px;" />
-                                <input type="hidden" name="avatar_coords" value='{"x":0,"y":0,"x2":175,"y2":175,"w":175,"h":175}' id="id_avatar_coords" />
+                                <input type="hidden" name="avatar_coords" value='{"x1":0,"y1":0,"x2":175,"y2":175,"w":175,"h":175}' id="id_avatar_coords" />
                             </span>
                         {% if form.avatar.errors %}
                             <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.avatar.errors }}</span></div>
@@ -80,5 +80,24 @@
             </div>
         </footer>
     </form>
+
+    <script>
+        $(function() {
+            $('#current_avatar').imgAreaSelect({
+                handles: true,
+                aspectRatio: '1:1',
+                minHeight: 175,
+                minWidth: 175,
+                x1: 0,
+                y1: 0,
+                x2: 175,
+                y2: 175,
+                onSelectChange: function(i, s) {
+                    $('#id_avatar_coords').val(JSON.stringify(s));
+{#                    console.log(s);#}
+                }
+            });
+        });
+    </script>
 </section>
 {% endblock %}
