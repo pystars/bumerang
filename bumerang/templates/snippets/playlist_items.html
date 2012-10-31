@@ -6,12 +6,12 @@
         </p>
     {% else %}
         {% for item in playlistitem_set.all %}
-            <p id="playlistitem{{ item.id }}" class="tp-item tp-item_past {% cycle 'tp-item_odd' 'even' %}">
+            <p id="playlistitem{{ item.id }}" class="tp-item item_future {% cycle 'tp-item_odd' 'even' %}">
                 <time>{{ item.play_from|date:"H:i" }}</time>
                 {{ item.video.title }}
             </p>
             {% if forloop.last %}
-                <p class="tp-item item_future">
+                <p class="tp-item item_future {% cycle 'tp-item_odd' 'even' %}">
                     <time>{{ item.play_till|date:"H:i" }}</time>
                     Конец эфира
                 </p>
