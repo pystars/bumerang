@@ -115,7 +115,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.messages',
     'sitetree',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
@@ -132,6 +131,10 @@ INSTALLED_APPS = [
     'django_wysiwyg',
     'django_extensions',
     'django_coverage',
+    # we have two messages in project, so they must be in this order =\
+    'bumerang.apps.messages',
+    'django.contrib.messages',
+
     # internal
     'bumerang.apps.accounts',
     'bumerang.apps.news',
@@ -144,7 +147,6 @@ INSTALLED_APPS = [
     'bumerang.apps.video.converting',
     'bumerang.apps.photo.albums',
     'bumerang.apps.utils',
-    'bumerang.apps.messages',
     'bumerang.apps.events'
 ]
 
