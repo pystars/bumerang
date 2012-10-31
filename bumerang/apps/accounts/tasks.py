@@ -71,13 +71,13 @@ def convert_photos(model_instance):
 
 
 class ConvertTeamAndTeachers(Task):
+    def run(self):
+        teammates = Teammate.objects.all()
 
-    teammates = Teammate.objects.all()
+        for teammate in teammates:
+            convert_photos(teammate)
 
-    for teammate in teammates:
-        convert_photos(teammate)
+        teachers = Teacher.objects.all()
 
-    teachers = Teacher.objects.all()
-
-    for teacher in teachers:
-        convert_photos(teacher)
+        for teacher in teachers:
+            convert_photos(teacher)
