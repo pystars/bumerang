@@ -2,7 +2,7 @@
 <div class="announs-items">
     <form name="videos" action="{% url videos-delete %}" method="post">
         {% for video in videos %}
-            <article class="announ-item video" id="video-item-{{ video.id }}" data-video-id="{{ video.id }}" data-video-album="{{ video.album_id|default:'' }}">
+            <article class="announ-item video" id="video-item-{{ video.id }}" data-item-id="{{ video.id }}" data-video-album="{{ video.album_id|default:'' }}">
                 <div class="ai-img d-sh">
                     {% if video.status == video.READY %}
                     <a href="{% url video-detail video.id %}">
@@ -42,14 +42,14 @@
                                     <span class="b-dropdown__popup__i__i">
                                         <span class="b-dropdown__arr"></span>
                                         {% if not video.is_protected %}
-                                            <a href="#" class="b-dropdown__link" id="video-delete-{{ video.id }}" data-video-id="{{ video.id }}">Удалить</a>
+                                            <a href="#" class="b-dropdown__link video-menu-delete-link" id="video-delete-{{ video.id }}" data-item-id="{{ video.id }}">Удалить</a>
                                         {% else %}
                                             <span class="b-dropdown__link disabled">Удаление невозможно</span>
                                         {% endif %}
                                         <a href="{% url video-edit video.id %}" class="b-dropdown__link {% if not videoalbum %}last{% endif %}">Редактировать</a>
-                                        <a href="#" class="b-dropdown__link" id="move-video-{{ video.id }}" data-video-id="{{ video.id }}">Переместить...</a>
+                                        <a href="#" class="b-dropdown__link video-menu-move-link" id="move-video-{{ video.id }}" data-video-id="{{ video.id }}" data-item-id="{{ video.id }}">Переместить...</a>
                                         {% if videoalbum %}
-                                            <a href="#" class="b-dropdown__link last" id="make-cover-{{ video.id }}" data-album-id="{{ videoalbum.id }}" data-video-id="{{ video.id }}">Сделать обложкой</a>
+                                            <a href="#" class="b-dropdown__link last" id="make-cover-{{ video.id }}" data-album-id="{{ videoalbum.id }}" data-video-id="{{ video.id }}" data-item-id="{{ video.id }}">Сделать обложкой</a>
                                         {% endif %}
                                     </span>
                                 </span>

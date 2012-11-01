@@ -43,11 +43,14 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView,
         ids = json.loads(form.cleaned_data['ids'])
         ids = [i for i in ids if i]
         objects = self.get_queryset(id__in=ids)
-        if objects.count() > 1:
-            msg = u'{0} успешно удалены'.format(
-                self.model._meta.verbose_name_plural)
-        else:
-            msg = u'{0} успешно удален'.format(self.model._meta.verbose_name)
+#        if objects.count() > 1:
+#            msg = u'{0} успешно удалены'.format(
+#                self.model._meta.verbose_name_plural)
+#        else:
+#            msg = u'{0} успешно удален'.format(self.model._meta.verbose_name)
+        # TODO: Придумать сообщение покошернее
+        msg = u'Удалено объектов: {0}'.format(len(ids))
+
         for object in objects.all():
             object.delete()
         return super(ObjectsDeleteView, self).render_to_response(message=msg)
