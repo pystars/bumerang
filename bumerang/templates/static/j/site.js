@@ -331,6 +331,8 @@ function invokeMoveDialog(callback) {
  *
  ******************************************************************************/
 
+// TODO: Вырезать старый функционал работы с фото и видео
+
 var VideoAlbumsView = Backbone.View.extend({
 
     el: 'body',

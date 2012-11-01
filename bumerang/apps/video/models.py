@@ -168,6 +168,10 @@ class Video(models.Model, TitleUnicode):
             #TODO: notice user about it
             pass
 
+        except AttributeError:
+            # so, we have not S3 :(
+            pass
+
     def is_protected(self):
         return (self.participantvideo_set.exists()
             or self.playlistitem_set.exists())
