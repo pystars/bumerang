@@ -172,7 +172,7 @@ function confirmMoveModalDialog() {
                 var plural_form = ru_pluralize(count, plurals);
                 return 'Всего {0} {1}'.format(count, plural_form);
             } else {
-                return 'Нет ни одной фотографии';
+                return 'Нет ни одного видео';
             }
         };
 
@@ -214,9 +214,9 @@ function confirmMoveModalDialog() {
 
         var getDeleteMsg = function() {
             if (getItems().length > 1) {
-                return 'Вы действительно хотите удалить выбранные фотографии?';
+                return 'Вы действительно хотите удалить выбранные видео?';
             } else {
-                return 'Вы действительно хотите удалить выбранную фотографию?';
+                return 'Вы действительно хотите удалить выбранное видео?';
             }
         };
 
@@ -254,9 +254,9 @@ function confirmMoveModalDialog() {
                     })
                         .success(function(data) {
                             if (getItems().length > 1) {
-                                var msg = 'Фотографии удалены';
+                                var msg = 'Видео удалены';
                             } else {
-                                var msg = 'Фотография удалена';
+                                var msg = 'Видео удалено';
                             }
                             hideItems();
                             deleteItems();
@@ -327,9 +327,9 @@ function confirmMoveModalDialog() {
                     })
                         .success(function(data) {
                             if (getItems().length > 1) {
-                                var msg = 'Фотографии перемещены';
+                                var msg = 'Видео перемещены';
                             } else {
-                                var msg = 'Фотография перемещена';
+                                var msg = 'Видео перемещено';
                             }
                             hideItems();
                             deleteItems();
@@ -360,9 +360,9 @@ function confirmMoveModalDialog() {
                     })
                         .success(function(data) {
                             if (count > 1) {
-                                var msg = 'Фотографии перемещены';
+                                var msg = 'Видео перемещены';
                             } else {
-                                var msg = 'Фотография перемещена';
+                                var msg = 'Видео перемещено';
                             }
                             hideItems();
                             deleteItems();
@@ -526,9 +526,9 @@ function confirmMoveModalDialog() {
                     })
                         .success(function(data) {
                             if (getItems().length > 1) {
-                                var msg = 'Фотографии удалены';
+                                var msg = 'Видео удалены';
                             } else {
-                                var msg = 'Фотография удалена';
+                                var msg = 'Видео удалено';
                             }
                             hideItems();
                             deleteItems();
@@ -560,9 +560,9 @@ function confirmMoveModalDialog() {
                     })
                         .success(function(data) {
                             if (getItems().length > 1) {
-                                var msg = 'Фотографии удалены';
+                                var msg = 'Видео удалены';
                             } else {
-                                var msg = 'Фотография удалена';
+                                var msg = 'Видео удалено';
                             }
                             hideItems();
                             deleteItems();
