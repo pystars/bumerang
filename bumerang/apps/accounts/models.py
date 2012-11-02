@@ -175,9 +175,11 @@ class Service(models.Model):
 
 class Teammate(FileModelMixin, models.Model):
     photo = models.ImageField(u'Фотография', storage=media_storage,
-        upload_to='teams')
+        upload_to=get_path('teammates/{0}/full{1}', pk_dir_name=True))
     photo_min = models.ImageField(u'Миниатюрная фотография',
-        storage=media_storage, upload_to='teams', blank=True)
+        storage=media_storage,
+        upload_to=get_path('teammates/{0}/min{1}', pk_dir_name=True),
+        blank=True)
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
@@ -188,9 +190,11 @@ class Teammate(FileModelMixin, models.Model):
 
 class Teacher(FileModelMixin, models.Model):
     photo = models.ImageField(u'Фотография', storage=media_storage,
-        upload_to='teachers')
+        upload_to=get_path('teachers/{0}/full{1}', pk_dir_name=True))
     photo_min = models.ImageField(u'Миниатюрная фотография',
-        storage=media_storage, upload_to='teachers', blank=True)
+        storage=media_storage,
+        upload_to=get_path('teachers/{0}/min{1}', pk_dir_name=True),
+        blank=True)
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
