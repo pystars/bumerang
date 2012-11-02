@@ -472,8 +472,7 @@ class FormsetUpdateView(UpdateView):
                     model_instance.photo.delete()
                     # and saving new processed original image
                     model_instance.photo.save(
-                        '{oid}-{id}-full.jpg'.format(
-                            oid=model_instance.owner.id,
+                        '{id}-full.jpg'.format(
                             id=model_instance.id
                         ),
                         ContentFile(memory_file.read())
@@ -492,8 +491,7 @@ class FormsetUpdateView(UpdateView):
                     memory_file.seek(0)
 
                     model_instance.photo_min.save(
-                        '{oid}-{id}-min.jpg'.format(
-                            oid=model_instance.owner.id,
+                        '{id}-min.jpg'.format(
                             id=model_instance.id
                         ),
                         ContentFile(memory_file.read())
