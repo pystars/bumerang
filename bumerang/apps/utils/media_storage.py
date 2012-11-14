@@ -7,13 +7,13 @@ and that you have python-dateutils==1.5 installed
 from __future__ import absolute_import
 
 from django.conf import settings
-
 from boto.utils import parse_ts
-from django.core.files.storage import get_storage_class
 from storages.backends.s3boto import S3BotoStorage
+from storages.backends.overwrite import OverwriteStorage
+from filebrowser.storage import S3BotoStorageMixin, FileSystemStorageMixin
 
 
-class CachedS3BotoStorage(S3BotoStorage):
+class CachedS3BotoStorage(S3BotoStorage, S3BotoStorageMixin):
     """
     S3 storage backend that saves the files locally, too.
     """
@@ -35,10 +35,27 @@ class CachedS3BotoStorage(S3BotoStorage):
             # Parse the last_modified string to a local datetime object.
         return parse_ts(entry.last_modified)
 
+    def isdir(self, name):
+        if not name: # Empty name is a directory
+            return True
+        name = self._encode_name(self._normalize_name(self._clean_name(name)))
+        dirlist = self.bucket.get_all_keys(max_keys=1, prefix=name + '/')
+        # Check whether the iterator is empty
+        for item in dirlist:
+            return True
+        return False
+
+    def makedirs(self, name):
+        key = self.bucket.new_key(self._encode_name(name))
+        key.set_contents_from_string('', reduced_redundancy=True)
+
+
+class LocalStorage(OverwriteStorage, FileSystemStorageMixin):
+    pass
+
 
 if settings.LOCALHOST:
-    from storages.backends.overwrite import OverwriteStorage
-    media_storage = OverwriteStorage()
+    media_storage = LocalStorage()
 else:
     media_storage = CachedS3BotoStorage(
         bucket=settings.AWS_MEDIA_STORAGE_BUCKET_NAME,

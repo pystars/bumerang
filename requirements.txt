@@ -2,16 +2,16 @@ django==1.4.1
 Pillow
 South
 django-debug-toolbar
-django-filebrowser==3.4.0
+django-filebrowser==3.5.1
 django-mptt
 django-sitetree==0.6
-django-tinymce==1.5.1b2
+django-tinymce
 wsgiref==0.1.2
 django-extensions
 werkzeug
 django-ratings==0.3.6
 fabric
-boto
+boto==2.6.0
 django-storages
 ipython
 mysql-python
@@ -26,3 +26,4 @@ simplejson
 johnny-cache
 coverage >= 3.0
 django-coverage
+django-grappelli==2.4.3
