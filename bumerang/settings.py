@@ -176,7 +176,7 @@ LOGGING = {
         }
 }
 
-TINYMCE_JS_URL = "/static/tiny_mce/tiny_mce.js"
+TINYMCE_JS_URL = "http://static.probumerang.tv/tiny_mce/tiny_mce.js"
 TINYMCE_JS_ROOT = STATIC_ROOT + "/tiny_mce"
 TINYMCE_SPELLCHECKER=False
 TINYMCE_PLUGINS = [
