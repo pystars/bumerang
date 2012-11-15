@@ -130,7 +130,7 @@ INSTALLED_APPS = [
     'storages',
     'djkombu',
     'django_ses',
-    'django_wysiwyg',
+#    'django_wysiwyg',
     'django_extensions',
     'django_coverage',
     # we have two messages in project, so they must be in this order =\
