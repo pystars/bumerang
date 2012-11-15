@@ -21,7 +21,6 @@ class CustomFlatpageForm(FlatpageForm):
 
 class FlatPageAdmin(FlatPageAdminOld):
     form = CustomFlatpageForm
-    change_form_template = 'flatpages/admin/change_form.html'
 
 
 # We have to unregister it, and then reregister
