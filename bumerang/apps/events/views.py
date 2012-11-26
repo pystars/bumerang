@@ -638,6 +638,10 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         notify_error(request, u'При сохранении произошла ошибка')
         return self.render_to_response(self.get_context_data(formset=formset))
 
+    def get_model_formset(self):
+        return modelformset_factory(self.formset_model, self.formset_form_class,
+            extra=self.formset_extra)
+
 
 class ParticipantListView(SortingMixin, ListView):
     model = Participant
