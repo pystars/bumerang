@@ -319,4 +319,4 @@ class BumerSettings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
 
 
 class AdminSettings(LocalSettingsMixin, CommonSettings):
-    DEBUG = True
+    pass
