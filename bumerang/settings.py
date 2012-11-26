@@ -294,8 +294,8 @@ class BumerSettings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
     @property
     def INSTALLED_APPS(self):
         if self.DEBUG:
-            return super(Settings, self).INSTALLED_APPS + ['debug_toolbar']
-        return super(Settings, self).INSTALLED_APPS
+            return super(BumerSettings, self).INSTALLED_APPS + ['debug_toolbar']
+        return super(BumerSettings, self).INSTALLED_APPS
 
     DEBUG_TOOLBAR_PANELS = (
         'debug_toolbar.panels.version.VersionDebugPanel',
