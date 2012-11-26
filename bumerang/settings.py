@@ -185,7 +185,7 @@ class CommonSettings(Settings):
             }
     }
 
-    TINYMCE_JS_URL = "http://www.probumerang.tv/static/tiny_mce/tiny_mce.js"
+    TINYMCE_JS_URL = "/static/tiny_mce/tiny_mce.js"
     TINYMCE_JS_ROOT = STATIC_ROOT + "/tiny_mce"
     TINYMCE_SPELLCHECKER=False
     TINYMCE_PLUGINS = [
@@ -202,15 +202,14 @@ class CommonSettings(Settings):
         'wordcount'
     ]
 
-    TINYMCE_DEFAULT_CONFIG={
+    TINYMCE_DEFAULT_CONFIG = {
         'theme' : "advanced",
         'plugins' : ",".join(TINYMCE_PLUGINS), # django-cms
         'language' : 'ru',
-        'theme_advanced_buttons1' : "bullist,numlist,|,link,unlink,anchor,image",
-        'theme_advanced_buttons3' : "table,|,delete_row,delete_table,|,row_after,row_before",
-        'theme_advanced_buttons4' : "styleselect,formatselect,fontselect,fontsizeselect",
+        'theme_advanced_buttons1' : "bullist,numlist,|,link,unlink,anchor,image,code,removeformat",
         'theme_advanced_buttons2' : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,undo,redo,|,link,unlink,cleanup",
-#        'theme_advanced_buttons4' : "",
+        'theme_advanced_buttons3' : "table,|,delete_row,delete_table,|,row_after,row_before,hr,|,bold,italic,underline",
+        'theme_advanced_buttons4' : "styleselect,formatselect,fontselect,fontsizeselect,|,forecolor,backcolor,forecolorpicker,backcolorpicker",
         'theme_advanced_toolbar_location' : "top",
         'theme_advanced_toolbar_align' : "left",
         'theme_advanced_statusbar_location' : "bottom",
