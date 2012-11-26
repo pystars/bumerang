@@ -2,11 +2,12 @@
 import os
 
 import djcelery
+from configurations import Settings
 
 djcelery.setup_loader()
 
 
-class CommonSettings:
+class CommonSettings(Settings):
 
     DEBUG = False
     DATABASES = {
@@ -288,7 +289,7 @@ except ImportError:
     class LocalSettingsMixin(object):
         pass
 
-class Settings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
+class BumerSettings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
 
     @property
     def INSTALLED_APPS(self):

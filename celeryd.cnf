@@ -19,4 +19,4 @@ CELERYD_GROUP="ubuntu"
 CELERY_CONFIG_MODULE="bumerang.settings"
 
 export DJANGO_SETTINGS_MODULE="bumerang.settings"
-export DJANGO_CONFIGURATION="Settings"
+export DJANGO_CONFIGURATION="BumerSettings"
