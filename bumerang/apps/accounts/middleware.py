@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#from django.conf import settings
-import bumerang.settings as settings
+from django.conf import settings
+#import bumerang.settings as settings
 from datetime import timedelta, date
 
 

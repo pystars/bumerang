@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.template import loader, Context
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 
-from bumerang.settings import EMAIL_NOREPLY_ADDR
+#from bumerang.settings import EMAIL_NOREPLY_ADDR
 
 def send_single_email(template, context, subject, from_email, to_list):
     tpl = loader.get_template(template)
@@ -22,7 +23,7 @@ def send_activation_link(link, to_addr):
         'link': link,
     }
     send_single_email("email/activation_email.html", ctx, ctx['subject'],
-                      EMAIL_NOREPLY_ADDR, [to_addr])
+        settings.EMAIL_NOREPLY_ADDR, [to_addr])
 
 def send_activation_success(to_addr):
     ctx = {
@@ -30,7 +31,7 @@ def send_activation_success(to_addr):
         'header': u'Регистрация успешно подтверждена.'
         }
     send_single_email("email/activation_success.html", ctx, ctx['subject'],
-                      EMAIL_NOREPLY_ADDR, [to_addr])
+        settings.EMAIL_NOREPLY_ADDR, [to_addr])
 
 def send_new_password(password, to_addr):
     ctx = {
@@ -39,4 +40,4 @@ def send_new_password(password, to_addr):
         'password': password
     }
     send_single_email("email/new_password.html", ctx, ctx['subject'],
-                      EMAIL_NOREPLY_ADDR, [to_addr])
+        settings.EMAIL_NOREPLY_ADDR, [to_addr])

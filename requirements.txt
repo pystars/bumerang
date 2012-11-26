@@ -1,4 +1,4 @@
-django==1.4.1
+django==1.4.2
 Pillow
 South
 django-debug-toolbar
@@ -19,10 +19,10 @@ git+git://github.com/hmarr/django-ses.git
 pydkim
 pytz
 dnspython
-django-kombu==0.9.4
 django-celery-with-redis
 simplejson
 johnny-cache
 coverage >= 3.0
 django-coverage
 django-grappelli==2.4.3
+django-configurations

@@ -54,8 +54,10 @@ chmod -R 750 /var/log/uwsgi
 chown -R ubuntu:ubuntu /home/ubuntu/bumerang
 # on web we need add this
 ln -s /home/ubuntu/bumerang/nginx.conf /etc/nginx/sites-enabled/bumerang.conf
+ln -s /home/ubuntu/bumerang/bumerang.ini /etc/uwsgi/bunerang.ini
+ln -s /home/ubuntu/bumerang/bumerang_admin.ini /etc/uwsgi/bunerang_admin.ini
 service nginx restart
-uwsgi --ini /home/ubuntu/bumerang/uwsgi.ini
+uwsgi --emperor /etc/uwsgi
 # on converter we need add this
 ln -s /home/ubuntu/bumerang/celery.sh /etc/init.d/celeryd
 ln -s /home/ubuntu/bumerang/celeryd.cnf /etc/default/celeryd
