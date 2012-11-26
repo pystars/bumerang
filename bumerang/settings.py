@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 
-from cbsettings import DjangoDefaults
 import djcelery
 
 djcelery.setup_loader()
 
 
-class CommonSettings(DjangoDefaults):
+class CommonSettings:
 
     DEBUG = False
     DATABASES = {
