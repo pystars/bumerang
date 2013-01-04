@@ -6,6 +6,7 @@ from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.video.models import Video
 
+
 def video_album_preview_upload_to(instance, filename):
     return 'previews/video-album/{0}/{1}'.format(instance.owner.slug, filename)
 
@@ -14,7 +15,8 @@ class VideoAlbum(models.Model, TitleUnicode):
     owner = models.ForeignKey(User)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание', **nullable)
-    image = models.ImageField(u'Обложка', storage=media_storage,
+    image = models.ImageField(
+        u'Обложка', storage=media_storage,
         upload_to=video_album_preview_upload_to, **nullable)
     cover = models.ForeignKey(Video, on_delete=models.SET_NULL, **nullable)
 
@@ -26,5 +28,6 @@ class VideoAlbum(models.Model, TitleUnicode):
         if self.image:
             return self.image
         elif self.cover:
-            return self.cover.preview().thumbnail
+            if self.cover.preview():
+                return self.cover.preview().thumbnail
         return None

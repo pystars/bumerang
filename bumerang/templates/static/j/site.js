@@ -223,24 +223,6 @@ function invokeConfirmDialog(text, callback, scope) {
         cancelButton.trigger('click');
     });
 
-
-/*
-    okButton.bind('click', function(e) {
-        console.log(s1.selected_photos);
-        e.preventDefault();
-        callback();
-        cancelButton.trigger('click');
-    });
-*/
-
-//    var fc = function(e, scope) {
-//        e.preventDefault();
-//        console.log(scope);
-//        callback(scope);
-//    }
-//
-//    okButton.click(fc, scope);
-
     popup.css('margin-left', - popup.width() / 2 + 'px');
     popup.css("top", (($(window).height() - popup.outerHeight()) / 2) + $(window).scrollTop() + "px");
     $('#tint').show();
@@ -324,839 +306,135 @@ function invokeMoveDialog(callback) {
 
 }
 
-/******************************************************************************
- *
- * Логика работы с видеоальбомами. Реализовано на библиотеке Backbone.js.
- * Так же исользован функционал библиотеки Underscore.js.
- *
- ******************************************************************************/
+/*
+ * Confirm dialog handler
+ * */
 
-// TODO: Вырезать старый функционал работы с фото и видео
+function confirmModalDialog(selector, message) {
+    var deferred_result = $.Deferred();
 
-var VideoAlbumsView = Backbone.View.extend({
+    var dialog = $(selector);
+    var dialog_id = dialog.attr('id');
 
-    el: 'body',
+    var btnCancel = $('#{0} .confirm-modal-cancel'.format(dialog_id));
+    var btnConfirm = $('#{0} .confirm-modal-confirm'.format(dialog_id));
 
-    albums: [],
-    selected_albums: [],
-    selected_videos: [],
+    $('#{0} #dialog-message'.format(dialog_id)).text(message);
 
-    events: {
-        'click figure[id*=videoalbum-item-]': 'clickAlbumCheckbox',
-        'click article[id*=video-item-]': 'clickVideoCheckbox',
+    dialog.find('*').unbind();
 
-        'click #videoalbum-delete-button': 'clickAlbumDeleteButton',
-        'click #video-delete-button': 'clickVideoDeleteButton',
-        'click a[id*=videoalbum-delete-]': 'clickSingleAlbumDelete',
-        'click a[id*=video-delete-]': 'clickSingleVideoDelete',
-
-        'click #video-move-button': 'clickVideoMoveButton',
-        'click a[id*=move-video-]': 'clickSingleVideoMove',
-
-        'click a[id*=make-cover-]': 'clickMakeCover'
-    },
-
-    initialize: function() {
-        this.updatePage();
-
-        $(document).on('click', '.confirm-popup-cancel', function(e) {
-            e.preventDefault();
-        });
-    },
-
-    clickAlbumCheckbox: function(e) {
-        var el = $(e.target || e.srcElement);
-        var videoAlbumId = parseInt(el.attr('data-videoalbum-id'));
-
-        if (el.is(':checked')) {
-            this.selected_albums.push(videoAlbumId);
-        } else {
-            this.selected_albums = _.without(this.selected_albums, videoAlbumId);
-        }
-
-        this.updatePage();
-    },
-
-    clickVideoCheckbox: function(e) {
-        var el = $(e.target || e.srcElement);
-        var videoId = parseInt(el.attr('data-video-id'));
-
-        if (el.is(':checked')) {
-            this.selected_videos.push(videoId);
-        } else {
-            // Delete ID from array if checkbox unchecked
-            this.selected_videos = _.without(this.selected_videos, videoId);
-        }
-
-        this.updatePage();
-    },
-
-    clickMakeCover: function(e) {
+    btnCancel.bind('click', function(e) {
         e.preventDefault();
+        close_n_hide();
+        $(window).unbind('resize');
+        deferred_result.reject();
+    });
 
-        var el = e.target || e.srcElement;
-
-        var album_id = el.getAttribute('data-album-id');
-        var video_id = el.getAttribute('data-video-id');
-
-        $.ajax({
-            type: 'post',
-            url: '/video/album'+album_id+'/set-cover/',
-            data: {
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                cover: video_id
-            },
-            success: function(data) {
-                if (data['result']) {show_notification('success', 'Обложка успешно изменена');}
-            },
-            error: function(data) {
-                if (!data['result']) {show_notification('error', 'Невозможно изменить обложку');}
-            }
-        });
-    },
-
-    clickVideoMoveButton: function(e) {
+    btnConfirm.bind('click', function(e) {
         e.preventDefault();
+        close_n_hide();
+        deferred_result.resolve();
+    });
 
-        if (this.selected_albums.length > 1) {
-            var msg = 'Вы действительно хотите переместить выбранные видеоролики?';
-        } else {
-            var msg = 'Вы действительно хотите переместить выбранный видеоролик?';
-        }
+    dialog.on('click', '.close-btn', function() {
+        btnCancel.click();
+    });
 
-        var view = this;
-        invokeMoveDialog(function(id) {
-            if (id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/video/video-move/',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        video_id: JSON.stringify(view.selected_videos),
-                        album_id: id
-                    },
-                    success: function(response) {
-                        show_notification('success', response['message']);
+    $(document).on('keydown', function(e) {
+        if (e.which == 27) btnCancel.click();
+    });
 
-                        view.hideVideos();
-                        view.showVideosCount();
-                        view.selected_videos = [];
-                        view.updatePage();
-                    }
-                });
-            }
-
+    var resize = function() {
+        var w = $(window);
+        dialog.css({
+            'margin-left': (w.width()-dialog.outerWidth())/2+'px',
+            'top': ((w.height()-dialog.outerHeight())/2)+ w.scrollTop()+"px"
         });
-    },
+    };
 
-    clickSingleVideoMove: function(e) {
+    var show = function() {
+        $('#tint').show();
+        dialog.resize();
+        dialog.show();
+    };
+
+    var close_n_hide = function() {
+        dialog.hide();
+        $('#tint').hide();
+    };
+
+    $(window).resize(function(e) {
+        resize();
+    });
+
+    show();
+
+    return deferred_result;
+}
+
+function confirmMoveModalDialog() {
+    var deferred_result = $.Deferred();
+
+    var dialog = $('#popup-move');
+    var dialog_id = dialog.attr('id');
+
+    var btnClose = dialog.find('.close-btn');
+    var btnConfirm = dialog.find('.confirm-modal-confirm');
+
+    dialog.find('*').unbind();
+
+    btnClose.bind('click', function(e) {
         e.preventDefault();
-        var el = $(e.target || e.srcElement);
-        var videoId = parseInt(el.attr('data-video-id'));
-        this.selected_videos.push(videoId);
+        close_n_hide();
+        $(window).unbind('resize');
+        deferred_result.reject();
+    });
 
-        $(".video input:checkbox[id=checkbox-"+videoId+"]").attr("checked", "checked");
-        $(".video input:checkbox[id=checkbox-"+videoId+"]").parents('.announ-item').addClass('checked');
+    dialog.on('click', 'input:radio:checked', function(e) {
+        btnConfirm.removeClass('disabled');
+    });
 
-        this.updatePage();
-
-        if (this.selected_videos.length > 1) {
-            var msg = 'Вы действительно хотите переместить выбранные видеоролики?';
-        } else {
-            var msg = 'Вы действительно хотите переместить выбранный видеоролик?';
-        }
-
-        var view = this;
-        invokeMoveDialog(function(id) {
-            if (id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/video/video-move/',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        video_id: JSON.stringify(view.selected_videos),
-                        album_id: id
-                    },
-                    success: function(response) {
-                        show_notification('success', response['message']);
-
-                        view.hideVideos();
-                        view.showVideosCount();
-                        view.selected_videos = [];
-                        view.updatePage();
-                    }
-                });
-            }
-
-        });
-    },
-
-    clickAlbumDeleteButton: function(e) {
+    btnConfirm.bind('click', function(e) {
         e.preventDefault();
-
-        if (this.selected_albums.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные видеольбомы?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранный видеольбом?';
+        var id = dialog.find('input:radio:checked').attr('data-album-to-move');
+        if (id) {
+            close_n_hide();
+            deferred_result.resolve(id);
         }
+    });
 
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/video/albums-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_albums)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
+    $(document).on('keydown', function(e) {
+        if (e.which == 27) btnClose.click();
+    });
 
-                    view.hideAlbums();
-                    view.showAlbumsCount();
-                    view.selected_albums = [];
-                    view.updatePage();
-                }
-            });
+    var resize = function() {
+        var w = $(window);
+        dialog.css({
+            'margin-left': (w.width()-dialog.outerWidth())/2+'px',
+            'top': ((w.height()-dialog.outerHeight())/2)+ w.scrollTop()+"px"
         });
-    },
+    };
 
-    clickSingleAlbumDelete: function(e) {
-        e.preventDefault();
-        var el = $(e.target || e.srcElement);
-        var videoAlbumId = parseInt(el.attr('data-videoalbum-id'));
-        this.selected_albums.push(videoAlbumId);
-        this.selected_albums = _.uniq(this.selected_albums);
+    var show = function() {
+        $('#tint').show();
+        dialog.resize();
+        dialog.show();
+    };
 
-        var msg = 'Вы действительно хотите удалить выбранный видеольбом?';
+    var close_n_hide = function() {
+        dialog.hide();
+        $('#tint').hide();
+    };
 
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/video/albums-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_albums)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
+    $(window).resize(function(e) {
+        resize();
+    });
 
-                    view.hideAlbums();
-                    view.showAlbumsCount();
-                    view.selected_albums = [];
-                    view.updatePage();
-                }
-            });
-        });
-    },
+    show();
 
-    clickVideoDeleteButton: function(e) {
-        e.preventDefault();
+    return deferred_result;
 
-        if (this.selected_videos.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные видеоролики?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
-        }
-
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/video/videos-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_videos)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
-
-                    view.hideVideos();
-                    view.showVideosCount();
-                    view.selected_videos = [];
-                    view.updatePage();
-                }
-            });
-        });
-    },
-
-    clickSingleVideoDelete: function(e) {
-        e.preventDefault();
-        var el = $(e.target || e.srcElement);
-        var videoId = parseInt(el.attr('data-video-id'));
-        this.selected_videos.push(videoId);
-        this.selected_videos = _.uniq(this.selected_videos);
-
-        var msg = 'Вы действительно хотите удалить выбранный видеоролик?';
-
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/video/videos-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_videos)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
-
-                    view.hideVideos();
-                    view.showVideosCount();
-                    view.selected_videos = [];
-                    view.updatePage();
-                }
-            });
-        });
-    },
-
-    hideAlbums: function() {
-        var view = this;
-        this.selected_albums.forEach(function(e, i, a) {
-            var el = $('#videoalbum-item-' + e);
-            el.hide(function() {
-                el.remove();
-                view.updatePage();
-            });
-        });
-    },
-
-    hideVideos: function() {
-        var view = this;
-        this.selected_videos.forEach(function(e, i, a) {
-            var el = $('#video-item-' + e);
-            el.hide(function() {
-                el.remove();
-                view.updatePage();
-            });
-        });
-    },
-
-    hideAlbumDeleteButton: function() {
-        $('#videoalbum-delete-button').hide(300, 'linear');
-    },
-
-    showAlbumDeleteButton: function() {
-        $('#videoalbum-delete-button').show(300, 'linear');
-    },
-
-    hideVideoDeleteButton: function() {
-        $('#video-delete-button').hide(300, 'linear');
-    },
-
-    showVideoDeleteButton: function() {
-        $('#video-delete-button').show(300, 'linear');
-    },
-
-    hideVideoMoveButton: function() {
-        $('#video-move-button').hide(300, 'linear');
-    },
-
-    showVideoMoveButton: function() {
-        $('#video-move-button').show(300, 'linear');
-    },
-
-    getAlbumsCount: function() {
-        return $('form .videoalbum:visible').length;
-    },
-
-    getVideosCount: function() {
-        return $('form .video:visible').length;
-    },
-
-    showAlbumsCount: function() {
-        var count = this.getAlbumsCount();
-        if (count != 0) {
-            $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#videoalbums-plurals').text()));
-        } else {
-            $('#albums-count').text('Нет ни одного альбома');
-        };
-    },
-
-    showVideosCount: function() {
-        var count = this.getVideosCount();
-        if (count != 0) {
-            $('#videos-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#videos-plurals').text()));
-        } else {
-            $('#videos-count').text('Нет ни одного видеоролика');
-        };
-    },
-
-    /*
-     * Функция обновления страницы. Перерисовывает контролы
-     * в соответствии с логикой работы представления
-     */
-    updatePage: function() {
-        var view = this;
-
-        view.albums = [];
-        $('figure[id*=videoalbum-item-]:visible').each(function() {
-            view.albums.push(this.getAttribute('data-videoalbum-id'));
-        });
-
-        if (this.selected_albums.length) {
-            this.showAlbumDeleteButton();
-        } else {
-            this.hideAlbumDeleteButton();
-        }
-
-        if (this.selected_videos.length) {
-            this.showVideoDeleteButton();
-            this.showVideoMoveButton();
-        } else {
-            this.hideVideoDeleteButton();
-            this.hideVideoMoveButton();
-        }
-
-        this.showAlbumsCount();
-
-        if (!this.getAlbumsCount() && !$('#videoalbum-empty-block').is(':visible')) {
-            var empty_block_tpl = $('#videoalbum-empty-block-tpl');
-            $('#videoalbums-container').append(empty_block_tpl);
-            empty_block_tpl.show(300, 'linear')
-        }
-
-        if (!this.getVideosCount() && !$('#video-empty-block').is(':visible')) {
-            var empty_block_tpl = $('#video-empty-block-tpl');
-            $('#videos-container').append(empty_block_tpl);
-            empty_block_tpl.show(300, 'linear')
-        }
-    }
-
-});
-
-
-var PhotoAlbumsView = Backbone.View.extend({
-
-    el: 'body',
-
-    albums: [],
-    selected_albums: [],
-    selected_photos: [],
-
-    events: {
-        'click figure[id*=photoalbums-item-]': 'clickAlbumCheckbox',
-        'click article[id*=photo-item-]': 'clickPhotoCheckbox',
-
-        'click #photoalbum-delete-button': 'clickAlbumDeleteButton',
-        'click #photo-delete-button': 'clickPhotoDeleteButton',
-        'click a[id*=photoalbum-delete-]': 'clickSingleAlbumDelete',
-        'click a[id*=photo-del-]': 'clickSinglePhotoDelete',
-
-        'click #photo-move-button': 'clickPhotoMoveButton',
-        'click a[id*=move-photo-]': 'clickSinglePhotoMove',
-
-        'click a[id*=make-cover-]': 'clickMakeCover'
-    },
-
-    initialize: function() {
-        this.updatePage();
-
-        var view = this;
-        $(document).on('click', '.confirm-popup-cancel', function(e) {
-            e.preventDefault();
-            //view.selected_photos = [];
-
-//            $('.announ-item.photo').each(function() {
-//                var el = $(this);
-//                el.removeClass('checked');
-//                el.find('input:checkbox').attr('checked', false);
-//                view.updatePage();
-//            });
-
-        });
-    },
-
-    clickAlbumCheckbox: function(e) {
-        var el = $(e.target || e.srcElement);
-        var photoAlbumId = parseInt(el.attr('data-photoalbum-id'));
-
-        if (el.is(':checked')) {
-            this.selected_albums.push(photoAlbumId);
-        } else {
-            this.selected_albums = _.without(this.selected_albums, photoAlbumId);
-        }
-
-        this.updatePage();
-    },
-
-    clickPhotoCheckbox: function(e) {
-        var el = $(e.target || e.srcElement);
-        var photoId = parseInt(el.attr('data-photo-id'));
-
-        if (el.is(':checked')) {
-            this.selected_photos.push(photoId);
-        } else {
-            // Delete ID from array if checkbox unchecked
-            this.selected_photos = _.without(this.selected_photos, photoId);
-        }
-
-        this.updatePage();
-    },
-
-    hideAlbums: function() {
-        var view = this;
-        this.selected_albums.forEach(function(e, i) {
-            var el = $('#photoalbums-item-' + e);
-            el.hide(function() {
-                el.remove();
-                view.updatePage();
-            });
-        });
-    },
-
-    clickAlbumDeleteButton: function(e) {
-        e.preventDefault();
-
-        if (this.selected_albums.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные фотоальбомы?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
-        }
-
-        console.log(this.selected_albums);
-
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/photo/albums-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_albums)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
-
-                    view.hideAlbums();
-                    view.showAlbumsCount();
-                    view.selected_albums = [];
-                    view.updatePage();
-                }
-            });
-        });
-    },
-
-    clickSingleAlbumDelete: function(e) {
-        e.preventDefault();
-        var el = $(e.target || e.srcElement);
-        var photoAlbumId = parseInt(el.attr('data-photoalbum-id'));
-        this.selected_albums.push(photoAlbumId);
-        this.selected_albums = _.uniq(this.selected_albums);
-
-        var msg = 'Вы действительно хотите удалить выбранный фотоальбом?';
-
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/photo/albums-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_albums)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
-
-                    view.hideAlbums();
-                    view.showAlbumsCount();
-                    view.selected_albums = [];
-                    view.updatePage();
-                }
-            });
-        });
-    },
-
-    clickPhotoDeleteButton: function(e) {
-        e.preventDefault();
-
-        if (this.selected_photos.length > 1) {
-            var msg = 'Вы действительно хотите удалить выбранные фотографии?';
-        } else {
-            var msg = 'Вы действительно хотите удалить выбранную фотографию?';
-        }
-
-        var view = this;
-        invokeConfirmDialog(msg, function() {
-            $.ajax({
-                type: 'POST',
-                url: '/photo/photos-delete/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_photos)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
-
-                    view.hidePhotos();
-                    //view.showPhotosCount();
-                    view.selected_photos = [];
-                    view.updatePage();
-                }
-            });
-        });
-    },
-
-    clickSinglePhotoDelete: function(e) {
-        e.preventDefault();
-
-        var msg = 'Вы действительно хотите удалить выбранную фотографию?';
-
-        var confirmDeleteDfr = invConfDlg(msg);
-
-        var view = this;
-        confirmDeleteDfr.done(function() {
-            var el = $(e.target || e.srcElement);
-            var photoId = parseInt(el.attr('data-photo-id'));
-            view.selected_photos.push(photoId);
-            view.selected_photos = _.uniq(view.selected_photos);
-            //view.hidePhotos();
-
-            $.ajax({
-                type: 'POST',
-                url: '/photo/photos-delete1/',
-                data: {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    ids: JSON.stringify(view.selected_photos)
-                },
-                success: function(response) {
-                    show_notification('success', response['message']);
-
-                    view.hidePhotos();
-                    view.showPhotosCount();
-                    view.selected_photos = [];
-                    view.updatePage();
-                }
-            });
-        });
-
-        confirmDeleteDfr.fail(function() {
-            return false;
-        });
-
-//        invokeConfirmDialog(msg, function() {
-//            $.ajax({
-//                type: 'POST',
-//                url: '/photo/photos-delete/',
-//                data: {
-//                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-//                    ids: JSON.stringify(view.selected_photos)
-//                },
-//                success: function(response) {
-//                    show_notification('success', response['message']);
-//
-//                    view.hidePhotos();
-//                    view.showPhotosCount();
-//                    view.selected_photos = [];
-//                    view.updatePage();
-//                }
-//            });
-//        });
-    },
-
-    clickMakeCover: function(e) {
-        e.preventDefault();
-
-        var el = e.target || e.srcElement;
-
-        var album_id = el.getAttribute('data-album-id');
-        var photo_id = el.getAttribute('data-photo-id');
-
-        $.ajax({
-            type: 'POST',
-            url: '/photo/album'+album_id+'/set-cover/',
-            data: {
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                cover: photo_id
-            },
-            success: function(response) {
-                show_notification('success', response['message']);
-            },
-            error: function(data) {
-                if (!data['result']) {show_notification('error', 'Невозможно изменить обложку');}
-            }
-        });
-    },
-
-    clickPhotoMoveButton: function(e) {
-        e.preventDefault();
-
-        if (this.selected_albums.length > 1) {
-            var msg = 'Вы действительно хотите переместить выбранные фотографии?';
-        } else {
-            var msg = 'Вы действительно хотите переместить выбранную фотографию?';
-        }
-
-        var view = this;
-        invokeMoveDialog(function(id) {
-            if (id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/photo/photo-move/',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        photo_id: JSON.stringify(view.selected_photos),
-                        album_id: id
-                    },
-                    success: function(response) {
-                        show_notification('success', response['message']);
-
-                        view.hidePhotos();
-                        view.showPhotosCount();
-                        view.selected_photos = [];
-                        view.updatePage();
-                    }
-                });
-            }
-
-        });
-    },
-
-    clickSinglePhotoMove: function(e) {
-        e.preventDefault();
-        var el = $(e.target || e.srcElement);
-        var photoId = parseInt(el.attr('data-photo-id'));
-        this.selected_photos.push(photoId);
-        this.selected_photos = _.uniq(this.selected_photos);
-
-        $(".photo input:checkbox[id=checkbox-"+photoId+"]").attr("checked", "checked");
-        $(".photo input:checkbox[id=checkbox-"+photoId+"]").parents('.announ-item').addClass('checked');
-
-        this.updatePage();
-
-        if (this.selected_photos.length > 1) {
-            var msg = 'Вы действительно хотите переместить выбранные фотографии?';
-        } else {
-            var msg = 'Вы действительно хотите переместить выбранную фотографию?';
-        }
-
-        var view = this;
-        invokeMoveDialog(function(id) {
-            if (id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/photo/photo-move/',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        photo_id: JSON.stringify(view.selected_photos),
-                        album_id: id
-                    },
-                    success: function(response) {
-                        show_notification('success', response['message']);
-
-                        view.hidePhotos();
-                        view.showPhotosCount();
-                        view.selected_photos = [];
-                        view.updatePage();
-                    }
-                });
-            }
-
-        });
-    },
-
-    hideAlbumDeleteButton: function() {
-        $('#photoalbum-delete-button').hide(300, 'linear');
-    },
-
-    showAlbumDeleteButton: function() {
-        $('#photoalbum-delete-button').show(300, 'linear');
-    },
-
-    hidePhotoDeleteButton: function() {
-        $('#photo-delete-button').hide(300, 'linear');
-    },
-
-    showPhotoDeleteButton: function() {
-        $('#photo-delete-button').show(300, 'linear');
-    },
-
-    hidePhotoMoveButton: function() {
-        $('#photo-move-button').hide(300, 'linear');
-    },
-
-    showPhotoMoveButton: function() {
-        $('#photo-move-button').show(300, 'linear');
-    },
-
-    getAlbumsCount: function() {
-        return $('form .photoalbum:visible').length;
-    },
-
-    getPhotosCount: function() {
-        return $('form .photo:visible').length;
-    },
-
-    showAlbumsCount: function() {
-        var count = this.getAlbumsCount();
-        if (count != 0) {
-            $('#albums-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#photoalbums-plurals').text()));
-        } else {
-            $('#albums-count').text('Нет ни одного альбома');
-        };
-    },
-
-    hidePhotos: function() {
-        var view = this;
-        this.selected_photos.forEach(function(e, i, a) {
-            var el = $('#photo-item-' + e);
-            el.hide(function() {
-                el.remove();
-                view.updatePage();
-            });
-        });
-    },
-
-    showPhotosCount: function() {
-        var count = this.getPhotosCount();
-        if (count != 0) {
-            $('#photos-count').text('Всего ' + count + ' ' + ru_pluralize(count, $('#photos-plurals').text()));
-        } else {
-            $('#photos-count').text('Нет ни одной фотографии');
-        };
-    },
-
-    updatePage: function() {
-        var view = this;
-        view.albums = [];
-        $('figure[id*=photoalbum-item-]:visible').each(function() {
-            view.albums.push(this.getAttribute('data-photoalbum-id'));
-        });
-
-        if (this.selected_albums.length) {
-            this.showAlbumDeleteButton();
-        } else {
-            this.hideAlbumDeleteButton();
-        }
-
-        if (this.selected_photos.length) {
-            this.showPhotoDeleteButton();
-            this.showPhotoMoveButton();
-        } else {
-            this.hidePhotoDeleteButton();
-            this.hidePhotoMoveButton();
-        }
-
-        this.showAlbumsCount();
-        this.showPhotosCount();
-
-        if (!this.getAlbumsCount() && !$('#photoalbum-empty-block').is(':visible')) {
-            var empty_block_tpl = $('#photoalbum-empty-block-tpl');
-            $('#photoalbums-container').append(empty_block_tpl);
-            empty_block_tpl.show(300, 'linear')
-        }
-
-        if (!this.getPhotosCount() && !$('#photo-empty-block').is(':visible')) {
-            var empty_block_tpl = $('#photo-empty-block-tpl');
-            $('#photos-container').append(empty_block_tpl);
-            empty_block_tpl.show(300, 'linear')
-        }
-    }
-});
-
-/******************************************************************************/
-
+}
 
 
 /*
@@ -1374,22 +652,6 @@ $(function() {
             $('#photo-upload-form').submit();
         }
     });
-
-    /*
-     * JCrop handler
-     * */
-//    if ($.Jcrop) {
-//        $('#current_avatar').Jcrop({
-//            onChange: function(c){
-//                $('#id_avatar_coords').val(JSON.stringify(c));
-//            },
-//            bgColor:     'black',
-//            bgOpacity:   .5,
-//            minSize: [175, 175],
-//            setSelect: [0, 0, 175, 175],
-//            aspectRatio: 1
-//        });
-//    }
 
     $(window).bind('hashchange', function(e) {
         var hash = location.hash.replace('#','');

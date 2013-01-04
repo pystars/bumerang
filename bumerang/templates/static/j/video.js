@@ -1,135 +1,5 @@
 "use strict";
 
-/*
- * Confirm dialog handler
- * */
-function confirmModalDialog(selector, message) {
-    var deferred_result = $.Deferred();
-
-    var dialog = $(selector);
-    var dialog_id = dialog.attr('id');
-
-    var btnCancel = $('#{0} .confirm-modal-cancel'.format(dialog_id));
-    var btnConfirm = $('#{0} .confirm-modal-confirm'.format(dialog_id));
-
-    $('#{0} #dialog-message'.format(dialog_id)).text(message);
-
-    dialog.find('*').unbind();
-
-    btnCancel.bind('click', function(e) {
-        e.preventDefault();
-        close_n_hide();
-        $(window).unbind('resize');
-        deferred_result.reject();
-    });
-
-    btnConfirm.bind('click', function(e) {
-        e.preventDefault();
-        close_n_hide();
-        deferred_result.resolve();
-    });
-
-    dialog.on('click', '.close-btn', function() {
-        btnCancel.click();
-    });
-
-    $(document).on('keydown', function(e) {
-        if (e.which == 27) btnCancel.click();
-    });
-
-    var resize = function() {
-        var w = $(window);
-        dialog.css({
-            'margin-left': (w.width()-dialog.outerWidth())/2+'px',
-            'top': ((w.height()-dialog.outerHeight())/2)+ w.scrollTop()+"px"
-        });
-    };
-
-    var show = function() {
-        $('#tint').show();
-        dialog.resize();
-        dialog.show();
-    };
-
-    var close_n_hide = function() {
-        dialog.hide();
-        $('#tint').hide();
-    };
-
-    $(window).resize(function(e) {
-        resize();
-    });
-
-    show();
-
-    return deferred_result;
-}
-
-function confirmMoveModalDialog() {
-    var deferred_result = $.Deferred();
-
-    var dialog = $('#popup-move');
-    var dialog_id = dialog.attr('id');
-
-    var btnClose = dialog.find('.close-btn');
-    var btnConfirm = dialog.find('.confirm-modal-confirm');
-
-    dialog.find('*').unbind();
-
-    btnClose.bind('click', function(e) {
-        e.preventDefault();
-        close_n_hide();
-        $(window).unbind('resize');
-        deferred_result.reject();
-    });
-
-    dialog.on('click', 'input:radio:checked', function(e) {
-        btnConfirm.removeClass('disabled');
-    });
-
-    btnConfirm.bind('click', function(e) {
-        e.preventDefault();
-        var id = dialog.find('input:radio:checked').attr('data-album-to-move');
-        if (id) {
-            close_n_hide();
-            deferred_result.resolve(id);
-        }
-    });
-
-    $(document).on('keydown', function(e) {
-        if (e.which == 27) btnClose.click();
-    });
-
-    var resize = function() {
-        var w = $(window);
-        dialog.css({
-            'margin-left': (w.width()-dialog.outerWidth())/2+'px',
-            'top': ((w.height()-dialog.outerHeight())/2)+ w.scrollTop()+"px"
-        });
-    };
-
-    var show = function() {
-        $('#tint').show();
-        dialog.resize();
-        dialog.show();
-    };
-
-    var close_n_hide = function() {
-        dialog.hide();
-        $('#tint').hide();
-    };
-
-    $(window).resize(function(e) {
-        resize();
-    });
-
-    show();
-
-    return deferred_result;
-
-}
-
-
 (function($) {
     $.fn.videoItemsHandler = function() {
         var $this = $(this);
@@ -172,6 +42,7 @@ function confirmMoveModalDialog() {
                 var plural_form = ru_pluralize(count, plurals);
                 return 'Всего {0} {1}'.format(count, plural_form);
             } else {
+                $("#video-empty-block").show();
                 return 'Нет ни одного видео';
             }
         };
@@ -184,12 +55,7 @@ function confirmMoveModalDialog() {
             var list = getItems();
 
             _.each(list, function(id) {
-                var el = $('.video[data-item-id={0}]'.format(id));
-
-                el.hide(function() {
-                    el.remove();
-                    updatePage();
-                });
+                $('.video[data-item-id={0}]'.format(id)).remove();
             });
         };
 
@@ -279,8 +145,6 @@ function confirmMoveModalDialog() {
 
                 var decision = confirmModalDialog('#popup-confirm', getDeleteMsg());
                 decision.done(function() {
-
-                    console.log(getItems());
 
                     $.ajax({
                         url: '/video/videos-delete/',
@@ -446,6 +310,7 @@ function confirmMoveModalDialog() {
                 var plural_form = ru_pluralize(count, plurals);
                 return 'Всего {0} {1}'.format(count, plural_form);
             } else {
+                $("#videoalbum-empty-block").show();
                 return 'Нет ни одного альбома';
             }
         };
@@ -458,12 +323,7 @@ function confirmMoveModalDialog() {
             var list = getItems();
 
             _.each(list, function(id) {
-                var el = $('.videoalbum[data-item-id={0}]'.format(id));
-
-                el.hide(function() {
-                    el.remove();
-                    updatePage();
-                });
+                $('.videoalbum[data-item-id={0}]'.format(id)).remove();
             });
         };
 
@@ -560,9 +420,9 @@ function confirmMoveModalDialog() {
                     })
                         .success(function(data) {
                             if (getItems().length > 1) {
-                                var msg = 'Видео удалены';
+                                var msg = 'Видеоальбомы удалены';
                             } else {
-                                var msg = 'Видео удалено';
+                                var msg = 'Видеоальбом удалено';
                             }
                             hideItems();
                             deleteItems();

@@ -3,14 +3,14 @@ import os
 import random
 import string
 from tempfile import TemporaryFile
-from exceptions import TypeError, OSError
 
 from PIL import Image
 from django.conf import settings
 from django.core.files.storage import get_storage_class, FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-def random_string(length, letters=string.ascii_letters+string.digits):
+
+def random_string(length, letters=string.ascii_letters + string.digits):
     return u''.join(random.choice(letters) for i in xrange(length))
 
 
@@ -61,9 +61,9 @@ def image_width_height(img, width=None, height=None):
 
 
 def image_crop_rectangle_center(img):
-    '''
+    """
     Crops rectangle region from center of given image
-    '''
+    """
     width = img.size[0]
     height = img.size[1]
 
@@ -96,6 +96,11 @@ def image_crop_rectangle_center(img):
 
 
 def get_path(pattern, pk_dir_name=False):
+    """
+    callable function for upload_to param of models fields
+
+    if pk_dir_name, then pk of object used as dir name
+    """
     def inner(instance, filename):
         ext = os.path.splitext(filename)[1]
         if pk_dir_name:
