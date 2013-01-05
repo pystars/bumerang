@@ -34,14 +34,15 @@ class Profile(FileModelMixin, User):
         (u'Образование', ['schools', 'courses']),
         (u'Интересы', ['hobby', 'fav_movies', 'fav_music', 'fav_books'])
     ]
-
-    type = models.IntegerField(u'Тип профиля', choices=ACCOUNT_TYPES, default=1,
-                               db_index=True)
-    title = models.CharField(u'Название/Никнейм', max_length=255, **nullable)
-    avatar = models.ImageField(u'Фотография профиля',
+    title = models.CharField(u'Название/ФИО', max_length=255, **nullable)
+    type = models.IntegerField(
+        u'Тип профиля', choices=ACCOUNT_TYPES, default=1, db_index=True)
+    avatar = models.ImageField(
+        u'Фотография профиля',
         upload_to=get_path('avatars/{0}/full{1}', pk_dir_name=True),
         storage=media_storage, **nullable)
-    min_avatar = models.ImageField(u'Уменьшенная фотография профиля',
+    min_avatar = models.ImageField(
+        u'Уменьшенная фотография профиля',
         upload_to=get_path('avatars/{0}/min{1}', pk_dir_name=True),
         storage=media_storage, **nullable)
     avatar_coords = models.CharField(max_length=255, **nullable)
@@ -68,30 +69,30 @@ class Profile(FileModelMixin, User):
     nickname = models.CharField(u'Никнейм', max_length=100, **nullable)
     gender = models.IntegerField(u'Пол', choices=GENDER, **nullable)
 
-    info_name = models.CharField(u'Имя', max_length=100, blank=False,
-        null=True)
-    info_second_name = models.CharField(u'Фамилия', max_length=100, blank=False,
-        null=True)
-    info_middle_name = models.CharField(u'Отчество', max_length=100,
-        blank=False, null=True)
+    info_name = models.CharField(
+        u'Имя', max_length=100, blank=False, null=True)
+    info_second_name = models.CharField(
+        u'Фамилия', max_length=100, blank=False, null=True)
+    info_middle_name = models.CharField(
+        u'Отчество', max_length=100, blank=False, null=True)
     info_address = models.TextField(u'Фактический адрес')
     info_postal_address = models.TextField(u'Почтовый адрес')
     info_phone = models.CharField(u'Контактный телефон', max_length=40)
-    info_mobile_phone = models.CharField(u'Мобильный телефон',
-        max_length=12, **nullable)
+    info_mobile_phone = models.CharField(
+        u'Мобильный телефон', max_length=12, **nullable)
     info_email = models.EmailField(u'Электронный адрес')
-    info_organization = models.CharField(u'Название организации',
-        max_length=255)
-    info_organization_form = models.CharField(u'Организационно-правовая форма',
-        max_length=255)
+    info_organization = models.CharField(
+        u'Название организации', max_length=255)
+    info_organization_form = models.CharField(
+        u'Организационно-правовая форма', max_length=255)
 
-    views_count = models.IntegerField(u'Количество просмотров профиля',
-        default=0, editable=False, **nullable)
+    views_count = models.IntegerField(
+        u'Количество просмотров профиля', default=0, editable=False, **nullable)
 
     objects = UserManager()
 
     def __unicode__(self):
-        return self.username
+        return self.title or self.username
 
     def get_title(self):
         u"""
@@ -127,19 +128,19 @@ class Profile(FileModelMixin, User):
 
     def get_user_profile_resume(self):
         return [{'name': label, 'values': self.get_fields_group(fields)}
-            for label, fields in self.RESUME_FIELDS_GROUPS
-            if self.get_fields_group(fields)]
+                for label, fields in self.RESUME_FIELDS_GROUPS
+                if self.get_fields_group(fields)]
 
     def get_studio_profile_resume(self):
         services_list = [{'name': obj.title, 'value': obj.description}
-            for obj in self.service_set.all().order_by('id')]
+                         for obj in self.service_set.all().order_by('id')]
         if services_list:
             return [{'name': u'Услуги', 'values': services_list}]
         return []
 
     def get_school_profile_resume(self):
         services_list = [{'name': obj.title, 'value': obj.description}
-        for obj in self.faculty_set.all().order_by('id')]
+                         for obj in self.faculty_set.all().order_by('id')]
         if services_list:
             return [{'name': u'Факультеты', 'values': services_list}]
         return []
@@ -151,8 +152,15 @@ class Profile(FileModelMixin, User):
         return self.photo_set.filter(album__isnull=True)
 
     def inbox_count(self):
-        self.received_messages.filter(read_at__isnull=True,
-            recipient_deleted_at__isnull=True).count()
+        self.received_messages.filter(
+            read_at__isnull=True, recipient_deleted_at__isnull=True).count()
+
+    def show_avatar(self):
+        if self.min_avatar:
+            return u'<img src="{0}"/>'.format(self.min_avatar)
+        return None
+    show_avatar.short_description = u'Аватарка'
+    show_avatar.allow_tags = True
 
 
 class Faculty(models.Model):
@@ -174,12 +182,12 @@ class Service(models.Model):
 
 
 class Teammate(FileModelMixin, models.Model):
-    photo = models.ImageField(u'Фотография', storage=media_storage,
+    photo = models.ImageField(
+        u'Фотография', storage=media_storage,
         upload_to=get_path('teammates/{0}/full{1}', pk_dir_name=True))
-    photo_min = models.ImageField(u'Миниатюрная фотография',
-        storage=media_storage,
-        upload_to=get_path('teammates/{0}/min{1}', pk_dir_name=True),
-        blank=True)
+    photo_min = models.ImageField(
+        u'Миниатюрная фотография', storage=media_storage, blank=True,
+        upload_to=get_path('teammates/{0}/min{1}', pk_dir_name=True))
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
     owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
@@ -189,15 +197,15 @@ class Teammate(FileModelMixin, models.Model):
 
 
 class Teacher(FileModelMixin, models.Model):
-    photo = models.ImageField(u'Фотография', storage=media_storage,
+    photo = models.ImageField(
+        u'Фотография', storage=media_storage,
         upload_to=get_path('teachers/{0}/full{1}', pk_dir_name=True))
-    photo_min = models.ImageField(u'Миниатюрная фотография',
-        storage=media_storage,
-        upload_to=get_path('teachers/{0}/min{1}', pk_dir_name=True),
-        blank=True)
+    photo_min = models.ImageField(
+        u'Миниатюрная фотография', storage=media_storage, blank=True,
+        upload_to=get_path('teachers/{0}/min{1}', pk_dir_name=True))
     name = models.CharField(u'Имя', max_length=255)
     description = models.TextField(u'Описание')
-    owner = models.ForeignKey(Profile, verbose_name=u'Команда',)
+    owner = models.ForeignKey(Profile, verbose_name=u'Команда')
 
     def __unicode__(self):
         return self.name

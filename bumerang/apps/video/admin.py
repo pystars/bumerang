@@ -13,10 +13,40 @@ from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
 
 
 class VideoAdmin(admin.ModelAdmin):
-    readonly_fields = ['created', 'slug']
-    list_display = ['title', 'category', 'created', 'owner', 'status', 'slug',
-                    'published_in_archive', 'is_in_broadcast_lists']
-    list_editable = ['published_in_archive', 'is_in_broadcast_lists',  'status']
+    readonly_fields = ('created', 'status', 'get_owner_profile', 'duration',
+                       'album', 'views_count', 'original_file', 'hq_file',
+                       'get_absolute_url')
+    list_display = ('title', 'get_absolute_url', 'category',
+                    'get_owner_profile', 'owner', 'status', 'created',
+                    'published_in_archive', 'is_in_broadcast_lists')
+    list_editable = ('category', 'published_in_archive',
+                     'is_in_broadcast_lists')
+    fieldsets = (
+        (None, {'fields': (
+            ('published_in_archive', 'is_in_broadcast_lists'),
+            'title',
+            ('get_owner_profile', 'owner'),
+            'category',
+        )}),
+        ('Info options', {'fields': (
+            ('year', 'genre'),
+            ('country', 'city'),
+            ('authors', 'teachers'),
+            ('manager', 'agency'),
+            'festivals',
+            'description',
+            'access',
+        )}),
+        ('Readonly options', {'fields': (
+            ('original_file', 'hq_file'),
+            'duration',
+            'views_count',
+            'album',
+            'status'
+        ), 'classes': ('collapse',)})
+    )
+    fields = (
+    )
     actions = ['delete_selected']
 
     def get_duration(self, field):

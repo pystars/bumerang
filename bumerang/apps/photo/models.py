@@ -6,9 +6,9 @@ from django.utils.timezone import now
 
 from bumerang.apps.utils.functions import random_string
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
-from utils import (original_upload_to, image_upload_to, thumbnail_upload_to,
-    icon_upload_to)
 from bumerang.apps.utils.media_storage import media_storage
+from utils import (
+    original_upload_to, image_upload_to, thumbnail_upload_to, icon_upload_to)
 
 
 class PhotoGenre(models.Model, TitleUnicode):
@@ -39,22 +39,23 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     )
 
     slug = models.SlugField(u'Метка', max_length=SLUG_LENGTH, editable=False)
-    published_in_archive = models.BooleanField(u'Опубликовано в фотогалерее',
-        default=False)
+    published_in_archive = models.BooleanField(
+        u'Опубликовано в фотогалерее', default=False)
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
-    original_file = models.ImageField(u"Оригинальное фото",
-        upload_to=original_upload_to, storage=media_storage,
-        null=True, blank=False)
-    image = models.ImageField(u"Фото",
-        upload_to=image_upload_to, storage=media_storage, **nullable)
-    thumbnail = models.ImageField(u"Превью",
-        upload_to=thumbnail_upload_to, storage=media_storage, **nullable)
-    icon = models.ImageField(u"Иконка",
-        upload_to=icon_upload_to, storage=media_storage, **nullable)
+    original_file = models.ImageField(
+        u"Оригинальное фото", upload_to=original_upload_to,
+        storage=media_storage, null=True, blank=False)
+    image = models.ImageField(
+        u"Фото", upload_to=image_upload_to, storage=media_storage, **nullable)
+    thumbnail = models.ImageField(
+        u"Превью", upload_to=thumbnail_upload_to, storage=media_storage,
+        **nullable)
+    icon = models.ImageField(
+        u"Иконка", upload_to=icon_upload_to, storage=media_storage, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
-    album = models.ForeignKey('albums.PhotoAlbum', verbose_name=u'Альбом',
-        max_length=255, **nullable)
+    album = models.ForeignKey(
+        'albums.PhotoAlbum', verbose_name=u'Альбом', max_length=255, **nullable)
     description = models.TextField(u'Описание', **nullable)
     year = models.IntegerField(u'Год', default=2011, **nullable)
     genre = models.ForeignKey(PhotoGenre, verbose_name=u'Жанр', **nullable)
@@ -65,11 +66,13 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     teachers = models.CharField(u'Педагоги', max_length=255, **nullable)
     manager = models.CharField(u'Руководитель', max_length=255, **nullable)
     festivals = models.TextField(u'Фестивали', **nullable)
-    access = models.IntegerField(u'Кому доступно фото',
-        choices=ACCESS_FLAGS_CHOICES, default=FREE_FOR_ALL, **nullable)
+    access = models.IntegerField(
+        u'Кому доступно фото', choices=ACCESS_FLAGS_CHOICES,
+        default=FREE_FOR_ALL, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=now)
     views_count = models.IntegerField(u'Количество просмотров фото', default=0,
                                       editable=False, **nullable)
+    is_processed = models.BooleanField(u'Обработано')
 
     class Meta:
         verbose_name = u'Фото'
@@ -90,6 +93,14 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
 
     def get_absolute_url(self):
         return reverse('photo-detail', kwargs={'pk': self.pk})
+
+    def get_preview(self):
+        if self.image and self.icon:
+            return u'<a href="{0}" target="_blank"><img src="{1}"></a>'.format(
+                self.image.url, self.icon.url)
+        return None
+    get_preview.short_description = u'Превью'
+    get_preview.allow_tags = True
 
     @classmethod
     def get_slug(cls):

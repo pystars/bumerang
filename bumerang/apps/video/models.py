@@ -64,34 +64,35 @@ class Video(models.Model, TitleUnicode):
         (ERROR, u'ошибка обработки')
     )
 
-    slug = models.SlugField(u'Метка', max_length=SLUG_LENGTH, editable=False)
-    published_in_archive = models.BooleanField(u'Опубликовано в видеорхиве',
-        default=False)
-    is_in_broadcast_lists = models.BooleanField(u'Списки вещания',
-        default=False)
+    published_in_archive = models.BooleanField(
+        u'Опубликовано в видеорхиве', default=False)
+    is_in_broadcast_lists = models.BooleanField(
+        u'Списки вещания', default=False)
     title = models.CharField(u'Название', max_length=255)
-    slug = models.SlugField(u'Метка (часть ссылки)', **nullable)
-    original_file = models.FileField(u"Оригинальное видео",
-        validators=[is_video_file], upload_to=original_upload_to,
-        storage=media_storage, **nullable)
-    hq_file = models.FileField(u'Видео высокого качества',
-        upload_to=hq_upload_to, storage=media_storage,
-        validators=[is_video_file], **nullable)
+    slug = models.SlugField(
+        u'Метка (часть ссылки)', max_length=SLUG_LENGTH, editable=False,
+        **nullable)
+    original_file = models.FileField(
+        u"Оригинальное видео", validators=[is_video_file],
+        upload_to=original_upload_to, storage=media_storage, **nullable)
+    hq_file = models.FileField(
+        u'Видео высокого качества', upload_to=hq_upload_to,
+        storage=media_storage, validators=[is_video_file], **nullable)
 #    mq_file = models.FileField(u'Видео среднего качества',
 #        upload_to=mq_upload_to,storage=media_storage,
 #        validators=[is_video_file], **nullable)
 #    lq_file = models.FileField(u'Видео низкого качества',
 #        upload_to=lq_upload_to,storage=media_storage,
 #        validators=[is_video_file], **nullable)
-    duration = models.IntegerField(u'Длительность', default=0,
-                                   editable=False, **nullable)
+    duration = models.IntegerField(
+        u'Длительность', default=0, editable=False, **nullable)
     owner = models.ForeignKey(User, verbose_name=u"Владелец")
-    album = models.ForeignKey('albums.VideoAlbum', verbose_name=u'Альбом',
-        max_length=255, **nullable)
-    category = models.ForeignKey(VideoCategory, verbose_name=u'Категория',
-        **nullable)
+    album = models.ForeignKey(
+        'albums.VideoAlbum', verbose_name=u'Альбом', max_length=255, **nullable)
+    category = models.ForeignKey(
+        VideoCategory, verbose_name=u'Категория', **nullable)
     description = models.TextField(u'Описание', **nullable)
-    year = models.IntegerField(u'Год', default=2011, **nullable)
+    year = models.IntegerField(u'Год', default=2012, **nullable)
     genre = models.ForeignKey(VideoGenre, verbose_name=u'Жанр', **nullable)
     country = models.CharField(u'Страна', max_length=255, **nullable)
     city = models.CharField(u'Город', max_length=255, **nullable)
@@ -100,13 +101,14 @@ class Video(models.Model, TitleUnicode):
     teachers = models.CharField(u'Педагоги', max_length=255, **nullable)
     manager = models.CharField(u'Руководитель', max_length=255, **nullable)
     festivals = models.TextField(u'Фестивали', **nullable)
-    access = models.IntegerField(u'Кому доступно видео',
-        choices=ACCESS_FLAGS_CHOICES, default=FREE_FOR_ALL, **nullable)
+    access = models.IntegerField(
+        u'Кому доступно видео', choices=ACCESS_FLAGS_CHOICES,
+        default=FREE_FOR_ALL, **nullable)
     created = models.DateTimeField(u'Дата добавления', default=now)
-    views_count = models.IntegerField(u'Количество просмотров видео', default=0,
-                                      editable=False, **nullable)
-    status = models.IntegerField(u'статус', choices=STATUS_CHOICES,
-        default=PENDING)
+    views_count = models.IntegerField(
+        u'Количество просмотров видео', default=0, editable=False, **nullable)
+    status = models.IntegerField(
+        u'статус', choices=STATUS_CHOICES, default=PENDING)
 
     rating = RatingField(range=10, can_change_vote=True)
 
@@ -129,6 +131,10 @@ class Video(models.Model, TitleUnicode):
 
     def get_absolute_url(self):
         return reverse('video-detail', kwargs={'pk': self.pk})
+
+    def get_owner_profile(self):
+        return self.owner.profile
+    get_owner_profile.short_description = u'Имя владельца'
 
     def preview(self):
         try:
@@ -174,16 +180,17 @@ class Video(models.Model, TitleUnicode):
 
     def is_protected(self):
         return (self.participantvideo_set.exists()
-            or self.playlistitem_set.exists())
+                or self.playlistitem_set.exists())
 
     def get_absolute_url(self):
         return reverse('video-detail', args=(self.id,))
+    get_absolute_url.short_description = u'Ссылка на страницу видео'
 
 
 class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)
-    image = models.ImageField(upload_to=screenshot_upload_to,
-        storage=media_storage)
-    thumbnail = models.ImageField(upload_to=thumbnail_upload_to,
-        storage=media_storage)
+    image = models.ImageField(
+        upload_to=screenshot_upload_to, storage=media_storage)
+    thumbnail = models.ImageField(
+        upload_to=thumbnail_upload_to, storage=media_storage)
     icon = models.ImageField(upload_to=icon_upload_to, storage=media_storage)
