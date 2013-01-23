@@ -1,4 +1,4 @@
-django==1.4.2
+django==1.4.3
 Pillow
 South
 django-debug-toolbar
@@ -11,8 +11,8 @@ django-extensions
 werkzeug
 django-ratings==0.3.6
 fabric
-boto==2.6.0
-django-storages
+boto==2.7.0
+django-storages=1.1.6
 ipython
 mysql-python
 git+git://github.com/hmarr/django-ses.git

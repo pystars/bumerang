@@ -7,7 +7,6 @@ and that you have python-dateutils==1.5 installed
 from __future__ import absolute_import
 
 from django.conf import settings
-from boto.utils import parse_ts
 from storages.backends.s3boto import S3BotoStorage
 from storages.backends.overwrite import OverwriteStorage
 from filebrowser.storage import S3BotoStorageMixin, FileSystemStorageMixin
@@ -27,23 +26,11 @@ class CachedS3BotoStorage(S3BotoStorage, S3BotoStorageMixin):
 #        self.local_storage._save(name, content)
 #        return name
 
-    def modified_time(self, name):
-        name = self._normalize_name(self._clean_name(name))
-        entry = self.entries.get(name)
-        if entry is None:
-            entry = self.bucket.get_key(self._encode_name(name))
-            # Parse the last_modified string to a local datetime object.
-        return parse_ts(entry.last_modified)
-
     def isdir(self, name):
         if not name: # Empty name is a directory
             return True
         name = self._encode_name(self._normalize_name(self._clean_name(name)))
-        dirlist = self.bucket.get_all_keys(max_keys=1, prefix=name + '/')
-        # Check whether the iterator is empty
-        for item in dirlist:
-            return True
-        return False
+        return bool(self.bucket.get_all_keys(max_keys=1, prefix=name + '/'))
 
     def makedirs(self, name):
         key = self.bucket.new_key(self._encode_name(name))
