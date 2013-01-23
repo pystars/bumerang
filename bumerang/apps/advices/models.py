@@ -15,6 +15,7 @@ class Advice(MPTTModel):
     slug = models.SlugField()
     # Url hash
     url = models.CharField(max_length=1024, editable=False)
+    # TODO: remove sort_order field
     sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
 
     def get_absolute_url(self):

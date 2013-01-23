@@ -10,6 +10,7 @@ from bumerang.apps.advices.models import Advice
 class AdviceForm(MPTTAdminForm):
     class Meta:
         model = Advice
+        exclude = ('sort_order',)
         widgets = {
             'description': TinyMCE(attrs={'cols': 80, 'rows': 30})
         }
