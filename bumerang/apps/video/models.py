@@ -64,10 +64,8 @@ class Video(models.Model, TitleUnicode):
         (ERROR, u'ошибка обработки')
     )
 
-    published_in_archive = models.BooleanField(
-        u'Опубликовано в видеорхиве', default=False)
-    is_in_broadcast_lists = models.BooleanField(
-        u'Списки вещания', default=False)
+    published_in_archive = models.BooleanField(u'ОВ', default=False)
+    is_in_broadcast_lists = models.BooleanField(u'СВ', default=False)
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(
         u'Метка (часть ссылки)', max_length=SLUG_LENGTH, editable=False,
@@ -183,8 +181,10 @@ class Video(models.Model, TitleUnicode):
                 or self.playlistitem_set.exists())
 
     def get_absolute_url(self):
-        return reverse('video-detail', args=(self.id,))
-    get_absolute_url.short_description = u'Ссылка на страницу видео'
+        return u'<a target="_blank" href="{0}">посмотреть</a>'.format(
+            reverse('video-detail', args=(self.id,)))
+    get_absolute_url.short_description = u'Ссылка'
+    get_absolute_url.allow_tags = True
 
 
 class Preview(FileModelMixin, models.Model):
