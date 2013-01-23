@@ -49,7 +49,7 @@
                                         <a href="{% url video-edit video.id %}" class="b-dropdown__link {% if not videoalbum %}last{% endif %}">Редактировать</a>
                                         <a href="#" class="b-dropdown__link video-menu-move-link" id="move-video-{{ video.id }}" data-video-id="{{ video.id }}" data-item-id="{{ video.id }}">Переместить...</a>
                                         {% if videoalbum %}
-                                            <a href="#" class="b-dropdown__link last" id="make-cover-{{ video.id }}" data-album-id="{{ videoalbum.id }}" data-video-id="{{ video.id }}" data-item-id="{{ video.id }}">Сделать обложкой</a>
+                                            <a href="#" class="b-dropdown__link video-menu-makecover-link last" id="make-cover-{{ video.id }}" data-album-id="{{ videoalbum.id }}" data-video-id="{{ video.id }}" data-item-id="{{ video.id }}">Сделать обложкой</a>
                                         {% endif %}
                                     </span>
                                 </span>
