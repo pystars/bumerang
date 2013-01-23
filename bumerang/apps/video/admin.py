@@ -14,8 +14,7 @@ from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
 
 class VideoAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'status', 'get_owner_profile', 'duration',
-                       'album', 'views_count', 'original_file', 'hq_file',
-                       'get_absolute_url')
+                       'album', 'views_count', 'get_absolute_url')
     list_display = ('title', 'get_absolute_url', 'category',
                     'get_owner_profile', 'owner', 'status', 'created',
                     'published_in_archive', 'is_in_broadcast_lists')
@@ -27,6 +26,7 @@ class VideoAdmin(admin.ModelAdmin):
             'title',
             ('get_owner_profile', 'owner'),
             'category',
+            ('original_file', 'hq_file'),
         )}),
         ('Info options', {'fields': (
             ('year', 'genre'),
@@ -38,7 +38,6 @@ class VideoAdmin(admin.ModelAdmin):
             'access',
         )}),
         ('Readonly options', {'fields': (
-            ('original_file', 'hq_file'),
             'duration',
             'views_count',
             'album',
