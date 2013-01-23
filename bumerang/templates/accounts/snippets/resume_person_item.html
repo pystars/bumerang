@@ -1,14 +1,16 @@
-    <div class="b-resume__person cleared">
-        <div class="rp__pic">
-            <div class="b-ava">
-                <a href="{{ person.photo.url }}" class="lightbox" title="{{ person.name }}">
-                    <img src="{{ person.photo_min.url }}" width="125" height="125" title="{{ person.name }}" alt="Фото" />
-                    <i class="b-ava__sh"></i>
-                </a>
-            </div>
-        </div>
-        <div class="rp__txt">
-            <h4>{{ person.name }}</h4>
-            <p>{{ person.description|linebreaksbr }}</p>
+<div class="b-resume__person cleared">
+    <div class="rp__pic">
+        <div class="b-ava">
+            {% if person.photo and person.photo_min %}
+            <a href="{{ person.photo.url }}" class="lightbox" title="{{ person.name }}">
+                <img src="{{ person.photo_min.url }}" width="125" height="125" title="{{ person.name }}" alt="Фото" />
+                <i class="b-ava__sh"></i>
+            </a>
+            {% endif %}
         </div>
     </div>
+    <div class="rp__txt">
+        <h4>{{ person.name }}</h4>
+        <p>{{ person.description|linebreaksbr }}</p>
+    </div>
+</div>
