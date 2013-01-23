@@ -41,6 +41,7 @@ class PhotoAlbum(models.Model, TitleUnicode):
 
     def get_owner_profile(self):
         return self.owner.profile
+    get_owner_profile.short_description = u'Имя владельца'
 
     def last_update(self):
         return self.photo_set.all().aggregate(Max('created'))['created__max']
