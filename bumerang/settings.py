@@ -48,12 +48,12 @@ class CommonSettings(Settings):
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL[1:])
 
-
     FILE_UPLOAD_TEMP_DIR = '/tmp'
     FILE_UPLOAD_PERMISSIONS = 0644
 
-    SUPPORTED_VIDEO_FORMATS = ['avi','mkv','vob','mp4','ogv','ogg','m4v','m2ts',
-                           'mts','m2t','wmv','ogm','mov','qt','mpg','mpeg','mp4v']
+    SUPPORTED_VIDEO_FORMATS = [
+        'avi', 'mkv', 'vob', 'mp4', 'ogv', 'ogg', 'm4v', 'm2ts', 'mts', 'm2t',
+        'wmv', 'ogm', 'mov', 'qt', 'mpg', 'mpeg', 'mp4v']
 
     STATICFILES_DIRS = [
         os.path.join(PROJECT_ROOT, 'templates/static'),
@@ -62,13 +62,13 @@ class CommonSettings(Settings):
     STATICFILES_FINDERS = [
         'django.contrib.staticfiles.finders.FileSystemFinder',
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+        'django.contrib.staticfiles.finders.DefaultStorageFinder',
     ]
 
     TEMPLATE_LOADERS = (
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
+        'django.template.loaders.eggs.Loader',
     )
 
     TEMPLATE_CONTEXT_PROCESSORS = [
@@ -83,9 +83,8 @@ class CommonSettings(Settings):
     ]
 
     MIDDLEWARE_CLASSES = [
-    #    'johnny.middleware.LocalStoreClearMiddleware',
-    #    'johnny.middleware.QueryCacheMiddleware',
-
+        #'johnny.middleware.LocalStoreClearMiddleware',
+        #'johnny.middleware.QueryCacheMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
@@ -97,7 +96,8 @@ class CommonSettings(Settings):
     ]
 
     if DEBUG:
-        MIDDLEWARE_CLASSES += ['bumerang.apps.utils.middleware.ProfilerMiddleware']
+        MIDDLEWARE_CLASSES += [
+            'bumerang.apps.utils.middleware.ProfilerMiddleware']
 
     # Keep me logged settings
     KEEP_LOGGED_KEY = 'keep_me_logged'
@@ -139,10 +139,11 @@ class CommonSettings(Settings):
         'storages',
         'djkombu',
         'django_ses',
-    #    'django_wysiwyg',
+        'feincms',
+        #'django_wysiwyg',
         'django_extensions',
         'django_coverage',
-        # we have two messages in project, so they must be in this order =\
+        # we have two messages in project, so they must be in this order
         'bumerang.apps.messages',
         'django.contrib.messages',
 
@@ -181,13 +182,13 @@ class CommonSettings(Settings):
                 'handlers': ['mail_admins'],
                 'level': 'ERROR',
                 'propagate': True,
-                },
-            }
+            },
+        },
     }
 
     TINYMCE_JS_URL = "/static/tiny_mce/tiny_mce.js"
     TINYMCE_JS_ROOT = STATIC_ROOT + "/tiny_mce"
-    TINYMCE_SPELLCHECKER=False
+    TINYMCE_SPELLCHECKER = False
     TINYMCE_PLUGINS = [
         'safari',
         'table',
@@ -203,44 +204,57 @@ class CommonSettings(Settings):
     ]
 
     TINYMCE_DEFAULT_CONFIG = {
-        'theme' : "advanced",
-        'plugins' : ",".join(TINYMCE_PLUGINS), # django-cms
-        'language' : 'ru',
-        'theme_advanced_buttons1' : "bullist,numlist,|,link,unlink,anchor,image,code,removeformat",
-        'theme_advanced_buttons2' : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,undo,redo,|,link,unlink,cleanup",
-        'theme_advanced_buttons3' : "table,|,delete_row,delete_table,|,row_after,row_before,hr,|,bold,italic,underline",
-        'theme_advanced_buttons4' : "styleselect,formatselect,fontselect,fontsizeselect,|,forecolor,backcolor,forecolorpicker,backcolorpicker",
-        'theme_advanced_toolbar_location' : "top",
-        'theme_advanced_toolbar_align' : "left",
-        'theme_advanced_statusbar_location' : "bottom",
-        'theme_advanced_resizing' : True,
+        'theme': "advanced",
+        'plugins': ",".join(TINYMCE_PLUGINS),  # django-cms
+        'language': 'ru',
+        'theme_advanced_buttons1': "bullist,numlist,|,link,unlink,anchor,image,"
+                                   "code,removeformat",
+        'theme_advanced_buttons2': "cut,copy,paste,pastetext,pasteword,|,search"
+                                   ",replace,|,undo,redo,|,link,unlink,cleanup",
+        'theme_advanced_buttons3': "table,|,delete_row,delete_table,|,row_after"
+                                   ",row_before,hr,|,bold,italic,underline",
+        'theme_advanced_buttons4': "styleselect,formatselect,fontselect,fontsiz"
+                                   "eselect,|,forecolor,backcolor,forecolorpick"
+                                   "er,backcolorpicker",
+        'theme_advanced_toolbar_location': "top",
+        'theme_advanced_toolbar_align': "left",
+        'theme_advanced_statusbar_location': "bottom",
+        'theme_advanced_resizing': True,
         'table_default_cellpadding': 2,
         'table_default_cellspacing': 2,
-        'cleanup_on_startup' : False,
-        'cleanup' : False,
-        'paste_auto_cleanup_on_paste' : False,
-        'paste_block_drop' : False,
-        'paste_remove_spans' : False,
-        'paste_strip_class_attributes' : False,
-        'paste_retain_style_properties' : "",
-        'forced_root_block' : False,
-        'force_br_newlines' : False,
-        'force_p_newlines' : False,
-        'remove_linebreaks' : False,
-        'convert_newlines_to_brs' : False,
-        'inline_styles' : False,
-        'relative_urls' : False,
-        'formats' : {
-            'alignleft' : {'selector' : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', 'classes' : 'align-left'},
-            'aligncenter' : {'selector' : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', 'classes' : 'align-center'},
-            'alignright' : {'selector' : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', 'classes' : 'align-right'},
-            'alignfull' : {'selector' : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', 'classes' : 'align-justify'},
-            'strikethrough' : {'inline' : 'del'},
-            'italic' : {'inline' : 'em'},
-            'bold' : {'inline' : 'strong'},
-            'underline' : {'inline' : 'u'}
+        'cleanup_on_startup': False,
+        'cleanup': False,
+        'paste_auto_cleanup_on_paste': False,
+        'paste_block_drop': False,
+        'paste_remove_spans': False,
+        'paste_strip_class_attributes': False,
+        'paste_retain_style_properties': "",
+        'forced_root_block': False,
+        'force_br_newlines': False,
+        'force_p_newlines': False,
+        'remove_linebreaks': False,
+        'convert_newlines_to_brs': False,
+        'inline_styles': False,
+        'relative_urls': False,
+        'formats': {
+            'alignleft': {'selector': 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,'
+                                      'table,img',
+                          'classes': 'align-left'},
+            'aligncenter': {'selector': 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li'
+                                        ',table,img',
+                            'classes': 'align-center'},
+            'alignright': {'selector': 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,'
+                                       'table,img',
+                           'classes': 'align-right'},
+            'alignfull': {'selector': 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,'
+                                      'table,img',
+                          'classes': 'align-justify'},
+            'strikethrough': {'inline': 'del'},
+            'italic': {'inline': 'em'},
+            'bold': {'inline': 'strong'},
+            'underline': {'inline': 'u'}
         },
-        'pagebreak_separator' : ""
+        'pagebreak_separator': ""
     }
 
     MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
@@ -258,7 +272,6 @@ class CommonSettings(Settings):
     AWS_SES_REGION_NAME = 'us-east-1'
     AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 
-
     BROKER_POOL_LIMIT = 1
     CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
     CELERY_RESULT_BACKEND = "database"
@@ -273,7 +286,7 @@ class CommonSettings(Settings):
     CELERYD_TASK_TIME_LIMIT = 86400
     CELERY_DEFAULT_QUEUE = 'celery'
     CELERY_QUEUES = {
-        CELERY_DEFAULT_QUEUE : {
+        CELERY_DEFAULT_QUEUE: {
             'binding_key': CELERY_DEFAULT_QUEUE
         },
         'video': {
@@ -306,7 +319,7 @@ class BumerSettings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
         'debug_toolbar.panels.sql.SQLDebugPanel',
         'debug_toolbar.panels.signals.SignalDebugPanel',
         'debug_toolbar.panels.logger.LoggingPanel',
-        )
+    )
 
     INTERNAL_IPS = ('127.0.0.1',)
     DEBUG_TOOLBAR_CONFIG = dict(

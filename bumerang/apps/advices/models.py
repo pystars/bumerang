@@ -9,28 +9,26 @@ class Advice(MPTTModel):
     name = models.CharField(max_length=255, unique=True)
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
-    description = models.TextField(verbose_name=u'Описание раздела',
-        default=u'Введите описание')
+    description = models.TextField(
+        u'Описание раздела', default=u'Введите описание')
     # Slug of node's name
     slug = models.SlugField()
     # Url hash
     url = models.CharField(max_length=1024, editable=False)
     sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
-    
+
     def get_absolute_url(self):
         return '/advices/%s/' % self.url
 
     def __unicode__(self):
-        return self.name
+        return u'{0}'.format(self.name)
 
     class MPTTMeta:
         order_insertion_by = ['name']
-        ordering = ['level', 'sort_order', 'id']
 
     class Meta:
-        verbose_name = u'Совет'
-        verbose_name_plural = u'Советы'
-        ordering = ['level', 'sort_order', 'id']
+        verbose_name, verbose_name_plural = u'Совет', u'Советы'
+
 
 @receiver(pre_save, sender=Advice)
 def advice_pre_save(sender, **kwargs):
