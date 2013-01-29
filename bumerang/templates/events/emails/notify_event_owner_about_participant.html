@@ -3,7 +3,7 @@
 {% block content %}
     <td>
         <p style="margin: 4px 0;"><b>Событие</b> - {{ participant.event }}</p>
-        <p style="margin: 4px 0;"><b>Номер заявки</b> - {{ participant.id }}</p>
+        <p style="margin: 4px 0;"><b>Номер заявки</b> - {{ participant.index_number }}</p>
         <p style="margin: 4px 0;"><b>Участник</b> - {{ participant.owner.profile.title }}.</p>
         <p style="margin: 4px 0;"><b>Ссылка для просмотра заявки</b>: www.probumerang.tv{% url participant-review participant.id %}</p>
     </td>

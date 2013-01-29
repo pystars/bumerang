@@ -205,8 +205,8 @@ class Participant(models.Model):
     owner = models.ForeignKey(User, verbose_name=u'Участник')
     event = models.ForeignKey(Event, verbose_name=u'Событие')
     index_number = models.IntegerField(u'Номер заявки', editable=False)
-    is_accepted = models.BooleanField(u'Заявка принята', default=False,
-        db_index=True)
+    is_accepted = models.BooleanField(
+        u'Заявка принята', default=False, db_index=True)
     videos = models.ManyToManyField(Video,
         verbose_name=u'Видео', through='ParticipantVideo')
 
@@ -292,15 +292,15 @@ class ParticipantVideoScore(models.Model):
 
 
 event_created.connect(notify_admins_about_event_request,
-    dispatch_uid='notice_admins_about_event_request')
+                      dispatch_uid='notice_admins_about_event_request')
 approve_event.connect(notify_event_owner_about_approve,
-    dispatch_uid='notify_event_owner_about_approve')
+                      dispatch_uid='notify_event_owner_about_approve')
 winners_public.connect(notify_winners, dispatch_uid='notify_winners')
 participant_reviewed.connect(notify_participant_about_review,
-    dispatch_uid='notify_participant_about_review')
+                             dispatch_uid='notify_participant_about_review')
 participant_reviewed.connect(notify_jurors_about_participant,
-    dispatch_uid='notify_jurors_about_participant')
+                             dispatch_uid='notify_jurors_about_participant')
 post_save.connect(notify_event_owner_about_participant, sender=Participant,
-    dispatch_uid='notify_event_owner_about_participant')
+                  dispatch_uid='notify_event_owner_about_participant')
 juror_added.connect(notify_juror_about_registration,
-    dispatch_uid='notify_juror_about_registration')
+                    dispatch_uid='notify_juror_about_registration')

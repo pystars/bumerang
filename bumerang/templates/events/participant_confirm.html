@@ -1,0 +1,38 @@
+{% extends "events/event_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Заявка принята{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}s/dropdown.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}j/utils.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}j/festivals.js"></script>
+{% endblock %}
+
+{% block left_column %}
+    <header class="b-page-head">
+        <h1>{{ event }}</h1>
+    </header>
+
+    <div class="b-tabs d-sh participant-form">
+        <div class="l-cols__i cleared" style="padding-top: 16px;">
+            <section class="l-cols__section">
+                <div class="l-cols__section__i">
+                    <a class="form-event-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
+                    <h3 class="title">
+                        Ваша заявка на &laquo;{{ event }}&raquo; успешно отправлена. Номер заявки: {{ participant.index_number }}.
+                    </h3>
+                    <p>
+                        Вы можете изменить, <a
+                            href="{% url participant-edit participant.pk %}">отредактировать отправленную заявку</a>.<br/>
+                        <a href="{% url event-detail event.id %}">Вернуться на страницу события</a>
+
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

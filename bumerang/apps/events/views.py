@@ -1,46 +1,44 @@
 # -*- coding: utf-8 -*-
 # do not touch this import for correct work with avatar
 from __future__ import division
-from django.core.files.base import ContentFile
-from bumerang.apps.utils.functions import image_crop_rectangle_center
-
+import json
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
 
-import json
 from PIL import Image
+from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.base import ContentFile
 from django.db.utils import IntegrityError
 from django.db.models.aggregates import Avg
 from django.db.models.query_utils import Q
-from django.forms.models import modelformset_factory
-from django.views.generic.base import View
-from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.forms.models import modelformset_factory
 from django.forms.util import ErrorList
-from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.utils.simplejson.encoder import JSONEncoder
 from django.utils.translation import ugettext as _
+from django.views.generic import (
+    View, CreateView, UpdateView, ListView, DetailView)
+from django.contrib.auth.models import User
 
+from bumerang.apps.utils.functions import image_crop_rectangle_center
+from bumerang.apps.utils.views import (
+    OwnerMixin, SortingMixin, GenericFormsetWithFKUpdateView)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
-from bumerang.apps.events.models import (Event, Nomination, Participant,
+from bumerang.apps.events.models import (
     ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination,
-    ParticipantVideoScore)
-from bumerang.apps.events.forms import (EventCreateForm,
+    ParticipantVideoScore, Event, Nomination, Participant)
+from bumerang.apps.events.forms import (
     EventUpdateForm, EventLogoEditForm, NominationForm, ParticipantVideoForm,
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
     EventContactsUpdateForm, ParticipantForm, ParticipantVideoFormSet,
-    SetWinnersForm)
-from bumerang.apps.utils.views import (OwnerMixin, SortingMixin,
-    GenericFormsetWithFKUpdateView)
-from signals import (event_created, winners_public,  participant_reviewed,
-    juror_added)
+    SetWinnersForm, EventCreateForm)
+from signals import (
+    event_created, winners_public,  participant_reviewed, juror_added)
 
 
 class ParticipantMixin(View):
@@ -76,7 +74,8 @@ class ParticipantMixin(View):
         return handler(request, *args, **kwargs)
 
     def get_model_formset(self):
-        return modelformset_factory(self.formset_model, self.formset_form_class,
+        return modelformset_factory(
+            self.formset_model, self.formset_form_class,
             extra=self.formset_extra, can_delete=True)
 
 
@@ -98,9 +97,10 @@ class EventDetailView(DetailView):
             except IndexError:
                 pass
             context.update({
-                'participant_form': ParticipantForm(prefix='accept',
-                    initial={ 'accepted': False }),
-                'formset': self.ModelFormSet(prefix='participantvideo_set',
+                'participant_form': ParticipantForm(
+                    prefix='accept', initial={'accepted': False }),
+                'formset': self.ModelFormSet(
+                    prefix='participantvideo_set',
                     queryset=ParticipantVideo.objects.get_empty_query_set()),
                 'add_item_text': self.add_item_text,
             })
@@ -386,11 +386,11 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                         instance.info_middle_name
                     )
                     profile = Profile(
-                        username = instance.email,
-                        title = title,
-                        info_second_name = instance.info_second_name,
-                        info_name = instance.info_name,
-                        info_middle_name = instance.info_middle_name
+                        username=instance.email,
+                        title=title,
+                        info_second_name=instance.info_second_name,
+                        info_name=instance.info_name,
+                        info_middle_name=instance.info_middle_name
                     )
                     password = User.objects.make_random_password()
                     profile.set_password(password)
@@ -399,28 +399,21 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                     instance.save()
 
                     instance.min_avatar.seek(0)
-
                     minified_image = Image.open(instance.min_avatar)
-
                     minified_image = image_crop_rectangle_center(minified_image)
-
                     minified_image.thumbnail((125, 125), Image.ANTIALIAS)
-
                     # reinitialize memory file
                     memory_file = StringIO()
                     minified_image.save(memory_file, 'jpeg')
                     memory_file.seek(0)
 
                     profile.min_avatar.save(
-                        '{id}-min-avatar.jpg'.format(
-                            id=profile.id
-                        ),
+                        '{id}-min-avatar.jpg'.format(id=profile.id),
                         ContentFile(memory_file.read())
                     )
-
                     profile.save()
-                    juror_added.send(self, juror=instance, created=True,
-                        password=password)
+                    juror_added.send(
+                        self, juror=instance, created=True, password=password)
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
 
@@ -464,8 +457,8 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = {
-            'participant_form': ParticipantForm(prefix='accept',
-                initial={ 'accepted': False }),
+            'participant_form': ParticipantForm(
+                prefix='accept', initial={'accepted': False}),
             'formset': self.ModelFormSet(
                 prefix='participantvideo_set',
                 queryset=self.formset_model.objects.get_empty_query_set()
@@ -477,12 +470,12 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('participant-edit', args=(self.object.id,))
+        return reverse('participant-confirm', args=(self.object.id,))
 
     def get(self, request, *args, **kwargs):
         try:
-            self.object = Participant.objects.get(event=self.event,
-                owner=request.user)
+            self.object = Participant.objects.get(
+                event=self.event, owner=request.user)
             return HttpResponseRedirect(self.get_success_url())
         except Participant.DoesNotExist:
             return super(ParticipantCreateView, self).get(
@@ -493,19 +486,18 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
             raise Http404(u'Страница не найдена')
         self.object = None
         participant_form = ParticipantForm(request.POST, prefix='accept')
-        formset = self.ModelFormSet(request.POST,
-            prefix='participantvideo_set')
+        formset = self.ModelFormSet(request.POST, prefix='participantvideo_set')
 
         if participant_form.is_valid():
-            if (formset.is_valid()
-            and (formset.total_form_count() > len(formset.deleted_forms))):
+            if (formset.is_valid() and
+                    (formset.total_form_count() > len(formset.deleted_forms))):
                 self.object = self.model(owner=request.user, event=self.event)
                 try:
                     self.object.save()
                 except IntegrityError:
                     try:
-                        self.object = self.model.objects.get(event=self.event,
-                            owner=request.user)
+                        self.object = self.model.objects.get(
+                            event=self.event, owner=request.user)
                         return HttpResponseRedirect(self.get_success_url())
                     except request.user.DoesNotExist:
                         return self.render_to_response(
@@ -516,7 +508,8 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
                     instance.save()
                     if instance.nomination not in instance.nominations.all():
                         instance.nominations.clear()
-                        vn = VideoNomination(nomination=instance.nomination,
+                        vn = VideoNomination(
+                            nomination=instance.nomination,
                             participant_video=instance)
                         vn.save()
                 return HttpResponseRedirect(self.get_success_url())
@@ -527,13 +520,23 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
         return self.render_to_response(self.get_context_data(formset=formset))
 
     def get_model_formset(self):
-        return modelformset_factory(self.formset_model, self.formset_form_class,
+        return modelformset_factory(
+            self.formset_model, self.formset_form_class,
             formset=ParticipantVideoFormSet, extra=self.formset_extra,
             can_delete=True)
 
 
+class ParticipantConfirmView(ParticipantMixin, OwnerMixin, DetailView):
+    template_name = "events/participant_confirm.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ParticipantUpdateView, self).get_context_data(**kwargs)
+        ctx['event'] = self.event
+        return ctx
+
+
 class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
-    GenericFormsetWithFKUpdateView):
+                            GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoForm
     template_name = "events/participant_edit_form.html"
 
@@ -542,12 +545,8 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
         ctx['event'] = self.event
         return ctx
 
-    def get_queryset(self):
-    # Если владелец - текущий пользователь, выбирутся
-    # все объекты, иначе ни одного
-        return super(ParticipantUpdateView, self).get_queryset().filter(
-            owner=self.request.user
-        )
+    def get_success_url(self):
+        return reverse('participant-confirm', args=(self.object.id,))
 
     def post(self, request, *args, **kwargs):
         if not self.event.is_accepting_requests():
@@ -556,8 +555,8 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
         if formset.is_valid():
             if not (formset.total_form_count() > len(formset.deleted_forms)):
                 self.object.delete()
-                return HttpResponseRedirect(reverse('event-detail',
-                    args=(self.event.id,)))
+                return HttpResponseRedirect(
+                    reverse('event-detail', args=(self.event.id,)))
             instances = formset.save(commit=False)
             self.object.is_accepted = False
             self.object.save()
@@ -568,14 +567,16 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
                 instance.save()
                 if instance.nomination not in instance.nominations.all():
                     instance.nominations.clear()
-                    vn = VideoNomination(nomination=instance.nomination,
+                    vn = VideoNomination(
+                        nomination=instance.nomination,
                         participant_video=instance)
                     vn.save()
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
 
     def get_model_formset(self):
-        return modelformset_factory(self.formset_model, self.formset_form_class,
+        return modelformset_factory(
+            self.formset_model, self.formset_form_class,
             formset=ParticipantVideoFormSet, extra=self.formset_extra,
             can_delete=True)
 

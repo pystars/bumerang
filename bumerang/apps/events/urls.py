@@ -11,7 +11,7 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     ParticipantReviewView, EventContactsUpdateView, EventDetailView,
     ParticipantVideoRatingUpdate, EventNewsPostUpdateView,
     EventConditionsDetailView, SetWinnersView, EventWinnersListView,
-    EventPublishWinners, ParticipantListCSVView)
+    EventPublishWinners, ParticipantListCSVView, ParticipantConfirmView)
 
 
 urlpatterns = patterns('',
@@ -115,6 +115,11 @@ urlpatterns = patterns('',
     url(r'^event(?P<event_pk>[\d]+)/request/$',
         login_required(ParticipantCreateView.as_view()),
         name='event-request-form'
+    ),
+
+    url(r'^participant(?P<pk>[\d]+)/confirm/$',
+        login_required(ParticipantConfirmView.as_view()),
+        name='participant-confirm'
     ),
 
     url(r'^participant(?P<pk>[\d]+)/edit/$',

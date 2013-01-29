@@ -17,7 +17,7 @@ def notify_admins_about_event_request(sender, **kwargs):
         'subject': u'''Заявка на регистрацию события "{0} {1}"'''.format(
             event.get_type_display(), event),
         'event': event
-        }
+    }
     send_single_email(
         "events/emails/notify_managers_about_event_request.html", ctx,
         ctx['subject'], settings.EMAIL_NOREPLY_ADDR, to)
@@ -30,8 +30,8 @@ def notify_event_owner_about_approve(sender, **kwargs):
         'event': event
     }
     send_single_email("events/emails/notify_event_owner_about_approval.html",
-        ctx, ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
-        [event.owner.username])
+                      ctx, ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
+                      [event.owner.username])
 
 def notify_winners(sender, **kwargs):
     event = kwargs['event']
@@ -39,37 +39,37 @@ def notify_winners(sender, **kwargs):
     from models import VideoNomination, Participant
     video_nominations = VideoNomination.objects.filter(
         nomination__event=event, result__isnull=False).order_by(
-        'nomination__sort_order')
+            'nomination__sort_order')
     for video_nomination in video_nominations:
         winners[video_nomination.participant_video.participant_id].append(
             video_nomination)
     for winner, video_nominations in winners.iteritems():
         ctx = dict(
-            header = u'Поздравляем! Вы стали победителем события "{0} {1}".' \
-                     u''.format(event.get_type_display(), event),
-            subject = u'Вы победитель {0}'.format(event),
-            video_nominations = video_nominations,
-            event = event
+            header=u'Поздравляем! Вы стали победителем события "{0} {1}".'
+                   u''.format(event.get_type_display(), event),
+            subject=u'Вы победитель {0}'.format(event),
+            video_nominations=video_nominations,
+            event=event
         )
         participant = Participant.objects.get(pk=winner)
         send_single_email("events/emails/event_winners_congratulation.html",
-            ctx, ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
-            [participant.owner.username])
+                          ctx, ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
+                          [participant.owner.username])
 
 
 def notify_participant_about_review(sender, **kwargs):
     participant = kwargs['participant']
     videos = participant.participantvideo_set.filter(is_accepted=True)
     ctx = {
-        'header': u'Ваша заявка рассмотрена к участию в событии {0}' \
+        'header': u'Ваша заявка рассмотрена к участию в событии {0}'
                   u' были приняты следующие фильмы:'.format(participant.event),
         'subject': u'Заявка на участие в событии обработана',
         'videos': videos,
         'participant': participant
     }
     send_single_email("events/emails/notify_participant_about_review.html", ctx,
-        ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
-        [participant.owner.username])
+                      ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
+                      [participant.owner.username])
 
 def notify_event_owner_about_participant(sender, **kwargs):
     participant = kwargs['instance']
@@ -93,7 +93,8 @@ def notify_jurors_about_participant(sender, **kwargs):
         'videos': videos,
         'participant': participant
     }
-    send_single_email("events/emails/notify_jurors_about_participant.html", ctx,
+    send_single_email(
+        "events/emails/notify_jurors_about_participant.html", ctx,
         ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
         participant.event.juror_set.values_list('email', flat=True))
 
@@ -106,8 +107,10 @@ def notify_juror_about_registration(sender, **kwargs):
     }
     if kwargs['created']:
         ctx['password'] = kwargs['password']
-        send_single_email("events/emails/juror_registration.html", ctx,
+        send_single_email(
+            "events/emails/juror_registration.html", ctx,
             ctx['subject'], settings.EMAIL_NOREPLY_ADDR, [juror.email])
     else:
-        send_single_email("events/emails/juror_invited.html", ctx,
+        send_single_email(
+            "events/emails/juror_invited.html", ctx,
             ctx['subject'], settings.EMAIL_NOREPLY_ADDR, [juror.email])
