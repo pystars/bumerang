@@ -46,9 +46,15 @@
                                                     <label>
                                                         <span class="f-title">
                                                             Видео: &laquo;{{ video.title }}&raquo;
-                                                            {% if video.id %}<a href="{% url video-detail video.id %}" target="_blank">
-                                                                Просмотреть
-                                                            </a>{% endif %}
+                                                            {% if video.pk %}
+                                                                <a href="{% url video-detail video.pk %}" target="_blank">Просмотреть</a>
+                                                            {% endif %}
+                                                            {% if video.original_file %}
+                                                                <a href="{{ video.original_file.url }}" target="_blank" title="Нажмите правой кнопкой и выберите пункт 'сохранить как'">Скачать исходный файл</a>
+                                                            {% endif %}
+                                                            {% if video.hq_file %}
+                                                                <a href="{{ video.hq_file.url }}" target="_blank" title="Нажмите правой кнопкой и выберите пункт 'сохранить как'">Скачать обработанный файл</a>
+                                                            {% endif %}
                                                         </span>
                                                     </label>
                                                 </div>
