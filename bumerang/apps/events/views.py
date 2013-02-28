@@ -20,6 +20,7 @@ from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404
 from django.utils.simplejson.encoder import JSONEncoder
 from django.utils.translation import ugettext as _
+from django.utils.timezone import now
 from django.views.generic import (
     View, CreateView, UpdateView, ListView, DetailView)
 from django.contrib.auth.models import User
@@ -51,8 +52,8 @@ class ParticipantMixin(View):
 
     def dispatch(self, request, *args, **kwargs):
         if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(),
-                self.http_method_not_allowed)
+            handler = getattr(
+                self, request.method.lower(), self.http_method_not_allowed)
         else:
             handler = self.http_method_not_allowed
         self.request = request
@@ -98,7 +99,7 @@ class EventDetailView(DetailView):
                 pass
             context.update({
                 'participant_form': ParticipantForm(
-                    prefix='accept', initial={'accepted': False }),
+                    prefix='accept', initial={'accepted': False}),
                 'formset': self.ModelFormSet(
                     prefix='participantvideo_set',
                     queryset=ParticipantVideo.objects.get_empty_query_set()),
@@ -124,16 +125,21 @@ class EventDetailView(DetailView):
 class EventListView(SortingMixin, ListView):
     model = Event
     paginate_by = 10
-    DEFAULT_SORT_FIELD = 'title'
+    DEFAULT_SORT_FIELD = 'created'
+    DEFAULT_SORT_DIRECTION = 'desc'
     sort_fields = [
-        ('title', u'по названию'),
-        ('requesting_till', u'по дате приема заявок')
+        ('created', u'по умолчанию'),
+        ('requesting_till', u'Прием заявок открыт')
     ]
 
     def get_filter(self):
+        result = {}
+        if self.sort_field == 'requesting_till':
+            print 'fine'
+            result['requesting_till__gte'] = now().date()
         if 'type' in self.kwargs:
-            return {'type': self.kwargs['type']}
-        return {}
+            result['type'] = self.kwargs['type']
+        return result
 
     def get_queryset(self):
         return super(EventListView, self).get_queryset().filter(
@@ -164,7 +170,7 @@ class EventPressListView(ListView):
 
     def get_queryset(self):
         event = get_object_or_404(Event, pk=self.kwargs.get('event_pk'))
-        return event.newspost_set.all().order_by('-pk' ,'-creation_date')
+        return event.newspost_set.all().order_by('-pk', '-creation_date')
 
     def get_context_data(self, **kwargs):
         context = super(EventPressListView, self).get_context_data(**kwargs)
@@ -183,8 +189,8 @@ class EventFilmsListView(ListView):
     def get(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs.get('event_pk'))
         if 'nomination_pk' in self.kwargs:
-            self.nomination = get_object_or_404(Nomination,
-                id=self.kwargs['nomination_pk'], event=self.event)
+            self.nomination = get_object_or_404(
+                Nomination, id=self.kwargs['nomination_pk'], event=self.event)
         else:
             try:
                 self.nomination = self.event.nomination_set.all()[0]
@@ -193,8 +199,8 @@ class EventFilmsListView(ListView):
         return super(EventFilmsListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = ParticipantVideo.objects.filter(is_accepted=True,
-            participant__in=self.event.participant_set.all())
+        qs = ParticipantVideo.objects.filter(
+            is_accepted=True, participant__in=self.event.participant_set.all())
         if self.nomination:
             qs = qs.filter(nominations=self.nomination.pk)
         qs = qs.annotate(average_score=Avg('participantvideoscore__score'))
@@ -203,11 +209,12 @@ class EventFilmsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(EventFilmsListView, self).get_context_data(**kwargs)
         winners = {}
-        if (self.event.publish_winners or self.event.owner == self.request.user)\
-        and self.nomination:
+        if self.nomination and (
+                self.event.publish_winners or
+                    self.event.owner is self.request.user):
+            fields = ('participant_video', 'result')
             winners = dict(self.nomination.videonomination_set.filter(
-                result__isnull=False).values_list(
-                'participant_video', 'result'))
+                result__isnull=False).values_list(*fields))
         for item in context['object_list']:
             if self.request.user in self.event.jurors.all():
                 try:
@@ -245,10 +252,12 @@ class EventWinnersListView(ListView):
     def get_queryset(self):
         return VideoNomination.objects.filter(
             nomination__event=self.event,
-            result__isnull=False).select_related('participant_video',
-            'participant_video__video').annotate(
-            average_score=Avg('participant_video__participantvideoscore__score')
-        ).order_by('nomination__sort_order')
+            result__isnull=False).select_related(
+                'participant_video', 'participant_video__video'
+            ).annotate(
+                average_score=Avg(
+                    'participant_video__participantvideoscore__score')
+            ).order_by('nomination__sort_order')
 
     def get_context_data(self, **kwargs):
         context = super(EventWinnersListView, self).get_context_data(**kwargs)
@@ -263,7 +272,7 @@ class EventEditInfoView(OwnerMixin, UpdateView):
     form_class = EventUpdateForm
 
     def get_success_url(self):
-        return reverse('event-edit-info', kwargs = { 'pk': self.object.pk })
+        return reverse('event-edit-info', kwargs={'pk': self.object.pk})
 
 
 class EventEditLogoView(OwnerMixin, UpdateView):
@@ -272,7 +281,7 @@ class EventEditLogoView(OwnerMixin, UpdateView):
     template_name = "events/event_edit_logo.html"
 
     def get_success_url(self):
-        return reverse('event-edit-logo', kwargs = {'pk': self.object.pk})
+        return reverse('event-edit-logo', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         MAX_WIDTH = 500
@@ -285,7 +294,7 @@ class EventEditLogoView(OwnerMixin, UpdateView):
                 'y': 0,
                 'x2': 175,
                 'y2': 175,
-                }
+            }
             # Загружен ли уже аватар и мы только должны его обрезать?
         img = Image.open(self.request.FILES.get('logo', self.object.logo))
         img = img.convert('RGB')
@@ -319,14 +328,13 @@ class EventEditLogoView(OwnerMixin, UpdateView):
         cropped_image.save(temp_handle, 'jpeg', quality=100)
         temp_handle.seek(0)
 
-        suf = SimpleUploadedFile('min.jpg',
-            temp_handle.read(), content_type='image/jpg')
+        suf = SimpleUploadedFile(
+            'min.jpg', temp_handle.read(), content_type='image/jpg')
 
         self.object.min_logo.save('min.jpg', suf, save=False)
         form.save()
 
-        notify_success(self.request,
-            message=u'Логотип успешно обновлен.')
+        notify_success(self.request, message=u'Логотип успешно обновлен.')
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -365,8 +373,8 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        formset = self.ModelFormSet(request.POST, request.FILES,
-            prefix=self.formset_prefix)
+        formset = self.ModelFormSet(
+            request.POST, request.FILES, prefix=self.formset_prefix)
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
@@ -377,8 +385,8 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                         instance.save()
                     except IntegrityError:
                         pass
-                    juror_added.send(self, juror=instance, created=False,
-                        password='')
+                    juror_added.send(
+                        self, juror=instance, created=False, password='')
                 except User.DoesNotExist:
                     title = u'{0} {1} {2}'.format(
                         instance.info_second_name,
@@ -450,7 +458,7 @@ class EventContactsUpdateView(UpdateView):
     form_class = EventContactsUpdateForm
 
     def get_success_url(self):
-        return reverse('event-edit-contacts', kwargs = { 'pk': self.object.pk })
+        return reverse('event-edit-contacts', kwargs={'pk': self.object.pk})
 
 
 class ParticipantCreateView(ParticipantMixin, CreateView):
@@ -530,7 +538,7 @@ class ParticipantConfirmView(ParticipantMixin, OwnerMixin, DetailView):
     template_name = "events/participant_confirm.html"
 
     def get_context_data(self, **kwargs):
-        ctx = super(ParticipantUpdateView, self).get_context_data(**kwargs)
+        ctx = super(ParticipantConfirmView, self).get_context_data(**kwargs)
         ctx['event'] = self.event
         return ctx
 
@@ -561,7 +569,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
             self.object.is_accepted = False
             self.object.save()
             for instance in instances:
-                # the name of fk attribute must be same to lower case of fk model
+                # the name of fk attribute should be lower case of fk model
                 setattr(instance, self.model_name, self.object)
                 instance.is_accepted = False
                 instance.save()
@@ -630,7 +638,8 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
                         participant_video=instance,
                         nomination__in=removed_nominations).delete()
                     VideoNomination.objects.bulk_create([
-                        VideoNomination(nomination_id=nomination,
+                        VideoNomination(
+                            nomination_id=nomination,
                             participant_video=instance)
                         for nomination in added_nominations])
             notify_success(request, u'Данные сохранены')
@@ -640,8 +649,9 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         return self.render_to_response(self.get_context_data(formset=formset))
 
     def get_model_formset(self):
-        return modelformset_factory(self.formset_model, self.formset_form_class,
-            extra=self.formset_extra)
+        return modelformset_factory(self.formset_model,
+                                    self.formset_form_class,
+                                    extra=self.formset_extra)
 
 
 class ParticipantListView(SortingMixin, ListView):
@@ -679,7 +689,7 @@ class ParticipantVideoRatingUpdate(UpdateView):
             participant_video=self.video
         )
         if not ParticipantVideoScore.objects.filter(**kwargs).update(
-            score=self.kwargs['rate']):
+                score=self.kwargs['rate']):
             obj = ParticipantVideoScore(score=self.kwargs['rate'], **kwargs)
             obj.save()
         else:
@@ -708,9 +718,9 @@ class SetWinnersView(UpdateView):
 
     def get_queryset(self):
         return super(SetWinnersView, self).get_queryset().filter(
-            participant_video = self.kwargs['participant_video'],
-            nomination = self.kwargs['nomination'],
-            nomination__event__owner = self.request.user
+            participant_video=self.kwargs['participant_video'],
+            nomination=self.kwargs['nomination'],
+            nomination__event__owner=self.request.user
         )
 
     def get_object(self, queryset=None):
@@ -719,7 +729,7 @@ class SetWinnersView(UpdateView):
             obj = queryset.get()
         except self.model.DoesNotExist:
             raise Http404(_(u"No %(verbose_name)s found matching the query") %
-                      {'verbose_name': queryset.model._meta.verbose_name})
+                          {'verbose_name': queryset.model._meta.verbose_name})
         return obj
 
     def form_valid(self, form):

@@ -43,18 +43,20 @@ class Event(FileModelMixin, models.Model):
         (CONTEST, u'Конкурс'),
         (FESTIVAL, u'Фестиваль'),
     )
-    parent = models.ForeignKey('self', verbose_name=u'В рамках фестиваля',
-        related_name='contest_set', limit_choices_to={'type':FESTIVAL},
-        **nullable)
+    parent = models.ForeignKey(
+        'self', verbose_name=u'В рамках фестиваля', related_name='contest_set',
+        limit_choices_to={'type':FESTIVAL}, **nullable)
     owner = models.ForeignKey(User, related_name='owned_events')
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
-    publish_winners = models.BooleanField(u'Публиковать победителей',
-        default=False)
-    logo = models.ImageField(u'Логотип события', upload_to=
-        get_path(u'logos/{0}/full{1}'), storage=media_storage, **nullable)
-    min_logo = models.ImageField(u'Уменьшенный логотип события', upload_to=
-        get_path(u'logos/{0}/min{1}'), storage=media_storage, **nullable)
+    publish_winners = models.BooleanField(
+        u'Публиковать победителей', default=False)
+    logo = models.ImageField(
+        u'Логотип события', upload_to=get_path(u'logos/{0}/full{1}'),
+        storage=media_storage, **nullable)
+    min_logo = models.ImageField(
+        u'Уменьшенный логотип события', upload_to=get_path(u'logos/{0}/min{1}'),
+        storage=media_storage, **nullable)
 
     title = models.CharField(u'Название события', max_length=255)
     opened = models.BooleanField(u'Событие открыто ', default=True)
@@ -65,14 +67,15 @@ class Event(FileModelMixin, models.Model):
     description = models.TextField(u'Описание события')
     participant_conditions = models.TextField(u'Условия подачи заявок')
     contacts_raw_text = models.TextField(u'Контакты')
-    rules_document = models.FileField(u'Положение официальный документ',
-        upload_to=get_rules_path, **nullable)
+    rules_document = models.FileField(
+        u'Положение официальный документ', upload_to=get_rules_path, **nullable)
 
-    created = models.DateTimeField(u'Дата добавления', default=now,
-        editable=False)
+    created = models.DateTimeField(
+        u'Дата добавления', default=now, editable=False)
 
-    jurors = models.ManyToManyField(User, verbose_name=u'Члены жюри',
-        through='Juror', related_name='juror_events')
+    jurors = models.ManyToManyField(
+        User, verbose_name=u'Члены жюри', through='Juror',
+        related_name='juror_events')
 
     class Meta:
         verbose_name = u'Событие'
@@ -89,8 +92,11 @@ class Event(FileModelMixin, models.Model):
         return mark_safe(title)
 
     def chain(self):
-        return Event.objects.filter(title=self.title, owner=self.owner,
-            is_approved=True, type=self.FESTIVAL)
+        return Event.objects.filter(
+            title=self.title,
+            owner=self.owner,
+            is_approved=True,
+            type=self.FESTIVAL)
 
     def contests(self):
         return self.contest_set.filter(is_approved=True)
@@ -140,9 +146,9 @@ class Juror(FileModelMixin, models.Model):
     info_name = models.CharField(u'Имя', max_length=100)
     info_middle_name = models.CharField(u'Отчество', max_length=100)
     description = models.TextField(u'Описание')
-    min_avatar = models.ImageField(u'Фото', storage=media_storage,
-        upload_to=get_path(u'jurors_avatars/{0}/min{1}'), blank=False,
-        null=True)
+    min_avatar = models.ImageField(
+        u'Фото', upload_to=get_path(u'jurors_avatars/{0}/min{1}'), blank=False,
+        storage=media_storage, null=True)
 
     class Meta:
         verbose_name = u'Член жюри'
@@ -164,8 +170,8 @@ class NewsPost(TitleUnicode, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
     title = models.CharField(u'Новость', max_length=255)
     description = models.TextField(u'Описание')
-    creation_date = models.DateField(u'Дата добавления',
-        editable=False, default=now)
+    creation_date = models.DateField(
+        u'Дата добавления', editable=False, default=now)
 
     class Meta:
         verbose_name = u'Новость'
@@ -179,8 +185,8 @@ class Nomination(models.Model):
     description = models.CharField(u'Описание', max_length=255, blank=True)
     age_from = models.PositiveSmallIntegerField(
         u'Возраст от (включительно)', **nullable)
-    age_to = models.PositiveSmallIntegerField(u'Возраст до (включительно)',
-        **nullable)
+    age_to = models.PositiveSmallIntegerField(
+        u'Возраст до (включительно)', **nullable)
     sort_order = models.PositiveSmallIntegerField(u'Сортировка')
 
     class Meta:
@@ -207,8 +213,8 @@ class Participant(models.Model):
     index_number = models.IntegerField(u'Номер заявки', editable=False)
     is_accepted = models.BooleanField(
         u'Заявка принята', default=False, db_index=True)
-    videos = models.ManyToManyField(Video,
-        verbose_name=u'Видео', through='ParticipantVideo')
+    videos = models.ManyToManyField(
+        Video, verbose_name=u'Видео', through='ParticipantVideo')
 
     class Meta:
         unique_together = (
@@ -223,26 +229,30 @@ class Participant(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.index_number:
-            self.index_number = (self.__class__.objects.filter(event=self.event
-                ).aggregate(Max('index_number'))['index_number__max'] or 0) + 1
+            last_index = self.__class__.objects.filter(
+                event=self.event).aggregate(
+                    Max('index_number'))['index_number__max'] or 0
+            self.index_number = last_index + 1
         super(Participant, self).save(*args, **kwargs)
 
 
 class ParticipantVideo(models.Model):
     score_nums = range(1, 11)
 
-    participant = models.ForeignKey(Participant,
-        verbose_name=u'Заявка на фестиваль')
-    nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация',
+    participant = models.ForeignKey(
+        Participant, verbose_name=u'Заявка на фестиваль')
+    nomination = models.ForeignKey(
+        Nomination, verbose_name=u'Номинация',
         related_name='user_selected_participantvideo_set')
-    nominations = models.ManyToManyField(Nomination, verbose_name=u'Номинации',
+    nominations = models.ManyToManyField(
+        Nomination, verbose_name=u'Номинации',
         through='VideoNomination', blank=False)
-    age = models.PositiveSmallIntegerField(u'Возраст автора', blank=False,
-        help_text=u'(полных лет)')
-    video = models.ForeignKey(Video, verbose_name=u'Видео', blank=False,
-        on_delete=models.PROTECT)
-    is_accepted = models.BooleanField(u'Видео принято', default=False,
-        db_index=True)
+    age = models.PositiveSmallIntegerField(
+        u'Возраст автора', blank=False, help_text=u'(полных лет)')
+    video = models.ForeignKey(
+        Video, verbose_name=u'Видео', blank=False, on_delete=models.PROTECT)
+    is_accepted = models.BooleanField(
+        u'Видео принято', default=False, db_index=True)
 
     class Meta:
         unique_together = (("participant", "video"),)
@@ -255,8 +265,9 @@ class ParticipantVideo(models.Model):
 
     def clean_fields(self, exclude=None):
         super(ParticipantVideo, self).clean_fields(exclude)
-        if self.age and not ((self.nomination.age_from or 0) <= self.age
-        <= (self.nomination.age_to or 100)):
+        age_from = self.nomination.age_from or 0
+        age_to = self.nomination.age_to or 100
+        if self.age and not (age_from <= self.age <= age_to):
             raise ValidationError({'age': [u'Возраст автора не подходит']})
 
 
@@ -269,11 +280,11 @@ class VideoNomination(models.Model):
         (SECOND, u'2 место'),
         (THIRD, u'3 место'),
     )
-    participant_video = models.ForeignKey(ParticipantVideo,
-        verbose_name=u'Видео участника')
+    participant_video = models.ForeignKey(
+        ParticipantVideo, verbose_name=u'Видео участника')
     nomination = models.ForeignKey(Nomination, verbose_name=u'Номинация')
-    result = models.PositiveSmallIntegerField(u'Итог', choices=STATUS_CHOICES,
-        db_index=True, **nullable)
+    result = models.PositiveSmallIntegerField(
+        u'Итог', choices=STATUS_CHOICES, db_index=True, **nullable)
 
     def __unicode__(self):
         return u'{0} в номинации {1}'.format(
@@ -282,8 +293,8 @@ class VideoNomination(models.Model):
 
 class ParticipantVideoScore(models.Model):
     owner = models.ForeignKey(User, verbose_name=u'Участник')
-    participant_video = models.ForeignKey(ParticipantVideo,
-        verbose_name=u'Видео участника')
+    participant_video = models.ForeignKey(
+        ParticipantVideo, verbose_name=u'Видео участника')
     score = models.SmallIntegerField(u'Оценка', validators=[validate_score])
 
     class Meta:
