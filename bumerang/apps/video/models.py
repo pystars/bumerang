@@ -64,8 +64,10 @@ class Video(models.Model, TitleUnicode):
         (ERROR, u'ошибка обработки')
     )
 
-    published_in_archive = models.BooleanField(u'ОВ', default=False)
-    is_in_broadcast_lists = models.BooleanField(u'СВ', default=False)
+    published_in_archive = models.BooleanField(
+        u'ОВ', default=False, help_text=u'Опубликовано в архиве')
+    is_in_broadcast_lists = models.BooleanField(
+        u'СВ', default=False, help_text=u'В списках вещания')
     title = models.CharField(u'Название', max_length=255)
     slug = models.SlugField(
         u'Метка (часть ссылки)', max_length=SLUG_LENGTH, editable=False,

@@ -9,8 +9,8 @@ class BaseVideoForm(S3StorageFormMixin, forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(BaseVideoForm, self).__init__(*args, **kwargs)
-        self.fields['album'].queryset = self.fields[
-                'album'].queryset.filter(owner=user)
+        self.fields['album'].queryset = self.fields['album'].queryset.filter(
+            owner=user)
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
                 or field.widget.__class__ == forms.widgets.Textarea):
@@ -56,7 +56,6 @@ class VideoForm(BaseVideoForm):
             'teachers',
             'manager',
             'festivals',
-#            'access'
         )
 
 
