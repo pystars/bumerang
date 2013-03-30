@@ -5620,3 +5620,18 @@ table.compact td .f-title {
     font-weight: normal;
     line-height: 1.3;
 }
+
+.def-list dl {
+    clear: left;
+    width: 100%;
+    padding: .5em 0;
+}
+.def-list dl dt {
+    float: left;
+    width: 260px;
+    color: #999;
+
+}
+.def-list dl dd {
+    float: left;
+}

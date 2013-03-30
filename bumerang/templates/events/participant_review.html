@@ -22,23 +22,56 @@
             <div class="l-cols__i cleared" style="padding-top: 16px;">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
-
+                    {% with profile=form.instance.owner.profile %}
                         <a class="form-event-view" href="{% url participant-list event.id %}">Вернуться к списку заявок</a>
                         <h3 class="title">
-                            Рассмотрение заявки на участие
+                            Рассмотрение заявки на участие в событии {{ event }}
                         </h3>
-
+                        <div class="def-list">
+                            <dl>
+                                <dt>Отправитель</dt>
+                                <dd>{{ profile.get_type_display }} <a
+                                    href="{% url profile-detail profile.id %}">{{ profile }}</a></dd>
+                            </dl>
+                            <dl>
+                                <dt>Откуда</dt>
+                                <dd>{{ profile.get_locality|default:"--" }}</dd>
+                            </dl>
+                            <dl>
+                                <dt>Контактный телефон</dt>
+                                <dd>{{ profile.info_phone|default:"--" }}</dd>
+                            </dl>
+                            <dl>
+                                <dt>Мобильный телефон</dt>
+                                <dd>{{ profile.info_mobile_phone|default:"--" }}</dd>
+                            </dl>
+                            <dl>
+                                <dt>Электронный адрес</dt>
+                                <dd>{{ profile.info_email|default:"--" }}</dd>
+                            </dl>
+                            <dl>
+                                <dt>Фактический адрес</dt>
+                                <dd>{{ profile.info_address|default:"--" }}</dd>
+                            </dl>
+                            <dl>
+                                <dt>Почтовый адрес</dt>
+                                <dd>{{ profile.info_postal_address|default:"--" }}</dd>
+                            </dl>
+                            <dl>
+                                <dt>Коллектив в составе организации</dt>
+                                <dd>{{ profile.info_organization|default:"--" }}</dd>
+                            </dl>
+                        </div>
+                        <div class="clear"></div>
+                    {% endwith %}
                         <div class="b-hr"><hr /></div>
                         <section class="b-form b-form_smaller b-form_left">
                             <form name="editform" action="" method="post">
                                 {% csrf_token %}
-
                                 {{ formset.management_form }}
                                 {% for form in formset %}
                                     <fieldset class="field" id="{{ form.prefix }}-row">
-                                        {% for hidden in form.hidden_fields %}
-                                            {{ hidden }}
-                                        {% endfor %}
+                                        {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
 
                                         {% with video=form.instance.video %}
                                             <fieldset>
@@ -62,7 +95,6 @@
                                         {% endwith %}
 
                                         {% for field in form.visible_fields %}
-
                                                 <fieldset>
                                                     <div class="b-form__field">
                                                         <label>
@@ -78,8 +110,8 @@
                                                         {% endif %}
                                                     </div>
                                                 </fieldset>
-
                                         {% endfor %}
+
                                         <div class="b-hr"><hr /></div>
                                     </fieldset>
                                 {% endfor %}
@@ -106,7 +138,7 @@
         <ul>
             <h4>Управление</h4>
             <li>
-                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>
+                <a href="{% url event-send-request %}" title="Создать событие">Создать событие</a>
             </li>
         </ul>
         {% include 'snippets/round_frame.html' %}

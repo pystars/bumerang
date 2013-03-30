@@ -252,7 +252,7 @@ class ParticipantVideo(models.Model):
     video = models.ForeignKey(
         Video, verbose_name=u'Видео', blank=False, on_delete=models.PROTECT)
     is_accepted = models.BooleanField(
-        u'Видео принято', default=False, db_index=True)
+        u'Принять видео', default=False, db_index=True)
 
     class Meta:
         unique_together = (("participant", "video"),)
