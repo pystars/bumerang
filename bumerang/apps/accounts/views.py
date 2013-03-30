@@ -284,7 +284,6 @@ class ProfileView(DetailView):
         ctx.update({
             'hide_show_profile_link': True,
         })
-
         return ctx
 
     def get_object(self, queryset=None):
@@ -306,7 +305,7 @@ class ProfileVideoView(DetailView):
 
     def get_context_data(self, **kwargs):
         videos = self.object.videos_without_album()
-        if not self.request.user.id == self.object.id:
+        if not self.object.id == getattr(self.request.user, 'id', None):
             videos = videos.filter(status=Video.READY)
         ctx = super(ProfileVideoView, self).get_context_data(**kwargs)
         ctx['videos'] = videos
@@ -348,17 +347,17 @@ class ProfileInfoEditView(UpdateView):
     def get_form_class(self):
         # Выбираем тип формы
         # в зависимости от типа профиля
-        if self.request.user.profile.type == 1:
+        if self.request.user.profile.type == Profile.TYPE_USER:
             return UserProfileInfoForm
-        if self.request.user.profile.type == 2:
+        if self.request.user.profile.type == Profile.TYPE_SCHOOL:
             return SchoolProfileInfoForm
-        if self.request.user.profile.type == 3:
+        if self.request.user.profile.type == Profile.TYPE_STUDIO:
             return StudioProfileInfoForm
-        if self.request.user.profile.type == 4:
+        if self.request.user.profile.type == Profile.TYPE_FESTIVAL:
             return FestivalProfileInfoForm
 
     def get_success_url(self):
-        return reverse("profile-detail", args=[self.get_object().id])
+        return reverse("profile-detail", args=[self.get_object().pk])
 
     def form_valid(self, form):
         self.object = form.save()
@@ -435,7 +434,9 @@ class FormsetUpdateView(UpdateView):
         return super(FormsetUpdateView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        formset = self.FormSet(request.POST,request.FILES, instance=self.get_object())
+        formset = self.FormSet(request.POST,
+                               request.FILES,
+                               instance=self.get_object())
 
         if formset.is_valid():
             formset.save()
@@ -601,7 +602,7 @@ class ProfileContactsEditView(UpdateView):
         return self.request.user.profile
 
     def get_form_class(self):
-        if self.request.user.profile.type == 1:
+        if self.request.user.profile.type == Profile.TYPE_USER:
             return UserContactsForm
         else:
             return OrganizationContactsForm
@@ -683,5 +684,8 @@ class ProfileEventListView(DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfileEventListView, self).get_context_data(**kwargs)
-        ctx['events'] = self.object.owned_events.all()
+        events = self.object.owned_events.all()
+        if not self.object.id == getattr(self.request.user, 'id', None):
+            events = events.filter(is_approved=True)
+        ctx['events'] = events
         return ctx
