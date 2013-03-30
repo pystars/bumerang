@@ -52,7 +52,6 @@ $(function() {
 
         form.on('click', 'input[name=type]', function(e) {
             var type = parseInt($(this).val(), 10);
-
             if (type == 1) {
                 form.find('#parent-fest-selector').removeClass('hidden');
             } else if (type == 2) {
@@ -87,7 +86,8 @@ $(function() {
             var total_num = $this.attr('data-total-rate');
             setNewRateStars(total_num);
 
-            $this.find('a').hover(function(e) {
+            $this.find('a').hover(
+                function(e) {
                     var star_num = parseInt($(this).attr('data-rate'));
                     $this.find('a').each(function(i, e) {
                         var el = $(this);
@@ -98,7 +98,8 @@ $(function() {
                             el.removeClass('active');
                         }
                     });
-                }, function(e) {
+                },
+                function(e) {
                     var star_num = parseInt($this.attr('data-total-rate'));
                     $this.find('a').each(function(i, e) {
                         var el = $(e);
@@ -109,43 +110,43 @@ $(function() {
                             el.removeClass('active');
                         }
                     });
-                });
+                }
+            );
 
-                $this.find('a').on('click', function(e){
-                    e.preventDefault();
-                    var item_id = $this.attr('data-item-id');
-                    var rate = $(this).attr('data-rate');
+            $this.find('a').on('click', function(e){
+                e.preventDefault();
+                var item_id = $this.attr('data-item-id');
+                var rate = $(this).attr('data-rate');
 
-                    $this.attr('data-total-rate', rate);
+                $this.attr('data-total-rate', rate);
 
-                    $.ajax({
-                        type: 'POST',
-                        url: '/events/participant-video'+item_id+'/'+rate+'/',
-                        data: {
-                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                            result: 1
-                        },
-                        success: function(response) {
-                            setNewRateStars(response.current);
-                            $('#video-'+response.object_id+'-score').text(
-                                response.average
-                            );
-                            $('#your-'+response.object_id+'-score').text(
-                                response.current
-                            );
-                            Notify(NF_SUCCESS, 'Оценка поставлена')
-                        }
-                    });
+                $.ajax({
+                    type: 'POST',
+                    url: '/events/participant-video'+item_id+'/'+rate+'/',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        result: 1
+                    },
+                    success: function(response) {
+                        setNewRateStars(response.current);
+                        $('#video-'+response.object_id+'-score').text(
+                            response.average
+                        );
+                        $('#your-'+response.object_id+'-score').text(
+                            response.current
+                        );
+                        Notify(NF_SUCCESS, 'Оценка поставлена')
+                    }
                 });
             });
-
+        });
     };
 })(jQuery);
 
 $(function() {
     $('.star-rate').starRating();
 
-    $(document).on('click', 'a.make-winner', function(e) {
+    $(document).on('click', 'a.make`-winner', function(e) {
         e.preventDefault();
         var el = $(this);
         var nomination_id = el.attr('data-nomination-id');
@@ -157,7 +158,6 @@ $(function() {
         }).success(function(response) {
             if (response.success) {
                 Notify(NF_SUCCESS, 'Победитель выбран');
-
                 el.removeClass('make-winner').addClass('unmake-winner').text('Убрать из победителей');
                 $('.winner-title[data-participant-video-id='+participant_video_id+']').html('<h3>Победитель</h3>');
             } else {
@@ -173,17 +173,17 @@ $(function() {
         var participant_video_id = $(this).attr('data-participant-video-id')
 
         $.post('/events/nomination'+nomination_id+'/'+participant_video_id+'/', {
-            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            result: ''
         }).success(function(response) {
-                if (response.success) {
-                    Notify(NF_SUCCESS, 'Работа убрана из победителей');
-
-                    el.removeClass('unmake-winner').addClass('make-winner').text('Выбрать победителем');
-                    $('.winner-title[data-participant-video-id='+participant_video_id+']').empty();
-                } else {
-                    Notify(NF_ERROR, 'Произошла ошибка');
-                }
-            });
+            if (response.success) {
+                Notify(NF_SUCCESS, 'Работа убрана из победителей');
+                el.removeClass('unmake-winner').addClass('make-winner').text('Выбрать победителем');
+                $('.winner-title[data-participant-video-id='+participant_video_id+']').empty();
+            } else {
+                Notify(NF_ERROR, 'Произошла ошибка');
+            }
+        });
     });
 });
 
