@@ -235,7 +235,16 @@ class ParticipantVideoForm(ModelForm):
         self.fields['nomination'].empty_label = None
         self.fields['nomination'].queryset = self.event.nomination_set.all()
         self.fields['video'].queryset = self.fields['video'].queryset.filter(
-            owner=self.request.user, status=Video.READY).order_by('title')
+            owner=self.request.user,
+            status=Video.READY,
+            title__is_null=False,
+            authors__is_null=False,
+            teachers__is_null=False,
+            manager__is_null=False,
+            country__is_null=False,
+            city__is_null=False,
+            year__is_null=False
+        ).order_by('title')
 
 
 class ParticipantVideoReviewForm(ModelForm):

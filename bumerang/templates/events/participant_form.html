@@ -28,14 +28,30 @@
                     <h3 class="title">
                         Подача заявки на &laquo;{{ event }}&raquo;
                     </h3>
-                    {% include "events/snippets/participant_form_snippet.html" %}
-
+                    {% if no_filled_fields|length %}
+                        <p>
+Вы не можете отправить заявку, т.к. ваша контактрая инфорамация не заполнена (поля {{ no_filled_fields|join:", " }}).
+Пожалуйста перейдите на страницу "<a href="{% url profile-edit-contacts %}">Контакты</a>"
+                            вашего профиля, что бы заполнить контакты.
+                        </p>
+                    {% else %}
+                        <p>В заявке на участие в конкурсе принимаются только те работы, у которых указаны:
+                            <ol>
+                                <li>Название фильма</li>
+                                <li>Авторы</li>
+                                <li>Педагоги</li>
+                                <li>Руководитель</li>
+                                <li>Страна</li>
+                                <li>Город</li>
+                                <li>Год</li>
+                            </ol>
+                        </p>
+                        {% include "events/snippets/participant_form_snippet.html" %}
+                    {% endif %}
                 {% else %}
-
                     <h3 class="title">
                         Прием заявок окончен.
                     </h3>
-
                 {% endif %}
 
             </div>
@@ -51,18 +67,6 @@
     </script>
 </div>
 {% endblock %}
-
-{#{% block right_menu %}#}
-{#    <nav class="b-side-nav d-indent" style="margin-top: 60px;">#}
-{#        <ul>#}
-{#            <h4>Управление</h4>#}
-{#            <li>#}
-{#                <a href="{% url event-send-request %}" title="Заполнить заявку">Заполнить заявку</a>#}
-{#            </li>#}
-{#        </ul>#}
-{#        {% include 'snippets/round_frame.html' %}#}
-{#    </nav>#}
-{#{% endblock %}#}
 
 {% block popup %}
     <li class="item template" style="display: none;">

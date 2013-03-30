@@ -109,7 +109,8 @@ class EventDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
+        if not self.object.is_approved and self.object.owner != request.user:
+            return Http404()
         self.formset_form_class.event = self.object
         self.formset_form_class.request = request
         self.ModelFormSet = modelformset_factory(
@@ -117,7 +118,6 @@ class EventDetailView(DetailView):
             form=self.formset_form_class,
             can_delete=True
         )
-
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
@@ -461,7 +461,22 @@ class EventContactsUpdateView(UpdateView):
         return reverse('event-edit-contacts', kwargs={'pk': self.object.pk})
 
 
-class ParticipantCreateView(ParticipantMixin, CreateView):
+class ContactsCheckMixin:
+    def get_no_filled_fields(self, request):
+        from bumerang.apps.accounts.views import ProfileContactsEditView
+        profile_contacts_view = ProfileContactsEditView.as_view().get(request)
+        form = profile_contacts_view.get_form_class()()
+        required_field_names = [
+            name for name, field in form.fields.iteritems() if field.required]
+        profile = request.user.profile
+        result = []
+        for field_name in required_field_names:
+            if not getattr(profile, field_name):
+                result.append(Profile._meta.get_field(field_name).verbose_name)
+        return result
+
+
+class ParticipantCreateView(ParticipantMixin, CreateView, ContactsCheckMixin):
 
     def get_context_data(self, **kwargs):
         context = {
@@ -472,7 +487,8 @@ class ParticipantCreateView(ParticipantMixin, CreateView):
                 queryset=self.formset_model.objects.get_empty_query_set()
             ),
             'add_item_text': self.add_item_text,
-            'event': self.event
+            'event': self.event,
+            'no_filled_fields': self.get_no_filled_fields(self.request)
         }
         context.update(kwargs)
         return context
@@ -543,7 +559,7 @@ class ParticipantConfirmView(ParticipantMixin, OwnerMixin, DetailView):
         return ctx
 
 
-class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
+class ParticipantUpdateView(ParticipantMixin, OwnerMixin, ContactsCheckMixin,
                             GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoForm
     template_name = "events/participant_edit_form.html"
@@ -551,6 +567,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
     def get_context_data(self, **kwargs):
         ctx = super(ParticipantUpdateView, self).get_context_data(**kwargs)
         ctx['event'] = self.event
+        ctx['no_filled_fields'] = self.get_no_filled_fields(self.request)
         return ctx
 
     def get_success_url(self):
@@ -561,7 +578,7 @@ class ParticipantUpdateView(ParticipantMixin, OwnerMixin,
             raise Http404(u'Страница не найдена')
         formset = self.ModelFormSet(request.POST, prefix=self.formset_prefix)
         if formset.is_valid():
-            if not (formset.total_form_count() > len(formset.deleted_forms)):
+            if formset.total_form_count() <= len(formset.deleted_forms):
                 self.object.delete()
                 return HttpResponseRedirect(
                     reverse('event-detail', args=(self.event.id,)))
