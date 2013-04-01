@@ -237,14 +237,13 @@ class ParticipantVideoForm(ModelForm):
         self.fields['video'].queryset = self.fields['video'].queryset.filter(
             owner=self.request.user,
             status=Video.READY,
-        ).exclude(
-            title='',
-            authors='',
-            teachers='',
-            manager='',
-            country='',
-            city='',
-            year=''
+            title__isnull=False,
+            authors__isnull=False,
+            teachers__isnull=False,
+            manager__isnull=False,
+            country__isnull=False,
+            city__isnull=False,
+            year__isnull=False
         ).order_by('title')
 
 
