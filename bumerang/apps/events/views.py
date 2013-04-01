@@ -464,7 +464,7 @@ class EventContactsUpdateView(UpdateView):
 class ContactsCheckMixin:
     def get_no_filled_fields(self, request):
         from bumerang.apps.accounts.views import ProfileContactsEditView
-        profile_contacts_view = ProfileContactsEditView.as_view().get(request)
+        profile_contacts_view = ProfileContactsEditView().get(request)
         form = profile_contacts_view.get_form_class()()
         required_field_names = [
             name for name, field in form.fields.iteritems() if field.required]
