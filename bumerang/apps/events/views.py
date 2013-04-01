@@ -30,6 +30,8 @@ from bumerang.apps.utils.views import (
     OwnerMixin, SortingMixin, GenericFormsetWithFKUpdateView)
 from bumerang.apps.accounts.models import Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
+from bumerang.apps.accounts.forms import (
+    UserContactsForm, OrganizationContactsForm)
 from bumerang.apps.events.models import (
     ParticipantVideo, GeneralRule, NewsPost, Juror, VideoNomination,
     ParticipantVideoScore, Event, Nomination, Participant)
