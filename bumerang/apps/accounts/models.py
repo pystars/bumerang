@@ -109,6 +109,11 @@ class Profile(FileModelMixin, User):
 
         return u'{0} {1}'.format(title, self.title)
 
+    def get_info_fio(self):
+        return ' '.join([getattr(self, name) for name in [
+            'info_second_name', 'info_name', 'info_middle_name']
+                         if getattr(self, name)])
+
     def get_locality(self):
         u"""
         Возвращает строку для поля "откуда" профиля

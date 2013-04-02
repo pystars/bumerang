@@ -33,6 +33,12 @@
                                 <dd>{{ profile.get_type_display }} <a
                                     href="{% url profile-detail profile.id %}">{{ profile }}</a></dd>
                             </dl>
+                            {% if profile.type != 1 %}
+                                <dl>
+                                    <dt>Руководитель</dt>
+                                    <dd>{{ profile.get_info_fio|default:"--" }}</dd>
+                                </dl>
+                            {% endif %}
                             <dl>
                                 <dt>Откуда</dt>
                                 <dd>{{ profile.get_locality|default:"--" }}</dd>
@@ -57,10 +63,16 @@
                                 <dt>Почтовый адрес</dt>
                                 <dd>{{ profile.info_postal_address|default:"--" }}</dd>
                             </dl>
+                            {% if profile.type != 1 %}
                             <dl>
                                 <dt>Коллектив в составе организации</dt>
                                 <dd>{{ profile.info_organization|default:"--" }}</dd>
                             </dl>
+                            <dl>
+                                <dt>Правовая форма организации</dt>
+                                <dd>{{ profile.info_organization_form|default:"--" }}</dd>
+                            </dl>
+                            {% endif %}
                         </div>
                         <div class="clear"></div>
                     {% endwith %}
