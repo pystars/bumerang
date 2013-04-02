@@ -146,7 +146,7 @@ $(function() {
 $(function() {
     $('.star-rate').starRating();
 
-    $(document).on('click', 'a.make`-winner', function(e) {
+    $(document).on('click', 'a.make-winner', function(e) {
         e.preventDefault();
         var el = $(this);
         var nomination_id = el.attr('data-nomination-id');
