@@ -244,6 +244,12 @@ class ParticipantVideoForm(ModelForm):
             country__isnull=False,
             city__isnull=False,
             year__isnull=False
+        ).exclude(
+            authors='',
+            teachers='',
+            manager='',
+            country='',
+            city='',
         ).order_by('title')
 
 
