@@ -276,13 +276,23 @@ class PasswordRecoveryView(FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ProfileView(DetailView):
+
+class ProfileViewMixin:
+    def get_events_count(self):
+        if self.request.user.is_authenticated():
+            if self.object == self.request.user.profile:
+                return self.object.owned_events.count()
+        return self.object.owned_events.filter(is_approved=True).count()
+
+
+class ProfileView(DetailView, ProfileViewMixin):
     model = Profile
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfileView, self).get_context_data(**kwargs)
         ctx.update({
             'hide_show_profile_link': True,
+            'events_count': self.get_events_count()
         })
         return ctx
 
@@ -300,7 +310,7 @@ class ProfileView(DetailView):
         return response
 
 
-class ProfileVideoView(DetailView):
+class ProfileVideoView(DetailView, ProfileViewMixin):
     model = Profile
 
     def get_context_data(self, **kwargs):
@@ -309,15 +319,17 @@ class ProfileVideoView(DetailView):
             videos = videos.filter(status=Video.READY)
         ctx = super(ProfileVideoView, self).get_context_data(**kwargs)
         ctx['videos'] = videos
+        ctx['events_count'] = self.get_events_count()
         return ctx
 
 
-class ProfilePhotoView(DetailView):
+class ProfilePhotoView(DetailView, ProfileViewMixin):
     model = Profile
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfilePhotoView, self).get_context_data(**kwargs)
         ctx['photos'] = self.object.photos_without_album()
+        ctx['events_count'] = self.get_events_count()
         return ctx
 
 
@@ -678,7 +690,7 @@ class ProfileSettingsEditView(UpdateView):
             self.get_context_data(**{form_name:form}))
 
 
-class ProfileEventListView(DetailView):
+class ProfileEventListView(DetailView, ProfileViewMixin):
     model = Profile
     template_name = "accounts/profile_event_list.html"
 
@@ -688,5 +700,5 @@ class ProfileEventListView(DetailView):
         if not self.object.id == getattr(self.request.user, 'id', None):
             events = events.filter(is_approved=True)
         ctx['events'] = events
-        ctx['events_count'] = events.count()
+        ctx['events_count'] = self.get_events_count()
         return ctx
