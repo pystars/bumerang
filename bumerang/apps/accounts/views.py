@@ -688,4 +688,5 @@ class ProfileEventListView(DetailView):
         if not self.object.id == getattr(self.request.user, 'id', None):
             events = events.filter(is_approved=True)
         ctx['events'] = events
+        ctx['events_count'] = events.count()
         return ctx

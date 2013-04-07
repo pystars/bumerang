@@ -43,7 +43,7 @@
             <span>Фестивали и конкурсы</span>
         </a>
     {% endspaceless %}
-        <small>{{ profile.owned_events.count }}</small>
+        <small>{% if events_count %}{{ events_count }}{% else %}{{ profile.owned_events.count }}{% end %}</small>
     <i class="l"></i>
     <i class="r"></i>
 </dt>
