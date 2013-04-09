@@ -276,7 +276,6 @@ class PasswordRecoveryView(FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-
 class ProfileViewMixin:
     def get_events_count(self):
         if self.request.user.is_authenticated():
