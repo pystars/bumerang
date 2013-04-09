@@ -66,9 +66,9 @@
                                         {% if request.user == event.owner %}
                                             <div>
                                                 {% if not object.result %}
-                                                    <a class="make-winner" href="#" data-nomination-id="{{ nomination.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
+                                                    <a class="make-winner" href="#" data-nomination-id="{{ object.nomination.id }}" data-participant-video-id="{{ object.id }}">Выбрать победителем</a>
                                                 {% else %}
-                                                    <a class="unmake-winner" href="#" data-nomination-id="{{ nomination.id }}" data-participant-video-id="{{ object.id }}">Убрать из победителей</a>
+                                                    <a class="unmake-winner" href="#" data-nomination-id="{{ object.nomination.id }}" data-participant-video-id="{{ object.id }}">Убрать из победителей</a>
                                                 {% endif %}
                                             </div>
                                         {% endif %}
