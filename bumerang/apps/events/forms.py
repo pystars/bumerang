@@ -244,12 +244,8 @@ class ParticipantVideoForm(ModelForm):
             country__isnull=False,
             city__isnull=False,
             year__isnull=False
-        ).exclude(authors=''
-        ).exclude(teachers=''
-        ).exclude(manager=''
-        ).exclude(country=''
-        ).exclude(city='',
-        ).order_by('title')
+        ).exclude(authors='').exclude(teachers='').exclude(manager=''
+        ).exclude(country='').exclude(city='',).order_by('title')
 
 
 class ParticipantVideoReviewForm(ModelForm):
