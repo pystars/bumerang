@@ -45,7 +45,8 @@ class Event(FileModelMixin, models.Model):
     )
     parent = models.ForeignKey(
         'self', verbose_name=u'В рамках фестиваля', related_name='contest_set',
-        limit_choices_to={'type':FESTIVAL}, **nullable)
+        limit_choices_to={'type':FESTIVAL}, on_delete=models.SET_NULL,
+        **nullable)
     owner = models.ForeignKey(User, related_name='owned_events')
     type = models.IntegerField(u'Тип события', choices=TYPES_CHOICES)
     is_approved = models.BooleanField(u'Заявка подтверждена', default=False)
