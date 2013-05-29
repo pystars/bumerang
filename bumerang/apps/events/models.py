@@ -69,7 +69,8 @@ class Event(FileModelMixin, models.Model):
     participant_conditions = models.TextField(u'Условия подачи заявок')
     contacts_raw_text = models.TextField(u'Контакты')
     rules_document = models.FileField(
-        u'Положение официальный документ', upload_to=get_rules_path, **nullable)
+        u'Положение официальный документ', upload_to=get_rules_path,
+        max_length=255, **nullable)
 
     created = models.DateTimeField(
         u'Дата добавления', default=now, editable=False)
