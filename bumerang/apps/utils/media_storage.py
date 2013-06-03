@@ -5,7 +5,9 @@ AWS_PRELOAD_METADATA = True
 and that you have python-dateutils==1.5 installed
 """
 from __future__ import absolute_import
+from datetime import datetime
 
+from dateutil import tz
 from django.conf import settings
 from storages.backends.s3boto import S3BotoStorage
 from storages.backends.overwrite import OverwriteStorage
@@ -26,6 +28,13 @@ class CachedS3BotoStorage(S3BotoStorage, S3BotoStorageMixin):
 #        self.local_storage._save(name, content)
 #        return name
 
+    def modified_time(self, path):
+        try:
+            return super(CachedS3BotoStorage, self).modified_time(path)
+        except AttributeError:
+            return datetime.now().astimezone(
+                tz.gettz(settings.TIME_ZONE)).replace(tzinfo=None)
+
     def isdir(self, name):
         if not name: # Empty name is a directory
             return True
@@ -33,7 +42,10 @@ class CachedS3BotoStorage(S3BotoStorage, S3BotoStorageMixin):
         return bool(self.bucket.get_all_keys(max_keys=1, prefix=name + '/'))
 
     def makedirs(self, name):
-        key = self.bucket.new_key(self._encode_name(name))
+        name = self._encode_name(name)
+        if not name.endswith('/'):
+            name += '/'
+        key = self.bucket.new_key(name)
         key.set_contents_from_string('', reduced_redundancy=True)
 
 
