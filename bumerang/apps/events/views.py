@@ -2,10 +2,8 @@
 # do not touch this import for correct work with avatar
 from __future__ import division
 import json
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from datetime import datetime
+from cStringIO import StringIO
 
 from PIL import Image
 from django.core.urlresolvers import reverse
@@ -14,7 +12,8 @@ from django.core.files.base import ContentFile
 from django.db.utils import IntegrityError
 from django.db.models.aggregates import Avg
 from django.db.models.query_utils import Q
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import (
+    HttpResponseRedirect, HttpResponse, Http404, HttpResponseForbidden)
 from django.forms.models import modelformset_factory
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404
@@ -23,6 +22,7 @@ from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from django.views.generic import (
     View, CreateView, UpdateView, ListView, DetailView)
+from django.views.generic.edit import BaseUpdateView
 from django.contrib.auth.models import User
 
 from bumerang.apps.utils.functions import image_crop_rectangle_center
@@ -699,29 +699,28 @@ class ParticipantListView(SortingMixin, ListView):
 
 class ParticipantVideoRatingUpdate(UpdateView):
     model = ParticipantVideo
-    response_class = HttpResponse
 
-    def get_object(self, queryset=None):
-        self.video = super(
-            ParticipantVideoRatingUpdate, self).get_object(queryset)
-        kwargs = dict(
-            owner=self.request.user,
-            participant_video=self.video
+    def get_queryset(self):
+        return super(ParticipantVideoRatingUpdate, self).get_queryset().filter(
+            participant__event__end_date__gte=datetime.now()
         )
+
+    def set_rating(self):
+        kwargs = dict(owner=self.request.user, participant_video=self.object)
         if not ParticipantVideoScore.objects.filter(**kwargs).update(
                 score=self.kwargs['rate']):
-            obj = ParticipantVideoScore(score=self.kwargs['rate'], **kwargs)
-            obj.save()
-        else:
-            obj = ParticipantVideoScore.objects.get(**kwargs)
-        return obj
+            ParticipantVideoScore.objects.create(
+                score=self.kwargs['rate'], **kwargs)
 
     def render_to_response(self, context, **response_kwargs):
+        if self.request.user not in self.object.participant.event.jurors.all():
+            return HttpResponseForbidden("You're not juror of this event")
+        self.set_rating()
         response = {
-            'average': self.video.participantvideoscore_set.all().aggregate(
+            'average': self.object.participantvideoscore_set.all().aggregate(
                 Avg('score'))['score__avg'] or 0,
-            'current': context['object'].score,
-            'object_id': self.video.id
+            'current': self.kwargs['rate'],
+            'object_id': self.object.pk
         }
         json = JSONEncoder().encode(response)
         return HttpResponse(json, mimetype="application/json")

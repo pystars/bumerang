@@ -8,6 +8,7 @@ from django.conf import settings
 
 from bumerang.apps.utils.email import send_single_email
 
+
 def notify_admins_about_event_request(sender, **kwargs):
     event = kwargs['event']
     to = dict(settings.MANAGERS).values()
@@ -100,11 +101,18 @@ def notify_jurors_about_participant(sender, **kwargs):
 
 def notify_juror_about_registration(sender, **kwargs):
     juror = kwargs['juror']
+    from models import ParticipantVideo
+
+    videos = ParticipantVideo.objects.filter(
+        participant__in=juror.event.participant_set.values_list(
+            'id', flat=True))
     ctx = {
         'header': u'Вы добавлены в жюри события',
         'subject': u'Вы добавлены в жюри события',
         'juror': juror
     }
+    if videos.exists():
+        ctx['videos'] = videos
     if kwargs['created']:
         ctx['password'] = kwargs['password']
         send_single_email(

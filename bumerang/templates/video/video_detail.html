@@ -9,6 +9,7 @@
     <script type="text/javascript">
       VK.init({apiId: 2868516, onlyWidgets: true});
     </script>
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block left_column %}
@@ -66,6 +67,25 @@
                     {{ object.views_count }} {{ object.views_count|rupluralize:"просмотр,просмотра,просмотров" }}
                 </div>
             </div>
+
+            {% if request.user in participant_video.event.jurors.all %}
+            <div>
+                <span class="dark-gray">Ваша оценка: </span>
+                <span class="dark-gray" id="your-{{ participant_video.id }}-score">{{ participant_video.current_score.score|default:'Не выставлена' }}</span>
+            </div>
+            <div class="b-vote">
+                <div class="wrap">
+                <ul class="star-rate" data-total-rate="{{ participant_video.current_score.score }}" data-item-id="{{ participant_video.id }}">
+                    {% for item in participant_video.score_nums %}
+                        <li>
+                            <a href="#" data-rate="{{ item }}">&nbsp;</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+            {% endif %}
+
             {% include 'snippets/video_description.html' %}
             <div id="vk_comments" class="vk_comments" style="margin: 0 auto;"></div>
             <script type="text/javascript">

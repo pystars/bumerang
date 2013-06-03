@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from django.db.models.aggregates import Avg
 from django.utils import simplejson
 from django.contrib import messages
@@ -16,6 +18,7 @@ from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
 from models import Video, VideoCategory
+from bumerang.apps.events.models import ParticipantVideo
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
 
@@ -61,6 +64,18 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
 
 class VideoDetailView(VideoMixin, DetailView):
     model = Video
+
+    def get_context_data(self, **kwargs):
+        ctx = super(VideoDetailView, self).get_context_data(**kwargs)
+        if self.request.GET.get('pv', None):
+            try:
+                ctx['participant_video'] = ParticipantVideo.objects.filter(
+                    video_id=self.object.pk,
+                    participant__event__end_date__gte=datetime.now()).get(
+                    pk=int(self.request.GET['pv']))
+            except ParticipantVideo.DoesNotExist, ValueError:
+                pass
+        return ctx
 
     def get_queryset(self):
         return super(VideoDetailView, self).get_queryset().filter(
