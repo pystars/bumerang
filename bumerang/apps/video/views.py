@@ -18,7 +18,7 @@ from bumerang.apps.accounts.models import Profile
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
 from models import Video, VideoCategory
-from bumerang.apps.events.models import ParticipantVideo
+from bumerang.apps.events.models import ParticipantVideo, ParticipantVideoScore
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
 
@@ -73,6 +73,13 @@ class VideoDetailView(VideoMixin, DetailView):
                     video_id=self.object.pk,
                     participant__event__end_date__gte=datetime.now()).get(
                     pk=int(self.request.GET['pv']))
+                current_score = ParticipantVideoScore.objects.get(
+                        owner=self.request.user,
+                        participant_video=ctx['participant_video']
+                    )
+                ctx['participant_video'].current_score = current_score
+            except ParticipantVideoScore.DoesNotExist:
+                ctx['participant_video'].current_score = None
             except ParticipantVideo.DoesNotExist, ValueError:
                 pass
         return ctx
