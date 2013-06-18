@@ -21,7 +21,7 @@ class FileModelMixin(object):
 
     def delete(self, *args, **kwargs):
         try:
-            super(FileModelMixin, self).delete(*args, **kwargs)
+            # super(FileModelMixin, self).delete(*args, **kwargs)
             for field in self.not_empty_file_fields():
                 getattr(self, field.name).delete()
             super(FileModelMixin, self).delete(*args, **kwargs)
