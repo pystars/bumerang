@@ -32,8 +32,8 @@ def validate_score(value):
 
 def get_rules_path(instance, filename):
     ext = os.path.splitext(filename)[1]
-    return u'event_rules/правила_подачи_заявки_на_{0}{1}'.format(
-        instance, ext)
+    return u'event_rules/{0}правила_подачи_заявки_на_{1}{2}'.format(
+        instance.pk, instance, ext)
 
 
 class Event(FileModelMixin, models.Model):
