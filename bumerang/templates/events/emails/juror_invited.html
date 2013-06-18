@@ -11,7 +11,7 @@
         <p style="margin: 4px 0;"><b>Уже зарегистрированные видео для выставления оценок:</b></p>
         <ul>
             {% for video in videos %}
-                <li><a href="{% url video-detail video.video.pk %}?pv={{ video.pk }}">{{ video.video.title }}</a></li>
+                <li><a href="http://probumerang.tv{% url video-detail video.video.pk %}?pv={{ video.pk }}">{{ video.video.title }}</a></li>
             {% endfor %}
         </ul>
         {% endif %}
