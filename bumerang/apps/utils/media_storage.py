@@ -32,8 +32,7 @@ class CachedS3BotoStorage(S3BotoStorage, S3BotoStorageMixin):
         try:
             return super(CachedS3BotoStorage, self).modified_time(path)
         except AttributeError:
-            return datetime.now().astimezone(
-                tz.gettz(settings.TIME_ZONE)).replace(tzinfo=None)
+            return datetime.now()
 
     def isdir(self, name):
         if not name: # Empty name is a directory
