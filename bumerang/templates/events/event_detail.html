@@ -127,7 +127,7 @@
                     {% if object.rules_document %}
                         <div class="b-hr"><hr /></div>
                         <p>
-                            <a href="{{ object.rules_document.url }}" title="Общие положения - {{ object }}">
+                            <a href="{{ object.rules_document.url }}" title="Общие положения - {{ object.get_rules_name }}">
                                 Скачать общие положения в виде документа</a>
                         </p>
                     {% endif %}

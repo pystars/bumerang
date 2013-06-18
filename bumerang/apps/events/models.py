@@ -70,7 +70,7 @@ class Event(FileModelMixin, models.Model):
     contacts_raw_text = models.TextField(u'Контакты')
     rules_document = models.FileField(
         u'Положение официальный документ', upload_to=get_rules_path,
-        max_length=255, **nullable)
+        storage=media_storage, max_length=255, **nullable)
 
     created = models.DateTimeField(
         u'Дата добавления', default=now, editable=False)
@@ -134,6 +134,11 @@ class Event(FileModelMixin, models.Model):
             return u'фестиваля'
 
         return u'события'
+
+    def get_rules_name(self):
+        if self.rules_document:
+            return self.rules_document.name.split('/')[1]
+        return None
 
     def owner_name(self):
         return self.owner.profile.get_title()
