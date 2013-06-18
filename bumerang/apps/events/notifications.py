@@ -104,6 +104,7 @@ def notify_juror_about_registration(sender, **kwargs):
     from models import ParticipantVideo
 
     videos = ParticipantVideo.objects.filter(
+        is_accepted=True,
         participant__in=juror.event.participant_set.values_list(
             'id', flat=True))
     ctx = {
