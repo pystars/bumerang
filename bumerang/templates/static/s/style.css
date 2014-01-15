@@ -12,6 +12,10 @@ body {
 	font:1em/1.1875 'PT Sans', 'Myriad Pro', arial, sans-serif;
 }
 
+body.bs {
+    background-repeat: none;
+}
+
 a, .b-pseudolink {
 	color:#005a8c;
 }
@@ -587,6 +591,10 @@ textarea {
 	position:relative;
 }
 
+body.bs .l-page {
+    background-image: none;
+}
+
 .l-page__i {
 	padding:0 2.5% 6.875em;
 }
@@ -633,6 +641,12 @@ textarea {
 	margin-right:-45%;
 	left:27.5%;
 	text-align:center;
+}
+
+.l-body {
+    background: #fff;
+    margin: 20px 0;
+    padding: 20px 0;
 }
 
 .l-body__i {
@@ -843,6 +857,31 @@ textarea {
 
 .l-head__space {
 	height:100px;
+}
+
+body.bs .l-head__space {
+	height:300px;
+}
+
+body.bs .l-head__space .bs-wrapper {
+    position: absolute;
+    top: 100px;
+    display: block;
+    left: 20px;
+    right: 55%;
+    background: rgba(0,0,0,0.3);
+    padding: 1em;
+}
+
+body.bs .l-head__space .bs-wrapper .bs-head {
+    display: block;
+    color: #fff;
+    font-size: 2em;
+}
+
+body.bs .l-head__space .bs-wrapper .bs-link {
+    color: #fff;
+    font-size: 1.5em;
 }
 
 .l-head .logo {

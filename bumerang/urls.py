@@ -25,7 +25,6 @@ urlpatterns = patterns('',
     url(r'^advices/', include('bumerang.apps.advices.urls')),
     url(r'^video/', include('bumerang.apps.video.urls')),
     url(r'^photo/', include('bumerang.apps.photo.urls')),
-    url(r'^accounts/', include('bumerang.apps.accounts.urls')),
     url(r'^playlists/', include('bumerang.apps.video.playlists.urls')),
     url(r'^events/', include('bumerang.apps.events.urls')),
 )

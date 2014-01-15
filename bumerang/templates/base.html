@@ -26,36 +26,15 @@
     <script type="text/javascript" src="{{ STATIC_URL }}j/site.js"></script>
     {% block head_js %}{% endblock %}
 </head>
-<body>
+{% block banner %}<body>
 <div class="l-page"><div class="l-page__i">
     {% block notifications %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="modal notification {{ message.tags }}">
-                    <div class="modal-header">
-                        <a class="close popup-close" data-dismiss="modal">×</a>
-                        <h3>
-                            {% if message.tags == 'error' %}
-                                Ошибка
-                            {% endif %}{% if message.tags == 'success' %}
-                                Успешно
-                            {% endif %}
-                        </h3>
-                    </div>
-                    <div class="modal-body">
-                        {% autoescape off %}
-                        <p>{{ message }}</p>
-                        {% endautoescape %}
-                    </div>
-                    <div class="modal-footer">
-                        <a href="#" class="b-button b-button_yellow right popup-close">Ok</a>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
+        {% include 'snippets/messages.html' %}
     {% endblock %}
     <header class="l-head">
-        <div class="l-head__space"></div>
+        <div class="l-head__space">
+            <div></div>{% endblock %}
+        </div>
         <div class="logo">
             <a href="{% url BumerangIndexView %}"><img src="{{ STATIC_URL }}i/bumerangtv-logo.png" alt="Бумеранг ТВ" width="383" height="61" /></a>
         </div>
@@ -146,9 +125,8 @@
             </li>
         </ul>
     </header>
-    <div class="l-body"><div class="l-body__i">
+    <div class="l-body d-rounded_r10"><div class="l-body__i">
         {% block content %}
-
         {% endblock %}
     </div></div><!--l-body-->
 </div></div><!--l-page-->

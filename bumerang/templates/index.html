@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load sitetags %}
 
 {% block title %}Бумеранг PRO{% endblock %}
 {% block head_js %}
@@ -176,11 +177,7 @@
                         <div class="b-adv__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
 {#                        <div class="b-adv__title">Реклама</div>#}
                     </header>
-                    <p>
-                        <a href="{% url registration %}">
-                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
-                        </a>
-                    </p>
+                    {% main_page_banner %}
                 </section>
             </div></aside>
         </div></div><!--l-cols-->

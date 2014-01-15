@@ -144,6 +144,12 @@ class Event(FileModelMixin, models.Model):
         return self.owner.profile.get_title()
     owner_name.short_description = u'Имя владельца'
 
+    def banner(self):
+        banners = self.eventbanner_set.filter(is_active=True)
+        if banners.exists():
+            return banners.order_by('-id')[0]
+        return None
+
 
 class Juror(FileModelMixin, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')

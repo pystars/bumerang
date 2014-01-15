@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load sitetags %}
 
 {% block head_js %}
     <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
@@ -40,11 +41,7 @@
                     <header>
                         <div class="b-adv__title">Реклама</div>
                     </header>
-                    <p>
-                        <a href="{% url registration %}">
-                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
-                        </a>
-                    </p>
+                    {% cross_site_banners %}
                 </section>
 {#                <p class="b-side-text">#}
 {#                    Несомненный интерес представляет и тот факт, что тактогенез продольно занимает межпластовый овилин, в то же время поднимаясь в пределах горстов до абсолютных высот 250 м.#}

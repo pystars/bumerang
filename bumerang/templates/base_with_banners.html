@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load sitetags %}
+
+{% block banner %}<body{% if header_banner %} class="bs" style="background-image: url('{{ header_banner.background_image.url }}')"{% endif %}>
+<div class="l-page"><div class="l-page__i">
+    {% block notifications %}
+        {% include 'snippets/messages.html' %}
+    {% endblock %}
+    <header class="l-head">
+        <div class="l-head__space">
+            <div class="bs-wrapper">
+                {% if header_banner %}
+                    <span class="bs-head">{{ header_banner.name }}</span>
+                    <a href="{{ header_banner.url }}" target="_blank" class="bs-link">{{ header_banner.text }}</a>
+                {% endif %}
+            </div>{% endblock %}

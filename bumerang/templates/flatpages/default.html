@@ -1,5 +1,5 @@
-{% extends "base.html" %}
-{% load sitetree flatpages %}
+{% extends "base_with_banners.html" %}
+{% load sitetree flatpages sitetags %}
 
 {% block title %}{{ flatpage.title }}{% endblock %}
 
@@ -25,11 +25,7 @@
                     <header>
 {#                        <div class="b-adv__title">Реклама</div>#}
                     </header>
-                    <p>
-                        <a href="{% url registration %}">
-                            <img src="{{ STATIC_URL }}i/banner.png" alt="Регистрация" width="200" height="340" />
-                        </a>
-                    </p>
+                    {% cross_site_banners %}
                 </section>
             {% endblock %}
         </div></aside>

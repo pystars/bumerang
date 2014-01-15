@@ -48,7 +48,6 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView,
 #                self.model._meta.verbose_name_plural)
 #        else:
 #            msg = u'{0} успешно удален'.format(self.model._meta.verbose_name)
-        # TODO: Придумать сообщение покошернее
         msg = u'Удалено объектов: {0}'.format(len(ids))
 
         for object in objects.all():

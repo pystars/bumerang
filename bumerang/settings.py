@@ -78,6 +78,7 @@ class CommonSettings(Settings):
         'django.contrib.messages.context_processors.messages',
         # bumerang - specific ctx processors
         'bumerang.apps.accounts.context_processors.global_login_form',
+        'bumerang.apps.banners.context_processors.header_banner',
     ]
 
     MIDDLEWARE_CLASSES = [
@@ -157,7 +158,8 @@ class CommonSettings(Settings):
         'bumerang.apps.video.converting',
         'bumerang.apps.photo.albums',
         'bumerang.apps.utils',
-        'bumerang.apps.events'
+        'bumerang.apps.events',
+        'bumerang.apps.banners'
     ]
 
     LOGGING = {
