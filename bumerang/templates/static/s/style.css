@@ -869,19 +869,18 @@ body.bs .l-head__space .bs-wrapper {
     display: block;
     left: 20px;
     right: 55%;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.15);
     padding: 1em;
 }
 
 body.bs .l-head__space .bs-wrapper .bs-head {
     display: block;
     color: #fff;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 body.bs .l-head__space .bs-wrapper .bs-link {
     color: #fff;
-    font-size: 1.5em;
 }
 
 .l-head .logo {
