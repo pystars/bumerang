@@ -2,7 +2,8 @@ from django import forms
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib import admin
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
@@ -15,6 +16,7 @@ class MessageAdminForm(forms.ModelForm):
     """
     Custom AdminForm to enable messages to groups and all users.
     """
+    User = get_user_model()
     recipient = forms.ModelChoiceField(
         label=_('Recipient'), queryset=User.objects.all(), required=True)
 
@@ -85,6 +87,7 @@ class MessageAdmin(admin.ModelAdmin):
 
         if form.cleaned_data['group'] == 'all':
             # send to all users
+            User = get_user_model()
             recipients = User.objects.exclude(pk=obj.recipient.pk)
         else:
             # send to a group of users

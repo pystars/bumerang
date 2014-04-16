@@ -13,7 +13,7 @@ except ImportError:
     from StringIO import StringIO
 
 from PIL import Image
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.forms.util import ErrorList
 from django.db.models import F
 from django.shortcuts import render_to_response
@@ -263,6 +263,7 @@ class PasswordRecoveryView(FormView):
     def form_valid(self, form):
         receiver_email = form.cleaned_data['email']
         new_password = uuid4().get_hex()[:8]
+        User = get_user_model()
         user = User.objects.get(username=receiver_email)
         user.set_password(new_password)
         user.save()
@@ -633,7 +634,7 @@ class ProfileContactsEditView(UpdateView):
 
 
 class ProfileSettingsEditView(UpdateView):
-    model = User
+    model = get_user_model()
     email_form_class = ProfileEmailEditForm
     pwd_form_class = PasswordChangeForm
     template_name = "accounts/profile_edit_settings.html"

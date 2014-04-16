@@ -117,6 +117,7 @@ class CommonSettings(Settings):
     ]
 
     AUTH_PROFILE_MODULE = 'bumerang.apps.accounts.models.Profile'
+    USER_AUTH_MODEL = 'accounts.User'
 
     INSTALLED_APPS = [
         'django.contrib.auth',

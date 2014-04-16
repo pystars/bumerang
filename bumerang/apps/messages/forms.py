@@ -2,7 +2,7 @@
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 
 if "notification" in settings.INSTALLED_APPS:
@@ -45,6 +45,7 @@ class ComposeForm(forms.Form):
         body = self.cleaned_data['body']
         message_list = []
 #        for r in recipients:
+        User = get_user_model()
         msg = Message(
             sender = sender,
             recipient = User.objects.get(id=recipient),

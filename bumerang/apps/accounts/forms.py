@@ -6,7 +6,7 @@ except ImportError:
 
 from PIL import Image
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -102,6 +102,7 @@ class RegistrationForm(forms.ModelForm):
         существующего пользователя. Но я не нашёл как этого сделать
         за адекватный срок. Поэтому так.
         """
+        User = get_user_model()
         if User.objects.filter(username=self.cleaned_data['username']).exists():
             raise ValidationError(
                 u'Пользователь с таким адресом уже существует')
@@ -113,6 +114,7 @@ class PasswordRecoveryForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('email', None)
+        User = get_user_model()
         if not email:
             raise ValidationError(u'Укажите почту для восстановления пароля')
         elif not User.objects.filter(username=email).exists():

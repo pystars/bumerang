@@ -5,7 +5,7 @@ by sopelkin
 
 from django import forms
 from django.forms import widgets
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -38,6 +38,7 @@ class CommaSeparatedUserField(forms.Field):
         
         names = set(value.split(','))
         names_set = set([name.strip() for name in names if name.strip()])
+        User = get_user_model()
         users = list(User.objects.filter(username__in=names_set))
         unknown_names = names_set ^ set([user.username for user in users])
         
@@ -50,7 +51,9 @@ class CommaSeparatedUserField(forms.Field):
                     invalid_users.append(r.username)
         
         if unknown_names or invalid_users:
-            raise forms.ValidationError(_(u"The following usernames are incorrect: %(users)s") % {'users': ', '.join(list(unknown_names)+invalid_users)})
+            raise forms.ValidationError(
+                _(u"The following usernames are incorrect: %(users)s") % {
+                    'users': ', '.join(list(unknown_names)+invalid_users)})
         
         return users
 

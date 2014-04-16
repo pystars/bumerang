@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models.deletion import ProtectedError
 from django.utils.timezone import now
@@ -86,7 +85,8 @@ class Video(models.Model, TitleUnicode):
 #        validators=[is_video_file], **nullable)
     duration = models.IntegerField(
         u'Длительность', default=0, editable=False, **nullable)
-    owner = models.ForeignKey(User, verbose_name=u"Владелец")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name=u"Владелец")
     album = models.ForeignKey(
         'albums.VideoAlbum', verbose_name=u'Альбом', max_length=255, **nullable)
     category = models.ForeignKey(

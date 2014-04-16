@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.db import models
 from django.db.models import Max
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.utils.media_storage import media_storage
@@ -14,7 +14,7 @@ def video_album_preview_upload_to(instance, filename):
 
 
 class VideoAlbum(models.Model, TitleUnicode):
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     title = models.CharField(u'Название', max_length=100)
     description = models.TextField(u'Описание', **nullable)
     created = models.DateTimeField(

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 
@@ -53,7 +53,8 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
         **nullable)
     icon = models.ImageField(
         u"Иконка", upload_to=icon_upload_to, storage=media_storage, **nullable)
-    owner = models.ForeignKey(User, verbose_name=u"Владелец")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name=u"Владелец")
     album = models.ForeignKey(
         'albums.PhotoAlbum', verbose_name=u'Альбом', max_length=255, **nullable)
     description = models.TextField(u'Описание', **nullable)

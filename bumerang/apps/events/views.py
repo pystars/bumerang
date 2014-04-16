@@ -23,7 +23,7 @@ from django.utils.timezone import now
 from django.views.generic import (
     View, CreateView, UpdateView, ListView, DetailView)
 from django.views.generic.edit import BaseUpdateView
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from bumerang.apps.utils.functions import image_crop_rectangle_center
 from bumerang.apps.utils.views import (
@@ -377,6 +377,7 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
         self.object = self.get_object()
         formset = self.ModelFormSet(
             request.POST, request.FILES, prefix=self.formset_prefix)
+        User = get_user_model()
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:

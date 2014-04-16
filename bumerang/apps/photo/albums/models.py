@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.db import models
 from django.db.models import Max
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
-from django.contrib.auth.models import User
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.photo.models import Photo
@@ -21,7 +21,7 @@ class PhotoCategory(models.Model, TitleUnicode):
 
 
 class PhotoAlbum(models.Model, TitleUnicode):
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     published_in_archive = models.BooleanField(
         u'Опубликовано в фотогалерее', default=False)
     title = models.CharField(u'Название', max_length=100)
