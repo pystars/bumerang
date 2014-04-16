@@ -116,8 +116,14 @@ class CommonSettings(Settings):
         os.path.join(PROJECT_ROOT, 'templates'),
     ]
 
-    AUTH_PROFILE_MODULE = 'bumerang.apps.accounts.models.Profile'
-    USER_AUTH_MODEL = 'accounts.User'
+    #AUTH_PROFILE_MODULE = 'bumerang.apps.accounts.models.Profile'
+
+    #AUTH_USER_MODEL = 'auth.User'
+    AUTH_USER_MODEL = 'accounts.CustomUser'
+
+    #SOUTH_MIGRATION_MODULES = {
+    #    'auth': 'bumerang.apps.accounts.authmigrations',
+    #}
 
     INSTALLED_APPS = [
         'django.contrib.auth',

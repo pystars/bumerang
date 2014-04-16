@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 
 from bumerang.apps.accounts.forms import (
     ProfileResumeEditForm, FacultyForm, ServiceForm, TeammateForm, TeacherForm)
-from bumerang.apps.accounts.models import (
-    Profile, Faculty, Service, Teammate, Teacher)
+from bumerang.apps.accounts.models import Faculty, Service, Teammate, Teacher
+from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.accounts.views import (
     UsersListView, RegistrationFormView, PasswordRecoveryView, ProfileView,
     ProfileInfoEditView, ProfileAvatarEditView, ProfileUpdateView,

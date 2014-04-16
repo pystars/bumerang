@@ -38,7 +38,8 @@ from bumerang.apps.accounts.forms import (RegistrationForm,
       UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm,
       UserContactsForm, OrganizationContactsForm,
       EventRegistrationRequestForm, FestivalProfileInfoForm)
-from bumerang.apps.accounts.models import Profile
+#from bumerang.apps.accounts.models import Profile
+from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.utils.email import send_activation_success, \
     send_activation_link, send_new_password
 

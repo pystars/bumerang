@@ -28,7 +28,8 @@ from django.contrib.auth import get_user_model
 from bumerang.apps.utils.functions import image_crop_rectangle_center
 from bumerang.apps.utils.views import (
     OwnerMixin, SortingMixin, GenericFormsetWithFKUpdateView)
-from bumerang.apps.accounts.models import Profile
+#from bumerang.apps.accounts.models import Profile
+from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.accounts.forms import (
     UserContactsForm, OrganizationContactsForm)

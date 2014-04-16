@@ -14,7 +14,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
 
-from bumerang.apps.accounts.models import Profile
+#from bumerang.apps.accounts.models import Profile
+from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
 from models import Video, VideoCategory

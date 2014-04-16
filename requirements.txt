@@ -1,4 +1,4 @@
-django
+django==1.5.5
 django-configurations
 Pillow
 South
@@ -9,7 +9,6 @@ django-sitetree
 django-tinymce
 django-extensions
 werkzeug
--e git+git@github.com:clincher/django-ratings.git#egg=django-ratings
 fabric
 boto
 django-storages

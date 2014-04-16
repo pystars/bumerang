@@ -11,7 +11,8 @@ from django.core.files.base import ContentFile
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
-from bumerang.apps.accounts.models import Profile, Faculty, Service, Teammate
+from bumerang.apps.accounts.models import Faculty, Service, Teammate
+from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.utils.forms import S3StorageFormMixin, TemplatedForm
 
 
