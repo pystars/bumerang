@@ -23,7 +23,7 @@
         <section class="l-cols__section">
             <div class="l-cols__section__i">
                 {% if event.is_accepting_requests %}
-                    <a class="form-event-view" href="{% url event-detail event.id %}">Вернуться к событию</a>
+                    <a class="form-event-view" href="{% url 'event-detail' event.id %}">Вернуться к событию</a>
                     <h3 class="title">
                         Подача заявки на &laquo;{{ event }}&raquo;
                     </h3>
@@ -31,12 +31,12 @@
                         {% if request.user.profile.type == 1 %}
                             <p>
                                 Вы не можете отправить заявку, т.к. не указали своего имени и фамилии.
-                                Пожалуйста перейдите на страницу "<a href="{% url profile-edit %}">Общая информация</a>" вашего профиля,
+                                Пожалуйста перейдите на страницу "<a href="{% url 'profile-edit' %}">Общая информация</a>" вашего профиля,
                                 что бы заполнить поля имени и фамилии.
                             </p>
                         {% else %}
                             <p>Вы не можете отправить заявку, т.к. отсутствует название.
-                                Пожалуйста перейдите на страницу "<a href="{% url profile-edit %}">Общая информация</a>" вашего профиля,
+                                Пожалуйста перейдите на страницу "<a href="{% url 'profile-edit' %}">Общая информация</a>" вашего профиля,
                                 что бы заполнить поле "Название" Вашей
                                 {% if request.user.profile.type == 3 %}студии{% else %}школы{% endif %}.
                             </p>
@@ -44,7 +44,7 @@
                     {% elif no_filled_fields|length %}
                         <p>
 Вы не можете отправить заявку, т.к. ваша контактрая инфорамация не заполнена (поля {{ no_filled_fields|join:", " }}).
-Пожалуйста перейдите на страницу "<a href="{% url profile-edit-contacts %}">Контакты</a>"
+Пожалуйста перейдите на страницу "<a href="{% url 'profile-edit-contacts' %}">Контакты</a>"
                             вашего профиля, что бы заполнить контакты.
                         </p>
                     {% else %}

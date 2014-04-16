@@ -31,7 +31,7 @@
                             {% endif %}
                         </div>
                         <header class="pi-head">
-                            <h3><a href="{% url profile-detail profile.id %}">{{ profile.title }}</a></h3>
+                            <h3><a href="{% url 'profile-detail' profile.id %}">{{ profile.title }}</a></h3>
                             <div>{{ profile.video_list.count }}</div>
                             <div>Зарегистрировался {{ profile.date_joined|date:'d E Y' }}</div>
                         </header>

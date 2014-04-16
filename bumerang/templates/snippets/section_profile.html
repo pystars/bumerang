@@ -1,6 +1,6 @@
 <section class="b-profile">
     <header class="b-profile__head b-profile__head_small cleared">
-        <a href="{% url profile-detail profile.id %}">
+        <a href="{% url 'profile-detail' profile.id %}">
             <div class="b-profile__pic">
                 <div class="b-ava b-ava_small">
                     {% if profile.min_avatar %}
@@ -15,13 +15,13 @@
         <div class="b-profile__txt">
             <ul class="b-service-buttons">
                 {% if request.user.id == profile.id %}
-                <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
+                <li class="edit"><i></i><a href="{% url 'profile-edit' %}">Редактировать профиль</a></li>
                 {% else %}
-                <li><a href="{% url messages_compose_to profile.id %}">Отправить сообщение</a></li>
+                <li><a href="{% url 'messages_compose_to' profile.id %}">Отправить сообщение</a></li>
                 {% endif %}
-                <li><a href="{% url profile-detail profile.id %}">Просмотр профиля</a></li>
+                <li><a href="{% url 'profile-detail' profile.id %}">Просмотр профиля</a></li>
             </ul>
-            <a href="{% url profile-detail profile.id %}">
+            <a href="{% url 'profile-detail' profile.id %}">
                 <h4>{{ profile.title|default_if_none:"Заполните имя профиля" }}</h4>
             </a>
             <p>{{ profile.place }}</p>

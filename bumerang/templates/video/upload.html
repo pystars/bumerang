@@ -40,7 +40,7 @@
         function createUploader(){
             var uploader = new qq.FileUploader({
                 element: document.getElementById('file-uploader-demo1'),
-                action: '{% url VideoView %}',
+                action: '{% url 'VideoView' %}',
                 template: $("#form-tpl").html(),
                 //fileTemplate: $("#file-tpl").html(),
                 debug: true,

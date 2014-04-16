@@ -47,7 +47,7 @@
                 {% if profile.id == request.user.id %}
                     <li class="addphotoalbum">
                         <i></i>
-                        <a href="{% url photo-album-add %}">Добавить альбом</a>
+                        <a href="{% url 'photo-album-add' %}">Добавить альбом</a>
                     </li>
                 {% endif %}
             </ul>
@@ -69,7 +69,7 @@
             <strong class="b-empty__text">Нет фотоальбомов</strong>
             {% if profile.id == request.user.id %}
                 <div>
-                    <a href="{% url photo-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+                    <a href="{% url 'photo-album-add' %}" class="b-button b-button_yellow">Создать альбом</a>
                 </div>
             {% endif %}
         </div>
@@ -82,7 +82,7 @@
                         <ul class="b-service-buttons">
                         <li class="addphoto">
                             <i></i>
-                            <a href="{% url photo-add %}">Добавить фото</a>
+                            <a href="{% url 'photo-add' %}">Добавить фото</a>
                         </li>
                     </ul>
                     {% endif %}
@@ -111,7 +111,7 @@
                     <div class="b-empty__pic"></div>
                     <strong class="b-empty__text">Нет фотографий</strong>
                     {% if profile.id == request.user.id %}
-                        <div><a href="{% url photo-add %}" class="b-button b-button_yellow">Загрузить фото</a></div>
+                        <div><a href="{% url 'photo-add' %}" class="b-button b-button_yellow">Загрузить фото</a></div>
                     {% endif %}
                 </div>
                 {% include "snippets/photos_list.html" %}
@@ -448,7 +448,7 @@
 
         <section class="b-popup" id="popup-move">
             <section class="b-form b-form_smaller b-form_popup" style="padding-bottom: 14px;">
-                <form action="{% url photo-move %}" method="post">
+                <form action="{% url 'photo-move' %}" method="post">
                     {% csrf_token %}
                     <header class="b-form__header" style="padding-right: 10px;">
                         <h3>
@@ -500,7 +500,7 @@
         <strong class="b-empty__text">Нет видеоальбомов</strong>
         {% if profile.id == request.user.id %}
             <div>
-            <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+            <a href="{% url 'video-album-add' %}" class="b-button b-button_yellow">Создать альбом</a>
         </div>
         {% endif %}
     </div>
@@ -510,7 +510,7 @@
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеороликов</strong>
                 {% if profile.id == request.user.id %}
-                    <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+                    <div><a href="{% url 'video-add' %}" class="b-button b-button_yellow">Загрузить видео</a></div>
                 {% endif %}
     </div>
         {% endif %}

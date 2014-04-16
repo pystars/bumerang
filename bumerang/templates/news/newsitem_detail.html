@@ -17,7 +17,7 @@
                         {{ newsitem.text|safe }}
                     </blockquote>
                 </figure>
-                <a href="{% url news-list %}" class="return-to-previous-page">&larr; Вернуться к списку новостей</a>
+                <a href="{% url 'news-list' %}" class="return-to-previous-page">&larr; Вернуться к списку новостей</a>
             </div>
         {% endautoescape %}
     </article>
@@ -26,7 +26,7 @@
             <article class="announ-item">
                 <header class="ai-head">
                     <time class="date">{{ item.creation_date|date:'d E Y' }}</time>
-                    <h3><a href="{% url SingleNewsItemView item.category.slug item.slug %}">{{ item.title }}</a></h3>
+                    <h3><a href="{% url 'SingleNewsItemView' item.category.slug item.slug %}">{{ item.title }}</a></h3>
                     {{ item.preview_text|safe }}
                 </header>
             </article>

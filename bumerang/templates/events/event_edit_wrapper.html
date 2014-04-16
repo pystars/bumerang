@@ -37,10 +37,10 @@
         <ul>
             <h4>Управление</h4>
             <li>
-                <a href="{% url profile-event-list request.user.pk %}" title="Ваши фестивали и конкурсы">Ваши фестивали и конкурсы</a>
+                <a href="{% url 'profile-event-list' request.user.pk %}" title="Ваши фестивали и конкурсы">Ваши фестивали и конкурсы</a>
             </li>
             <li>
-                <a href="{% url event-send-request %}" title="Создать событие">Создать событие</a>
+                <a href="{% url 'event-send-request' %}" title="Создать событие">Создать событие</a>
             </li>
         </ul>
         {% include 'snippets/round_frame.html' %}

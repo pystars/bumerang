@@ -33,7 +33,7 @@
                 {% if profile.id == request.user.id %}
                     <li class="addvideoalbum">
                         <i></i>
-                        <a href="{% url video-album-add %}">Добавить альбом</a>
+                        <a href="{% url 'video-album-add' %}">Добавить альбом</a>
                     </li>
                 {% endif %}
             </ul>
@@ -54,7 +54,7 @@
             <strong class="b-empty__text">Нет видеоальбомов</strong>
             {% if profile.id == request.user.id %}
                 <div>
-                    <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>
+                    <a href="{% url 'video-album-add' %}" class="b-button b-button_yellow">Создать альбом</a>
                 </div>
             {% endif %}
         </div>
@@ -67,7 +67,7 @@
             <ul class="b-service-buttons">
                 <li class="addvideo">
                     <i></i>
-                    <a href="{% url video-add %}">Добавить видео</a>
+                    <a href="{% url 'video-add' %}">Добавить видео</a>
                 </li>
             </ul>
             {% endif %}
@@ -96,7 +96,7 @@
             <div class="b-empty__pic"></div>
             <strong class="b-empty__text">Нет видеороликов</strong>
             {% if profile.id == request.user.id %}
-                <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+                <div><a href="{% url 'video-add' %}" class="b-button b-button_yellow">Загрузить видео</a></div>
             {% endif %}
         </div>
         {% include "snippets/videos_list.html" %}

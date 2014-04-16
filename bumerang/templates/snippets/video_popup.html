@@ -27,7 +27,7 @@
 {#        Модальный диалог перемещения     #}
 <section class="b-popup" id="popup-move">
     <section class="b-form b-form_smaller b-form_popup" style="padding-bottom: 14px;">
-        <form action="{% url photo-move %}" method="post">
+        <form action="{% url 'photo-move' %}" method="post">
             {% csrf_token %}
             <header class="b-form__header" style="padding-right: 10px;">
                 <h3>

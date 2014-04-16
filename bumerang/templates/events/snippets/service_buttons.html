@@ -2,7 +2,7 @@
     {% if object.owner == request.user %}
         <li class="edit">
             <i></i>
-            <a href="{% url event-edit-info object.id %}">Редактировать {{ object.get_type_display|lower }}</a>
+            <a href="{% url 'event-edit-info' object.id %}">Редактировать {{ object.get_type_display|lower }}</a>
         </li>
     {% endif %}
 </ul>

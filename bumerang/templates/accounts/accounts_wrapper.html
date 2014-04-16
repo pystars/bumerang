@@ -16,21 +16,21 @@
             {% block right_menu %}
                 <nav class="b-side-nav d-indent">
                     <ul>
-                        <h4>{% if current_type %}<a href="{% url users-list %}">Все участники</a>{% else %}Все участники{% endif %}</h4>
+                        <h4>{% if current_type %}<a href="{% url 'users-list' %}">Все участники</a>{% else %}Все участники{% endif %}</h4>
                         {% ifequal current_type 1 %}
                             <li>Независимые участники</li>
                         {% else %}
-                            <li><a href="{% url members-list %}" title="Независимые участники">Независимые участники</a></li>
+                            <li><a href="{% url 'members-list' %}" title="Независимые участники">Независимые участники</a></li>
                         {% endifequal %}
                         {% ifequal current_type 2 %}
                             <li>Школы</li>
                         {% else %}
-                            <li><a href="{% url schools-list %}" title="Школы">Школы</a></li>
+                            <li><a href="{% url 'schools-list' %}" title="Школы">Школы</a></li>
                         {% endifequal %}
                         {% ifequal current_type 3 %}
                             <li>Студии</li>
                         {% else %}
-                            <li><a href="{% url studios-list %}" title="Студии">Студии</a></li>
+                            <li><a href="{% url 'studios-list' %}" title="Студии">Студии</a></li>
                         {% endifequal %}
                     </ul>
                     {% include 'snippets/round_frame.html' %}

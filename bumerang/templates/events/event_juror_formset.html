@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block edit_form %}
-    <a class="form-profile-view" href="{% url event-detail event.id %}">Просмотр события</a>
+    <a class="form-profile-view" href="{% url 'event-detail' event.id %}">Просмотр события</a>
 
     <section class="b-form b-form_smaller b-form_left settings-edit-form">
         <form name="editform" action="" method="post" enctype="multipart/form-data">

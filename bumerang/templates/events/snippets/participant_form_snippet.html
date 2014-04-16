@@ -1,6 +1,6 @@
 <section class="b-form b-form_smaller b-form_left">
     {% if event.owner != request.user %}
-        <form name="editform" action="{% url event-request-form event.id %}" method="post">
+        <form name="editform" action="{% url 'event-request-form' event.id %}" method="post">
             {% csrf_token %}
 
              <div>
@@ -13,7 +13,7 @@
                                     {{ field }}
                                 </span>
                                 <span class="f-title">
-                                    С условиями подачи заявки на {{ event.get_type_display|lower }} ознакомлен и согласен. ( <a href="{% url event-request-conditions event.id %}" target="_blank">Перейти к условиям</a> )
+                                    С условиями подачи заявки на {{ event.get_type_display|lower }} ознакомлен и согласен. ( <a href="{% url 'event-request-conditions' event.id %}" target="_blank">Перейти к условиям</a> )
                                     <span class="sp-err">*</span>
                                 </span>
                             </label>

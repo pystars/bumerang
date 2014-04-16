@@ -4,23 +4,23 @@
     <td>
         <p style="margin: 4px 0;">
             Здравствуйте, уважаемый {{ juror.user.profile.title }},
-            вы были добавлены в мэтры жюри {{ juror.event }} http://www.probumerang.tv{% url event-detail juror.event_id %}.
+            вы были добавлены в мэтры жюри {{ juror.event }} http://www.probumerang.tv{% url 'event-detail' juror.event_id %}.
         </p>
         {% block extra_content %}{% endblock %}
         {% if videos %}
         <p style="margin: 4px 0;"><b>Уже зарегистрированные видео для выставления оценок:</b></p>
         <ul>
             {% for video in videos %}
-                <li><a href="http://probumerang.tv{% url video-detail video.video.pk %}?pv={{ video.pk }}">{{ video.video.title }}</a></li>
+                <li><a href="http://probumerang.tv{% url 'video-detail' video.video.pk %}?pv={{ video.pk }}">{{ video.video.title }}</a></li>
             {% endfor %}
         </ul>
         {% endif %}
         <p style="margin: 4px 5px;">Что бы оценивать работы участников, вам необходимо перейти на
-            страницу события в раздел "Фестивали и конкурсы" http://www.probumerang.tv{% url event-films juror.event_id %}.</p>
+            страницу события в раздел "Фестивали и конкурсы" http://www.probumerang.tv{% url 'event-films' juror.event_id %}.</p>
         <p style="margin: 4px 5px;">По мере поступления новых заявок на ваш эллектронный адрес будут
             приходить уведомления для перехода к просмотру видео и выставления оценок.</p>
         <p style="margin: 4px 5px;">После входа на сайт вы можете изменить логин и пароль в разделе
-            "Настройки" вашей личной страницы. http://www.probumerang.tv{% url profile-edit-settings %}</p>
+            "Настройки" вашей личной страницы. http://www.probumerang.tv{% url 'profile-edit-settings' %}</p>
 
         {#        <p>Раздел обучение: "Выставление оценок жюри".</p>#}
     </td>

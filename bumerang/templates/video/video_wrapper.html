@@ -20,14 +20,14 @@
                         <h4>Категории</h4>
 
                         <li>
-                            {% if current_category %}<a href="{% url video-list %}">Все видео</a>{% else %}Все видео{% endif %}
+                            {% if current_category %}<a href="{% url 'video-list' %}">Все видео</a>{% else %}Все видео{% endif %}
                         </li>
 
                         {% for category in video_categories %}
                             {% ifequal category current_category %}
                                 <li>{{ category.title }}</li>
                             {% else %}
-                                <li><a href="{% url video-list-category category.slug %}"
+                                <li><a href="{% url 'video-list-category' category.slug %}"
                                        title="{{ category.title }}">{{ category.title }}</a></li>
                             {% endifequal %}
                         {% endfor %}

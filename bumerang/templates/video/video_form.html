@@ -28,7 +28,7 @@
 {#                            <li class="edit"><i></i><a href="#">Редактировать альбом</a>#}
 {#                            </li>#}
 {#                        </ul>#}
-                        <a href="{% url profile-video-detail request.user.profile.id %}"
+                        <a href="{% url 'profile-video-detail' request.user.profile.id %}"
                            class="b-button-prev"><span>Все альбомы</span></a>
                         <h3>
                             {% if form.instance.pk %}

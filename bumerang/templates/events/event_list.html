@@ -35,14 +35,14 @@
                                     {% endwith %}
                             </div>
                             <header class="pi-head">
-                                <h3><a href="{% url event-detail item.id %}">{{ item }}</a></h3>
+                                <h3><a href="{% url 'event-detail' item.id %}">{{ item }}</a></h3>
                                 <div>
                                     <span class="dark-gray">Даты проведения: </span>{{ item.start_date }} &mdash; {{ item.end_date }}
                                 </div>
                                 <div>
                                     {% if item.is_accepting_requests %}
                                         <span class="dark-gray">Прием заявок: </span>до {{ item.requesting_till }} включительно
-                                        {% if item.owner != request.user %}( <a href="{% url event-request-form item.id %}">подать заявку</a> ){% endif %}
+                                        {% if item.owner != request.user %}( <a href="{% url 'event-request-form' item.id %}">подать заявку</a> ){% endif %}
                                     {% else %}
                                         <span class="dark-gray">Прием заявок: </span>окончен
                                     {% endif %}
@@ -80,7 +80,7 @@
     <nav class="b-side-nav d-indent" style="margin-top: 110px;">
         <ul>
             <li>
-                <a href="{% url event-send-request %}" title="Создать событие">Создать событие</a>
+                <a href="{% url 'event-send-request' %}" title="Создать событие">Создать событие</a>
             </li>
         </ul>
         {% include 'snippets/round_frame.html' %}

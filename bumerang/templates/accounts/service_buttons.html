@@ -1,11 +1,11 @@
 <ul class="b-service-buttons">
     {% if profile.id == user.id %}
-    <li class="edit"><i></i><a href="{% url profile-edit %}">Редактировать профиль</a></li>
+    <li class="edit"><i></i><a href="{% url 'profile-edit' %}">Редактировать профиль</a></li>
     {% endif %}
 
     {% if hide_show_profile_link %}
         <li></li>
     {% else %}
-        <li><a href="{% url profile-detail profile.id %}">Просмотр профиля</a></li>
+        <li><a href="{% url 'profile-detail' profile.id %}">Просмотр профиля</a></li>
     {% endif %}
 </ul>

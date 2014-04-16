@@ -1,5 +1,5 @@
 <dt class="first{% ifequal selected 'event' %} selected{% endifequal %}">
-    <a href="{% url event-detail event.id %}">
+    <a href="{% url 'event-detail' event.id %}">
         <span>
 
             {% if event.type == event.FESTIVAL %}
@@ -19,7 +19,7 @@
 
 <dt{% ifequal selected 'press' %} class="selected"{% endifequal %}>
     {% spaceless %}
-        <a href="{% url event-press event.id %}">
+        <a href="{% url 'event-press' event.id %}">
             <span>Пресс—центр</span>
         </a>
     {% endspaceless %}
@@ -33,7 +33,7 @@
 
 <dt{% ifequal selected 'films' %} class="selected"{% endifequal %}>
     {% spaceless %}
-        <a href="{% url event-films event.id %}">
+        <a href="{% url 'event-films' event.id %}">
             <span>Фильмы-участники</span>
         </a>
     {% endspaceless %}
@@ -48,7 +48,7 @@
 {% if event.publish_winners or event.owner == request.user %}
 <dt{% ifequal selected 'winners' %} class="selected"{% endifequal %}>
     {% spaceless %}
-        <a href="{% url event-winners-list event.id %}">
+        <a href="{% url 'event-winners-list' event.id %}">
             <span>Победители</span>
         </a>
     {% endspaceless %}

@@ -29,7 +29,7 @@
 								</span>
                 </label>
                 {% if form.errors %}<div class="f-err"><span>Неправильный логин или пароль. Попробуйте ещё раз.</span></div>{% endif %}
-                <span class="f-forgot"><a href="{% url password-recover %}">забыл пароль</a></span>
+                <span class="f-forgot"><a href="{% url 'password-recover' %}">забыл пароль</a></span>
             </div>
             <div class="b-form__field">
                 <div class="f-checkbox">
@@ -42,7 +42,7 @@
         </div>
         <footer class="b-form__footer">
             <div class="wrap"><a href="#" class="b-button b-button_yellow button-submit button-login">Войти</a></div>
-            <span class="or">или <a href="{% url registration %}">зарегистрироваться</a></span>
+            <span class="or">или <a href="{% url 'registration' %}">зарегистрироваться</a></span>
         </footer>
     </form>
     </section><!--b-form-->

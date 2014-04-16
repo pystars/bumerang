@@ -5,7 +5,7 @@
 
 {% block left_column %}
     <section class="b-form b-form_register">
-        <form name="registration_request_form" action="{% url register-event-request %}" method="post">
+        <form name="registration_request_form" action="{% url 'register-event-request' %}" method="post">
         {% csrf_token %}
         <header class="b-form__header">
             <h1>

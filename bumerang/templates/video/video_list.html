@@ -20,7 +20,7 @@
                 {% for item in object_list %}
                 <article class="announ-item">
                     <div class="ai-img d-sh">
-                        <a href="{% url video-detail item.id %}">
+                        <a href="{% url 'video-detail' item.id %}">
                             <span>
                                 <img src="{% if item.preview.thumbnail %}{{ item.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}" width="190" height="123" alt="" />
                                 <span class="time">{{ item.duration|default_if_none:0|to_hms }}</span>
@@ -29,7 +29,7 @@
                         </a>
                     </div>
                     <header class="ai-head">
-                        <h3><a href="{% url video-detail item.id %}">{{ item.title|truncatechars:60 }}</a></h3>
+                        <h3><a href="{% url 'video-detail' item.id %}">{{ item.title|truncatechars:60 }}</a></h3>
                         <p>
                             {{ item.description|truncatechars:150|linebreaksbr }}
                         </p>

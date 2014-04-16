@@ -1,7 +1,7 @@
 {% load videotags truncatechars %}
 <article class="announ-item cleared">
     <div class="ai-img d-sh">
-        <a href="{% url video-detail video.id %}">
+        <a href="{% url 'video-detail' video.id %}">
             <span>
                 <img src="{% if video.preview.thumbnail %}{{ video.preview.thumbnail.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}"
                      width="165" height="107" alt="" />
@@ -11,7 +11,7 @@
     </div>
     <header class="ai-head">
         <hgroup>
-            <h3><a href="{% url video-detail video.id %}">{{ video.title }}</a></h3>
+            <h3><a href="{% url 'video-detail' video.id %}">{{ video.title }}</a></h3>
             <h4>{% if object.type != pf.TYPE_USER %}{{ object.get_type_display }}
                 &laquo;{{ object.title }}&raquo;{% else %}{{ object.title|truncatechars:60 }}{% endif %}</h4>
         </hgroup>

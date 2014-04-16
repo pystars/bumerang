@@ -1,8 +1,8 @@
 <div class="b-gallery__items">
-    <form name="photoalbums" action="{% url photoalbums-delete %}" method="post">
+    <form name="photoalbums" action="{% url 'photoalbums-delete' %}" method="post">
         {% for photoalbum in object.photoalbum_set.all %}
             <figure class="b-gallery__item photoalbum" data-item-id="{{ photoalbum.id }}">
-            <a href="{% url photo-album-detail photoalbum.id %}">
+            <a href="{% url 'photo-album-detail' photoalbum.id %}">
                 <span class="gi-img">
                     <span>
                         {% if photoalbum.preview.thumbnail %}
@@ -29,7 +29,7 @@
                             <span class="b-dropdown__popup__i">
                                 <span class="b-dropdown__popup__i__i">
                                     <span class="b-dropdown__arr"></span>
-                                    <a href="{% url photo-album-edit photoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
+                                    <a href="{% url 'photo-album-edit' photoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
                                     <a href="#" class="b-dropdown__link photoalbum-menu-delete-link" data-item-id="{{ photoalbum.id }}">Удалить</a>
                                 </span>
                             </span>

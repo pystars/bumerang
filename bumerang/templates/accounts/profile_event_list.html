@@ -20,11 +20,11 @@
                             <ul class="b-service-buttons">
                                 <li>
                                     <i></i>
-                                    <a href="{% url event-edit-info item.id %}">Управление событием</a>
+                                    <a href="{% url 'event-edit-info' item.id %}">Управление событием</a>
                                 </li>
                             </ul>
                         {% endif %}
-                        <h3><a href="{% url event-detail item.id %}" title="{{ item.title }}">{{ item }}</a></h3>
+                        <h3><a href="{% url 'event-detail' item.id %}" title="{{ item.title }}">{{ item }}</a></h3>
                         <p>{{ item.description|linebreaks|truncatechars:500 }}</p>
                         <div class="b-hr">
                             <hr />

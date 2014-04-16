@@ -23,7 +23,7 @@
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
                     {% with profile=form.instance.owner.profile %}
-                        <a class="form-event-view" href="{% url participant-list event.id %}">Вернуться к списку заявок</a>
+                        <a class="form-event-view" href="{% url 'participant-list' event.id %}">Вернуться к списку заявок</a>
                         <h3 class="title">
                             Рассмотрение заявки на участие в событии {{ event }}
                         </h3>
@@ -31,7 +31,7 @@
                             <dl>
                                 <dt>Отправитель</dt>
                                 <dd>{{ profile.get_type_display }} <a
-                                    href="{% url profile-detail profile.id %}">{{ profile }}</a></dd>
+                                    href="{% url 'profile-detail' profile.id %}">{{ profile }}</a></dd>
                             </dl>
                             {% if profile.type != 1 %}
                                 <dl>
@@ -88,7 +88,7 @@
                                                         <span class="f-title">
                                                             Видео: &laquo;{{ video.title }}&raquo;
                                                             {% if video.pk %}
-                                                                <a href="{% url video-detail video.pk %}" target="_blank">Просмотреть</a>
+                                                                <a href="{% url 'video-detail' video.pk %}" target="_blank">Просмотреть</a>
                                                             {% endif %}
                                                             {% if video.original_file %}
                                                                 | <a href="{{ video.original_file.url }}" target="_blank" title="Нажмите правой кнопкой и выберите пункт 'сохранить как'">Скачать исходный файл</a>
@@ -146,7 +146,7 @@
         <ul>
             <h4>Управление</h4>
             <li>
-                <a href="{% url event-send-request %}" title="Создать событие">Создать событие</a>
+                <a href="{% url 'event-send-request' %}" title="Создать событие">Создать событие</a>
             </li>
         </ul>
         {% include 'snippets/round_frame.html' %}

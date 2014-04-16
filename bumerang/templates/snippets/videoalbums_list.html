@@ -1,8 +1,8 @@
 <div class="b-gallery__items">
-    <form name="videoalbums" action="{% url videoalbums-delete %}" method="post">
+    <form name="videoalbums" action="{% url 'videoalbums-delete' %}" method="post">
         {% for videoalbum in object.videoalbum_set.all %}
         <figure class="b-gallery__item videoalbum" id="videoalbum-item-{{ videoalbum.id }}" data-item-id="{{ videoalbum.id }}">
-            <a href="{% url video-album-detail videoalbum.id %}">
+            <a href="{% url 'video-album-detail' videoalbum.id %}">
                 <span class="gi-img">
                     <span>
                         <img src="{% if videoalbum.preview %}{{ videoalbum.preview.url }}{% else %}{{ STATIC_URL }}i/nophoto.png{% endif %}"
@@ -26,7 +26,7 @@
                             <span class="b-dropdown__popup__i">
                                 <span class="b-dropdown__popup__i__i">
                                     <span class="b-dropdown__arr"></span>
-                                    <a href="{% url video-album-edit videoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
+                                    <a href="{% url 'video-album-edit' videoalbum.id %}" class="b-dropdown__link last">Редактировать</a>
                                     <a href="#" class="b-dropdown__link videoalbum-menu-delete-link" id="videoalbum-delete-{{ videoalbum.id }}" data-videoalbum-id="{{ videoalbum.id }}" data-item-id="{{ videoalbum.id }}">Удалить</a>
                                 </span>
                             </span>

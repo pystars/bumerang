@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-import simplejson as json
+from django.utils import simplejson
 from django.http import Http404, HttpResponse
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
@@ -99,7 +99,8 @@ class JSONCurrentPlaylistItemView(BaseDetailView, PlaylistMixin):
         )
 
     def render_to_response(self, context):
-        return HttpResponse(json.dumps(context), mimetype="application/json")
+        return HttpResponse(
+            simplejson.dumps(context), mimetype="application/json")
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()

@@ -29,11 +29,11 @@
             <header class="b-head cleared">
                 {% if user.id == object.owner.id %}
                     <ul class="b-service-buttons">
-                    <li class="addphoto"><i></i><a href="{% url album-photo-add object.id %}">Добавить фото</a></li>
-                    <li class="edit"><i></i><a href="{% url photo-album-edit object.id %}">Редактировать альбом</a></li>
+                    <li class="addphoto"><i></i><a href="{% url 'album-photo-add' object.id %}">Добавить фото</a></li>
+                    <li class="edit"><i></i><a href="{% url 'photo-album-edit' object.id %}">Редактировать альбом</a></li>
                 </ul>
                 {% endif %}
-                <a href="{% url profile-photo-detail object.owner_id %}" class="b-button-prev"><span>Все альбомы</span></a>
+                <a href="{% url 'profile-photo-detail' object.owner_id %}" class="b-button-prev"><span>Все альбомы</span></a>
                 <h3>
                     {{ object.title }}
                 </h3>
@@ -56,7 +56,7 @@
                 <div id="photo-empty-block" class="b-empty b-empty_photo" {% if photos.exists %}style="display: none;"{% endif %}>
                     <div class="b-empty__pic"></div>
                     <strong class="b-empty__text">Нет фотографий</strong>
-                    <div><a href="{% url album-photo-add object.id %}" class="b-button b-button_yellow">Загрузить фото</a></div>
+                    <div><a href="{% url 'album-photo-add' object.id %}" class="b-button b-button_yellow">Загрузить фото</a></div>
                 </div>
                 {% include "snippets/photos_list.html" %}
             </section>
@@ -306,7 +306,7 @@
 
 {#    <section class="b-popup" id="popup-move-video" style="left:50%; top:100px;">#}
 {#    <section class="b-form b-form_smaller b-form_popup">#}
-{#        <form action="{% url photo-move %}" method="post">#}
+{#        <form action="{% url 'photo-move' %}" method="post">#}
 {#            {% csrf_token %}#}
 {#            <header class="b-form__header">#}
 {#                <h3>#}
@@ -349,7 +349,7 @@
     <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">
         <div class="b-empty__pic"></div>
         <strong class="b-empty__text">Нет видеороликов</strong>
-        <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>
+        <div><a href="{% url 'video-add' %}" class="b-button b-button_yellow">Загрузить видео</a></div>
     </div>
 </div>
 
@@ -382,7 +382,7 @@
 
     <section class="b-popup" id="popup-move">
         <section class="b-form b-form_smaller b-form_popup" style="padding-bottom: 14px;">
-            <form action="{% url photo-move %}" method="post">
+            <form action="{% url 'photo-move' %}" method="post">
                 {% csrf_token %}
                 <header class="b-form__header" style="padding-right: 10px;">
                     <h3>
