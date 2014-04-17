@@ -33,9 +33,8 @@ class Migration(SchemaMigration):
         # Removing M2M table for field user_permissions on 'User'
         db.delete_table(db.shorten_name(u'auth_user_user_permissions'))
 
-
     def backwards(self, orm):
-        # Adding model 'User'
+        # Adding model 'Profile'
         db.create_table(u'auth_user', (
             ('username', self.gf('django.db.models.fields.CharField')(max_length=30, unique=True)),
             ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
@@ -69,7 +68,6 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['user_id', 'permission_id'])
 
-        # Adding model 'Profile'
         db.create_table(u'accounts_profile', (
             ('info_address', self.gf('django.db.models.fields.TextField')()),
             (u'user_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, primary_key=True)),

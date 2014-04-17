@@ -1,4 +1,4 @@
-django==1.5.5
+django
 django-configurations
 Pillow
 South
@@ -24,6 +24,7 @@ coverage
 django-coverage
 django-grappelli
 feincms
+-e git+git@github.com:clincher/django-ratings.git#egg=django-ratings
 
 celery
 django-kombu
