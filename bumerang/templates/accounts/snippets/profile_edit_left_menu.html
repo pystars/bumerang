@@ -1,6 +1,6 @@
 {% load sitetree %}
 
-{% with type=user.profile.type pf=user.profile %}
+{% with type=user.type pf=user %}
 
     {% if type == pf.TYPE_USER %}
         {% sitetree_menu from "user_edit_menu" include "trunk" template "accounts/left_menu.html" %}

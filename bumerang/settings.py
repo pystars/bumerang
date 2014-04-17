@@ -116,9 +116,9 @@ class CommonSettings(Settings):
         os.path.join(PROJECT_ROOT, 'templates'),
     ]
 
-    AUTH_USER_MODEL = 'accounts.CustomUser'
+    AUTH_USER_MODEL = 'accounts.Profile'
 
-    SOUTH_AUTO_FREEZE_APP =True
+    SOUTH_AUTO_FREEZE_APP = True
 
     INSTALLED_APPS = [
         'django.contrib.auth',

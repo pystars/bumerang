@@ -27,7 +27,7 @@
                         <li class="viewed"><i class="b-ico b-ico_eye"><i></i></i><span>{{ video.views_count }}</span></li>
                     </ul>
                 </footer>
-                {% if request.user.profile.id == video.owner_id %}
+                {% if request.user.id == video.owner_id %}
                     <div class="ui-checkbox">
                         {% if not video.is_protected %}
                             <input type="checkbox" name="videos" value="{{ video.id }}" id="checkbox-{{ video.id }}" data-video-id="{{ video.id }}"/>

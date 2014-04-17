@@ -54,7 +54,7 @@
                 {% endif %}
 
                 {% if not object.title %}
-                    {% if object.id == request.user.profile_id %}
+                    {% if object.id == request.user.id %}
                         Вероятно вы недавно зарегистрировались, так как ваш профиль пуст.
                         Заполните его в разделе &laquo;<a href="{% url 'profile-edit' %}">редактирования</a>&raquo;
                     {% else %}

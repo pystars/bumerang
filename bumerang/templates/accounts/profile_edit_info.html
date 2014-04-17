@@ -113,7 +113,7 @@
         <li><a href="{% url 'profile-edit-resume' %}">Резюме</a></li>
         <li><a href="{% url 'profile-edit-settings' %}">Настройка аккаунта</a></li>
     </ul>
-    {% if user.profile.type == 1 %}
+    {% if user.type == 1 %}
         {% sitetree_menu from "profiles_menu" include "users_tree,this-siblings" template "accounts/left_menu.html" %}
     {% endif %}
 {% endblock %}

@@ -26,6 +26,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.forms.models import inlineformset_factory
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
@@ -38,10 +39,12 @@ from bumerang.apps.accounts.forms import (RegistrationForm,
       UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm,
       UserContactsForm, OrganizationContactsForm,
       EventRegistrationRequestForm, FestivalProfileInfoForm)
-#from bumerang.apps.accounts.models import Profile
-from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.utils.email import send_activation_success, \
     send_activation_link, send_new_password
+
+
+Profile = get_user_model()
+
 
 # TODO: рефакторить нотификации
 
@@ -264,8 +267,7 @@ class PasswordRecoveryView(FormView):
     def form_valid(self, form):
         receiver_email = form.cleaned_data['email']
         new_password = uuid4().get_hex()[:8]
-        User = get_user_model()
-        user = User.objects.get(username=receiver_email)
+        user = Profile.objects.get(username=receiver_email)
         user.set_password(new_password)
         user.save()
         send_new_password(new_password, receiver_email)
@@ -281,7 +283,7 @@ class PasswordRecoveryView(FormView):
 class ProfileViewMixin:
     def get_events_count(self):
         if self.request.user.is_authenticated():
-            if self.object == self.request.user.profile:
+            if self.object == self.request.user:
                 return self.object.owned_events.count()
         return self.object.owned_events.filter(is_approved=True).count()
 
@@ -299,7 +301,7 @@ class ProfileView(DetailView, ProfileViewMixin):
 
     def get_object(self, queryset=None):
         if 'pk' not in self.kwargs:
-            return self.request.user.profile
+            return self.request.user
         return super(ProfileView, self).get_object(queryset=queryset)
 
     def get(self, request, **kwargs):
@@ -351,22 +353,25 @@ class UsersListView(ListView):
         return ctx
 
 
-class ProfileInfoEditView(UpdateView):
+class GetObjectRequestUserMixin(object):
     model = Profile
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return self.request.user
+
+
+class ProfileInfoEditView(GetObjectRequestUserMixin, UpdateView):
 
     def get_form_class(self):
         # Выбираем тип формы
         # в зависимости от типа профиля
-        if self.request.user.profile.type == Profile.TYPE_USER:
+        if self.request.user.type == Profile.TYPE_USER:
             return UserProfileInfoForm
-        if self.request.user.profile.type == Profile.TYPE_SCHOOL:
+        if self.request.user.type == Profile.TYPE_SCHOOL:
             return SchoolProfileInfoForm
-        if self.request.user.profile.type == Profile.TYPE_STUDIO:
+        if self.request.user.type == Profile.TYPE_STUDIO:
             return StudioProfileInfoForm
-        if self.request.user.profile.type == Profile.TYPE_FESTIVAL:
+        if self.request.user.type == Profile.TYPE_FESTIVAL:
             return FestivalProfileInfoForm
 
     def get_success_url(self):
@@ -386,11 +391,7 @@ class ProfileInfoEditView(UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class ProfileUpdateView(UpdateView):
-    model = Profile
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
+class ProfileUpdateView(GetObjectRequestUserMixin, UpdateView):
 
     def get_success_url(self):
         return self.request.path
@@ -427,7 +428,7 @@ class FormsetUpdateView(UpdateView):
             extra=1)
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return self.request.user
 
     def get_success_url(self):
         return self.request.path
@@ -526,12 +527,8 @@ class FormsetUpdateView(UpdateView):
             return self.render_to_response(self.get_context_data(formset=formset))
 
 
-class ProfileAvatarEditView(UpdateView):
-    model = Profile
+class ProfileAvatarEditView(GetObjectRequestUserMixin, UpdateView):
     form_class = ProfileAvatarEditForm
-
-    def get_object(self, queryset=None):
-        return self.request.user.profile
 
     def get_success_url(self):
         return reverse('profile-edit-avatar')
@@ -607,15 +604,11 @@ class ProfileAvatarEditView(UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class ProfileContactsEditView(UpdateView):
-    model = Profile
+class ProfileContactsEditView(GetObjectRequestUserMixin, UpdateView):
     template_name = 'accounts/profile_edit_contacts.html'
 
-    def get_object(self, queryset=None):
-        return self.request.user.profile
-
     def get_form_class(self):
-        if self.request.user.profile.type == Profile.TYPE_USER:
+        if self.request.user.type == Profile.TYPE_USER:
             return UserContactsForm
         else:
             return OrganizationContactsForm
@@ -634,8 +627,7 @@ class ProfileContactsEditView(UpdateView):
         return super(ProfileContactsEditView, self).form_invalid(form)
 
 
-class ProfileSettingsEditView(UpdateView):
-    model = get_user_model()
+class ProfileSettingsEditView(GetObjectRequestUserMixin, UpdateView):
     email_form_class = ProfileEmailEditForm
     pwd_form_class = PasswordChangeForm
     template_name = "accounts/profile_edit_settings.html"
@@ -643,15 +635,12 @@ class ProfileSettingsEditView(UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super(ProfileSettingsEditView, self).get_context_data(**kwargs)
         ctx.update({
-            'profile': self.request.user.profile,
+            'profile': self.request.user,
             'email_form': self.email_form_class(),
             'pwd_form': self.pwd_form_class(self.get_object()),
         })
         ctx.update(kwargs)
         return ctx
-
-    def get_object(self, queryset=None):
-        return self.request.user
 
     def get_form_class(self):
         if self.password_changing():

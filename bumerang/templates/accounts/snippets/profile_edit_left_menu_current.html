@@ -1,6 +1,6 @@
 {% load sitetree %}
 
-{% with user.profile.type as type %}
+{% with user.type as type %}
     {% if type == 1 %}
         {% sitetree_page_title from "user_edit_menu" %}
     {% elif type == 2 %}

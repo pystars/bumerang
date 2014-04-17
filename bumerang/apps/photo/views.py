@@ -122,7 +122,7 @@ class PhotoCreateView(CreateView, PhotoEditMixin):
             return reverse('photo-album-detail',
             args=[self.kwargs['photo_album_id']])
         else:
-            return reverse('profile-photo-detail', args=[self.request.user.profile.id])
+            return reverse('profile-photo-detail', args=[self.request.user.id])
 
 class PhotoUpdateView(OwnerMixin, UpdateView, PhotoEditMixin):
     model = Photo

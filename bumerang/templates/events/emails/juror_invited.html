@@ -3,7 +3,7 @@
 {% block content %}
     <td>
         <p style="margin: 4px 0;">
-            Здравствуйте, уважаемый {{ juror.user.profile.title }},
+            Здравствуйте, уважаемый {{ juror.user.title }},
             вы были добавлены в мэтры жюри {{ juror.event }} http://www.probumerang.tv{% url 'event-detail' juror.event_id %}.
         </p>
         {% block extra_content %}{% endblock %}

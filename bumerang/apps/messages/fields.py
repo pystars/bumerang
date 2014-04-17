@@ -18,7 +18,6 @@ class CommaSeparatedUserInput(widgets.Input):
         elif isinstance(value, (list, tuple)):
             value = (', '.join([user.username for user in value]))
         return super(CommaSeparatedUserInput, self).render(name, value, attrs)
-        
 
 
 class CommaSeparatedUserField(forms.Field):
@@ -38,8 +37,8 @@ class CommaSeparatedUserField(forms.Field):
         
         names = set(value.split(','))
         names_set = set([name.strip() for name in names if name.strip()])
-        User = get_user_model()
-        users = list(User.objects.filter(username__in=names_set))
+        Profile = get_user_model()
+        users = list(Profile.objects.filter(username__in=names_set))
         unknown_names = names_set ^ set([user.username for user in users])
         
         recipient_filter = self._recipient_filter

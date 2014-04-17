@@ -49,7 +49,7 @@
 
                                 <tbody>
                                     {% for object in object_list %}
-                                        {% with profile=object.owner.profile %}
+                                        {% with profile=object.owner %}
                                             <tr>
                                                 <td>{{ object.index_number }}</td>
                                                 <td>

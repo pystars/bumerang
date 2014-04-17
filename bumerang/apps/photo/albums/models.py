@@ -40,7 +40,7 @@ class PhotoAlbum(models.Model, TitleUnicode):
     get_absolute_url.short_description = u'Ссылка на страницу фотоальбома'
 
     def get_owner_profile(self):
-        return self.owner.profile
+        return self.owner
     get_owner_profile.short_description = u'Имя владельца'
 
     def last_update(self):

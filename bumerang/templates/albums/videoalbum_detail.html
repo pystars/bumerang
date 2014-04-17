@@ -9,7 +9,7 @@
 
 {% block tab %}
     <dd class="selected"><div class="b-tabs__tab-content" id="videoalbum-id-{{ object.id }}">
-        {% include "snippets/section_profile.html" with profile=object.owner.profile %}
+        {% include "snippets/section_profile.html" with profile=object.owner %}
         <div class="b-hr"><hr /></div>
         <header class="b-head cleared">
             {% if user.id == object.owner.id %}
@@ -56,39 +56,4 @@
 
 {% block popup %}
     {% include 'snippets/video_popup.html' %}
-    {# Шаблоны для JavaScript кода #}
-{#    <div style="display: none;">#}
-{#        <div id="videoalbum-empty-block-tpl" class="b-empty b-empty_video-album" style="display: none;">#}
-{#            <div class="b-empty__pic"></div>#}
-{#            <strong class="b-empty__text">Нет видеоальбомов</strong>#}
-{#            {% if profile.id == request.user.id %}#}
-{#                <div>#}
-{#                    <a href="{% url video-album-add %}" class="b-button b-button_yellow">Создать альбом</a>#}
-{#                </div>#}
-{#            {% endif %}#}
-{#        </div>#}
-{##}
-{#        {% if profile.id == request.user.id and not videos.exists %}#}
-{#            <div id="video-empty-block-tpl" class="b-empty b-empty_video" style="display: none;">#}
-{#                <div class="b-empty__pic"></div>#}
-{#                <strong class="b-empty__text">Нет видеороликов</strong>#}
-{#                {% if profile.id == request.user.id %}#}
-{#                    <div><a href="{% url video-add %}" class="b-button b-button_yellow">Загрузить видео</a></div>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        {% endif %}#}
-{#        {% if profile.id == request.user.id %}#}
-{#            <div id="move-dialog-list-item-tpl" class="b-form__field b-form__field_radio">#}
-{#                <div class="f-radio">#}
-{#                    {% for album in profile.videoalbum_set.all %}#}
-{#                        <div>#}
-{#                            <input type="radio" name="album" value="{{ album.id }}" id="album{{ album.id }}" data-album-id="{{ album.id }}" />#}
-{#                            <label for="album{{ album.id }}">{{ album.title }}</label>#}
-{#                        </div>#}
-{#                        <div class="f-err"><span></span></div>#}
-{#                    {% endfor %}#}
-{#                </div>#}
-{#            </div>#}
-{#        {% endif %}#}
-{#    </div>#}
 {% endblock %}

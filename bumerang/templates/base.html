@@ -60,29 +60,29 @@
                         <div class="b-dropdown2 cleared" id="dropdown2">
                             <div class="b-ava b-ava_small">
                                 <a href="{% url 'profile-detail' user.id %}" class="js-double-hover" title="{{ user.profile_title }}">
-                                    {% if not user.profile.min_avatar %}
-                                        {% if user.profile.type == 1 %}
-                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="{{ user.profile.title }}" />
-                                        {% endif %}{% if user.profile.type == 2 %}
-                                            <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="{{ user.profile.title }}" />
-                                        {% endif %}{% if user.profile.type == 3 %}
-                                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="{{ user.profile.title }}" />
+                                    {% if not user.min_avatar %}
+                                        {% if user.type == 1 %}
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="60" height="60" alt="{{ user.title }}" />
+                                        {% endif %}{% if user.type == 2 %}
+                                            <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="{{ user.title }}" />
+                                        {% endif %}{% if user.type == 3 %}
+                                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="{{ user.title }}" />
                                         {% endif %}
                                     {% else %}
-                                        <img src="{{ user.profile.min_avatar.url }}" width="60" height="60" alt="{{ user.profile.title }}" />
+                                        <img src="{{ user.min_avatar.url }}" width="60" height="60" alt="{{ user.title }}" />
                                     {% endif %}
                                 </a>
                                 <i class="b-ava__sh"></i>
                             </div>
                             <ul class="b-dropdown2__list">
                                 <li class="b-dropdown2__item b-dropdown2__item_name b-dropdown2__visible">
-                                        {% if user.profile.title %}
-                                            <a href="{% url 'profile-detail' user.id %}" class="b-dropdown2__name" title="{{ user.profile.title }}">
-                                                {% if user.profile.title %}
-                                                    {% if user.profile.type != 1 %}
-                                                        {{ user.profile.get_type_display }} &laquo;{{ user.profile.title }}&raquo;
+                                        {% if user.title %}
+                                            <a href="{% url 'profile-detail' user.id %}" class="b-dropdown2__name" title="{{ user.title }}">
+                                                {% if user.title %}
+                                                    {% if user.type != 1 %}
+                                                        {{ user.get_type_display }} &laquo;{{ user.title }}&raquo;
                                                     {% else %}
-                                                        {{ user.profile.title }}
+                                                        {{ user.title }}
                                                     {% endif %}
                                                 {% endif %}
                                             </a>
@@ -100,24 +100,10 @@
                                         <small class="b-dropdown2__count">{{ inbox_count }}</small>
                                     {% endif %}
                                 </li>
-{#                                <li class="b-dropdown2__item b-dropdown2__visible">#}
-{#                                    <a href="#" class="b-dropdown2__link">Друзья</a>#}
-{#                                    <small class="b-dropdown2__count">2</small>#}
-{#                                </li>#}
                                 <li class="b-dropdown2__item">
                                     <a href="{% url 'profile-video-detail' user.id %}" class="b-dropdown2__link">Видеосюжеты</a>
-                                    <small class="b-dropdown2__count">{{ user.profile.video_set.count|default:'0' }}</small>
+                                    <small class="b-dropdown2__count">{{ user.video_set.count|default:'0' }}</small>
                                 </li>
-{#                                <li class="b-dropdown2__item">#}
-{#                                    <a href="" class="b-dropdown2__link">Фотографии</a>#}
-{#                                </li>#}
-{#                                <li class="b-dropdown2__item">#}
-{#                                    <a href="" class="b-dropdown2__link">Комментарии</a>#}
-{#                                    <small class="b-dropdown2__count">26</small>#}
-{#                                </li>#}
-{#                                <li class="b-dropdown2__item">#}
-{#                                    <a href="" class="b-dropdown2__link">Избранное видео</a>#}
-{#                                </li>#}
                             </ul>
                         </div>
                     </div>

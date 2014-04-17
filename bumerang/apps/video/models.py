@@ -133,7 +133,7 @@ class Video(models.Model, TitleUnicode):
         return reverse('video-detail', kwargs={'pk': self.pk})
 
     def get_owner_profile(self):
-        return self.owner.profile
+        return self.owner
     get_owner_profile.short_description = u'Имя владельца'
 
     def preview(self):

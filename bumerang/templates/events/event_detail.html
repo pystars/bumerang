@@ -72,7 +72,7 @@
                             </strong>
                             <span>
                                 {% spaceless %}
-                                {% with owner=object.owner.profile %}
+                                {% with owner=object.owner %}
                                     <a href="{% url 'profile-detail' owner.id %}">{{ owner.title }}</a>
                                     ( {{ owner.get_type_display|lower }} )
                                 {% endwith %}

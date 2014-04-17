@@ -14,9 +14,9 @@
             <a class="form-profile-view" href="{% url 'profile-detail' profile.id %}">Просмотр профиля</a>
             <div class="b-form__fields">
                 <h3 class="title">
-                {% if user.profile.type == 1 %}{% sitetree_page_title from "user_edit_menu" %}
-                {% elif user.profile.type == 2 %}{% sitetree_page_title from "school_edit_menu" %}
-                {% elif user.profile.type == 3 %}{% sitetree_page_title from "studio_edit_menu" %}
+                {% if user.type == 1 %}{% sitetree_page_title from "user_edit_menu" %}
+                {% elif user.type == 2 %}{% sitetree_page_title from "school_edit_menu" %}
+                {% elif user.type == 3 %}{% sitetree_page_title from "studio_edit_menu" %}
                 {% endif %}
                 </h3>
                 {% if form|form_type in 'UserContactsForm' %}

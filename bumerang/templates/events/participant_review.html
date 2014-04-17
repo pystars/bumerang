@@ -22,7 +22,7 @@
             <div class="l-cols__i cleared" style="padding-top: 16px;">
                 <section class="l-cols__section">
                     <div class="l-cols__section__i">
-                    {% with profile=form.instance.owner.profile %}
+                    {% with profile=form.instance.owner %}
                         <a class="form-event-view" href="{% url 'participant-list' event.id %}">Вернуться к списку заявок</a>
                         <h3 class="title">
                             Рассмотрение заявки на участие в событии {{ event }}

@@ -142,7 +142,7 @@ class Event(FileModelMixin, models.Model):
         return None
 
     def owner_name(self):
-        return self.owner.profile.get_title()
+        return self.owner.get_title()
     owner_name.short_description = u'Имя владельца'
 
     def banner(self):

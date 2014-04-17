@@ -12,23 +12,15 @@
 {% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
-            {% include 'snippets/menu.html' with selected='photo' profile=request.user.profile %}
+            {% include 'snippets/menu.html' with selected='photo' profile=request.user %}
             <dd class="selected">
                 <div class="b-tabs__tab-content">
-                    {% include "snippets/section_profile.html" with profile=request.user.profile %}
+                    {% include "snippets/section_profile.html" with profile=request.user %}
                     <div class="b-hr">
                         <hr/>
                     </div>
                     <header class="b-head cleared">
-{#                        <ul class="b-service-buttons">#}
-{#                            <li class="addvideo"><i></i><a#}
-{#                                    href="{% url 'video-add' %}">Добавить#}
-{#                                видео</a>#}
-{#                            </li>#}
-{#                            <li class="edit"><i></i><a href="#">Редактировать альбом</a>#}
-{#                            </li>#}
-{#                        </ul>#}
-                        <a href="{% url 'profile-photo-detail' request.user.profile.id %}" class="b-button-prev"><span>Все альбомы</span></a>
+                        <a href="{% url 'profile-photo-detail' request.user.id %}" class="b-button-prev"><span>Все альбомы</span></a>
                         <h3>
                             {% if form.instance.pk %}
                                 Редактирование фото &laquo;{{ form.instance.title }}&raquo;

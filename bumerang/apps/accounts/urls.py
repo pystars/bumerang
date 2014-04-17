@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 from bumerang.apps.accounts.forms import (
     ProfileResumeEditForm, FacultyForm, ServiceForm, TeammateForm, TeacherForm)
 from bumerang.apps.accounts.models import Faculty, Service, Teammate, Teacher
-from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.accounts.views import (
     UsersListView, RegistrationFormView, PasswordRecoveryView, ProfileView,
     ProfileInfoEditView, ProfileAvatarEditView, ProfileUpdateView,
     ProfileSettingsEditView, AccountActivationView, FormsetUpdateView,
     ProfileVideoView, ProfilePhotoView, ProfileContactsEditView,
     RegisterEventRequestForm, ProfileEventListView)
+
+
+Profile = get_user_model()
 
 
 urlpatterns = patterns('',

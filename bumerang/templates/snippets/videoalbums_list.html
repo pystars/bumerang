@@ -14,7 +14,7 @@
             <figcaption class="gi-caption">
                 {{ videoalbum.description|truncatewords:8 }}
             </figcaption>
-            {% if request.user.profile.id == videoalbum.owner_id %}
+            {% if request.user.id == videoalbum.owner_id %}
                 <div class="ui-checkbox">
                     <input type="checkbox" name="videoalbums" value="{{ videoalbum.id }}" id="checkbox-{{ videoalbum.id }}" data-videoalbum-id="{{ videoalbum.id }}" />
                     <label for="checkbox-{{ videoalbum.id }}"></label>

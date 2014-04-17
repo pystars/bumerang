@@ -27,8 +27,8 @@
                     <h3 class="title">
                         Подача заявки на &laquo;{{ event }}&raquo;
                     </h3>
-                    {% if not request.user.profile.title %}
-                        {% if request.user.profile.type == 1 %}
+                    {% if not request.user.title %}
+                        {% if request.user.type == 1 %}
                             <p>
                                 Вы не можете отправить заявку, т.к. не указали своего имени и фамилии.
                                 Пожалуйста перейдите на страницу "<a href="{% url 'profile-edit' %}">Общая информация</a>" вашего профиля,
@@ -38,7 +38,7 @@
                             <p>Вы не можете отправить заявку, т.к. отсутствует название.
                                 Пожалуйста перейдите на страницу "<a href="{% url 'profile-edit' %}">Общая информация</a>" вашего профиля,
                                 что бы заполнить поле "Название" Вашей
-                                {% if request.user.profile.type == 3 %}студии{% else %}школы{% endif %}.
+                                {% if request.user.type == 3 %}студии{% else %}школы{% endif %}.
                             </p>
                         {% endif %}
                     {% elif no_filled_fields|length %}

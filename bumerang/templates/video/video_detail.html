@@ -17,7 +17,7 @@
         <nav class="b-crumbs">
             <a href="{% url 'users-list' %}" class="return-to-previous-page">Вернуться на предыдущую страницу</a>
             <span class="b-crumbs__sep">/</span>
-            <a href="{% url 'profile-detail' object.owner.id %}">{{ object.owner.profile.title }}</a>
+            <a href="{% url 'profile-detail' object.owner.id %}">{{ object.owner.title }}</a>
         </nav>
         <h1>{{ object.title }}</h1>
     </header>

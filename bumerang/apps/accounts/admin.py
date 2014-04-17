@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 
-from models import CustomUser as Profile
+
+Profile = get_user_profile()
 
 
 class ProfileAdmin(admin.ModelAdmin):

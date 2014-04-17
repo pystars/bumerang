@@ -12,10 +12,10 @@
 {% block left_column %}
     <div class="b-tabs d-sh">
         <dl>
-            {% include 'snippets/menu.html' with selected='photo' profile=request.user.profile %}
+            {% include 'snippets/menu.html' with selected='photo' profile=request.user %}
             <dd class="selected">
                 <div class="b-tabs__tab-content">
-                    {% include "snippets/section_profile.html" with profile=request.user.profile %}
+                    {% include "snippets/section_profile.html" with profile=request.user %}
                     <div class="b-hr">
                         <hr/>
                     </div>

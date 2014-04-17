@@ -12,8 +12,10 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from bumerang.apps.accounts.models import Faculty, Service, Teammate
-from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.utils.forms import S3StorageFormMixin, TemplatedForm
+
+
+Profile = get_user_profile()
 
 
 class InfoEditFormsMixin(forms.ModelForm):
@@ -103,8 +105,8 @@ class RegistrationForm(forms.ModelForm):
         существующего пользователя. Но я не нашёл как этого сделать
         за адекватный срок. Поэтому так.
         """
-        User = get_user_model()
-        if User.objects.filter(username=self.cleaned_data['username']).exists():
+        if Profile.objects.filter(
+                username=self.cleaned_data['username']).exists():
             raise ValidationError(
                 u'Пользователь с таким адресом уже существует')
         return self.cleaned_data['username']
@@ -115,10 +117,9 @@ class PasswordRecoveryForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('email', None)
-        User = get_user_model()
         if not email:
             raise ValidationError(u'Укажите почту для восстановления пароля')
-        elif not User.objects.filter(username=email).exists():
+        elif not Profile.objects.filter(username=email).exists():
             raise ValidationError(u'Пользователь с таким адресом не существует')
         return email
 
@@ -175,7 +176,6 @@ class ProfileEmailEditForm(forms.ModelForm):
         fields = ('username',)
 
 
-#class UserProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
 class UserProfileInfoForm(EditFormsMixin, TemplatedForm):
     u"""
     Форма редактирования профиля пользователя

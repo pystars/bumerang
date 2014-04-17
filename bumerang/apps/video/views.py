@@ -13,15 +13,17 @@ from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView
 from django.views.generic.list import MultipleObjectMixin
+from django.contrib.auth import get_user_model
 
-#from bumerang.apps.accounts.models import Profile
-from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
 from models import Video, VideoCategory
 from bumerang.apps.events.models import ParticipantVideo, ParticipantVideoScore
 from tasks import ConvertVideoTask
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm
+
+
+Profile = get_user_model()
 
 
 class VideoMixin(object):

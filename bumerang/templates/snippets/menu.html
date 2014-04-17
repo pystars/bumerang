@@ -54,7 +54,7 @@
 {% endif %}
 
 {% if request.user.is_authenticated %}
-    {% ifequal profile request.user.profile %}
+    {% ifequal profile request.user %}
         <dt{% ifequal selected 'messages' %} class="selected"{% endifequal %}>
         {% spaceless %}
             <a href="{% url 'messages_redirect' %}">

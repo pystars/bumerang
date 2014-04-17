@@ -18,7 +18,7 @@
         {% csrf_token %}
         <a class="form-profile-view" href="{% url 'profile-detail' profile.id %}">Просмотр профиля</a>
         <div class="b-form__fields">
-            {% with type=user.profile.type pf=user.profile %}
+            {% with type=user.type pf=user %}
 
                 {% if type == pf.TYPE_STUDIO or type == pf.TYPE_SCHOOL %}
                     <h3 class="title">Редактирование логотипа</h3>

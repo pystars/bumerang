@@ -9,16 +9,19 @@ if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
 else:
     notification = None
-    
+
 from bumerang.apps.messages.models import Message
+
+
+Profile = get_user_model()
+
 
 class MessageAdminForm(forms.ModelForm):
     """
     Custom AdminForm to enable messages to groups and all users.
     """
-    User = get_user_model()
     recipient = forms.ModelChoiceField(
-        label=_('Recipient'), queryset=User.objects.all(), required=True)
+        label=_('Recipient'), queryset=Profile.objects.all(), required=True)
 
     group = forms.ChoiceField(label=_('group'), required=False,
         help_text=_('Creates the message optionally for all users or a group of users.'))
@@ -87,8 +90,7 @@ class MessageAdmin(admin.ModelAdmin):
 
         if form.cleaned_data['group'] == 'all':
             # send to all users
-            User = get_user_model()
-            recipients = User.objects.exclude(pk=obj.recipient.pk)
+            recipients = Profile.objects.exclude(pk=obj.recipient.pk)
         else:
             # send to a group of users
             recipients = []

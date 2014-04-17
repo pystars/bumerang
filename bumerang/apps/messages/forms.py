@@ -25,30 +25,22 @@ class ComposeForm(forms.Form):
     """
     A simple default form for private messages.
     """
-    #recipient = CommaSeparatedUserField(label=_(u"Recipient"))
     recipient = forms.IntegerField(widget=forms.HiddenInput)
     subject = forms.CharField(label=_(u"Subject"))
     body = forms.CharField(label=_(u"Body"),
         widget=forms.Textarea(attrs={'rows': '12', 'cols':'55'}))
-    
-        
-#    def __init__(self, *args, **kwargs):
-#        recipient_filter = kwargs.pop('recipient_filter', None)
-#        super(ComposeForm, self).__init__(*args, **kwargs)
-#        if recipient_filter is not None:
-#            self.fields['recipient']._recipient_filter = recipient_filter
-    
-                
+
+
     def save(self, sender, parent_msg=None):
         recipient = self.cleaned_data['recipient']
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
         message_list = []
 #        for r in recipients:
-        User = get_user_model()
+        Profile = get_user_model()
         msg = Message(
             sender = sender,
-            recipient = User.objects.get(id=recipient),
+            recipient = Profile.objects.get(id=recipient),
             subject = subject,
             body = body,
         )

@@ -13,8 +13,8 @@
                     <header class="b-profile__head b-profile__head_small cleared">
                         <div class="b-profile__pic">
                             <div class="b-ava b-ava_small">
-                                {% if object.owner.profile.min_avatar %}
-                                    <img src="{{ object.owner.profile.min_avatar.url }}" width="60" height="60" alt="" />
+                                {% if object.owner.min_avatar %}
+                                    <img src="{{ object.owner.min_avatar.url }}" width="60" height="60" alt="" />
                                 {% else %}
                                     <img src="{{ STATIC_URL }}i/noava.jpg" width="60" height="60" alt="" />
                                 {% endif %}
@@ -28,9 +28,9 @@
                                 </ul>
                             {% endif %}
                             <a href="{% url 'profile-detail' object.owner_id %}">
-                                <h4>{{ object.owner.profile.title }}</h4>
+                                <h4>{{ object.owner.title }}</h4>
                             </a>
-                            <p>{{ object.owner.profile.place }}</p>
+                            <p>{{ object.owner.place }}</p>
                         </div>
                     </header>
                 </section>

@@ -27,8 +27,6 @@ from django.contrib.auth import get_user_model
 from bumerang.apps.utils.functions import image_crop_rectangle_center
 from bumerang.apps.utils.views import (
     OwnerMixin, SortingMixin, GenericFormsetWithFKUpdateView)
-#from bumerang.apps.accounts.models import Profile
-from bumerang.apps.accounts.models import CustomUser as Profile
 from bumerang.apps.accounts.views import notify_success, notify_error
 from bumerang.apps.accounts.forms import (
     UserContactsForm, OrganizationContactsForm)
@@ -42,6 +40,9 @@ from bumerang.apps.events.forms import (
     SetWinnersForm, EventCreateForm)
 from signals import (
     event_created, winners_public,  participant_reviewed, juror_added)
+
+
+Profile = get_user_model()
 
 
 class ParticipantMixin(View):
@@ -377,20 +378,19 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
         self.object = self.get_object()
         formset = self.ModelFormSet(
             request.POST, request.FILES, prefix=self.formset_prefix)
-        User = get_user_model()
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
                 instance.event = self.object
                 try:
-                    instance.user = User.objects.get(username=instance.email)
+                    instance.user = Profile.objects.get(username=instance.email)
                     try:
                         instance.save()
                     except IntegrityError:
                         pass
                     juror_added.send(
                         self, juror=instance, created=False, password='')
-                except User.DoesNotExist:
+                except Profile.DoesNotExist:
                     title = u'{0} {1} {2}'.format(
                         instance.info_second_name,
                         instance.info_name,
@@ -403,7 +403,7 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                         info_name=instance.info_name,
                         info_middle_name=instance.info_middle_name
                     )
-                    password = User.objects.make_random_password()
+                    password = Profile.objects.make_random_password()
                     profile.set_password(password)
                     profile.save()
                     instance.user_id = profile.id
@@ -466,13 +466,13 @@ class EventContactsUpdateView(UpdateView):
 
 class ContactsCheckMixin:
     def get_no_filled_fields(self, request):
-        if request.user.profile.type == Profile.TYPE_USER:
+        if request.user.type == Profile.TYPE_USER:
             form = UserContactsForm()
         else:
             form = OrganizationContactsForm()
         required_field_names = [
             name for name, field in form.fields.iteritems() if field.required]
-        profile = request.user.profile
+        profile = request.user
         result = []
         for field_name in required_field_names:
             if not getattr(profile, field_name):
