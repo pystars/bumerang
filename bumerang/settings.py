@@ -124,6 +124,7 @@ class CommonSettings(Settings):
     #SOUTH_MIGRATION_MODULES = {
     #    'auth': 'bumerang.apps.accounts.authmigrations',
     #}
+    SOUTH_AUTO_FREEZE_APP =True
 
     INSTALLED_APPS = [
         'django.contrib.auth',

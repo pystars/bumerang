@@ -17,7 +17,6 @@ from django.http import (
 from django.forms.models import modelformset_factory
 from django.forms.util import ErrorList
 from django.shortcuts import get_object_or_404
-from django.utils.simplejson import JSONEncoder
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from django.views.generic import (
@@ -724,8 +723,8 @@ class ParticipantVideoRatingUpdate(UpdateView):
             'current': self.kwargs['rate'],
             'object_id': self.object.pk
         }
-        json = JSONEncoder().encode(response)
-        return HttpResponse(json, mimetype="application/json")
+        return HttpResponse(
+            json.JSONEncoder().encode(response), mimetype="application/json")
 
 
 class EventConditionsDetailView(DetailView):
@@ -761,8 +760,8 @@ class SetWinnersView(UpdateView):
         return self.render_to_response({'success': False})
 
     def render_to_response(self, context, **response_kwargs):
-        json = JSONEncoder().encode(context)
-        return HttpResponse(json, mimetype="application/json")
+        return HttpResponse(
+            json.JSONEncoder().encode(context), mimetype="application/json")
 
 
 class EventPublishWinners(OwnerMixin, DetailView):

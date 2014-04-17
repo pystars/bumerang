@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+import json
 
 from django.db.models.aggregates import Avg
-from django.utils import simplejson
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import F
@@ -48,7 +48,7 @@ class VideoMoveView(AjaxView, OwnerMixin, BaseFormView, MultipleObjectMixin):
         except ValueError:
             try:
                 kwargs = dict(id__in=map(int,
-                    simplejson.loads(form.cleaned_data['video_id'])))
+                    json.loads(form.cleaned_data['video_id'])))
             except ValueError:
                 return HttpResponseForbidden()
         if 'album_id' in form.cleaned_data:
@@ -212,11 +212,7 @@ class VideoListAjaxView(DetailView):
             videos_list = videos_qs.values(*videos_fields)
             result['videos_list'] = list(videos_list)
 
-
-
-        serialized = simplejson.dumps(result)
-
         from time import sleep
         sleep(0.2)
 
-        return self.render_to_response(serialized)
+        return self.render_to_response(json.dumps(result))
