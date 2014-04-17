@@ -116,14 +116,8 @@ class CommonSettings(Settings):
         os.path.join(PROJECT_ROOT, 'templates'),
     ]
 
-    #AUTH_PROFILE_MODULE = 'bumerang.apps.accounts.models.Profile'
-
-    #AUTH_USER_MODEL = 'auth.User'
     AUTH_USER_MODEL = 'accounts.CustomUser'
 
-    #SOUTH_MIGRATION_MODULES = {
-    #    'auth': 'bumerang.apps.accounts.authmigrations',
-    #}
     SOUTH_AUTO_FREEZE_APP =True
 
     INSTALLED_APPS = [
