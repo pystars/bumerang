@@ -15,7 +15,7 @@ from bumerang.apps.accounts.models import Faculty, Service, Teammate
 from bumerang.apps.utils.forms import S3StorageFormMixin, TemplatedForm
 
 
-Profile = get_user_profile()
+Profile = get_user_model()
 
 
 class InfoEditFormsMixin(forms.ModelForm):

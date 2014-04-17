@@ -116,7 +116,7 @@ class CommonSettings(Settings):
         os.path.join(PROJECT_ROOT, 'templates'),
     ]
 
-    AUTH_USER_MODEL = 'accounts.Profile'
+    AUTH_USER_MODEL = 'accounts.CustomUser'
 
     SOUTH_AUTO_FREEZE_APP = True
 

@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 
-Profile = get_user_profile()
+Profile = get_user_model()
 
 
 class ProfileAdmin(admin.ModelAdmin):
