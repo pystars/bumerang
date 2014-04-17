@@ -163,30 +163,69 @@ class CommonSettings(Settings):
         'bumerang.apps.events',
         'bumerang.apps.banners'
     ]
-
     LOGGING = {
         'version': 1,
-        'disable_existing_loggers': True,
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            },
+            'simple': {
+                'format': '%(levelname)s %(message)s'
+            },
         },
         'handlers': {
-            'mail_admins': {
-                'level': 'ERROR',
-                'filters': ['require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
-            }
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            },
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': 'log.log',
+                'formatter': 'simple'
+            },
         },
         'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
+            'stash': {
+                'level': "DEBUG",
+                'handlers': ['console'],
+            },
+            'oauth_tokens' : {
+                'level': "DEBUG",
+                'handlers': ['console'],
+                'propagate': True,
+            },
+            'vkontakte_api' : {
+                'level': "DEBUG",
+                'handlers': ['console'],
                 'propagate': True,
             },
         },
     }
+    #LOGGING = {
+    #    'version': 1,
+    #    'disable_existing_loggers': True,
+    #    'filters': {
+    #        'require_debug_false': {
+    #            '()': 'django.utils.log.RequireDebugFalse'
+    #        }
+    #    },
+    #    'handlers': {
+    #        'mail_admins': {
+    #            'level': 'ERROR',
+    #            'filters': ['require_debug_false'],
+    #            'class': 'django.utils.log.AdminEmailHandler'
+    #        }
+    #    },
+    #    'loggers': {
+    #        'django.request': {
+    #            'handlers': ['mail_admins'],
+    #            'level': 'ERROR',
+    #            'propagate': True,
+    #        },
+    #    },
+    #}
 
     TINYMCE_JS_URL = "/static/tiny_mce/tiny_mce.js"
     TINYMCE_JS_ROOT = STATIC_ROOT + "/tiny_mce"
