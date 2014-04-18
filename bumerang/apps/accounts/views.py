@@ -344,7 +344,7 @@ class UsersListView(ListView):
         qs = super(UsersListView, self).get_queryset()
         if 'type' in self.kwargs:
             qs = qs.filter(type=self.kwargs['type'])
-        if 'q' in self.request.GET:
+        if self.request.GET.get('q', None):
             phrase = self.request.GET['q']
             qs = qs.filter(Q(title__icontains=phrase)|
                            Q(username__icontains=phrase)|

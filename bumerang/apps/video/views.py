@@ -174,7 +174,7 @@ class VideoListView(VideoMixin, ListView):
             published_in_archive=True,
             status=Video.READY
         )
-        if 'q' in self.request.GET:
+        if self.request.GET.get('q', None):
             phrase = self.request.GET['q']
             qs = qs.filter(Q(title__icontains=phrase)|
                            Q(owner__title__icontains=phrase)|
