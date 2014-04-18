@@ -79,6 +79,7 @@ class CommonSettings(Settings):
         # bumerang - specific ctx processors
         'bumerang.apps.accounts.context_processors.global_login_form',
         'bumerang.apps.banners.context_processors.header_banner',
+        'bumerang.apps.bumerang_site.context_processors.paginator_context',
     ]
 
     MIDDLEWARE_CLASSES = [
@@ -192,11 +193,6 @@ class CommonSettings(Settings):
                 'handlers': ['console'],
             },
             'oauth_tokens' : {
-                'level': "DEBUG",
-                'handlers': ['console'],
-                'propagate': True,
-            },
-            'vkontakte_api' : {
                 'level': "DEBUG",
                 'handlers': ['console'],
                 'propagate': True,

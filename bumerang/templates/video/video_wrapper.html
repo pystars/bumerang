@@ -15,6 +15,11 @@
         <aside class="l-cols__side"><div class="l-cols__side__i">
             {% if video_categories %}
                 <nav class="b-side-nav d-indent" style="margin-top: 60px;">
+                    <form>
+                        <h4><label for="id_users_search">Поиск по видео</label></h4>
+                        <p><input id="id_users_search" name="q" type="text"/>
+                        <button type="submit">Искать</button></p>
+                    </form>
                     <ul>
 {#                        <h4>{% if current_category %}<a href="{% url video-list %}">Все видео</a>{% else %}Все видео{% endif %}</h4>#}
                         <h4>Категории</h4>

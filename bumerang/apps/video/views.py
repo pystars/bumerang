@@ -5,7 +5,7 @@ import json
 from django.db.models.aggregates import Avg
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.db.models import F
+from django.db.models import F, Q
 from django.http import (HttpResponseForbidden, HttpResponseRedirect,
     HttpResponse)
 from django.shortcuts import get_object_or_404
@@ -174,6 +174,17 @@ class VideoListView(VideoMixin, ListView):
             published_in_archive=True,
             status=Video.READY
         )
+        if 'q' in self.request.GET:
+            phrase = self.request.GET['q']
+            qs = qs.filter(Q(title__icontains=phrase)|
+                           Q(owner__title__icontains=phrase)|
+                           Q(owner__username__icontains=phrase)|
+                           Q(city__icontains=phrase)|
+                           Q(authors__icontains=phrase)|
+                           Q(teachers__icontains=phrase)|
+                           Q(manager__icontains=phrase)|
+                           Q(festivals__icontains=phrase)
+            )
         qs = qs.annotate(avg_score=Avg(
             'participantvideo__participantvideoscore__score'))
         return qs

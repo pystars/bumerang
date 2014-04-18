@@ -15,6 +15,11 @@
         <aside class="l-cols__side"><div class="l-cols__side__i">
             {% block right_menu %}
                 <nav class="b-side-nav d-indent">
+                    <form>
+                        <h4><label for="id_users_search">Поиск по участникам</label></h4>
+                        <p><input id="id_users_search" name="q" type="text"/>
+                        <button type="submit">Искать</button></p>
+                    </form>
                     <ul>
                         <h4>{% if current_type %}<a href="{% url 'users-list' %}">Все участники</a>{% else %}Все участники{% endif %}</h4>
                         {% ifequal current_type 1 %}

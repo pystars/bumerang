@@ -15,7 +15,7 @@ except ImportError:
 from PIL import Image
 from django.contrib.auth import get_user_model
 from django.forms.util import ErrorList
-from django.db.models import F
+from django.db.models import F, Q
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.contrib.sites.models import Site, get_current_site
@@ -344,6 +344,15 @@ class UsersListView(ListView):
         qs = super(UsersListView, self).get_queryset()
         if 'type' in self.kwargs:
             qs = qs.filter(type=self.kwargs['type'])
+        if 'q' in self.request.GET:
+            phrase = self.request.GET['q']
+            qs = qs.filter(Q(title__icontains=phrase)|
+                           Q(username__icontains=phrase)|
+                           Q(region__icontains=phrase)|
+                           Q(city__icontains=phrase)|
+                           Q(info_address__icontains=phrase)|
+                           Q(info_postal_address__icontains=phrase)
+            )
         return qs.filter(is_active=True, title__isnull=False).order_by('-id')
 
     def get_context_data(self, **kwargs):
