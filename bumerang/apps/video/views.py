@@ -186,7 +186,7 @@ class VideoListView(VideoMixin, ListView):
                            Q(festivals__icontains=phrase)
             )
         qs = qs.annotate(avg_score=Avg(
-            'participantvideo__participantvideoscore__score'))
+            'participantvideos__participantvideoscore__score'))
         return qs
 
 
