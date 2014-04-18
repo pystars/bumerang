@@ -90,7 +90,7 @@ class VideoDetailView(VideoMixin, DetailView):
     def get_queryset(self):
         return super(VideoDetailView, self).get_queryset().filter(
             status=self.model.READY).annotate(avg_score=Avg(
-            'participantvideo__participantvideoscore__score'))
+            'participantvideos__participantvideoscore__score'))
 
     def get(self, request, **kwargs):
         response = super(VideoDetailView, self).get(request, **kwargs)
