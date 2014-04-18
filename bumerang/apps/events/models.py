@@ -230,7 +230,8 @@ class Participant(models.Model):
     is_accepted = models.BooleanField(
         u'Заявка принята', default=False, db_index=True)
     videos = models.ManyToManyField(
-        Video, verbose_name=u'Видео', through='ParticipantVideo')
+        Video, verbose_name=u'Видео', through='ParticipantVideo',
+        related_name='participants')
 
     class Meta:
         unique_together = (
@@ -266,7 +267,8 @@ class ParticipantVideo(models.Model):
     age = models.PositiveSmallIntegerField(
         u'Возраст автора', blank=False, help_text=u'(полных лет)')
     video = models.ForeignKey(
-        Video, verbose_name=u'Видео', blank=False, on_delete=models.PROTECT)
+        Video, verbose_name=u'Видео', blank=False, on_delete=models.PROTECT,
+        related_name='participantvideos')
     is_accepted = models.BooleanField(
         u'Принять видео', default=False, db_index=True)
 
