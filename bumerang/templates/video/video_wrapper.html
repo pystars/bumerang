@@ -15,7 +15,7 @@
         <aside class="l-cols__side"><div class="l-cols__side__i">
             {% if video_categories %}
                 <nav class="b-side-nav d-indent" style="margin-top: 60px;">
-                    <form>
+                    <form action="{% url 'video-list' %}">
                         <h4><label for="id_users_search">Поиск по видео</label></h4>
                         <p><input id="id_users_search" name="q" type="text" value="{{ q }}"/>
                         <button type="submit">Искать</button></p>

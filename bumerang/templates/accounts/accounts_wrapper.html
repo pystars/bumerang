@@ -15,7 +15,7 @@
         <aside class="l-cols__side"><div class="l-cols__side__i">
             {% block right_menu %}
                 <nav class="b-side-nav d-indent">
-                    <form>
+                    <form action="{% url 'users-list' %}">
                         <h4><label for="id_users_search">Поиск по участникам</label></h4>
                         <p><input id="id_users_search" name="q" type="text" value="{{ q }}"/>
                         <button type="submit">Искать</button></p>
