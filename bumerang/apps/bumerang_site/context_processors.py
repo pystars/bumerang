@@ -6,5 +6,6 @@ def paginator_context(request):
         if 'page' in query:
             del query['page']
         return {'query_string':
-                    '&' + '&'.join(k + '=' + query[k] for k in query)}
+                    '&' + '&'.join(k + '=' + query[k] for k in query),
+                'q': request.GET.get('q', '')}
     return {}
