@@ -1,12 +1,5 @@
-{% extends "accounts/profile_edit_wrapper.html" %}
+{% extends "accounts/profile_formset.html" %}
 {% load sitetree formtags %}
-
-{% block title %}Редактирование профиля{% endblock %}
-
-{% block head_js %}
-    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.autogrow.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}j/jquery.formset.js"></script>
-{% endblock %}
 
 {% block edit_form %}
     <section class="b-form b-form_smaller b-form_edit b-form_left">
@@ -18,16 +11,14 @@
                     {% if user.type == 1 %}
                         {% sitetree_page_title from "user_edit_menu" %}
                     {% endif %}{% if user.type == 2 %}
-                    {% sitetree_page_title from "school_edit_menu" %}
-                {% endif %}{% if user.type == 3 %}
-                    {% sitetree_page_title from "studio_edit_menu" %}
-                {% endif %}
+                        {% sitetree_page_title from "school_edit_menu" %}
+                    {% endif %}{% if user.type == 3 %}
+                        {% sitetree_page_title from "studio_edit_menu" %}
+                    {% endif %}
                 </h3>
                 {{ formset.management_form }}
                 {% for form in formset.forms %}
                     <fieldset id="{{ form.prefix }}-row">
-
-
                         <table>
                             <tr>
                                 <td rowspan="2" width="20%">

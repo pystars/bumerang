@@ -281,6 +281,8 @@ class PasswordRecoveryView(FormView):
 
 
 class ProfileViewMixin:
+    context_object_name = 'profile'
+
     def get_events_count(self):
         if self.request.user.is_authenticated():
             if self.object == self.request.user:
@@ -288,7 +290,9 @@ class ProfileViewMixin:
         return self.object.owned_events.filter(is_approved=True).count()
 
 
-class ProfileView(DetailView, ProfileViewMixin):
+class ProfileView(ProfileViewMixin, DetailView):
+    template_name = "accounts/profile_detail.html"
+
     model = Profile
 
     def get_context_data(self, **kwargs):
@@ -313,7 +317,9 @@ class ProfileView(DetailView, ProfileViewMixin):
         return response
 
 
-class ProfileVideoView(DetailView, ProfileViewMixin):
+class ProfileVideoView(ProfileViewMixin, DetailView):
+    template_name = "accounts/profile_video.html"
+
     model = Profile
 
     def get_context_data(self, **kwargs):
@@ -326,7 +332,9 @@ class ProfileVideoView(DetailView, ProfileViewMixin):
         return ctx
 
 
-class ProfilePhotoView(DetailView, ProfileViewMixin):
+class ProfilePhotoView(ProfileViewMixin, DetailView):
+    template_name = "accounts/profile_photo.html"
+
     model = Profile
 
     def get_context_data(self, **kwargs):
@@ -337,6 +345,8 @@ class ProfilePhotoView(DetailView, ProfileViewMixin):
 
 
 class UsersListView(ListView):
+    template_name = "accounts/profile_list.html"
+
     model = Profile
     paginate_by = 25
 
@@ -363,6 +373,7 @@ class UsersListView(ListView):
 
 
 class GetObjectRequestUserMixin(object):
+    context_object_name = 'profile'
     model = Profile
 
     def get_object(self, queryset=None):
@@ -370,6 +381,7 @@ class GetObjectRequestUserMixin(object):
 
 
 class ProfileInfoEditView(GetObjectRequestUserMixin, UpdateView):
+    template_name = "accounts/profile_edit_info.html"
 
     def get_form_class(self):
         # Выбираем тип формы
@@ -401,6 +413,7 @@ class ProfileInfoEditView(GetObjectRequestUserMixin, UpdateView):
 
 
 class ProfileUpdateView(GetObjectRequestUserMixin, UpdateView):
+    template_name = "accounts/profile_form.html"
 
     def get_success_url(self):
         return self.request.path
@@ -445,6 +458,7 @@ class FormsetUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = kwargs
         context['object'] = self.get_object()
+        context['profile'] = self.get_object()
         context_object_name = self.get_context_object_name(self.get_object())
         if context_object_name:
             context[context_object_name] = self.get_object()
@@ -537,6 +551,8 @@ class FormsetUpdateView(UpdateView):
 
 
 class ProfileAvatarEditView(GetObjectRequestUserMixin, UpdateView):
+    template_name = "accounts/profile_edit_avatar.html"
+
     form_class = ProfileAvatarEditForm
 
     def get_success_url(self):
@@ -689,7 +705,7 @@ class ProfileSettingsEditView(GetObjectRequestUserMixin, UpdateView):
             self.get_context_data(**{form_name:form}))
 
 
-class ProfileEventListView(DetailView, ProfileViewMixin):
+class ProfileEventListView(ProfileViewMixin, DetailView):
     model = Profile
     template_name = "accounts/profile_event_list.html"
 
