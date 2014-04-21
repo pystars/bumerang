@@ -488,7 +488,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView, ContactsCheckMixin):
                 prefix='accept', initial={'accepted': False}),
             'formset': self.ModelFormSet(
                 prefix='participantvideo_set',
-                queryset=self.formset_model.objects.get_empty_query_set()
+                queryset=self.formset_model.objects.none()
             ),
             'add_item_text': self.add_item_text,
             'event': self.event,
@@ -524,6 +524,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView, ContactsCheckMixin):
                     self.object.save()
                 except IntegrityError:
                     try:
+                        # in case of already exist participant
                         self.object = self.model.objects.get(
                             event=self.event, owner=request.user)
                         return HttpResponseRedirect(self.get_success_url())
