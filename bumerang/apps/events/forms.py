@@ -4,6 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import DateInput
 from django.forms.models import ModelForm, BaseModelFormSet
+from django.forms.formsets import TOTAL_FORM_COUNT
 from django.forms.widgets import (Textarea, TextInput, Select, Widget,
     SelectMultiple)
 
@@ -277,6 +278,8 @@ class ParticipantVideoFormSet(BaseModelFormSet):
         Cleans all of self.data and populates self._errors.
         """
         self._errors = []
+        self._non_form_errors = self.error_class()
+
         if not self.is_bound: # Stop further processing.
             return
         video_ids = []
@@ -286,11 +289,22 @@ class ParticipantVideoFormSet(BaseModelFormSet):
             if getattr(form, 'cleaned_data', None):
                 video_id = form.cleaned_data['video'].pk
                 if video_id in video_ids:
-                    form._update_errors({'video' :
-                                     [u'Видео уже добавлено к этой заявке']})
+                    form._update_errors(ValidationError({'video' :
+                                     [u'Видео уже добавлено к этой заявке']}))
                 video_ids.append(video_id)
             self._errors.append(form.errors)
         try:
+            if (self.validate_max and
+                self.total_form_count() - len(self.deleted_forms) > self.max_num
+            ) or self.management_form.cleaned_data[
+                TOTAL_FORM_COUNT] > self.absolute_max:
+                raise ValidationError(ungettext(
+                    "Please submit %d or fewer forms.",
+                    "Please submit %d or fewer forms.", self.max_num
+                ) % self.max_num,
+                    code='too_many_forms',
+                )
+            # Give self.clean() a chance to do cross-form validation.
             self.clean()
         except ValidationError, e:
             self._non_form_errors = self.error_class(e.messages)
