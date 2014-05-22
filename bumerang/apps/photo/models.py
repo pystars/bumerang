@@ -73,7 +73,7 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
     created = models.DateTimeField(u'Дата добавления', default=now)
     views_count = models.IntegerField(u'Количество просмотров фото', default=0,
                                       editable=False, **nullable)
-    is_processed = models.BooleanField(u'Обработано')
+    is_processed = models.BooleanField(u'Обработано', default=False)
 
     class Meta:
         verbose_name = u'Фото'
