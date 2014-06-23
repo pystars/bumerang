@@ -138,7 +138,6 @@ class EventListView(SortingMixin, ListView):
     def get_filter(self):
         result = {}
         if self.sort_field == 'requesting_till':
-            print 'fine'
             result['requesting_till__gte'] = now().date()
         if 'type' in self.kwargs:
             result['type'] = self.kwargs['type']
