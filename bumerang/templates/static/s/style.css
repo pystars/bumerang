@@ -6,14 +6,15 @@ html {
 	overflow-y:auto;
 }
 
-body.bs {
-    background-position: center top;
-}
-
 body {
 	background:#f2f0e7 url(../i/page-gd.jpg) repeat-x;
 	color:#010101;
 	font:1em/1.1875 'PT Sans', 'Myriad Pro', arial, sans-serif;
+}
+
+body.bs {
+    background-position: center top;
+    background-repeat: no-repeat;
 }
 
 a, .b-pseudolink {
