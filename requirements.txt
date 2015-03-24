@@ -24,7 +24,7 @@ coverage
 django-coverage
 django-grappelli
 feincms
--e git+git@github.com:clincher/django-ratings.git#egg=django-ratings
+-e git+https://github.com/clincher/django-ratings.git#egg=django-ratings
 
 celery
 django-kombu
