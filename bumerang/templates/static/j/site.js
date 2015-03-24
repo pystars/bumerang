@@ -3,7 +3,23 @@ document.__DEBUG = true;
 /*
  * Helper functions
  * */
-(function(st) {
+// using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+ (function(st) {
 
     function fl(s, len) {
         var len = Number(len);
@@ -437,16 +453,182 @@ function confirmMoveModalDialog() {
 }
 
 
+
+var request = function(method, url, data, headers, el, showProgress, cb) {
+    var req = new XMLHttpRequest();
+    req.open(method, url, true);
+
+    Object.keys(headers).forEach(function(key){
+        req.setRequestHeader(key, headers[key])
+    });
+
+    req.onload = function() {
+        cb(req.status, req.responseText)
+    };
+
+    req.onerror = req.onabort = function() {
+        disableSubmit(false);
+        error(el, 'Sorry, failed to upload file.')
+    };
+
+    req.upload.onprogress = function(data) {
+        progressBar(el, data, showProgress)
+    };
+
+    req.send(data)
+};
+var progressBar = function(el, data, showProgress) {
+    if(data.lengthComputable === false || showProgress === false) return
+
+    var pcnt = Math.round(data.loaded * 100 / data.total),
+        bar  = el.querySelector('.bar')
+
+    bar.style.width = pcnt + '%'
+}
+var error = function(el, msg) {
+    el.className = 's3direct form-active'
+    el.querySelector('.file-input').value = ''
+    alert(msg)
+}
+var update = function(el, xml) {
+    var link = el.querySelector('.file-link'),
+        url  = el.querySelector('.file-url')
+
+    url.value = parseURL(xml)
+    link.setAttribute('href', url.value)
+    link.innerHTML = url.value.split('/').pop()
+
+    el.className = 's3direct link-active'
+    el.querySelector('.bar').style.width = '0%'
+}
+var parseJson = function(json) {
+    var data
+    try {data = JSON.parse(json)}
+    catch(e){ data = null }
+    return data
+}
+var parseURL = function(text) {
+    var xml = new DOMParser().parseFromString(text, 'text/xml'),
+        tag = xml.getElementsByTagName('Location')[0],
+        url = unescape(tag.childNodes[0].nodeValue)
+
+    return url
+}
+var concurrentUploads = 0
+var disableSubmit = function(status) {
+    var submitRow = document.querySelector('.submit-row')
+    if( ! submitRow) return
+
+    var buttons = submitRow.querySelectorAll('input[type=submit]')
+
+    if (status === true) concurrentUploads++
+    else concurrentUploads--
+
+    ;[].forEach.call(buttons, function(el){
+        el.disabled = (concurrentUploads !== 0)
+    })
+}
+var upload = function(file, data, el) {
+    var form = new FormData();
+
+    disableSubmit(true);
+
+    if (data === null) return error(el, 'Sorry, could not get upload URL.');
+
+    el.className = 's3direct progress-active';
+    var url  = data['form_action'];
+    delete data['form_action'];
+
+    Object.keys(data).forEach(function(key){
+        form.append(key, data[key])
+    });
+    form.append('file', file);
+
+    request('POST', url, form, {}, el, true, function(status, xml){
+        disableSubmit(false);
+        if(status !== 201) return error(el, 'Sorry, failed to upload to S3.')
+        update(el, xml);
+        console.log(status);
+        console.log(xml);
+    })
+};
+
+
+
 /*
 * Site handlers
 * */
 $(function() {
+    $('#video-selector').on('change', function (evt/**Event*/){
+        // Retrieve file list
+        var file = FileAPI.getFiles(evt)[0];
+        if (file.type.startsWith('video')) {
+          var el = evt.target.parentElement;
+          var url = $(this).attr('data-policy-url');
+          var form = new FormData();
+          form.append('content_type', file.type);
+          form.append('filename', file.name);
+          var headers = {'X-CSRFToken': getCookie('csrftoken')};
+          request('post', url, form, headers, el, false, function(status, json) {
+            var data = parseJson(json);
+
+            switch(status) {
+                case 200:
+                    upload(file, data, el);
+                    break;
+                case 400:
+                    error(el, data)
+                case 403:
+                    error(el, data.error);
+                    break;
+                default:
+                    error(el, 'Sorry, could not get upload URL.')
+            }
+          });
+//          $.post(
+//              url,
+//              data,
+//              function (response){
+//                var data = parseJson(response);
+//                console.log(data);
+//                upload(fileInput, data, $('#notify-container'));
+//                console.log(data);
+//              },
+//              'application/json'
+//          );
+        }
+
+    });
+
+//    $('#video-selector').bind('change', function(e) {
+//        e.preventDefault();
+//
+//        var filename = $(this).val();
+//        if(filename != '')
+//        {
+//            if(!allowed_videos_extensions_regexp.test(filename))
+//            {
+//                $('#popup-upload').hide();
+//                $('#tint').hide();
+//                show_notification('error',
+//                    'Неверный формат видеофайла'
+//                );
+//                return false;
+//            } else {
+//              $.post(
+//                  $(this).attr('data-policy-url'),
+//                  {'filename': $(this).val()}
+//              )
+//
+////                invokeUploadMessage();
+////                $('#video-upload-form').submit();
+//            }
+//        }
+//    });
 
     _.templateSettings = {
         interpolate : /\{=(.+?)\}/g
     };
-
-
     /*
     Datetime picker
      */
@@ -565,27 +747,6 @@ $(function() {
                 close.trigger('click');
             }
         });
-    });
-
-    $('.button-video-upload').bind('click', function(e) {
-        e.preventDefault();
-
-        var filename = $("#video-upload-form input[name=original_file]").val();
-        if(filename != '')
-        {
-            if(!allowed_videos_extensions_regexp.test(filename))
-            {
-                $('#popup-upload').hide();
-                $('#tint').hide();
-                show_notification('error',
-                    'Неверный формат видеофайла'
-                );
-                return false;
-            } else {
-                invokeUploadMessage();
-                $('#video-upload-form').submit();
-            }
-        }
     });
 
     $('.button-photo-upload').bind('click', function(e) {

@@ -1,8 +1,8 @@
-django
+django<1.7
 django-configurations
 Pillow
 South
-django-debug-toolbar
+#django-debug-toolbar
 django-filebrowser
 django-mptt
 django-sitetree

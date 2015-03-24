@@ -38,7 +38,6 @@ class Photo(FileModelMixin, models.Model, TitleUnicode):
         (FOR_ME_ONLY, u'Только мне'),
     )
 
-    slug = models.SlugField(u'Метка', max_length=SLUG_LENGTH, editable=False)
     published_in_archive = models.BooleanField(
         u'Опубликовано в фотогалерее', default=False)
     title = models.CharField(u'Название', max_length=255)

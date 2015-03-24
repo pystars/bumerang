@@ -2,7 +2,7 @@
 from django import forms
 
 from bumerang.apps.utils.forms import S3StorageFormMixin
-from models import Video
+from .models import Video
 
 
 class BaseVideoForm(S3StorageFormMixin, forms.ModelForm):
@@ -26,15 +26,10 @@ class VideoCreateForm(BaseVideoForm):
         model = Video
         fields = (
             'title',
-            'original_file',
             'album',
             'category',
             'description'
         )
-
-    def __init__(self, *args, **kwargs):
-        super(VideoCreateForm, self).__init__(*args, **kwargs)
-        self.fields['original_file'].required = False
 
 
 class VideoForm(BaseVideoForm):
@@ -45,7 +40,7 @@ class VideoForm(BaseVideoForm):
         fields = (
             'title',
             'album',
-            'original_file',
+            # 'original_file',
             'category',
             'description',
             'year',
@@ -62,3 +57,8 @@ class VideoForm(BaseVideoForm):
 class VideoUpdateAlbumForm(forms.Form):
     video_id = forms.CharField()
     album_id = forms.IntegerField(required=False)
+
+
+class GetS3UploadURLForm(forms.Form):
+    content_type = forms.CharField()
+    filename = forms.CharField()

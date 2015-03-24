@@ -30,7 +30,6 @@ class CustomUser(FileModelMixin, AbstractUser):
         (TYPE_USER,      u'Независимый участник'),
         (TYPE_SCHOOL,    u'Школа'),
         (TYPE_STUDIO,    u'Студия'),
-        #(TYPE_FESTIVAL,  u'Фестиваль'),
     )
 
     GENDER = (

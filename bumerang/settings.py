@@ -9,7 +9,7 @@ djcelery.setup_loader()
 
 class CommonSettings(Settings):
 
-    DEBUG = False
+    DEBUG = True
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -91,13 +91,13 @@ class CommonSettings(Settings):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        # 'debug_toolbar.middleware.DebugToolbarMiddleware',
         'bumerang.apps.accounts.middleware.KeepLoggedInMiddleware',
     ]
 
-    if DEBUG:
-        MIDDLEWARE_CLASSES += [
-            'bumerang.apps.utils.middleware.ProfilerMiddleware']
+    # if DEBUG:
+    #     MIDDLEWARE_CLASSES += [
+    #         'bumerang.apps.utils.middleware.ProfilerMiddleware']
 
     # Keep me logged settings
     KEEP_LOGGED_KEY = 'keep_me_logged'
@@ -145,6 +145,7 @@ class CommonSettings(Settings):
         #'django_wysiwyg',
         'django_extensions',
         'django_coverage',
+        # 'debug_toolbar',
         # we have two messages in project, so they must be in this order
         'bumerang.apps.messages',
         'django.contrib.messages',
@@ -164,64 +165,62 @@ class CommonSettings(Settings):
         'bumerang.apps.events',
         'bumerang.apps.banners'
     ]
+    # LOGGING = {
+    #     'version': 1,
+    #     'formatters': {
+    #         'verbose': {
+    #             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+    #         },
+    #         'simple': {
+    #             'format': '%(levelname)s %(message)s'
+    #         },
+    #     },
+    #     'handlers': {
+    #         'console': {
+    #             'level': 'DEBUG',
+    #             'class': 'logging.StreamHandler',
+    #             'formatter': 'verbose'
+    #         },
+    #         'file': {
+    #             'level': 'DEBUG',
+    #             'class': 'logging.FileHandler',
+    #             'filename': 'log.log',
+    #             'formatter': 'simple'
+    #         },
+    #     },
+    #     'loggers': {
+    #         'stash': {
+    #             'level': "DEBUG",
+    #             'handlers': ['console'],
+    #         },
+    #         'oauth_tokens': {
+    #             'level': "DEBUG",
+    #             'handlers': ['console'],
+    #             'propagate': True,
+    #         },
+    #     },
+    # }
     LOGGING = {
-        'version': 1,
-        'formatters': {
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-            },
-            'simple': {
-                'format': '%(levelname)s %(message)s'
-            },
-        },
-        'handlers': {
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            },
-            'file': {
-                'level': 'DEBUG',
-                'class': 'logging.FileHandler',
-                'filename': 'log.log',
-                'formatter': 'simple'
-            },
-        },
-        'loggers': {
+       'version': 1,
+       'handlers': {
+           'console': {
+               'level': 'ERROR',
+               'class': 'logging.StreamHandler'
+           }
+       },
+       'loggers': {
+           'django.request': {
+               'handlers': ['console'],
+               'level': 'ERROR',
+               'propagate': True
+           },
             'stash': {
                 'level': "DEBUG",
                 'handlers': ['console'],
+               'propagate': True
             },
-            'oauth_tokens' : {
-                'level': "DEBUG",
-                'handlers': ['console'],
-                'propagate': True,
-            },
-        },
+       },
     }
-    #LOGGING = {
-    #    'version': 1,
-    #    'disable_existing_loggers': True,
-    #    'filters': {
-    #        'require_debug_false': {
-    #            '()': 'django.utils.log.RequireDebugFalse'
-    #        }
-    #    },
-    #    'handlers': {
-    #        'mail_admins': {
-    #            'level': 'ERROR',
-    #            'filters': ['require_debug_false'],
-    #            'class': 'django.utils.log.AdminEmailHandler'
-    #        }
-    #    },
-    #    'loggers': {
-    #        'django.request': {
-    #            'handlers': ['mail_admins'],
-    #            'level': 'ERROR',
-    #            'propagate': True,
-    #        },
-    #    },
-    #}
 
     TINYMCE_JS_URL = "/static/tiny_mce/tiny_mce.js"
     TINYMCE_JS_ROOT = STATIC_ROOT + "/tiny_mce"
@@ -331,6 +330,9 @@ class CommonSettings(Settings):
         }
     }
 
+    S3DIRECT_REGION = 'eu-west-1'
+    AWS_ELASTICTRANCODER_PIPELINE = 'bumerang-pipeline'
+    AWS_ELASTICTRANCODER_PRESET = '1427109590397-1frzex'
 
 try:
     from bumerang.local_settings import *
@@ -338,8 +340,10 @@ except ImportError:
     class LocalSettingsMixin(object):
         pass
 
+
 class BumerSettings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
     pass
+
 
 class AdminSettings(LocalSettingsMixin, CommonSettings):
     pass

@@ -34,6 +34,28 @@
                         <form id="video-upload-form" name="editform" action="" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="b-form__fields">
+                            {% if form.instance.pk %}
+                              <script>
+                                var FileAPI = {
+                                      debug: true
+                                    , media: true
+                                    , staticPath: '{{ STATIC_URL }}j/FileAPI/dist/'
+                                };
+                              </script>
+                            <script src="{{ STATIC_URL }}j/FileAPI/dist/FileAPI.js"></script>
+                            <fieldset>
+                              <div id="notify-container">cont<div class="bar"></div></div>
+                              <div class="b-form__field">
+                                <label for="">
+                                  <span class="f-title"><span>Видеофайл</span></span>
+                                  <span class="f-input">
+                                    <div class="bar"></div>
+                                    <input type="file" id="video-selector" data-policy-url="{% url 'video-get-s3-upload-url' form.instance.id %}" />
+                                  </span>
+                                </label>
+                              </div>
+                            </fieldset>
+                            {% endif %}
                                 {% for item in form %}
                                     <fieldset>
                                         <div class="b-form__field">
@@ -57,13 +79,13 @@
                             <footer class="b-form__footer">
                                 <div class="wrap">
                                     {% if form.instance.pk %}
-                                        <a href="#" class="b-button b-button_yellow button-video-edit-upload">
+                                        <button class="b-button b-button_yellow button-video-edit-upload">
                                             Сохранить
-                                        </a>
+                                        </button>
                                     {% else %}
-                                        <a href="#" class="b-button b-button_yellow button-video-upload">
+                                        <button class="b-button b-button_yellow">
                                             Создать
-                                        </a>
+                                        </button>
                                     {% endif %}
                                 </div>
                             </footer>
@@ -75,6 +97,4 @@
     </div>
 {% endblock %}
 
-{% block popup %}
-    {% include "snippets/popup_file_upload.html" %}
-{% endblock %}
+{% block popup %}{% endblock %}

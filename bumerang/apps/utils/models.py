@@ -4,10 +4,12 @@ from django.db.models.fields.files import FileField, ImageField
 
 
 nullable = dict(null=True, blank=True)
-choices = lambda *x: zip(x,x)
+choices = lambda *x: zip(x, x)
+
 
 class TitleUnicode(object):
     title = ''
+
     def __unicode__(self):
         return u'{0}'.format(self.title)
 
