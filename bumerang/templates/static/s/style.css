@@ -3186,7 +3186,17 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 .b-form_popup .b-form__footer {
 	margin-left:4.5em;
 }
-
+/*.b-form_popup .progress-bar-wrapper {*/
+    /*width: 100%;*/
+/*}*/
+.b-form_popup .progress-bar {
+    width: 100%;
+    margin-top: 20px;
+}
+.b-form_popup .progress-value {
+    width: 100%;
+    text-align: center;
+}
 .b-form_popup input.medium {
 	width:230px;
 	min-width:230px !important;
@@ -5673,4 +5683,8 @@ table.compact td .f-title {
 }
 .def-list dl dd {
     float: left;
+}
+
+#video-selector {
+    display: none;
 }

@@ -5,7 +5,7 @@
     {% if form.instance.pk %}
         Редактирование видео &laquo;{{ form.instance.title }}&raquo;
     {% else %}
-        Создание видео
+        Добавление видео
     {% endif %}
 {% endblock %}
 
@@ -26,7 +26,7 @@
                             {% if form.instance.pk %}
                                 Редактирование видео &laquo;{{ form.instance.title }}&raquo;
                             {% else %}
-                                Создание видео
+                                Добавление видео
                             {% endif %}
                         </h3>
                     </header>
@@ -44,15 +44,17 @@
                               </script>
                             <script src="{{ STATIC_URL }}j/FileAPI/dist/FileAPI.js"></script>
                             <fieldset>
-                              <div id="notify-container">cont<div class="bar"></div></div>
                               <div class="b-form__field">
-                                <label for="">
-                                  <span class="f-title"><span>Видеофайл</span></span>
+                                <label for="video-selector">
+                                  <span class="f-title"><span>Видео</span></span>
                                   <span class="f-input">
-                                    <div class="bar"></div>
+                                    <button class="input-file-button" type="button">Загрузить{% if form.instance.original_file %} другое видео{% endif %} с компьютера</button>
                                     <input type="file" id="video-selector" data-policy-url="{% url 'video-get-s3-upload-url' form.instance.id %}" />
                                   </span>
                                 </label>
+                              </div>
+                              <div class="progress progress-striped active">
+                                <div class="bar"></div>
                               </div>
                             </fieldset>
                             {% endif %}
@@ -79,12 +81,12 @@
                             <footer class="b-form__footer">
                                 <div class="wrap">
                                     {% if form.instance.pk %}
-                                        <button class="b-button b-button_yellow button-video-edit-upload">
+                                        <button class="b-button b-button_yellow button-video-edit-upload" type="submit">
                                             Сохранить
                                         </button>
                                     {% else %}
-                                        <button class="b-button b-button_yellow">
-                                            Создать
+                                        <button class="b-button b-button_yellow" type="submit">
+                                            Сохранить и перейти к загрузке видео
                                         </button>
                                     {% endif %}
                                 </div>
@@ -97,4 +99,6 @@
     </div>
 {% endblock %}
 
-{% block popup %}{% endblock %}
+{% block popup %}
+    {% include "snippets/popup_file_upload.html" %}
+{% endblock %}

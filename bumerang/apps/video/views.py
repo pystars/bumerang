@@ -242,6 +242,7 @@ def endpoint(request):
     except ValueError:
         return HttpResponseBadRequest('Invalid JSON')
 
+    print(data)
     # handle SNS subscription
     if data['Type'] == 'SubscriptionConfirmation':
         subscribe_url = data['SubscribeURL']
@@ -257,7 +258,6 @@ def endpoint(request):
     except ValueError:
         assert False, data['Message']
 
-    #
     # if message['state'] == 'PROGRESSING':
     #     job = EncodeJob.objects.get(job_id=message['jobId'])
     #     job.message = 'Progressing'

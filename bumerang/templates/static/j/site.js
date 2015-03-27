@@ -468,66 +468,83 @@ var request = function(method, url, data, headers, el, showProgress, cb) {
 
     req.onerror = req.onabort = function() {
         disableSubmit(false);
-        error(el, 'Sorry, failed to upload file.')
+        error(el, 'Произошла ошибка во время загрузки  файла.')
     };
 
     req.upload.onprogress = function(data) {
-        progressBar(el, data, showProgress)
+      if ($(el).find('.progress-bar').size()) {
+        progressBar($(el).find('.progress-bar'), data, showProgress)
+      } else {
+        progressBar($('.progress-bar'), data, showProgress)
+      }
     };
 
     req.send(data)
 };
 var progressBar = function(el, data, showProgress) {
-    if(data.lengthComputable === false || showProgress === false) return
+    if(data.lengthComputable === false || showProgress === false) return;
 
-    var pcnt = Math.round(data.loaded * 100 / data.total),
-        bar  = el.querySelector('.bar')
+    var pcnt = Math.round(data.loaded * 100 / data.total);
 
-    bar.style.width = pcnt + '%'
-}
+    $(el).val(pcnt);
+    $(el).next('.progress-value').html(pcnt + '%');
+};
 var error = function(el, msg) {
-    el.className = 's3direct form-active'
-    el.querySelector('.file-input').value = ''
-    alert(msg)
-}
+    $(el).value = '';
+    alert(msg);
+    $('#popup-upload').hide();
+    $('#tint').hide();
+};
 var update = function(el, xml) {
-    var link = el.querySelector('.file-link'),
-        url  = el.querySelector('.file-url')
+//    var link = el.querySelector('.file-link'),
+//        url  = el.querySelector('.file-url')
 
-    url.value = parseURL(xml)
-    link.setAttribute('href', url.value)
-    link.innerHTML = url.value.split('/').pop()
+//    url.value = parseURL(xml);
+//    link.setAttribute('href', url.value)
+//    link.innerHTML = url.value.split('/').pop()
 
-    el.className = 's3direct link-active'
-    el.querySelector('.bar').style.width = '0%'
-}
+//    el.className = 's3direct link-active'
+  if ($(el).find('.progress-bar').size()) {
+    $(el).find('.progress-bar').css({width: 0});
+  } else {
+    $('.progress-bar').css({width: 0});
+  };
+  $(el).value = '';
+  $('#popup-upload').hide();
+  $('#tint').hide();
+  $('<span>Файл успешно загружен</span>').insertAfter(el);
+  $(el).prev('button').text('Загрузить другой файл с компьютера');
+};
+
 var parseJson = function(json) {
-    var data
+    var data;
     try {data = JSON.parse(json)}
     catch(e){ data = null }
     return data
-}
+};
+
 var parseURL = function(text) {
     var xml = new DOMParser().parseFromString(text, 'text/xml'),
-        tag = xml.getElementsByTagName('Location')[0],
-        url = unescape(tag.childNodes[0].nodeValue)
+        tag = xml.getElementsByTagName('Location')[0];
+    return decodeURI(tag.childNodes[0].nodeValue);  // return url
+};
 
-    return url
-}
-var concurrentUploads = 0
+var concurrentUploads = 0;
 var disableSubmit = function(status) {
-    var submitRow = document.querySelector('.submit-row')
-    if( ! submitRow) return
+//    var submitRow = document.querySelector('.submit-row')
+//    if( ! submitRow) return
 
-    var buttons = submitRow.querySelectorAll('input[type=submit]')
+//    var buttons = submitRow.querySelectorAll('input[type=submit]')
+    var buttons = $('#video-upload-form button[type=submit]');
 
     if (status === true) concurrentUploads++
-    else concurrentUploads--
+    else concurrentUploads--;
 
-    ;[].forEach.call(buttons, function(el){
+    $.each(buttons, function(el){
         el.disabled = (concurrentUploads !== 0)
-    })
-}
+    });
+};
+
 var upload = function(file, data, el) {
     var form = new FormData();
 
@@ -535,7 +552,7 @@ var upload = function(file, data, el) {
 
     if (data === null) return error(el, 'Sorry, could not get upload URL.');
 
-    el.className = 's3direct progress-active';
+//    el.className = 's3direct progress-active';
     var url  = data['form_action'];
     delete data['form_action'];
 
@@ -546,24 +563,36 @@ var upload = function(file, data, el) {
 
     request('POST', url, form, {}, el, true, function(status, xml){
         disableSubmit(false);
-        if(status !== 201) return error(el, 'Sorry, failed to upload to S3.')
+        if(status !== 201) return error(el, 'К сожалению произошла ошибка при загрузке видео на сервер.');
         update(el, xml);
-        console.log(status);
-        console.log(xml);
+//        console.log(status);
+//        console.log(xml);
     })
 };
 
+var removeUpload = function(e) {
+    e.preventDefault()
+    $('#popup-upload').hide();
+    $('#tint').hide();
 
+//    var el = e.target.parentElement
+//    el.querySelector('.file-url').value = ''
+//    el.querySelector('.file-input').value = ''
+//    el.className = 's3direct form-active'
+};
 
 /*
 * Site handlers
 * */
 $(function() {
+    $('.input-file-button').on('click', function(){
+      $(this).next('input[type=file]').click();
+    });
     $('#video-selector').on('change', function (evt/**Event*/){
         // Retrieve file list
         var file = FileAPI.getFiles(evt)[0];
         if (file.type.startsWith('video')) {
-          var el = evt.target.parentElement;
+          var el = evt.target;
           var url = $(this).attr('data-policy-url');
           var form = new FormData();
           form.append('content_type', file.type);
@@ -571,13 +600,14 @@ $(function() {
           var headers = {'X-CSRFToken': getCookie('csrftoken')};
           request('post', url, form, headers, el, false, function(status, json) {
             var data = parseJson(json);
-
+            console.log(data);
             switch(status) {
                 case 200:
+                    invokeUploadMessage();
                     upload(file, data, el);
                     break;
                 case 400:
-                    error(el, data)
+                    error(el, data);
                 case 403:
                     error(el, data.error);
                     break;
@@ -599,6 +629,7 @@ $(function() {
         }
 
     });
+
 
 //    $('#video-selector').bind('change', function(e) {
 //        e.preventDefault();
