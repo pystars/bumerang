@@ -71,7 +71,7 @@ def convert_original_video(sender, **kwargs):
             )
             EncodeJob.objects.create(
                 content_type=ContentType.objects.get_for_model(Video),
-                object_pk=video.pk,
+                object_id=video.pk,
                 job_id=encoder.message['Job']['Id']
             )
 
