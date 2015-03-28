@@ -54,7 +54,6 @@ def convert_original_video(sender, **kwargs):
     message = kwargs['message']
     # bucket_name = message['bucket']['name']
     for record in message['Records']:
-        print(record)
         key = record['s3']['object']['key']
         pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
         match = re.match(pattern, key)
@@ -65,7 +64,7 @@ def convert_original_video(sender, **kwargs):
             encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
             encoder.encode(
                 {'Key': key},
-                {'Key': hq_upload_to(video.content_object, None),
+                {'Key': hq_upload_to(video, None),
                  'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}
             )
             print(type(encoder.message))
