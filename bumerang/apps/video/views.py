@@ -217,7 +217,7 @@ def endpoint(request):
     except ValueError:
         assert False, data['Message']
 
-    if message['TopicArn'].endswith('file_uploaded'):
+    if data['TopicArn'].endswith('file_uploaded'):
         file_uploaded.send(sender=None, message=message)
 
     elif message['eventSource'] == "elastictranscoder.amazonaws.com":
