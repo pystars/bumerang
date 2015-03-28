@@ -99,10 +99,10 @@ def update_encode_state(sender, **kwargs):
         job.state = EncodeJob.WARNING
     if state == 'COMPLETED':
         job.message = 'Success'
-        job.state = EncodeJob.COMPLETED
+        job.state = EncodeJob.COMPLETE
         job.content_object.status = Video.READY
-        job.content_object.original_file = ''
-        job.content_object.hq_file = ''
+        job.content_object.original_file = message['input']['key']
+        job.content_object.hq_file = message['outputs'][0]['key']
     if state == 'ERROR':
         job.message = message['messageDetails']
         job.state = EncodeJob.ERROR
