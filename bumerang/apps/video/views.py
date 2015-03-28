@@ -217,9 +217,8 @@ def endpoint(request):
     except ValueError:
         assert False, data['Message']
 
-    if message['eventSource'] == "aws:s3":
-        if message['eventName'] == "ObjectCreated:Post":
-            file_uploaded.send(sender=None, message=message)
+    if message['TopicArn'].endswith('file_uploaded'):
+        file_uploaded.send(sender=None, message=message)
 
     elif message['eventSource'] == "elastictranscoder.amazonaws.com":
         transcode_onchange.send(sender=None, message=message)

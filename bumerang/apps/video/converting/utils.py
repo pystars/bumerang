@@ -52,24 +52,26 @@ def convert_original_video(sender, **kwargs):
     """
     message = kwargs['message']
     # bucket_name = message['bucket']['name']
-    key = message['object']['key']
-    pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
-    match = re.match(pattern, key)
-    if match:
-        slug = match.group('slug')
-        from bumerang.apps.video.models import Video
-        video = Video.objects.get(slug=slug)
-        encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
-        encoder.encode(
-            {'Key': str(video.content_object.original_file)},
-            {'Key': hq_upload_to(video.content_object, None),
-             'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}
-        )
-        EncodeJob.objects.create(
-            content_type=ContentType.objects.get_for_model(Video),
-            object_pk=video.pk,
-            job_id=encoder.message['jobId']
-        )
+    for record in message['Records']:
+        key = record['object']['key']
+        pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
+        match = re.match(pattern, key)
+        if match:
+            slug = match.group('slug')
+            from bumerang.apps.video.models import Video
+            video = Video.objects.get(slug=slug)
+            encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
+            encoder.encode(
+                {'Key': key},
+                {'Key': hq_upload_to(video.content_object, None),
+                 'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}
+            )
+            print(encoder.message)
+            EncodeJob.objects.create(
+                content_type=ContentType.objects.get_for_model(Video),
+                object_pk=video.pk,
+                job_id=encoder.message['jobId']
+            )
 
 
 def update_encode_state(sender, **kwargs):
