@@ -108,7 +108,7 @@ class EncodeJob(models.Model):
     )
     job_id = models.CharField(max_length=100, db_index=True, primary_key=True)
     state = models.PositiveIntegerField(
-        choices=STATE_CHOICES, default=0, db_index=True)
+        choices=STATE_CHOICES, default=SUBMITED, db_index=True)
     message = models.TextField()
     content_type = models.ForeignKey(ContentType)
     object_pk = models.PositiveIntegerField()

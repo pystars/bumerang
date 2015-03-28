@@ -67,12 +67,10 @@ def convert_original_video(sender, **kwargs):
                 [{'Key': hq_upload_to(video, None),
                  'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}]
             )
-            print(encoder.message)
-            info = json.loads(encoder.message)
             EncodeJob.objects.create(
                 content_type=ContentType.objects.get_for_model(Video),
                 object_pk=video.pk,
-                job_id=encoder.message['jobId']
+                job_id=encoder.message['Job']['Id']
             )
 
 
