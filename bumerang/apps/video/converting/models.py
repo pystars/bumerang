@@ -111,7 +111,7 @@ class EncodeJob(models.Model):
         choices=STATE_CHOICES, default=SUBMITED, db_index=True)
     message = models.TextField()
     content_type = models.ForeignKey(ContentType)
-    object_pk = models.PositiveIntegerField()
+    object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
