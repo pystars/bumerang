@@ -54,7 +54,6 @@ def convert_original_video(sender, **kwargs):
      original video.
     """
     message = kwargs['message']
-    # bucket_name = message['bucket']['name']
     for record in message['Records']:
         key = record['s3']['object']['key']
         pattern = re.compile('videos/(?P<slug>\w{12})/original.*')

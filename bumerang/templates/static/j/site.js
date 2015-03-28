@@ -598,9 +598,9 @@ $(function() {
           var headers = {'X-CSRFToken': getCookie('csrftoken')};
           request('post', url, form, headers, el, false, function(status, json) {
             var data = parseJson(json);
-            console.log(data);
             switch(status) {
                 case 200:
+                    $(el).next('span').remove();
                     invokeUploadMessage();
                     upload(file, data, el);
                     break;
