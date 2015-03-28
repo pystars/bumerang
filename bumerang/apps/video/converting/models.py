@@ -117,7 +117,9 @@ class EncodeJob(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return u'Encode: {0}'.format(self.content_object)
+        if self.object_pk:
+            return u'Encode: {0}'.format(self.content_object)
+        return self.job_id
 
     def lead_time(self):
         return timesince(self.created_at, self.last_modified)
