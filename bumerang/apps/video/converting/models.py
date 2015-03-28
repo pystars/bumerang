@@ -117,7 +117,7 @@ class EncodeJob(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        if self.object_pk:
+        if self.object_id:
             return u'Encode: {0}'.format(self.content_object)
         return self.job_id
 
