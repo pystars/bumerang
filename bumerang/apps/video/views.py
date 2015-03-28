@@ -213,10 +213,10 @@ def endpoint(request):
         return HttpResponse('OK')
 
     try:
-        message = data['Message']
+        message = json.loads(data['Message'])
     except ValueError:
         assert False, data['Message']
-    print(data.keys())
+
     if data['TopicArn'].endswith('file_uploaded'):
         file_uploaded.send(sender=None, message=message)
 
