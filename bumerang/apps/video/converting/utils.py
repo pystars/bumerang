@@ -61,9 +61,12 @@ def convert_original_video(sender, **kwargs):
             slug = match.group('slug')
             from bumerang.apps.video.models import Video
             video = Video.objects.get(slug=slug)
-            encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
             if video.hq_file:
                 video.hq_file.delete()
+                video.status = Video.PENDING
+                video.hq_file = None
+                video.save()
+            encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
             encoder.encode(
                 {'Key': key},
                 [{'Key': hq_upload_to(video, None),
