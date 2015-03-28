@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from models import ConvertOptions
+from models import EncodeJob
 
 
-admin.site.register(ConvertOptions)
+admin.site.register(EncodeJob)
