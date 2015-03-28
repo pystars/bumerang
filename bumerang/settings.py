@@ -332,7 +332,7 @@ class CommonSettings(Settings):
 
     S3DIRECT_REGION = 'eu-west-1'
     AWS_REGION = 'eu-west-1'
-    AWS_ELASTICTRANCODER_PIPELINE = 'bumerang-pipeline'
+    AWS_ELASTICTRANCODER_PIPELINE = '1427109159070-ilf72r'
     AWS_ELASTICTRANCODER_PRESET = '1427109590397-1frzex'
 
 try:
