@@ -452,8 +452,6 @@ function confirmMoveModalDialog() {
 
 }
 
-
-
 var request = function(method, url, data, headers, el, showProgress, cb) {
     var req = new XMLHttpRequest();
     req.open(method, url, true);
@@ -505,9 +503,9 @@ var update = function(el, xml) {
 
 //    el.className = 's3direct link-active'
   if ($(el).find('.progress-bar').size()) {
-    $(el).find('.progress-bar').css({width: 0});
+    $(el).find('.progress-bar').val(0);
   } else {
-    $('.progress-bar').css({width: 0});
+    $('.progress-bar').val(0);
   };
   $(el).value = '';
   $('#popup-upload').hide();
@@ -615,47 +613,16 @@ $(function() {
                     error(el, 'Sorry, could not get upload URL.')
             }
           });
-//          $.post(
-//              url,
-//              data,
-//              function (response){
-//                var data = parseJson(response);
-//                console.log(data);
-//                upload(fileInput, data, $('#notify-container'));
-//                console.log(data);
-//              },
-//              'application/json'
-//          );
+        } else {
+            $('#popup-upload').hide();
+            $('#tint').hide();
+            show_notification('error',
+                'Неверный формат видеофайла'
+            );
+            return false;
         }
 
     });
-
-
-//    $('#video-selector').bind('change', function(e) {
-//        e.preventDefault();
-//
-//        var filename = $(this).val();
-//        if(filename != '')
-//        {
-//            if(!allowed_videos_extensions_regexp.test(filename))
-//            {
-//                $('#popup-upload').hide();
-//                $('#tint').hide();
-//                show_notification('error',
-//                    'Неверный формат видеофайла'
-//                );
-//                return false;
-//            } else {
-//              $.post(
-//                  $(this).attr('data-policy-url'),
-//                  {'filename': $(this).val()}
-//              )
-//
-////                invokeUploadMessage();
-////                $('#video-upload-form').submit();
-//            }
-//        }
-//    });
 
     _.templateSettings = {
         interpolate : /\{=(.+?)\}/g

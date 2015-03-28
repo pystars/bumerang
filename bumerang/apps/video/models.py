@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.deletion import ProtectedError
@@ -195,28 +193,3 @@ class Preview(FileModelMixin, models.Model):
     thumbnail = models.ImageField(
         upload_to=thumbnail_upload_to, storage=media_storage)
     icon = models.ImageField(upload_to=icon_upload_to, storage=media_storage)
-
-
-# class EncodeJob(models.Model):
-#     SUBMITED = 0
-#     PROGRESSING = 1
-#     ERROR = 2
-#     WARNING = 3
-#     COMPLETE = 4
-#     STATE_CHOICES = (
-#         (SUBMITED, 'Submitted'),
-#         (PROGRESSING, 'Progressing'),
-#         (ERROR, 'Error'),
-#         (WARNING, 'Warning'),
-#         (COMPLETE, 'Complete'),
-#     )
-#     state = models.PositiveIntegerField(
-#         choices=STATE_CHOICES, default=0, db_index=True)
-#     message = models.TextField()
-#     signature = models.CharField(max_length=160, db_index=True)
-#     job_id = models.CharField(max_length=100, db_index=True, **nullable)
-#     content_type = models.ForeignKey(ContentType)
-#     object_pk = models.PositiveIntegerField()
-#     content_object = GenericForeignKey()
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     last_modified = models.DateTimeField(auto_now=True)

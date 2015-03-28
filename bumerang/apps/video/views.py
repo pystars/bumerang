@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 import json
+
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.db.models.aggregates import Avg
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -10,30 +10,22 @@ from django.db.models import F, Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
-from django.views.generic.detail import DetailView, BaseDetailView, \
-    SingleObjectMixin
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView, \
     FormMixin, ProcessFormView
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth import get_user_model
-from djcelery.views import JsonResponse
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import mail_admins
-from bumerang.apps.utils.transcoder import Transcoder
-from bumerang.apps.video.utils import hq_upload_to
 
-from .signals import (
-    transcode_onprogress,
-    transcode_onerror,
-    transcode_oncomplete,
-    transcode_onwarning)
-
+from bumerang.apps.utils.signals import file_uploaded
+from bumerang.apps.video.converting.signals import transcode_onchange
 from bumerang.apps.video.utils import original_upload_to
 from bumerang.apps.utils.s3 import create_upload_data
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
 from albums.models import VideoAlbum
-from .models import Video, VideoCategory#, EncodeJob
+from .models import Video, VideoCategory
 from bumerang.apps.events.models import ParticipantVideo, ParticipantVideoScore
 from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm, \
     GetS3UploadURLForm
@@ -191,44 +183,11 @@ class VideoGetS3UploadURLView(OwnerMixin, FormMixin, SingleObjectMixin,
             'public-read',
             settings.AWS_MEDIA_STORAGE_BUCKET_NAME
         )
-        # EncodeJob.objects.create(
-        #     signature=data['signature'],
-        #     content_type=ContentType.objects.get_for_model(Video),
-        #     object_pk=self.object.pk
-        # )
         return HttpResponse(json.dumps(data), content_type="application/json")
 
     def form_invalid(self, form):
         return HttpResponseBadRequest(
             json.dumps(form.errors), content_type="application/json")
-
-
-class ConvertJobCallbackView(OwnerMixin, BaseDetailView):
-    """
-    Callback view which should be touched when S3 upload is finished.
-    It starts encoding job in AWS elastictranscoder.
-    """
-    # model = EncodeJob
-    slug_field = 'signature'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.content_object.owner is not self.request.user:
-            return HttpResponseForbidden('sorry, no permission')
-        if self.object.is_activated:
-            return HttpResponseForbidden('sorry, already used')
-      # # encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
-        # encoder.encode(
-        #     {'Key': str(self.object.content_object.original_file)},
-        #     {'Key': hq_upload_to(self.object.content_object, None),
-        #      'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}
-        # )
-        # self.object.is_activated = True
-        # self.object.job_id = encoder.message['jobId']
-        # self.object.save()
-        # TODO: should we save JobId here?
-        return HttpResponse(
-            json.dumps({'status': 'ok'}), content_type="application/json")
 
 
 @csrf_exempt
@@ -258,33 +217,12 @@ def endpoint(request):
     except ValueError:
         assert False, data['Message']
 
-    # if message['state'] == 'PROGRESSING':
-    #     job = EncodeJob.objects.get(job_id=message['jobId'])
-    #     job.message = 'Progressing'
-    #     job.state = EncodeJob.PROGRESSING
-    #     job.save()
-    #     transcode_onprogress.send(sender=None, job=job, message=message)
-    #
-    # elif message['state'] == 'WARNING':
-    #     job = EncodeJob.objects.get(job_id=message['jobId'])
-    #     job.message = 'Warning'
-    #     job.state = EncodeJob.WARNING
-    #     job.save()
-    #     transcode_onwarning.send(sender=None, job=job, message=message)
-    #
-    # elif message['state'] == 'COMPLETED':
-    #     job = EncodeJob.objects.get(job_id=message['jobId'])
-    #     job.message = 'Success'
-    #     job.state = EncodeJob.COMPLETE
-    #     job.save()
-    #     transcode_oncomplete.send(sender=None, job=job, message=message)
-    #
-    # elif message['state'] == 'ERROR':
-    #     job = EncodeJob.objects.get(job_id=message['jobId'])
-    #     job.message = message['messageDetails']
-    #     job.state = EncodeJob.ERROR
-    #     job.save()
-    #     transcode_onerror.send(sender=None, job=job, message=message)
+    if message['eventSource'] == "aws:s3":
+        if message['eventName'] == "ObjectCreated:Post":
+            file_uploaded.send(sender=None, message=message)
+
+    elif message['eventSource'] == "elastictranscoder.amazonaws.com":
+        transcode_onchange.send(sender=None, message=message)
 
     return HttpResponse('Done')
 

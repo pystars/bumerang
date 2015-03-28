@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.generic import GenericForeignKey
+from django.utils.timesince import timesince
 
 from bumerang.apps.utils.models import nullable, choices
 
@@ -20,21 +23,25 @@ class ConvertOptions(models.Model):
 
     title = models.CharField('title', max_length=20)
     sample_rate = models.FloatField('audio sampling frequency', **nullable)
-    abitrate = models.PositiveIntegerField('audio bit rate',
-        help_text='kbits/s (default like source)',
+    abitrate = models.PositiveIntegerField(
+        'audio bit rate', help_text='kbits/s (default like source)',
         choices=BITRATE_CHOICES, **nullable)
-    preset = models.CharField('x264 preset', max_length=20,
-        choices=PRESET_CHOICES)
-    vbitrate = models.PositiveIntegerField('video bit rate',
-        help_text='(bit/s)', **nullable)
-    frame_rate = models.CharField('frame rate', max_length=10,
-        help_text='(Hz value)', choices=RATE_CHOICES, **nullable)
+    preset = models.CharField(
+        'x264 preset', max_length=20, choices=PRESET_CHOICES)
+    vbitrate = models.PositiveIntegerField(
+        'video bit rate', help_text='(bit/s)', **nullable)
+    frame_rate = models.CharField(
+        'frame rate', max_length=10, help_text='(Hz value)',
+        choices=RATE_CHOICES, **nullable)
     width = models.PositiveIntegerField('width')
     height = models.PositiveIntegerField('height', **nullable)
-    quality = models.PositiveIntegerField('quality lvl',
-        help_text='between 1 (excellent quality) and 31 (worst)', **nullable)
-    x264opts = models.CharField('x264 options', max_length=400,
-    default='ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis=0',
+    quality = models.PositiveIntegerField(
+        'quality lvl', help_text='between 1 (excellent quality) and 31 (worst)',
+        **nullable)
+    x264opts = models.CharField(
+        'x264 options', max_length=400,
+        default='ref=2:bframes=2:subq=6:mixed-refs=0:weightb=0:8x8dct=0:trellis'
+                '=0',
         **nullable)
 
     def __unicode__(self):
@@ -84,3 +91,33 @@ class ConvertOptions(models.Model):
                     self.abitrate = abitrate
             if audio['Channel(s)'] == 1:
                 self.channels = 'mono'
+
+
+class EncodeJob(models.Model):
+    SUBMITED = 0
+    PROGRESSING = 1
+    ERROR = 2
+    WARNING = 3
+    COMPLETE = 4
+    STATE_CHOICES = (
+        (SUBMITED, 'Submitted'),
+        (PROGRESSING, 'Progressing'),
+        (ERROR, 'Error'),
+        (WARNING, 'Warning'),
+        (COMPLETE, 'Complete'),
+    )
+    job_id = models.CharField(max_length=100, db_index=True, primary_key=True)
+    state = models.PositiveIntegerField(
+        choices=STATE_CHOICES, default=0, db_index=True)
+    message = models.TextField()
+    content_type = models.ForeignKey(ContentType)
+    object_pk = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return u'Encode: {0}'.format(self.content_object)
+
+    def lead_time(self):
+        return timesince(self.created_at, self.last_modified)
