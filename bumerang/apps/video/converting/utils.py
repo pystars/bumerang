@@ -62,18 +62,18 @@ def convert_original_video(sender, **kwargs):
             from bumerang.apps.video.models import Video
             video = Video.objects.get(slug=slug)
             encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
+            if video.hq_file:
+                video.hq_file.delete()
             encoder.encode(
                 {'Key': key},
                 [{'Key': hq_upload_to(video, None),
                  'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}]
             )
-            print(encoder.message)
-            job = EncodeJob.objects.create(
+            EncodeJob.objects.create(
                 content_type=ContentType.objects.get_for_model(Video),
                 object_pk=video.pk,
                 job_id=encoder.message['Job']['Id']
             )
-            # print(job)
 
 
 def update_encode_state(sender, **kwargs):
