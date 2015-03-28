@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 
 from django.contrib.contenttypes.models import ContentType
@@ -53,9 +54,8 @@ def convert_original_video(sender, **kwargs):
     message = kwargs['message']
     # bucket_name = message['bucket']['name']
     for record in message['Records']:
-        print(type(record))
         print(record)
-        key = record['object']['key']
+        key = record['s3']['object']['key']
         pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
         match = re.match(pattern, key)
         if match:
@@ -68,11 +68,13 @@ def convert_original_video(sender, **kwargs):
                 {'Key': hq_upload_to(video.content_object, None),
                  'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}
             )
+            print(type(encoder.message))
             print(encoder.message)
+            info = json.loads(encoder.message)
             EncodeJob.objects.create(
                 content_type=ContentType.objects.get_for_model(Video),
                 object_pk=video.pk,
-                job_id=encoder.message['jobId']
+                job_id=info['jobId']
             )
 
 
