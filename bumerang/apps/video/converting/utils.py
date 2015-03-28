@@ -53,6 +53,8 @@ def convert_original_video(sender, **kwargs):
     message = kwargs['message']
     # bucket_name = message['bucket']['name']
     for record in message['Records']:
+        print(type(record))
+        print(record)
         key = record['object']['key']
         pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
         match = re.match(pattern, key)
