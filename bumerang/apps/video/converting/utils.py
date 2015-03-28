@@ -64,8 +64,8 @@ def convert_original_video(sender, **kwargs):
             encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
             encoder.encode(
                 {'Key': key},
-                {'Key': hq_upload_to(video, None),
-                 'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}
+                [{'Key': hq_upload_to(video, None),
+                 'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}]
             )
             print(encoder.message)
             info = json.loads(encoder.message)
