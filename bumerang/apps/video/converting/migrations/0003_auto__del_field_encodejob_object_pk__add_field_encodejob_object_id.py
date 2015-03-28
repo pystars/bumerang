@@ -13,9 +13,6 @@ class Migration(SchemaMigration):
         db.add_column(u'converting_encodejob', 'object_id',
                       self.gf('django.db.models.fields.PositiveIntegerField')(default='1'),
                       keep_default=False)
-        for obj in orm['EncodeJob'].objects.all():
-            obj.object_id = obj.object_pk
-            obj.save()
 
         # Deleting field 'EncodeJob.object_pk'
         db.delete_column(u'converting_encodejob', 'object_pk')
@@ -25,9 +22,6 @@ class Migration(SchemaMigration):
         db.add_column(u'converting_encodejob', 'object_pk',
                       self.gf('django.db.models.fields.PositiveIntegerField')(default=1),
                       keep_default=False)
-        for obj in orm['EncodeJob'].objects.all():
-            obj.object_pk = obj.object_id
-            obj.save()
 
         # Deleting field 'EncodeJob.object_id'
         db.delete_column(u'converting_encodejob', 'object_id')
