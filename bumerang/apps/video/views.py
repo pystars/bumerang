@@ -220,7 +220,7 @@ def endpoint(request):
     if data['TopicArn'].endswith('file_uploaded'):
         file_uploaded.send(sender=None, message=message)
 
-    elif message['eventSource'] == "elastictranscoder.amazonaws.com":
+    elif data['TopicArn'].endswith('transcode_changing'):
         transcode_onchange.send(sender=None, message=message)
 
     return HttpResponse('Done')

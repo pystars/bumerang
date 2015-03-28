@@ -6,7 +6,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from boto import elastictranscoder
 
+
 from bumerang.apps.video.utils import hq_upload_to
+from bumerang.apps.utils.media_storage import media_storage
 from .models import EncodeJob
 
 
@@ -61,11 +63,13 @@ def convert_original_video(sender, **kwargs):
             slug = match.group('slug')
             from bumerang.apps.video.models import Video
             video = Video.objects.get(slug=slug)
+            output = hq_upload_to(video, None)
             if video.hq_file:
-                video.hq_file.delete()
+                video.hq_file.delete(save=False)
                 video.status = Video.PENDING
-                video.hq_file = None
                 video.save()
+            else:
+                media_storage.delete(output)
             encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
             encoder.encode(
                 {'Key': key},
