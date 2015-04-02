@@ -9,4 +9,4 @@ class EncodeJobAdmin(admin.ModelAdmin):
                     'last_modified', 'lead_time']
     list_display_links = ['job_id', '__unicode__']
 
-admin.site.register(EncodeJob)
+admin.site.register(EncodeJob, EncodeJobAdmin)
