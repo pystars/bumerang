@@ -286,9 +286,9 @@ class CommonSettings(Settings):
     PREVIEWS_COUNT = 5
 
     EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
-    # EMAIL_BACKEND = 'django_ses.SESBackend'
+    EMAIL_BACKEND = 'django_ses.SESBackend'
     DEFAULT_FROM_EMAIL = EMAIL_NOREPLY_ADDR
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     AWS_SES_REGION_NAME = 'us-east-1'
     AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
