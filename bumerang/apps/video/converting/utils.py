@@ -83,12 +83,13 @@ def convert_original_video(sender, **kwargs):
             )
 
         # if hq_file added
-        pattern = re.compile('videos/(?P<slug>\w{12})/hq_file.mp4')
+        pattern = re.compile('videos/(?P<slug>\w{12})/hq_file\.mp4')
         match = re.match(pattern, key)
         if match:
             slug = match.group('slug')
             from bumerang.apps.video.models import Video
             video = Video.objects.get(slug=slug)
+            print('trying to make screenshots for {0}'.format(video))
             MakeScreenShots.delay(video.id)
 
 
@@ -96,25 +97,31 @@ def update_encode_state(sender, **kwargs):
     message = kwargs['message']
     job_id = message['jobId']
     state = message['state']
+    print(message)
+    print(state)
     job = EncodeJob.objects.get(pk=job_id)
+    obj = job.content_object
     from bumerang.apps.video.models import Video
 
     if state == 'PROGRESSING':
         job.message = 'Progressing'
         job.state = EncodeJob.PROGRESSING
-        job.content_object.status = Video.CONVERTING
+        obj.status = Video.CONVERTING
     elif state == 'WARNING':
         job.message = 'Warning'
         job.state = EncodeJob.WARNING
-    if state == 'COMPLETED':
+    elif state == 'COMPLETED':
         job.message = 'Success'
         job.state = EncodeJob.COMPLETE
-        job.content_object.original_file = message['input']['key']
-        job.content_object.duration = message['outputs'][0]['duration'] * 1000
-        job.content_object.hq_file = message['outputs'][0]['key']
-    if state == 'ERROR':
+        obj.original_file = message['input']['key']
+        print(message['input']['key'])
+        obj.duration = message['outputs'][0]['duration'] * 1000
+        print(message['outputs'][0]['duration'] * 1000)
+        obj.hq_file = message['outputs'][0]['key']
+        print(message['outputs'][0]['key'])
+    elif state == 'ERROR':
         job.message = message['messageDetails']
         job.state = EncodeJob.ERROR
-        job.content_object.status = Video.ERROR
-    job.content_object.save()
+        obj.status = Video.ERROR
+    obj.save()
     job.save()
