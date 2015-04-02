@@ -12,13 +12,16 @@ except (ImportError, AttributeError):
 SECTION_SEP = chr(1)
 PARAM_SEP = chr(2)
 
+
 class ExecutionError(Exception):
     """ Raised if a MediaInfo command returns an exit code other than 0. """
 
-_lambda_x_x = lambda x:x
+_lambda_x_x = lambda x: x
+
 
 def _raise(*exc_info):
     raise exc_info[0], exc_info[1], exc_info[2]
+
 
 def _prepare_inform(inform):
     assert inform
@@ -37,12 +40,14 @@ def _prepare_inform(inform):
                     params.append(param)
     return sections
 
+
 def _format_inform(inform):
     return (SECTION_SEP + '\r\n').join(
         '{section};{section}:'.format(section=section_name) +
         PARAM_SEP.join(r'%{param}%'.format(param=param) for param, _ in params)
         for section_name, params in inform.iteritems()
     ) + SECTION_SEP
+
 
 def _parse_inform_output(output, inform):
     sections = {}
@@ -75,6 +80,7 @@ def _parse_inform_output(output, inform):
         sections[section] = sec
     return sections
 
+
 def get_metadata(filename, **inform):
     inform = _prepare_inform(inform)
     cmd = ['mediainfo', '--Inform=file://%s' % STDIN_DEVICE, str(filename)]
@@ -87,17 +93,19 @@ def get_metadata(filename, **inform):
 
     return _parse_inform_output(stdout, inform)
 
+
 def video_duration(filename):
-    query = {'Video' : {'Duration' : int,}}
+    query = {'Video': {'Duration': int}}
     minfo = get_metadata(filename, **query)
     if minfo:
         return minfo['Video']['Duration']
     return None
 
+
 def media_info(filename):
     query = {
         'Video': {
-            'Duration' : int,
+            'Duration': int,
             'BitRate': int,
             'BitRate_Maximum': int,
             'Width': int,

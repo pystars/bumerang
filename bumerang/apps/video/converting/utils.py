@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-import json
 import re
 
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from boto import elastictranscoder
 
-
+from .tasks import MakeScreenShots
 from bumerang.apps.video.utils import hq_upload_to
 from bumerang.apps.utils.media_storage import media_storage
 from .models import EncodeJob
@@ -56,6 +55,8 @@ def convert_original_video(sender, **kwargs):
     message = kwargs['message']
     for record in message['Records']:
         key = record['s3']['object']['key']
+
+        # if original added
         pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
         match = re.match(pattern, key)
         if match:
@@ -81,6 +82,15 @@ def convert_original_video(sender, **kwargs):
                 job_id=encoder.message['Job']['Id']
             )
 
+        # if hq_file added
+        pattern = re.compile('videos/(?P<slug>\w{12})/hq_file.mp4')
+        match = re.match(pattern, key)
+        if match:
+            slug = match.group('slug')
+            from bumerang.apps.video.models import Video
+            video = Video.objects.get(slug=slug)
+            MakeScreenShots.delay(video.id)
+
 
 def update_encode_state(sender, **kwargs):
     message = kwargs['message']
@@ -99,8 +109,8 @@ def update_encode_state(sender, **kwargs):
     if state == 'COMPLETED':
         job.message = 'Success'
         job.state = EncodeJob.COMPLETE
-        job.content_object.status = Video.READY
         job.content_object.original_file = message['input']['key']
+        job.content_object.duration = message['outputs'][0]['duration'] * 1000
         job.content_object.hq_file = message['outputs'][0]['key']
     if state == 'ERROR':
         job.message = message['messageDetails']

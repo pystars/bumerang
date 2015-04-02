@@ -76,7 +76,11 @@ class Video(models.Model, TitleUnicode):
         upload_to=original_upload_to, storage=media_storage, **nullable)
     hq_file = models.FileField(
         u'Видео высокого качества', upload_to=hq_upload_to,
-        storage=media_storage, validators=[is_video_file], **nullable)
+        storage=media_storage, validators=[is_video_file],
+        help_text=u'В это поле можно загружать ТОЛЬКО готовое, '
+                  u'сконвертированное видео в формате mp4. Если вы не знаете о '
+                  u'чем идет речь воспользуйтесь полем для загрузки видео на '
+                  u'конвертацию', **nullable)
 #    mq_file = models.FileField(u'Видео среднего качества',
 #        upload_to=mq_upload_to,storage=media_storage,
 #        validators=[is_video_file], **nullable)

@@ -1,0 +1,61 @@
+<script type="text/javascript">
+  if (!$) {
+    $ = window.jQuery = django.jQuery;
+  }
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}j/s3direct-upload.js"></script>
+<script type="text/javascript">
+    var FileAPI = {
+        debug: true,
+        media: true,
+        staticPath: '{{ STATIC_URL }}j/FileAPI/dist/'
+    };
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}j/FileAPI/dist/FileAPI.js"></script>
+<script type="text/javascript">
+$(function() {
+$('#video-selector').on('change', function (evt/**Event*/) {
+  // Retrieve file list
+  var file = FileAPI.getFiles(evt)[0];
+  if (file.type.startsWith('video')) {
+    var el = evt.target;
+    var url = $(this).attr('data-policy-url');
+    var form = new FormData();
+    form.append('content_type', file.type);
+    form.append('filename', file.name);
+    var headers = {'X-CSRFToken': getCookie('csrftoken')};
+    request('post', url, form, headers, el, false, function (status, json) {
+      var data = parseJson(json);
+      switch (status) {
+        case 200:
+          $(el).next('span').remove();
+            try {
+              invokeUploadMessage()
+            }
+            catch (e) {
+              console.log(e)
+            }
+            finally {
+              upload(file, data, el);
+              break;
+            }
+        case 400:
+          error(el, data);
+        case 403:
+          error(el, data.error);
+          break;
+        default:
+          error(el, 'Sorry, could not get upload URL.')
+      }
+    });
+  } else {
+    $('#popup-upload').hide();
+    $('#tint').hide();
+    show_notification('error',
+        'Неверный формат видеофайла'
+    );
+    return false;
+  }
+});
+});
+</script>

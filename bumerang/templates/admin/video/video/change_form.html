@@ -1,0 +1,25 @@
+{% extends 'admin/change_form.html' %}
+
+{% block after_field_sets %}
+<fieldset class="grp-module s3upload-fieldset">
+    <h2 class="grp-collapse-handler">Видео для конвертации</h2>
+    <div class="grp-row">
+      <p class="grp-description">Здесь можно загрузить видео, которое будет сконвертировано сервером. Если у вас уже есть готовое видео в формате mp4 которое не нужно конвертировать воспользуйтесь полем "Видео высокого качества"</p>
+    </div>
+    <div class="grp-row grp-cells-1">
+        <div class="l-2c-fluid l-d-4">
+          {% include 'video/snippets/s3upload_widget.html' with obj=original %}
+          <div class="c-1">
+            <label for="video-selector">Видео</label>
+          </div>
+          <div class="c-2">
+            <input id="video-selector" type="file" data-policy-url="{% url 'video-get-s3-upload-url' original.id %}" />
+            <progress class="progress-bar" max="100" value="0"></progress>
+          </div>
+        </div>
+    </div>
+  <script type="text/javascript">
+    $('.s3upload-fieldset').insertAfter('.main-fieldset');
+  </script>
+</fieldset>
+{% endblock %}

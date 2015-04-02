@@ -35,14 +35,7 @@
                             {% csrf_token %}
                             <div class="b-form__fields">
                             {% if form.instance.pk %}
-                              <script>
-                                var FileAPI = {
-                                      debug: true
-                                    , media: true
-                                    , staticPath: '{{ STATIC_URL }}j/FileAPI/dist/'
-                                };
-                              </script>
-                            <script src="{{ STATIC_URL }}j/FileAPI/dist/FileAPI.js"></script>
+                            {% include 'video/snippets/s3upload_widget.html' with obj=form.instance %}
                             <fieldset>
                               <div class="b-form__field">
                                 <label for="video-selector">
@@ -52,9 +45,6 @@
                                     <input type="file" id="video-selector" data-policy-url="{% url 'video-get-s3-upload-url' form.instance.id %}" />
                                   </span>
                                 </label>
-                              </div>
-                              <div class="progress progress-striped active">
-                                <div class="bar"></div>
                               </div>
                             </fieldset>
                             {% endif %}
@@ -100,5 +90,16 @@
 {% endblock %}
 
 {% block popup %}
-    {% include "snippets/popup_file_upload.html" %}
+<section class="b-popup" id="popup-upload" style="left:50%; top:100px;">
+    <section class="b-form b-form_smaller b-form_popup">
+        <h3>Идёт загрузка</h3>
+        <p class="message-container">Пожалуйста, не закрывайте и не перезагружайте страницу до окончания загрузки.</p>
+        <progress class="progress-bar" max="100" value="0"></progress>
+        <div class="progress-value">0%</div>
+    </section><!--b-form-->
+    <div class="b-popup__tl"></div>
+    <div class="b-popup__tr"></div>
+    <div class="b-popup__br"></div>
+    <div class="b-popup__bl"></div>
+</section>
 {% endblock %}

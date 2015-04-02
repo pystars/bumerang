@@ -18,7 +18,7 @@ django-ses
 dkimpy
 pytz
 dnspython
-django-celery-with-redis
+#django-celery-with-redis
 johnny-cache
 coverage
 django-coverage

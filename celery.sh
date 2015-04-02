@@ -20,7 +20,7 @@
 
 #set -e
 
-DEFAULT_PID_FILE="/var/run/celeryd@%n.pid"
+DEFAULT_PID_FILE="/tmp/celeryd@%n.pid"
 DEFAULT_LOG_FILE="/var/log/celeryd@%n.log"
 DEFAULT_LOG_LEVEL="INFO"
 DEFAULT_NODES="celery"

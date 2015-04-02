@@ -20,6 +20,12 @@ class CommonSettings(Settings):
             'PORT': '',
         },
     }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'cache_table',
+        }
+    }
 
     TEMPLATE_DEBUG = DEBUG
 
@@ -27,7 +33,6 @@ class CommonSettings(Settings):
 
     ADMINS = [
         ('Bolshakov', 'va.bolshakov@gmail.com'),
-        ('Dashkov', 'dashkov.a@mail.ru')
     ]
 
     MANAGERS = ADMINS
@@ -165,47 +170,18 @@ class CommonSettings(Settings):
         'bumerang.apps.events',
         'bumerang.apps.banners'
     ]
-    # LOGGING = {
-    #     'version': 1,
-    #     'formatters': {
-    #         'verbose': {
-    #             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-    #         },
-    #         'simple': {
-    #             'format': '%(levelname)s %(message)s'
-    #         },
-    #     },
-    #     'handlers': {
-    #         'console': {
-    #             'level': 'DEBUG',
-    #             'class': 'logging.StreamHandler',
-    #             'formatter': 'verbose'
-    #         },
-    #         'file': {
-    #             'level': 'DEBUG',
-    #             'class': 'logging.FileHandler',
-    #             'filename': 'log.log',
-    #             'formatter': 'simple'
-    #         },
-    #     },
-    #     'loggers': {
-    #         'stash': {
-    #             'level': "DEBUG",
-    #             'handlers': ['console'],
-    #         },
-    #         'oauth_tokens': {
-    #             'level': "DEBUG",
-    #             'handlers': ['console'],
-    #             'propagate': True,
-    #         },
-    #     },
-    # }
+
     LOGGING = {
        'version': 1,
        'handlers': {
            'console': {
                'level': 'ERROR',
                'class': 'logging.StreamHandler'
+           },
+           'mail_admins': {
+               'level': 'ERROR',
+               'filters': ['require_debug_false'],
+               'class': 'django.utils.log.AdminEmailHandler'
            }
        },
        'loggers': {
@@ -214,11 +190,16 @@ class CommonSettings(Settings):
                'level': 'ERROR',
                'propagate': True
            },
-            'stash': {
-                'level': "DEBUG",
-                'handlers': ['console'],
+           'stash': {
+               'level': "DEBUG",
+               'handlers': ['console'],
                'propagate': True
-            },
+           },
+       },
+       'filters': {
+           'require_debug_false': {
+               '()': 'django.utils.log.RequireDebugFalse'
+           }
        },
     }
 
@@ -333,7 +314,7 @@ class CommonSettings(Settings):
     S3DIRECT_REGION = 'eu-west-1'
     AWS_REGION = 'eu-west-1'
     AWS_ELASTICTRANCODER_PIPELINE = '1427109159070-ilf72r'
-    AWS_ELASTICTRANCODER_PRESET = '1427109590397-1frzex'
+    AWS_ELASTICTRANCODER_PRESET = '1427669312824-2btj6i'
 
 try:
     from bumerang.local_settings import *

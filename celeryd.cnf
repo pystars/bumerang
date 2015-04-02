@@ -1,5 +1,5 @@
 # Where the Django project is.
-CELERYD_CHDIR="/home/ubuntu/bumerang"
+CELERYD_CHDIR="/var/www/projects/bumerang"
 CELERYD_PYTHON="/var/www/.virtualenvs/bumerang/bin/python"
 
 # Path to celeryd
@@ -11,10 +11,10 @@ CELERYD_LOG_FILE=/var/log/celery/%n.log
 # Path to celerybeat
 CELERYBEAT="$CELERYD_PYTHON $CELERYD_CHDIR/manage.py celerybeat"
 CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
-CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
+CELERYBEAT_PID_FILE="/tmp/beat.pid"
 
-CELERYD_USER="ubuntu"
-CELERYD_GROUP="ubuntu"
+CELERYD_USER="www-data"
+CELERYD_GROUP="www-data"
 
 CELERY_CONFIG_MODULE="bumerang.settings"
 

@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-#import os
-#import shutil
 import tempfile
 
 from django.contrib import admin
-#from django.contrib.admin.actions import delete_selected as _delete_selected
 
-from bumerang.apps.utils.admin import TitleSlugAdmin
-from bumerang.apps.video.mediainfo import video_duration
-from bumerang.apps.video.models import Video, VideoCategory, VideoGenre
-from bumerang.apps.video.tasks import MakeScreenShots, ConvertVideoTask
+from ..utils.admin import TitleSlugAdmin
+from .converting.mediainfo import video_duration
+from .models import Video, VideoCategory, VideoGenre
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -28,8 +24,10 @@ class VideoAdmin(admin.ModelAdmin):
             'category',
             'album',
             'status',
-            ('original_file', 'hq_file'),
-        )}),
+            'hq_file',
+        ),
+                'classes': ('main-fieldset',)
+        }),
         ('Info options', {'fields': (
             ('year', 'genre'),
             ('country', 'city'),
@@ -46,7 +44,9 @@ class VideoAdmin(admin.ModelAdmin):
     )
     fields = (
     )
-    actions = ['delete_selected']
+    # actions = ['delete_selected']
+
+    add_form_template = 'admin/video/video/add_form.html'
 
     def get_duration(self, field):
         temp_file = tempfile.NamedTemporaryFile()
@@ -57,22 +57,13 @@ class VideoAdmin(admin.ModelAdmin):
         return duration
 
     def save_model(self, request, obj, form, change):
-        if 'original_file' in form.changed_data:
-            obj.status = obj.PENDING
-            obj.save()
-            ConvertVideoTask.delay(obj.id)
-#        elif {'hq_file', 'mq_file', 'lq_file'} & set(form.changed_data):
-        elif {'hq_file'} & set(form.changed_data):
+        if 'hq_file' in form.changed_data:
             obj.duration = self.get_duration(obj.best_quality_file())
             if obj.duration:
                 obj.status = Video.PENDING
-                obj.save()
-                MakeScreenShots.delay(obj.id)
             else:
                 obj.status = Video.ERROR
-                obj.save()
-        else:
-            obj.save()
+        obj.save()
 
 #TODO: repair mass deleting
 #    def delete_selected(self, request, queryset):

@@ -1,5 +1,4 @@
 #!/bin/bash -x
-add-apt-repository -y ppa:shiki/mediainfo
 add-apt-repository -y ppa:stebbins/handbrake-snapshots
 echo """
 deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ precise multiverse
@@ -14,9 +13,9 @@ subversion virtualenvwrapper nginx yasm build-essential autoconf libtool\
  libbz2-dev libfribidi-dev intltool libglib2.0-dev libdbus-glib-1-dev\
   libgtk2.0-dev libgudev-1.0-dev libwebkit-dev libnotify-dev\
    libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev checkinstall \
-    libfaac-dev libjack-jackd2-dev libmp3lame-dev libopencore-amrnb-dev\
+    libjack-jackd2-dev libmp3lame-dev libopencore-amrnb-dev\
      libopencore-amrwb-dev libsdl1.2-dev libtheora-dev libva-dev libvdpau-dev \
-     libvorbis-dev libx11-dev libxfixes-dev texi2html libmysqlclient-dev \
+     libvorbis-dev libx11-dev libxfixes-dev texi2html \
      libjpeg62-dev mediainfo
 apt-get remove ffmpeg x264 libx264-dev
 cd /opt
@@ -35,7 +34,7 @@ sudo checkinstall --pkgname=libvpx --pkgversion="1:$(date +%Y%m%d%H%M)-git" --ba
 cd /opt
 git clone --depth 1 git://source.ffmpeg.org/ffmpeg
 cd ffmpeg
-./configure --enable-gpl --enable-libfaac --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libtheora --enable-libvorbis --enable-libx264 --enable-nonfree --enable-version3 --enable-x11grab --enable-libvpx
+./configure --enable-gpl --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libtheora --enable-libvorbis --enable-libx264 --enable-nonfree --enable-version3 --enable-x11grab --enable-libvpx
 make
 checkinstall --pkgname=ffmpeg --pkgversion="5:$(date +%Y%m%d%H%M)-git" --backup=no --deldoc=yes --fstrans=no --default
 hash x264 ffmpeg ffplay ffprobe
