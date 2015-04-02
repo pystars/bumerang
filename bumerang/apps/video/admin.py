@@ -6,6 +6,7 @@ from django.contrib import admin
 from ..utils.admin import TitleSlugAdmin
 from .converting.mediainfo import video_duration
 from .models import Video, VideoCategory, VideoGenre
+from .converting.tasks import MakeScreenShots
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -61,9 +62,11 @@ class VideoAdmin(admin.ModelAdmin):
             obj.duration = self.get_duration(obj.best_quality_file())
             if obj.duration:
                 obj.status = Video.PENDING
+                obj.save()
+                MakeScreenShots.delay(obj.pk)
             else:
                 obj.status = Video.ERROR
-        obj.save()
+                obj.save()
 
 #TODO: repair mass deleting
 #    def delete_selected(self, request, queryset):
