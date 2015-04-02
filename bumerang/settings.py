@@ -9,7 +9,9 @@ djcelery.setup_loader()
 
 class CommonSettings(Settings):
 
-    DEBUG = True
+    ALLOWED_HOSTS = ['www.probumerang.tv']
+    DEBUG = False
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
