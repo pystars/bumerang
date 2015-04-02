@@ -27,7 +27,7 @@ class VideoAdmin(admin.ModelAdmin):
             'status',
             ('hq_file', 'get_download_original_file')
         ),
-                'classes': ('main-fieldset',)
+            'classes': ('main-fieldset',)
         }),
         ('Info options', {'fields': (
             ('year', 'genre'),
