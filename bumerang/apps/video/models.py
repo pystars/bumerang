@@ -189,6 +189,14 @@ class Video(models.Model, TitleUnicode):
     get_absolute_url.short_description = u'Ссылка'
     get_absolute_url.allow_tags = True
 
+    def get_download_original_file(self):
+        if self.original_file:
+            return u'<a target="_blank" href="{0}">скачать оригинал</a>'.format(
+                self.original_file.url)
+        return u'нету пока'
+    get_download_original_file.short_description = u'Ссылка на оригинал'
+    get_download_original_file.allow_tags = True
+
 
 class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)

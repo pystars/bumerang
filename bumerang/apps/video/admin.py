@@ -25,7 +25,7 @@ class VideoAdmin(admin.ModelAdmin):
             'category',
             'album',
             'status',
-            'hq_file',
+            ('hq_file', 'get_download_original_file')
         ),
                 'classes': ('main-fieldset',)
         }),
