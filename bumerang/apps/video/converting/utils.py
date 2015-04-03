@@ -111,7 +111,7 @@ def update_encode_state(sender, **kwargs):
         obj.duration = message['outputs'][0]['duration'] * 1000
         obj.hq_file = message['outputs'][0]['key']
         if isinstance(media_storage, S3BotoStorage):
-            key = Key(media_storage.bucket, obj.hq_file)
+            key = Key(media_storage.bucket, obj.hq_file.name)
             key.set_acl('public-read')
         obj.save()
         MakeScreenShots.delay(obj.pk)
