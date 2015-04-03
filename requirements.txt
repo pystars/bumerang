@@ -13,12 +13,11 @@ fabric
 boto
 django-storages
 ipython
-mysql-python
+psycopg2
 django-ses
 dkimpy
 pytz
 dnspython
-#django-celery-with-redis
 johnny-cache
 coverage
 django-coverage
