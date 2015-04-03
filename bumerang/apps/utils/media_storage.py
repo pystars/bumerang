@@ -35,7 +35,7 @@ class CachedS3BotoStorage(S3BotoStorage, S3BotoStorageMixin):
             return datetime.now()
 
     def isdir(self, name):
-        if not name: # Empty name is a directory
+        if not name:  # Empty name is a directory
             return True
         name = self._encode_name(self._normalize_name(self._clean_name(name)))
         return bool(self.bucket.get_all_keys(max_keys=1, prefix=name + '/'))
