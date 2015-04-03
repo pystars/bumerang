@@ -67,9 +67,7 @@ class VideoAdmin(admin.ModelAdmin):
                 MakeScreenShots.delay(obj.pk)
             else:
                 obj.status = Video.ERROR
-                obj.save()
-        else:
-            obj.save()
+        obj.save()
 
 #TODO: repair mass deleting
 #    def delete_selected(self, request, queryset):
