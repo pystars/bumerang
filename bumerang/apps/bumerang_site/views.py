@@ -13,6 +13,7 @@ from bumerang.apps.video.playlists.models import PlayList, Channel
 
 SCHEDULE_RANGE = 7
 
+
 class BumerangIndexView(TemplateView):
     template_name = "index.html"
 
@@ -53,14 +54,15 @@ class BumerangIndexView(TemplateView):
                 if item.play_from() <= now < item.play_till():
                     ctx['current_item'] = item
                     break
-        new_movies = Video.objects.filter(published_in_archive=True,
-            status=Video.READY)[:5]
-        top_viewed = Video.objects.filter(published_in_archive=True,
-            status=Video.READY).order_by('-views_count',)[:5]
+        new_movies = Video.objects.filter(
+            published_in_archive=True, status=Video.READY)[:5]
+        top_viewed = Video.objects.filter(
+            published_in_archive=True, status=Video.READY
+        ).order_by('-views_count',)[:5]
         ctx.update(
-            new_movies = new_movies,
-            top_viewed = top_viewed,
-            playlist = playlist,
-            next_days = next_days,
+            new_movies=new_movies,
+            top_viewed=top_viewed,
+            playlist=playlist,
+            next_days=next_days,
         )
         return ctx

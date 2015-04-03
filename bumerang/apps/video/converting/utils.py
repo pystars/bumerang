@@ -47,6 +47,29 @@ class Transcoder(object):
             self.pipeline_id, input_name, outputs=outputs)
 
 
+def encode_video(video, key=None):
+    output = hq_upload_to(video, None)
+    if video.hq_file:
+        video.hq_file.delete(save=False)
+        video.status = video.PENDING
+        video.save()
+    else:
+        media_storage.delete(output)
+    encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
+    if key is None and video.original_file:
+        key = video.original_file.name
+    encoder.encode(
+        {'Key': key},
+        [{'Key': hq_upload_to(video, None),
+         'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}]
+    )
+    EncodeJob.objects.create(
+        content_type=ContentType.objects.get_for_model(video.__class__),
+        object_id=video.pk,
+        job_id=encoder.message['Job']['Id']
+    )
+
+
 def convert_original_video(sender, **kwargs):
     """
     Receive message from AWS SNS about S3 file upload and check if it's an
@@ -63,24 +86,7 @@ def convert_original_video(sender, **kwargs):
             slug = match.group('slug')
             from bumerang.apps.video.models import Video
             video = Video.objects.get(slug=slug)
-            output = hq_upload_to(video, None)
-            if video.hq_file:
-                video.hq_file.delete(save=False)
-                video.status = Video.PENDING
-                video.save()
-            else:
-                media_storage.delete(output)
-            encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
-            encoder.encode(
-                {'Key': key},
-                [{'Key': hq_upload_to(video, None),
-                 'PresetId': settings.AWS_ELASTICTRANCODER_PRESET}]
-            )
-            EncodeJob.objects.create(
-                content_type=ContentType.objects.get_for_model(Video),
-                object_id=video.pk,
-                job_id=encoder.message['Job']['Id']
-            )
+            encode_video(video, key)
 
 
 def update_encode_state(sender, **kwargs):
