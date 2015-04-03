@@ -4,12 +4,13 @@ import re
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from boto import elastictranscoder
+from boto.s3.key import Key
+from storages.backends.s3boto import S3BotoStorage
 
 from .tasks import MakeScreenShots
 from bumerang.apps.video.utils import hq_upload_to
 from bumerang.apps.utils.media_storage import media_storage
 from .models import EncodeJob
-
 
 class Transcoder(object):
     def __init__(self, pipeline_id, region=None, access_key_id=None,
@@ -79,7 +80,6 @@ def convert_original_video(sender, **kwargs):
     for record in message['Records']:
         key = record['s3']['object']['key']
 
-        # if original added
         pattern = re.compile('videos/(?P<slug>\w{12})/original.*')
         match = re.match(pattern, key)
         if match:
@@ -110,6 +110,9 @@ def update_encode_state(sender, **kwargs):
         obj.original_file = message['input']['key']
         obj.duration = message['outputs'][0]['duration'] * 1000
         obj.hq_file = message['outputs'][0]['key']
+        if isinstance(media_storage, S3BotoStorage):
+            key = Key(media_storage.bucket, obj.hq_file)
+            key.set_acl('public-read')
         obj.save()
         MakeScreenShots.delay(obj.pk)
     elif state == 'ERROR':
