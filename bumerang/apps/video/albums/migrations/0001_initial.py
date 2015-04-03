@@ -24,7 +24,6 @@ class Migration(SchemaMigration):
             ('published_in_archive', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('cover', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['photo.Photo'], null=True, on_delete=models.SET_NULL, blank=True)),
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['albums.PhotoCategory'], null=True, blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
         ))
@@ -38,7 +37,6 @@ class Migration(SchemaMigration):
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, null=True, blank=True)),
             ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
-            ('cover', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['video.Video'], null=True, on_delete=models.SET_NULL, blank=True)),
         ))
         db.send_create_signal(u'albums', ['VideoAlbum'])
 
@@ -108,7 +106,6 @@ class Migration(SchemaMigration):
         u'albums.photoalbum': {
             'Meta': {'object_name': 'PhotoAlbum'},
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['albums.PhotoCategory']", 'null': 'True', 'blank': 'True'}),
-            'cover': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['photo.Photo']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -125,7 +122,6 @@ class Migration(SchemaMigration):
         },
         u'albums.videoalbum': {
             'Meta': {'object_name': 'VideoAlbum'},
-            'cover': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['video.Video']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -152,84 +148,6 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'photo.photo': {
-            'Meta': {'ordering': "('-id',)", 'object_name': 'Photo'},
-            'access': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'}),
-            'agency': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'album': ('django.db.models.fields.related.ForeignKey', [], {'max_length': '255', 'to': u"orm['albums.PhotoAlbum']", 'null': 'True', 'blank': 'True'}),
-            'authors': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'festivals': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'genre': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['photo.PhotoGenre']", 'null': 'True', 'blank': 'True'}),
-            'icon': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'is_processed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'manager': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'original_file': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['accounts.CustomUser']"}),
-            'published_in_archive': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'teachers': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'thumbnail': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'views_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
-            'year': ('django.db.models.fields.IntegerField', [], {'default': '2011', 'null': 'True', 'blank': 'True'})
-        },
-        u'photo.photogenre': {
-            'Meta': {'ordering': "('sort_order', 'title')", 'object_name': 'PhotoGenre'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'sort_order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
-        },
-        u'video.video': {
-            'Meta': {'ordering': "('-id',)", 'object_name': 'Video'},
-            'access': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'}),
-            'agency': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'album': ('django.db.models.fields.related.ForeignKey', [], {'max_length': '255', 'to': u"orm['albums.VideoAlbum']", 'null': 'True', 'blank': 'True'}),
-            'authors': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['video.VideoCategory']", 'null': 'True', 'blank': 'True'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'duration': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
-            'festivals': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'genre': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['video.VideoGenre']", 'null': 'True', 'blank': 'True'}),
-            'hq_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_in_broadcast_lists': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'manager': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'original_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['accounts.CustomUser']"}),
-            'published_in_archive': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'rating_score': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
-            'rating_votes': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0', 'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '12', 'null': 'True', 'blank': 'True'}),
-            'status': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'teachers': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'views_count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
-            'year': ('django.db.models.fields.IntegerField', [], {'default': '2012', 'null': 'True', 'blank': 'True'})
-        },
-        u'video.videocategory': {
-            'Meta': {'ordering': "('sort_order', 'title')", 'object_name': 'VideoCategory'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'sort_order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
-        },
-        u'video.videogenre': {
-            'Meta': {'ordering': "('sort_order', 'title')", 'object_name': 'VideoGenre'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'sort_order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         }
     }
 

@@ -16,7 +16,7 @@ class Channel(models.Model, TitleUnicode):
 
     class Meta:
         verbose_name = u'Канал вещания'
-        verbose_name = u'Каналы вещания'
+        verbose_name_plural = u'Каналы вещания'
 
 
 class PlayListItem(models.Model, TitleUnicode):
@@ -45,12 +45,12 @@ class PlayListItem(models.Model, TitleUnicode):
 class PlayList(models.Model):
     channel = models.ForeignKey(Channel)
     rotate_from_date = models.DateField(u'Дата начала ротации')
-    created = models.DateTimeField(u'Время создания',
-        default=now, editable=False)
+    created = models.DateTimeField(
+        u'Время создания', default=now, editable=False)
 
     class Meta:
         verbose_name = u'Список воспроизведения'
-        verbose_name = u'Списки воспроизведения'
+        verbose_name_plural = u'Списки воспроизведения'
         ordering = ['rotate_from_date', 'id']
         unique_together = ['channel', 'rotate_from_date']
 

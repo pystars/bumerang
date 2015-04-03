@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('albums', '0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding model 'VideoCategory'
         db.create_table(u'video_videocategory', (
