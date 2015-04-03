@@ -68,6 +68,8 @@ class VideoAdmin(admin.ModelAdmin):
             else:
                 obj.status = Video.ERROR
                 obj.save()
+        else:
+            obj.save()
 
 #TODO: repair mass deleting
 #    def delete_selected(self, request, queryset):
