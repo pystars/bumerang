@@ -593,26 +593,6 @@ $(function() {
         }
     });
 
-    $('.button-video-edit-upload').bind('click', function(e) {
-        e.preventDefault();
-
-        var filename = $("#video-upload-form input[name=original_file]").val();
-        if(filename != '') {
-            if(!allowed_videos_extensions_regexp.test(filename))
-            {
-                $('#popup-upload').hide();
-                $('#tint').hide();
-                show_notification('error',
-                    'Неверный формат видеофайла'
-                );
-                return false;
-            }
-        } else {
-            invokeUploadMessage();
-            $('#video-upload-form').submit();
-        }
-    });
-
     $('.button-photo-edit-upload').bind('click', function(e) {
         e.preventDefault();
 
