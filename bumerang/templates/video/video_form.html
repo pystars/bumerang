@@ -70,15 +70,10 @@
                             </div>
                             <footer class="b-form__footer">
                                 <div class="wrap">
-                                    {% if form.instance.pk %}
-                                        <button class="b-button b-button_yellow button-video-edit-upload" type="submit">
-                                            Сохранить
-                                        </button>
-                                    {% else %}
-                                        <button class="b-button b-button_yellow" type="submit">
-                                            Сохранить и перейти к загрузке видео
-                                        </button>
-                                    {% endif %}
+                                    <button class="b-button b-button_yellow" type="submit">
+                                        Сохранить
+                                        {% if not form.instance.pk %} и перейти к загрузке видео{% endif %}
+                                    </button>
                                 </div>
                             </footer>
                         </form>
