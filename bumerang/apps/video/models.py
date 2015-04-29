@@ -127,7 +127,7 @@ class Video(models.Model, TitleUnicode):
             self.slug = self.get_slug()
 
     def owner_email(self):
-        return self.owner.email
+        return self.owner.email or self.owner.username
     owner_email.short_description = u'E-mail владельца'
 
     def save(self, *args, **kwargs):
