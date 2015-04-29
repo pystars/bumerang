@@ -47,6 +47,10 @@ class VideoAdmin(admin.ModelAdmin):
     )
     # actions = ['delete_selected']
 
+    def get_queryset(self, request):
+        return super(VideoAdmin, self).get_queryset(request).prefetch_related(
+            'owner__email', 'owner__title', 'owner__username')
+
     add_form_template = 'admin/video/video/add_form.html'
 
     def get_duration(self, field):
