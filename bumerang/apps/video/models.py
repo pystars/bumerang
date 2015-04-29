@@ -126,6 +126,10 @@ class Video(models.Model, TitleUnicode):
         if not self.slug:
             self.slug = self.get_slug()
 
+    def owner_email(self):
+        return self.owner.email
+    owner_email.short_description = u'E-mail владельца'
+
     def save(self, *args, **kwargs):
         super(Video, self).save(*args, **kwargs)
         if self.album:
