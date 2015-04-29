@@ -151,8 +151,7 @@ class VideoUpdateView(OwnerMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class VideoGetS3UploadURLView(OwnerMixin, FormMixin, SingleObjectMixin,
-                              ProcessFormView):
+class VideoGetS3UploadURLView(FormMixin, SingleObjectMixin, ProcessFormView):
     """
     Returns data for upload to S3 and creates EncodeJob for call it back
     later and start converting job.
@@ -188,6 +187,15 @@ class VideoGetS3UploadURLView(OwnerMixin, FormMixin, SingleObjectMixin,
     def form_invalid(self, form):
         return HttpResponseBadRequest(
             json.dumps(form.errors), content_type="application/json")
+
+    def get_queryset(self):
+        # Если владелец - текущий пользователь, выбирутся
+        # все объекты, иначе ни одного. Админы - исключение, они могут
+        # перезагрузить любое видео
+        qs = super(VideoGetS3UploadURLView, self).get_queryset()
+        if not self.request.user.is_stuff:
+            qs = qs.filter(owner=self.request.user)
+        return qs
 
 
 @csrf_exempt
