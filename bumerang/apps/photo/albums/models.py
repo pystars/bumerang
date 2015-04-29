@@ -39,10 +39,6 @@ class PhotoAlbum(models.Model, TitleUnicode):
         return reverse('photo-album-detail', args=(self.id,))
     get_absolute_url.short_description = u'Ссылка на страницу фотоальбома'
 
-    def get_owner_profile(self):
-        return self.owner
-    get_owner_profile.short_description = u'Имя владельца'
-
     def last_update(self):
         return self.photo_set.all().aggregate(Max('created'))['created__max']
     last_update.short_description = u'Последнее фото добавлено'

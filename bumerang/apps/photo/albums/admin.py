@@ -6,7 +6,8 @@ from bumerang.apps.utils.admin import TitleSlugAdmin
 
 
 class PhotoAlbumAdmin(admin.ModelAdmin):
-    list_display = ('title', 'last_update', 'created', 'get_owner_profile',
+    readonly_fields = ('owner',)
+    list_display = ('title', 'last_update', 'created', 'owner',
                     'get_absolute_url')
 
 

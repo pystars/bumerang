@@ -10,19 +10,18 @@ from .converting.tasks import MakeScreenShots
 
 
 class VideoAdmin(admin.ModelAdmin):
-    readonly_fields = ('created', 'get_owner_profile', 'duration',
-                       'views_count', 'get_absolute_url',
-                       'get_download_original_file')
-    list_display = ('title', 'get_absolute_url', 'category',
-                    'get_owner_profile', 'owner', 'status', 'created',
-                    'published_in_archive', 'is_in_broadcast_lists')
+    readonly_fields = ('created', 'duration', 'views_count', 'get_absolute_url',
+                       'get_download_original_file', 'owner')
+    list_display = ('title', 'get_absolute_url', 'category', 'owner', 'status',
+                    'created', 'published_in_archive', 'is_in_broadcast_lists',
+                    'owner__email')
     list_editable = ('category', 'published_in_archive',
                      'is_in_broadcast_lists')
     fieldsets = (
         (None, {'fields': (
             ('published_in_archive', 'is_in_broadcast_lists'),
             'title',
-            ('get_owner_profile', 'owner'),
+            'owner',
             'category',
             'album',
             'status',

@@ -133,10 +133,6 @@ class Video(models.Model, TitleUnicode):
                 self.album.preview = self.preview()
                 self.album.save()
 
-    def get_owner_profile(self):
-        return self.owner
-    get_owner_profile.short_description = u'Имя владельца'
-
     def preview(self):
         try:
             return self.preview_set.all()[0]

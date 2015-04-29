@@ -32,9 +32,6 @@ class VideoAlbum(models.Model, TitleUnicode):
         return reverse('video-album-detail', args=(self.id,))
     get_absolute_url.short_description = u'Ссылка на страницу видеоальбома'
 
-    def get_owner_profile(self):
-        return self.owner
-
     def last_update(self):
         return self.video_set.all().aggregate(Max('created'))['created__max']
     last_update.short_description = u'Последнее видео добавлено'
