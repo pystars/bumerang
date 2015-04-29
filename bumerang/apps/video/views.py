@@ -193,7 +193,7 @@ class VideoGetS3UploadURLView(FormMixin, SingleObjectMixin, ProcessFormView):
         # все объекты, иначе ни одного. Админы - исключение, они могут
         # перезагрузить любое видео
         qs = super(VideoGetS3UploadURLView, self).get_queryset()
-        if not self.request.user.is_stuff:
+        if not self.request.user.is_staff:
             qs = qs.filter(owner=self.request.user)
         return qs
 
