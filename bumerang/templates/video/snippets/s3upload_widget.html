@@ -45,7 +45,8 @@ $('#video-selector').on('change', function (evt/**Event*/) {
           error(el, data.error);
           break;
         default:
-          error(el, 'Sorry, could not get upload URL.')
+          error(el, 'Что-то пошло не так. Подробности ошибки: status - ' +
+                     status + ', data - ' + data);
       }
     });
   } else {
