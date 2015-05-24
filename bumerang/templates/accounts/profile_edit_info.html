@@ -13,20 +13,22 @@
             <fieldset>
                 <div class="b-form__field">
                     <label>
-                                                    <span class="f-title">
-                                                        <span>
-                                                            {% if form.instance.type == 1 %}
-                                                                Имя Фамилия
-                                                            {% endif %}{% if form.instance.type == 2 %}
-                                                            Название школы
-                                                        {% endif %}{% if form.instance.type == 3 %}
-                                                            Название студии
-                                                        {% endif %}
-                                                        </span>
-                                                    </span>
-                                                        <span class="f-input">
-                                                            {{ form.title }}
-                                                        </span>
+                        <span class="f-title">
+                            <span>
+                                {% if form.instance.type == 1 %}
+                                    Имя Фамилия
+                                {% elif form.instance.type == 2 %}
+                                    Название школы
+                                {% elif form.instance.type == 3 %}
+                                    Название студии
+                                {% elif form.instance.type == 4 %}
+                                    Название госучреждения
+                                {% endif %}
+                            </span>
+                        </span>
+                            <span class="f-input">
+                                {{ form.title }}
+                            </span>
                     </label>
                     {% if form.title.errors %}
                         <div class="f-err"><span>{{ form.title.errors }}</span></div>
@@ -36,9 +38,9 @@
                     <div class="b-form__field">
                         <label>
                             <span class="f-title"><span>Никнейм</span></span>
-                                                        <span class="f-input">
-                                                            {{ form.nickname }}
-                                                        </span>
+                            <span class="f-input">
+                                {{ form.nickname }}
+                            </span>
                         </label>
                     </div>
                     {% if form.nickname.errors %}
@@ -47,9 +49,9 @@
                     <div class="b-form__field">
                         <label>
                             <span class="f-title"><span>День рождения</span></span>
-                                                        <span class="f-input">
-                                                            {{ form.birthday }}
-                                                        </span>
+                            <span class="f-input">
+                                {{ form.birthday }}
+                            </span>
                         </label>
                         {% if form.birthday.errors %}
                         <div class="f-err"><span>{{ form.birthday.errors }}</span></div>
@@ -67,30 +69,52 @@
             <fieldset>
                 <div class="b-form__field">
                     <label>
-                        <span class="f-title"><span>Откуда</span></span>
-                                                        <span class="f-input">
-                                                            {{ form.place }}
-                                                        </span>
+                        <span class="f-title"><span>Страна</span></span>
+                        <span class="f-input">
+                            {{ form.country }}
+                        </span>
                     </label>
-                    {% if form.place.errors %}
-                        <div class="f-err"><span>{{ form.place.errors }}</span></div>
+                    {% if form.country.errors %}
+                        <div class="f-err"><span>{{ form.country.errors }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Регион</span></span>
+                        <span class="f-input">
+                            {{ form.region }}
+                        </span>
+                    </label>
+                    {% if form.region.errors %}
+                        <div class="f-err"><span>{{ form.region.errors }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>Город</span></span>
+                        <span class="f-input">
+                            {{ form.city }}
+                        </span>
+                    </label>
+                    {% if form.city.errors %}
+                        <div class="f-err"><span>{{ form.city.errors }}</span></div>
                     {% endif %}
                 </div>
             </fieldset>
             <div class="b-form__field">
                 <label>
-                                                <span class="f-title">
-                                                    <span>
-                                                        {% if form.instance.type == 1 %}
-                                                            О себе
-                                                        {% else %}
-                                                            Описание
-                                                        {% endif %}
-                                                    </span>
-                                                </span>
-                                                    <span class="f-textarea">
-                                                        {{ form.description }}
-                                                    </span>
+                <span class="f-title">
+                    <span>
+                        {% if form.instance.type == 1 %}
+                            О себе
+                        {% else %}
+                            Описание
+                        {% endif %}
+                    </span>
+                </span>
+                <span class="f-textarea">
+                    {{ form.description }}
+                </span>
                 </label>
                 {% if form.description.errors %}
                     <div class="f-err"><span>{{ form.description.errors }}</span></div>
@@ -104,16 +128,4 @@
         </footer>
     </form>
 </section>
-{% endblock %}
-
-{% block edit_side_nav %}
-    <ul>
-        <li class="selected"><strong>Общая информация</strong></li>
-        <li><a href="{% url 'profile-edit-avatar' %}">Фотография профиля</a></li>
-        <li><a href="{% url 'profile-edit-resume' %}">Резюме</a></li>
-        <li><a href="{% url 'profile-edit-settings' %}">Настройка аккаунта</a></li>
-    </ul>
-    {% if user.type == 1 %}
-        {% sitetree_menu from "profiles_menu" include "users_tree,this-siblings" template "accounts/left_menu.html" %}
-    {% endif %}
 {% endblock %}

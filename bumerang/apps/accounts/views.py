@@ -13,7 +13,6 @@ except ImportError:
     from StringIO import StringIO
 
 from PIL import Image
-from django.contrib.auth import get_user_model
 from django.forms.util import ErrorList
 from django.db.models import F, Q
 from django.shortcuts import render_to_response
@@ -22,7 +21,7 @@ from django.contrib.sites.models import Site, get_current_site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib import messages
@@ -32,15 +31,16 @@ from django.forms.models import inlineformset_factory
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django.utils.timezone import now
 
-from bumerang.apps.utils.functions import random_string, image_crop_rectangle_center
-from bumerang.apps.video.models import Video
-from bumerang.apps.accounts.forms import (RegistrationForm,
-      PasswordRecoveryForm, ProfileAvatarEditForm, ProfileEmailEditForm,
-      UserProfileInfoForm, SchoolProfileInfoForm, StudioProfileInfoForm,
-      UserContactsForm, OrganizationContactsForm,
-      EventRegistrationRequestForm, FestivalProfileInfoForm)
-from bumerang.apps.utils.email import send_activation_success, \
-    send_activation_link, send_new_password
+from bumerang.apps.utils.functions import (
+    random_string, image_crop_rectangle_center)
+from ..video.models import Video
+from .forms import (
+    RegistrationForm, PasswordRecoveryForm, ProfileAvatarEditForm,
+    ProfileEmailEditForm, UserProfileInfoForm, SchoolProfileInfoForm,
+    CompanyInfoForm, UserContactsForm, OrganizationContactsForm,
+    EventRegistrationRequestForm, ProfileCoverEditForm)
+from bumerang.apps.utils.email import (
+    send_activation_success, send_activation_link, send_new_password)
 
 
 Profile = get_user_model()
@@ -56,6 +56,7 @@ def notify_success(request, message):
     messages.add_message(request, messages.SUCCESS, message)
     return
 
+
 def notify_error(request, message):
     u"""
     Выводит уведомление об ошибке при сохранении информации профиля
@@ -63,6 +64,7 @@ def notify_error(request, message):
     request._messages._queued_messages = []
     messages.add_message(request, messages.ERROR, message)
     return
+
 
 def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
@@ -103,6 +105,12 @@ def login(request, template_name='registration/login.html',
                     Добро пожаловать. Вы авторизовались как студия «{0}».
                     '''.format(profile.title)
 
+            if profile.type == Profile.TYPE_GOVERNMENT_AGENCY:
+                if profile.title:
+                    message = u'''
+                    Добро пожаловать. Вы авторизовались как госучреждение «{0}».
+                    '''.format(profile.title)
+
             notify_success(request, message)
 
             # Use default setting if redirect_to is empty
@@ -139,7 +147,8 @@ def login(request, template_name='registration/login.html',
         'site_name': current_site.name,
         }
     context.update(extra_context or {})
-    return render_to_response(template_name, context,
+    return render_to_response(
+        template_name, context,
         context_instance=RequestContext(request, current_app=current_app))
 
 
@@ -163,8 +172,7 @@ class RegistrationFormView(CreateView):
         self.object.activation_code = random_string(32)
 
         current_site = Site.objects.get_current()
-        url = reverse('activate-account',
-            args=[self.object.activation_code])
+        url = reverse('activate-account', args=[self.object.activation_code])
 
         full_activation_url = 'http://{0}{1}'.format(current_site, url)
         self.object.activation_code_expire = now() + timedelta(days=1)
@@ -388,12 +396,10 @@ class ProfileInfoEditView(GetObjectRequestUserMixin, UpdateView):
         # в зависимости от типа профиля
         if self.request.user.type == Profile.TYPE_USER:
             return UserProfileInfoForm
-        if self.request.user.type == Profile.TYPE_SCHOOL:
+        elif self.request.user.type == Profile.TYPE_SCHOOL:
             return SchoolProfileInfoForm
-        if self.request.user.type == Profile.TYPE_STUDIO:
-            return StudioProfileInfoForm
-        if self.request.user.type == Profile.TYPE_FESTIVAL:
-            return FestivalProfileInfoForm
+        else:
+            return CompanyInfoForm
 
     def get_success_url(self):
         return reverse("profile-detail", args=[self.get_object().pk])
@@ -406,7 +412,8 @@ class ProfileInfoEditView(GetObjectRequestUserMixin, UpdateView):
         return super(ProfileInfoEditView, self).form_valid(form)
 
     def form_invalid(self, form):
-        notify_error(self.request,
+        notify_error(
+            self.request,
             message=u'При обновлении данных профиля произошла ошибка.')
 
         return self.render_to_response(self.get_context_data(form=form))
@@ -431,6 +438,7 @@ class ProfileUpdateView(GetObjectRequestUserMixin, UpdateView):
             message=u'При обновлении данных профиля произошла ошибка.')
 
         return super(ProfileUpdateView, self).form_invalid(form)
+
 
 class FormsetUpdateView(UpdateView):
     template_name = "accounts/profile_formset.html"
@@ -616,6 +624,72 @@ class ProfileAvatarEditView(GetObjectRequestUserMixin, UpdateView):
 
         notify_success(self.request,
             message=u'Фотография профиля успешно обновлена.')
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        notify_error(self.request, message=u'''
+            Произошла ошибка при обновлении фотографии профиля.
+            Возможно, файл, который вы загрузили, поврежден
+            или не является изображением.
+        ''')
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+class ProfileCoverEditView(GetObjectRequestUserMixin, UpdateView):
+    template_name = "accounts/profile_edit_cover.html"
+
+    form_class = ProfileCoverEditForm
+
+    def get_success_url(self):
+        return reverse('profile-edit-cover')
+
+    def form_valid(self, form):
+        u"""
+        MAX_WIDTH - Эта константа означает максимальную ширину изображения так
+        как будучи большим, оно может выйти за рамки шаблона. Если исходное
+        изображение шире этой константы, оно будет ужато для обеспечения
+        совместимости координат, переданных Crop'ом
+        """
+        MAX_WIDTH = 2500
+
+        # Загружен ли уже аватар и мы только должны его обрезать?
+        img = Image.open(self.request.FILES.get('avatar', self.object.avatar))
+        img = img.convert('RGB')
+
+        # Если загружаемый ковер слишком маленький
+        if img.size[0] < 1024 or img.size[1] < 200:
+            form_errors = form._errors.setdefault('cover', ErrorList())
+            form_errors.append(
+            u'Размер изображения должен быть больше 1024x200 пикселей.')
+
+            notify_error(self.request, message=u'''
+            Произошла ошибка при обновлении подложки профиля.
+            Размер изображения должен быть больше 1024x200 пикселей.''')
+            return self.render_to_response(self.get_context_data(form=form))
+
+        # Если изображение слишком широкое, ужимаем
+        if img.size[0] > MAX_WIDTH:
+            aspect = img.size[0] / MAX_WIDTH
+            new_height = int(round(img.size[1] / aspect))
+            # Вот с этим изображением мы и будем работать
+            img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
+
+        # Иначе просто обрезаем
+
+        temp_handle = StringIO()
+        img.save(temp_handle, 'jpeg', quality=100)
+        temp_handle.seek(0)
+
+        suf = SimpleUploadedFile('min.jpg',
+            temp_handle.read(), content_type='image/jpg')
+
+        self.object.min_avatar.save('min.jpg', suf, save=False)
+        form.save()
+
+        notify_success(self.request,
+            message=u'Подложка профиля успешно обновлена.')
 
         return HttpResponseRedirect(self.get_success_url())
 

@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import re
-import warnings
 
 from django.conf import settings
-from django.contrib.auth.models import UserManager, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core import validators
-from django.utils.http import urlquote
-from django.core.mail import send_mail
-from django.utils import timezone
 
 from bumerang.apps.utils.functions import get_path
 from bumerang.apps.utils.models import FileModelMixin
@@ -24,12 +18,13 @@ class CustomUser(FileModelMixin, AbstractUser):
     TYPE_USER = 1
     TYPE_SCHOOL = 2
     TYPE_STUDIO = 3
-    TYPE_FESTIVAL = 4
+    TYPE_GOVERNMENT_AGENCY = 4
 
     ACCOUNT_TYPES = (
-        (TYPE_USER,      u'Независимый участник'),
-        (TYPE_SCHOOL,    u'Школа'),
-        (TYPE_STUDIO,    u'Студия'),
+        (TYPE_USER,                 u'Независимый участник'),
+        (TYPE_SCHOOL,               u'Школа'),
+        (TYPE_STUDIO,               u'Студия'),
+        (TYPE_GOVERNMENT_AGENCY,    u'Госучреждение'),
     )
 
     GENDER = (
@@ -54,6 +49,12 @@ class CustomUser(FileModelMixin, AbstractUser):
         u'Уменьшенная фотография профиля',
         upload_to=get_path('avatars/{0}/min{1}', pk_dir_name=True),
         storage=media_storage, **nullable)
+
+    cover = models.ImageField(
+        u'Подложка',
+        upload_to=get_path('covers/{0}/cover{1}', pk_dir_name=True),
+        storage=media_storage, **nullable)
+
     avatar_coords = models.CharField(max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
     description = models.TextField(u'Описание', **nullable)
@@ -98,9 +99,6 @@ class CustomUser(FileModelMixin, AbstractUser):
     views_count = models.IntegerField(
         u'Количество просмотров профиля', default=0, editable=False, **nullable)
 
-    #USERNAME_FIELD = 'email'
-    #REQUIRED_FIELDS = []
-
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
@@ -124,13 +122,15 @@ class CustomUser(FileModelMixin, AbstractUser):
             title = u'школы'
         if self.type == self.TYPE_STUDIO:
             title = u'студии'
+        if self.type == self.TYPE_GOVERNMENT_AGENCY:
+            title = u'госучреждения'
 
         return u'{0} {1}'.format(title, self.title)
 
     def get_info_fio(self):
         return ' '.join([getattr(self, name) for name in [
             'info_second_name', 'info_name', 'info_middle_name']
-                         if getattr(self, name)])
+            if getattr(self, name)])
 
     def get_locality(self):
         u"""

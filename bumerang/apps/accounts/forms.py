@@ -4,15 +4,13 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from PIL import Image
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-from django.core.files.base import ContentFile
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
-from bumerang.apps.accounts.models import Faculty, Service, Teammate
-from bumerang.apps.utils.forms import S3StorageFormMixin, TemplatedForm
+from .models import Faculty, Service, Teammate
+from ..utils.forms import S3StorageFormMixin, TemplatedForm
 
 
 Profile = get_user_model()
@@ -26,9 +24,9 @@ class InfoEditFormsMixin(forms.ModelForm):
         super(InfoEditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
-                or field.widget.__class__ == forms.widgets.PasswordInput
-                or field.widget.__class__ == forms.widgets.DateInput):
-                if field.widget.attrs.has_key('class'):
+                    or field.widget.__class__ == forms.widgets.PasswordInput
+                    or field.widget.__class__ == forms.widgets.DateInput):
+                if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide'
                 else:
                     field.widget.attrs.update({'class': 'wide'})
@@ -43,14 +41,14 @@ class EditFormsMixin(forms.ModelForm):
     u"""
     Миксин, добавляющий стилизацию полей формы
     """
-    #TODO: it must be refactored to utils?
+    # TODO: it must be refactored to utils?
     def __init__(self, *args, **kwargs):
         super(EditFormsMixin, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
-                or field.widget.__class__ == forms.widgets.PasswordInput
-                or field.widget.__class__ == forms.widgets.DateInput):
-                if field.widget.attrs.has_key('class'):
+                    or field.widget.__class__ == forms.widgets.PasswordInput
+                    or field.widget.__class__ == forms.widgets.DateInput):
+                if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide'
                 else:
                     field.widget.attrs.update({'class': 'wide'})
@@ -61,13 +59,13 @@ class EditFormsMixin(forms.ModelForm):
                     field.widget.attrs.update({'class': 'wide wide_descr2'})
 
 
-
 class RegistrationForm(forms.ModelForm):
     username = forms.EmailField(max_length=30)
     password1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
-    password2 = forms.CharField(label=_("Password confirmation"),
+    password2 = forms.CharField(
+        label=_("Password confirmation"),
         widget=forms.PasswordInput,
-        help_text = _("Enter the same password as above, for verification."))
+        help_text=_("Enter the same password as above, for verification."))
 
     class Meta:
         model = Profile
@@ -85,8 +83,8 @@ class RegistrationForm(forms.ModelForm):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if (field.widget.__class__ == forms.widgets.TextInput
-            or field.widget.__class__ == forms.widgets.PasswordInput):
-                if field.widget.attrs.has_key('class'):
+                    or field.widget.__class__ == forms.widgets.PasswordInput):
+                if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' medium'
                 else:
                     field.widget.attrs.update({'class': 'medium'})
@@ -141,9 +139,16 @@ class ProfileInfoEditForm(InfoEditFormsMixin, forms.ModelForm):
 
 class ProfileAvatarEditForm(S3StorageFormMixin, forms.ModelForm):
     avatar_coords = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Profile
         fields = ('avatar',)
+
+
+class ProfileCoverEditForm(S3StorageFormMixin, forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('cover',)
 
 
 class ProfileResumeEditForm(forms.ModelForm):
@@ -158,7 +163,8 @@ class ProfileResumeEditForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('work_type', 'work_company', 'schools', 'courses',
+        fields = (
+            'work_type', 'work_company', 'schools', 'courses',
             'hobby', 'fav_movies', 'fav_music', 'fav_books')
 
 
@@ -181,8 +187,8 @@ class UserProfileInfoForm(EditFormsMixin, TemplatedForm):
     Форма редактирования профиля пользователя
     """
     title = forms.CharField(max_length=255, label=u'Имя, фамилия')
-    description = forms.CharField(label=u'О себе', required=False,
-        widget=forms.Textarea)
+    description = forms.CharField(
+        label=u'О себе', required=False, widget=forms.Textarea)
 
     class Meta:
         model = Profile
@@ -193,54 +199,28 @@ class UserProfileInfoForm(EditFormsMixin, TemplatedForm):
             'region',
             'city',
             'birthday',
+            'gender',
             'description',
-            )
+        )
 
 
-class SchoolProfileInfoForm(EditFormsMixin, forms.ModelForm):
-    u"""
-    Форма редактирования профиля школы
-    """
+class CompanyInfoFormBase(forms.ModelForm):
     title = forms.CharField(max_length=255, label=u'Название')
     description = forms.CharField(label=u'О себе', widget=forms.Textarea)
 
     class Meta:
         model = Profile
-        fields = ('title', 'country',
-                  'region',
-                  'city', 'description',)
+        fields = ('title', 'country', 'region', 'city', 'description')
 
 
-class StudioProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
+class SchoolProfileInfoForm(EditFormsMixin, CompanyInfoFormBase):
     u"""
-    Форма редактирования профиля студии
+    Форма редактирования профиля школы
     """
-    title = forms.CharField(max_length=255, label=u'Название')
-    description = forms.CharField(widget=forms.Textarea, label=u'Описание')
-    class Meta:
-        model = Profile
-        fields = ('title', 'country',
-                  'region',
-                  'city', 'description', )
 
 
-#class FestivalProfileInfoForm(InfoEditFormsMixin, forms.ModelForm):
-class FestivalProfileInfoForm(EditFormsMixin, TemplatedForm):
-    u"""
-    Форма редактирования профиля фестиваля
-    """
-    title = forms.CharField(max_length=255, label=u'Название фестиваля')
-    description = forms.CharField(widget=forms.Textarea, label=u'Описание')
-
-    class Meta:
-        model = Profile
-        fields = (
-            'title',
-            'country',
-            'region',
-            'city',
-            'description'
-        )
+class CompanyInfoForm(InfoEditFormsMixin, CompanyInfoFormBase):
+    """ form to edit info of studio or government agency"""
 
 
 class EventRegistrationRequestForm(forms.ModelForm):
@@ -249,8 +229,8 @@ class EventRegistrationRequestForm(forms.ModelForm):
     при регистрации
     """
     title = forms.CharField(max_length=255, label=u'Название фестиваля')
-    description = forms.CharField(widget=forms.Textarea,
-        label=u'Описание фестиваля', required=True)
+    description = forms.CharField(
+        widget=forms.Textarea, label=u'Описание фестиваля', required=True)
 
     class Meta:
         model = Profile

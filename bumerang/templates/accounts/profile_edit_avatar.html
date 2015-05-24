@@ -20,10 +20,10 @@
         <div class="b-form__fields">
             {% with type=user.type pf=user %}
 
-                {% if type == pf.TYPE_STUDIO or type == pf.TYPE_SCHOOL %}
-                    <h3 class="title">Редактирование логотипа</h3>
-                {% elif type == pf.TYPE_USER %}
+                {% if type == pf.TYPE_USER %}
                     <h3 class="title">Редактирование фотографии</h3>
+                {% else %}
+                    <h3 class="title">Редактирование логотипа</h3>
                 {% endif %}
 
                 <fieldset>
@@ -38,7 +38,7 @@
                                     <img src="{{ STATIC_URL }}i/add-school-foto.png" width="175" height="175" alt="Добавьте логотип" />
                                 {% elif type == pf.TYPE_STUDIO %}
                                     <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте логотип" />
-                                {% elif type == pf.TYPE_FESTIVAL %}
+                                {% elif type == pf.TYPE_GOVERNMENT_AGENCY %}
                                     <img src="{{ STATIC_URL }}i/add-studio-foto.png" width="175" height="175" alt="Добавьте логотип" />
                                 {% endif %}
                             {% endif %}

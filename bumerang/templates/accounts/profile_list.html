@@ -24,10 +24,12 @@
                             <i class="b-ava__sh"></i>
                             {% if profile.type == 1 %}
                                 <div class="b-ava__caption b-ava__caption_participant">Участник</div>
-                            {% endif %}{% if profile.type == 2 %}
+                            {% elif profile.type == 2 %}
                                 <div class="b-ava__caption b-ava__caption_school">Школа</div>
-                            {% endif %}{% if profile.type == 3 %}
+                            {% elif profile.type == 3 %}
                                 <div class="b-ava__caption b-ava__caption_studio">Студия</div>
+                            {% elif profile.type == 4 %}
+                                <div class="b-ava__caption b-ava__caption_studio">Госучреждение</div>
                             {% endif %}
                         </div>
                         <header class="pi-head">

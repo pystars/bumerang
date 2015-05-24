@@ -27,7 +27,7 @@
                                 <img src="{{ STATIC_URL }}i/noava-school-b.png" width="60" height="60" alt="" />
                             {% elif type == pf.TYPE_STUDIO %}
                                 <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
-                            {% elif type == pf.TYPE_FESTIVAL %}
+                            {% elif type == pf.TYPE_GOVERNMENT_AGENCY %}
                                 <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="" />
                             {% endif %}
 
@@ -66,11 +66,7 @@
                     {% if object.get_locality %}
                         <li>
                             <strong>
-                                {% if object.type == pf.TYPE_FESTIVAL %}
-                                    Место проведения:
-                                {% else %}
-                                    Откуда:
-                                {% endif %}
+                                Откуда:
                             </strong>
                             <span>{{ object.get_locality }}</span>
                         </li>

@@ -37,6 +37,11 @@
                         {% else %}
                             <li><a href="{% url 'studios-list' %}" title="Студии">Студии</a></li>
                         {% endifequal %}
+                        {% ifequal current_type 4 %}
+                            <li>Госучреждения</li>
+                        {% else %}
+                            <li><a href="{% url 'government-agencies-list' %}" title="Госучреждения">Госучреждения</a></li>
+                        {% endifequal %}
                     </ul>
                     {% include 'snippets/round_frame.html' %}
                 </nav>

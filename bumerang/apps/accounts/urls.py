@@ -37,6 +37,11 @@ urlpatterns = patterns('',
         kwargs={'type': Profile.TYPE_STUDIO},
         name="studios-list"),
 
+    url(r'^government-agencies/$',
+        UsersListView.as_view(),
+        kwargs={'type': Profile.TYPE_GOVERNMENT_AGENCY},
+        name="government-agencies-list"),
+
     url(r'^register/$',
         RegistrationFormView.as_view(),
         name='registration'),

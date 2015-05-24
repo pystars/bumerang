@@ -8,8 +8,8 @@
         {% sitetree_menu from "school_edit_menu" include "trunk" template "accounts/left_menu.html" %}
     {% elif type == pf.TYPE_STUDIO %}
         {% sitetree_menu from "studio_edit_menu" include "trunk" template "accounts/left_menu.html" %}
-    {% elif type == pf.TYPE_FESTIVAL %}
-        {% sitetree_menu from "festival_edit_menu" include "trunk" template "accounts/left_menu.html" %}
+    {% elif type == pf.TYPE_GOVERNMENT_AGENCY %}
+        {% sitetree_menu from "government_agency_edit_menu" include "trunk" template "accounts/left_menu.html" %}
     {% endif %}
 
 {% endwith %}
