@@ -53,10 +53,12 @@ class CustomUser(FileModelMixin, AbstractUser):
     cover = models.ImageField(
         u'Обложка',
         upload_to=get_path('covers/{0}/cover{1}', pk_dir_name=True),
-        storage=media_storage, null=True)
-    cover_url = models.URLField(verbose_name=u'Ссылка', null=True)
+        storage=media_storage, null=True, blank=True,
+        help_text='Изображение должно быть не меньше 800x200 и не больше '
+                  '2500x1000 пикселей')
+    cover_url = models.URLField(verbose_name=u'Ссылка', null=True, blank=True)
     cover_text = models.CharField(
-        max_length=255, verbose_name=u'Текст ссылки', null=True)
+        max_length=255, verbose_name=u'Текст ссылки', null=True, blank=True)
 
     avatar_coords = models.CharField(max_length=255, **nullable)
     birthday = models.DateField(u'День рождения', **nullable)
