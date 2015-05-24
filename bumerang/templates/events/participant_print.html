@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Печать заявки на {{ object.event.get_type_display }} {{ object.event }}</title>
+  <script type="text/javascript">
+    if (window.print) {
+      window.print();
+    }
+  </script>
+</head>
+<body>
+    <h1>Заявка на {{ object.event.get_type_display }} {{ object.event }}</h1>
+    <table cellspacing="5" cellpadding="5">
+    {% with profile=object.owner %}
+        <tr>
+            <th align="right">Отправитель</th>
+            <td>{{ profile.get_type_display }} {{ profile }}</td>
+        </tr>
+        {% if profile.type != 1 %}
+            <tr>
+                <th align="right">Руководитель</th>
+                <td>{{ profile.get_info_fio|default:"--" }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th align="right">Откуда</th>
+            <td>{{ profile.get_locality|default:"--" }}</td>
+        </tr>
+        <tr>
+            <th align="right">Контактный телефон</th>
+            <td>{{ profile.info_phone|default:"--" }}</td>
+        </tr>
+        <tr>
+            <th align="right">Мобильный телефон</th>
+            <td>{{ profile.info_mobile_phone|default:"--" }}</td>
+        </tr>
+        <tr>
+            <th align="right">Электронный адрес</th>
+            <td>{{ profile.info_email|default:"--" }}</td>
+        </tr>
+        <tr>
+            <th align="right">Фактический адрес</th>
+            <td>{{ profile.info_address|default:"--" }}</td>
+        </tr>
+        <tr>
+            <th align="right">Почтовый адрес</th>
+            <td>{{ profile.info_postal_address|default:"--" }}</td>
+        </tr>
+        {% if profile.type != 1 %}
+        <tr>
+            <th align="right">Коллектив в составе организации</th>
+            <td>{{ profile.info_organization_form }} &laquo;{{ profile.info_organization|default:"--" }}&raquo;</td>
+        </tr>
+        {% endif %}
+    {% endwith %}
+    </table>
+    <hr />
+    <h2>Заявленные работы</h2>
+    <table cellspacing="0" cellpadding="2" border="1">
+    <thead>
+        <tr>
+          <th>Название видео</th>
+          <th>Возраст участника</th>
+          <th>Заявленные номинации</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for participant_video in object.participantvideo_set.all %}
+      <tr>
+        <td>{{ participant_video.video.title }}</td>
+        <td>{{ participant_video.age }}</td>
+        <td>{{ participant_video.nominations.all|join:", " }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</body>

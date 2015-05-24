@@ -3,7 +3,8 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from bumerang.apps.events.models import Event
-from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
+from bumerang.apps.events.views import (
+    EventListView, ParticipantCreateView, EventScoreCardView,
     EventEditInfoView, EventCreateView, EventEditLogoView,
     ParticipantUpdateView, EventNominationsUpdateView,
     EventGeneralRuleUpdateView, EventNewsUpdateView, ParticipantListView,
@@ -11,7 +12,8 @@ from bumerang.apps.events.views import (EventListView, ParticipantCreateView,
     ParticipantReviewView, EventContactsUpdateView, EventDetailView,
     ParticipantVideoRatingUpdate, EventNewsPostUpdateView,
     EventConditionsDetailView, SetWinnersView, EventWinnersListView,
-    EventPublishWinners, ParticipantListCSVView, ParticipantConfirmView)
+    EventPublishWinners, ParticipantListCSVView, ParticipantConfirmView,
+    ParticipantPrintView)
 
 
 urlpatterns = patterns('',
@@ -40,6 +42,11 @@ urlpatterns = patterns('',
     url(r'^event(?P<pk>[\d]+)/$',
         EventDetailView.as_view(),
         name='event-detail'
+    ),
+
+    url(r'^event(?P<pk>[\d]+)/scorecard\.xls$',
+        login_required(EventScoreCardView.as_view()),
+        name='event-scorecard'
     ),
 
     url(r'^event(?P<event_pk>[\d]+)/press/$',
@@ -126,6 +133,11 @@ urlpatterns = patterns('',
         login_required(ParticipantUpdateView.as_view()),
         name='participant-edit'
     ),
+    url(r'^participant(?P<pk>[\d]+)/print/$',
+        ParticipantPrintView.as_view(),
+        # login_required(ParticipantPrintView.as_view()),
+        name='participant-print'
+    ),
 
     url(r'^participant(?P<pk>[\d]+)/review/$',
         login_required(ParticipantReviewView.as_view()),
@@ -147,7 +159,7 @@ urlpatterns = patterns('',
         name='event-publish-winners'
     ),
 
-    url(r'^event(?P<event_pk>[\d]+)/participant_video_list.xls$',
+    url(r'^event(?P<event_pk>[\d]+)/participant_video_list\.xls$',
         login_required(ParticipantListCSVView.as_view()),
         name='participant-video-list-csv'
     ),

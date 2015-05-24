@@ -61,12 +61,17 @@
                                                 </td>
                                                 <td>
                                                     <a href="{% url 'profile-detail' profile.id %}">{{ profile.title }}</a>
-                                                    ( {{ profile.get_type_display|lower }} )
+                                                    ({{ profile.get_type_display|lower }})
                                                 </td>
                                                 <td>
-                                                    <a href="{% url 'participant-review' object.id %}">
-                                                        Рассмотреть
-                                                    </a>
+                                                    <p>
+                                                      <a href="{% url 'participant-review' object.id %}">
+                                                        Рассмотреть</a>
+                                                    </p>
+                                                    <p>
+                                                      <a href="{% url 'participant-print' object.id %}">
+                                                        Распечатать</a>
+                                                    </p>
                                                 </td>
                                             </tr>
                                         {% endwith %}

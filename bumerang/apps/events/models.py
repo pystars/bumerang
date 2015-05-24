@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save, pre_save
 from django.utils.safestring import mark_safe
-from django.db.models.aggregates import Max
+from django.db.models.aggregates import Max, Avg
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -240,6 +240,9 @@ class Nomination(AdminUrlMixin, models.Model):
             age_postfix = u' (без возрастных ограничений)'
         return self.title + age_postfix
 
+    def approved(self):
+        return self.participantvideo_set.filter(is_accepted=True)
+
 
 class Participant(AdminUrlMixin, models.Model):
     owner = models.ForeignKey(
@@ -304,6 +307,10 @@ class ParticipantVideo(models.Model):
         age_to = self.nomination.age_to or 100
         if self.age and not (age_from <= self.age <= age_to):
             raise ValidationError({'age': [u'Возраст автора не подходит']})
+
+    def score(self):
+        return self.participantvideoscore_set.aggregate(
+            Avg('score'))['score__avg']
 
 
 class VideoNomination(models.Model):

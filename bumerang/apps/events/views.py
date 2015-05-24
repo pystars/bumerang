@@ -518,6 +518,14 @@ class ParticipantConfirmView(ParticipantMixin, OwnerMixin, DetailView):
         return ctx
 
 
+class ParticipantPrintView(ParticipantMixin, DetailView):
+    template_name = "events/participant_print.html"
+
+    def get_queryset(self):
+        return super(ParticipantPrintView, self).get_queryset().filter(
+            event__owner=self.request.user)
+
+
 class ParticipantUpdateView(ParticipantMixin, OwnerMixin, ContactsCheckMixin,
                             GenericFormsetWithFKUpdateView):
     formset_form_class = ParticipantVideoForm
@@ -753,4 +761,17 @@ class ParticipantListCSVView(ListView):
 
     def render_to_response(self, context, **response_kwargs):
         return super(ParticipantListCSVView, self).render_to_response(
+            context, mimetype="application/vnd.ms-excel")
+
+
+class EventScoreCardView(DetailView):
+    model = Event
+    template_name_suffix = '_scorecard'
+
+    def get_queryset(self):
+        return super(EventScoreCardView, self).get_queryset().filter(
+            owner=self.request.user)
+
+    def render_to_response(self, context, **response_kwargs):
+        return super(EventScoreCardView, self).render_to_response(
             context, mimetype="application/vnd.ms-excel")
