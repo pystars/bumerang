@@ -1174,9 +1174,7 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 }
 
 .b-announs_movie .announ-item {
-	height:8.3125em;
 	min-height:133px;
-	height:8.3125em;
 	margin:0 0 1.7em 0
 }
 
@@ -3576,7 +3574,6 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 /* b-pages */
 .b-pages {
 	padding:0 0 0 1.4em;
-	white-space:nowrap;
 }
 
 .b-pages > a,
