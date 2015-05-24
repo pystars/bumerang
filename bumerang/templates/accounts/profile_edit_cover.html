@@ -1,0 +1,35 @@
+{% extends "accounts/profile_edit_wrapper.html" %}
+
+{% block title %}Обложка профиля{% endblock %}
+
+{% block edit_form %}
+<section class="b-form b-form_smaller b-form_left b-form_edit b-form_edit_photo2">
+    <form name="avatar_form" action="{% url 'profile-edit-cover' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a class="form-profile-view" href="{% url 'profile-detail' profile.id %}">Просмотр профиля</a>
+        <div class="b-form__fields">
+            {% with type=user.type pf=user %}
+
+                <h3 class="title">Редактирование обложки профиля</h3>
+
+                <fieldset>
+                        <span class="f-input">
+                            {{ form.cover }}
+                        </span>
+                        {% if form.cover.errors %}
+                            <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.cover.errors }}</span></div>
+                        {% endif %}
+                    <div class="clear" style="height: 18px;"></div>
+                </fieldset>
+
+            {% endwith %}
+
+            </div>
+        <footer class="b-form__footer">
+            <div class="wrap">
+                <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+            </div>
+        </footer>
+    </form>
+</section>
+{% endblock %}

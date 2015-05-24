@@ -9,7 +9,7 @@ Profile = get_user_model()
 class ProfileAdmin(admin.ModelAdmin):
     exclude = ('first_name', 'last_name', 'email')
     list_display = ('__unicode__', 'type', 'city', 'date_joined', 'username')
-    prepopulated_fields = {'info_email': ['username'],}
+    prepopulated_fields = {'info_email': ['username']}
     readonly_fields = ('show_avatar', 'last_login', 'date_joined')
     fieldsets = (
         ('Main params', {'fields': (
@@ -20,6 +20,7 @@ class ProfileAdmin(admin.ModelAdmin):
             ('is_active', 'is_staff', 'is_superuser'),
             ('last_login', 'date_joined'),
             'show_avatar',
+            'cover',
             'birthday',
             'description',
         )}),

@@ -1,16 +1,26 @@
 {% extends "base.html" %}
 {% load sitetags %}
 
-{% block banner %}<body{% if header_banner %} class="bs" style="background-image: url('{{ header_banner.background_image.url }}')"{% endif %}>
-<div class="l-page"><div class="l-page__i">
+{% block banner %}
+  <body
+      {% if profile.cover %}
+        class="bs" style="background-image: url('{{ profile.cover.url }}')"
+      {% elif header_banner %}
+        class="bs" style="background-image: url('{{ header_banner.background_image.url }}')"
+      {% endif %}
+      >
+    <div class="l-page"><div class="l-page__i">
     {% block notifications %}
         {% include 'snippets/messages.html' %}
     {% endblock %}
     <header class="l-head">
         <div class="l-head__space">
             <div class="bs-wrapper">
-                {% if header_banner %}
+                {% if header_banner and not profile.cover %}
                     <span class="bs-head">{{ header_banner.name }}</span>
-                    <a href="{{ header_banner.url }}" target="_blank" class="bs-link">{{ header_banner.text }}</a>
+                    <a href="{{ header_banner.url }}" target="_blank" class="bs-link">
+                      {{ header_banner.text }}
+                    </a>
                 {% endif %}
-            </div>{% endblock %}
+            </div>
+{% endblock %}

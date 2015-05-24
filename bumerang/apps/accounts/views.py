@@ -622,8 +622,8 @@ class ProfileAvatarEditView(GetObjectRequestUserMixin, UpdateView):
         self.object.min_avatar.save('min.jpg', suf, save=False)
         form.save()
 
-        notify_success(self.request,
-            message=u'Фотография профиля успешно обновлена.')
+        notify_success(
+            self.request, message=u'Фотография профиля успешно обновлена.')
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -655,18 +655,18 @@ class ProfileCoverEditView(GetObjectRequestUserMixin, UpdateView):
         MAX_WIDTH = 2500
 
         # Загружен ли уже аватар и мы только должны его обрезать?
-        img = Image.open(self.request.FILES.get('avatar', self.object.avatar))
+        img = Image.open(self.request.FILES.get('cover', None))
         img = img.convert('RGB')
 
         # Если загружаемый ковер слишком маленький
-        if img.size[0] < 1024 or img.size[1] < 200:
+        if img.size[0] < 800 or img.size[1] < 200:
             form_errors = form._errors.setdefault('cover', ErrorList())
             form_errors.append(
-            u'Размер изображения должен быть больше 1024x200 пикселей.')
+            u'Размер изображения должен быть больше 800x200 пикселей.')
 
             notify_error(self.request, message=u'''
             Произошла ошибка при обновлении подложки профиля.
-            Размер изображения должен быть больше 1024x200 пикселей.''')
+            Размер изображения должен быть больше 800x200 пикселей.''')
             return self.render_to_response(self.get_context_data(form=form))
 
         # Если изображение слишком широкое, ужимаем
@@ -675,8 +675,6 @@ class ProfileCoverEditView(GetObjectRequestUserMixin, UpdateView):
             new_height = int(round(img.size[1] / aspect))
             # Вот с этим изображением мы и будем работать
             img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
-
-        # Иначе просто обрезаем
 
         temp_handle = StringIO()
         img.save(temp_handle, 'jpeg', quality=100)
@@ -688,8 +686,8 @@ class ProfileCoverEditView(GetObjectRequestUserMixin, UpdateView):
         self.object.min_avatar.save('min.jpg', suf, save=False)
         form.save()
 
-        notify_success(self.request,
-            message=u'Подложка профиля успешно обновлена.')
+        notify_success(
+            self.request, message=u'Подложка профиля успешно обновлена.')
 
         return HttpResponseRedirect(self.get_success_url())
 

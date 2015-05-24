@@ -11,7 +11,7 @@ from bumerang.apps.accounts.views import (
     ProfileInfoEditView, ProfileAvatarEditView, ProfileUpdateView,
     ProfileSettingsEditView, AccountActivationView, FormsetUpdateView,
     ProfileVideoView, ProfilePhotoView, ProfileContactsEditView,
-    RegisterEventRequestForm, ProfileEventListView)
+    RegisterEventRequestForm, ProfileEventListView, ProfileCoverEditView)
 
 
 Profile = get_user_model()
@@ -75,9 +75,12 @@ urlpatterns = patterns('',
         name='profile-edit'),
 
     url(r'^edit-avatar/$',
-        login_required(ProfileAvatarEditView.as_view(
-            template_name_suffix='_edit_avatar')),
+        login_required(ProfileAvatarEditView.as_view()),
         name='profile-edit-avatar'),
+
+    url(r'^edit-cover/$',
+        login_required(ProfileCoverEditView.as_view()),
+        name='profile-edit-cover'),
 
     url(r'^edit-resume/$',
         login_required(ProfileUpdateView.as_view(

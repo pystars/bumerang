@@ -51,7 +51,7 @@ class CustomUser(FileModelMixin, AbstractUser):
         storage=media_storage, **nullable)
 
     cover = models.ImageField(
-        u'Подложка',
+        u'Обложка',
         upload_to=get_path('covers/{0}/cover{1}', pk_dir_name=True),
         storage=media_storage, **nullable)
 
