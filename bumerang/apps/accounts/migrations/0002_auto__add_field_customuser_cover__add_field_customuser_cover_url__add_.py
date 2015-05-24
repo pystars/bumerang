@@ -10,13 +10,29 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'CustomUser.cover'
         db.add_column(u'accounts_customuser', 'cover',
-                      self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True),
+                      self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True),
+                      keep_default=False)
+
+        # Adding field 'CustomUser.cover_url'
+        db.add_column(u'accounts_customuser', 'cover_url',
+                      self.gf('django.db.models.fields.URLField')(max_length=200, null=True),
+                      keep_default=False)
+
+        # Adding field 'CustomUser.cover_text'
+        db.add_column(u'accounts_customuser', 'cover_text',
+                      self.gf('django.db.models.fields.CharField')(max_length=255, null=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
         # Deleting field 'CustomUser.cover'
         db.delete_column(u'accounts_customuser', 'cover')
+
+        # Deleting field 'CustomUser.cover_url'
+        db.delete_column(u'accounts_customuser', 'cover_url')
+
+        # Deleting field 'CustomUser.cover_text'
+        db.delete_column(u'accounts_customuser', 'cover_text')
 
 
     models = {
@@ -30,7 +46,9 @@ class Migration(SchemaMigration):
             'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'country': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'courses': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'cover': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'cover': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True'}),
+            'cover_text': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'cover_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True'}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),

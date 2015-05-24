@@ -665,25 +665,21 @@ class ProfileCoverEditView(GetObjectRequestUserMixin, UpdateView):
             u'Размер изображения должен быть больше 800x200 пикселей.')
 
             notify_error(self.request, message=u'''
-            Произошла ошибка при обновлении подложки профиля.
+            Произошла ошибка при обновлении обложки профиля.
             Размер изображения должен быть больше 800x200 пикселей.''')
             return self.render_to_response(self.get_context_data(form=form))
 
         # Если изображение слишком широкое, ужимаем
-        if img.size[0] > MAX_WIDTH:
-            aspect = img.size[0] / MAX_WIDTH
-            new_height = int(round(img.size[1] / aspect))
-            # Вот с этим изображением мы и будем работать
-            img = img.resize((MAX_WIDTH, new_height), Image.ANTIALIAS)
+        if img.size[0] > MAX_WIDTH or img.size[1] > 1000:
+            form_errors = form._errors.setdefault('cover', ErrorList())
+            form_errors.append(
+            u'Размер изображения должен быть не больше 2500x1000 пикселей.')
 
-        temp_handle = StringIO()
-        img.save(temp_handle, 'jpeg', quality=100)
-        temp_handle.seek(0)
+            notify_error(self.request, message=u'''
+            Произошла ошибка при обновлении обложки профиля.
+            Размер изображения должен быть не больше 2500x1000 пикселей.''')
+            return self.render_to_response(self.get_context_data(form=form))
 
-        suf = SimpleUploadedFile('min.jpg',
-            temp_handle.read(), content_type='image/jpg')
-
-        self.object.min_avatar.save('min.jpg', suf, save=False)
         form.save()
 
         notify_success(

@@ -146,11 +146,9 @@ class ProfileAvatarEditForm(S3StorageFormMixin, forms.ModelForm):
 
 
 class ProfileCoverEditForm(S3StorageFormMixin, forms.ModelForm):
-    cover = forms.ImageField(label='Обложка')
-
     class Meta:
         model = Profile
-        fields = ['cover']
+        fields = ['cover_url', 'cover_text', 'cover']
 
 
 class ProfileResumeEditForm(forms.ModelForm):

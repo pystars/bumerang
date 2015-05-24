@@ -13,12 +13,40 @@
                 <h3 class="title">Редактирование обложки профиля</h3>
 
                 <fieldset>
+
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>{{ form.cover_url.label }}</span></span>
+                        <span class="f-input">
+                            {{ form.cover_url }}
+                        </span>
+                    </label>
+                    {% if form.cover_url.errors %}
+                        <div class="f-err"><span>{{ form.cover_url.errors }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>{{ form.cover_text.label }}</span></span>
+                        <span class="f-input">
+                            {{ form.cover_text }}
+                        </span>
+                    </label>
+                    {% if form.cover_text.errors %}
+                        <div class="f-err"><span>{{ form.cover_text.errors }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="b-form__field">
+                    <label>
+                        <span class="f-title"><span>{{ form.cover.label }}</span></span>
                         <span class="f-input">
                             {{ form.cover }}
                         </span>
-                        {% if form.cover.errors %}
-                            <div class="f-err" style="margin: 8px 0 0;"><span>{{ form.cover.errors }}</span></div>
-                        {% endif %}
+                    </label>
+                    {% if form.cover.errors %}
+                        <div class="f-err"><span>{{ form.cover.errors }}</span></div>
+                    {% endif %}
+                </div>
                     <div class="clear" style="height: 18px;"></div>
                 </fieldset>
 
