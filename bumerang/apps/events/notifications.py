@@ -2,11 +2,21 @@
 """
 remember, signals and receivers usually connected in bot of models.py
 """
+from __future__ import division
 from collections import defaultdict
+from cStringIO import StringIO
 
+from PIL import Image
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
+from bumerang.apps.events.signals import juror_added
 
 from bumerang.apps.utils.email import send_single_email
+from bumerang.apps.utils.functions import image_crop_rectangle_center
+
+
+Profile = get_user_model()
 
 
 def notify_admins_about_event_request(sender, **kwargs):
@@ -23,6 +33,7 @@ def notify_admins_about_event_request(sender, **kwargs):
         "events/emails/notify_managers_about_event_request.html", ctx,
         ctx['subject'], settings.EMAIL_NOREPLY_ADDR, to)
 
+
 def notify_event_owner_about_approve(sender, **kwargs):
     event = kwargs['event']
     ctx = {
@@ -33,6 +44,7 @@ def notify_event_owner_about_approve(sender, **kwargs):
     send_single_email("events/emails/notify_event_owner_about_approval.html",
                       ctx, ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
                       [event.owner.username])
+
 
 def notify_winners(sender, **kwargs):
     event = kwargs['event']
@@ -72,6 +84,7 @@ def notify_participant_about_review(sender, **kwargs):
                       ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
                       [participant.owner.username])
 
+
 def notify_event_owner_about_participant(sender, **kwargs):
     participant = kwargs['instance']
     if not participant.is_accepted:
@@ -84,6 +97,7 @@ def notify_event_owner_about_participant(sender, **kwargs):
             "events/emails/notify_event_owner_about_participant.html",
             ctx, ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
             [participant.event.owner.username])
+
 
 def notify_jurors_about_participant(sender, **kwargs):
     participant = kwargs['participant']
@@ -98,6 +112,49 @@ def notify_jurors_about_participant(sender, **kwargs):
         "events/emails/notify_jurors_about_participant.html", ctx,
         ctx['subject'], settings.EMAIL_NOREPLY_ADDR,
         participant.event.juror_set.values_list('email', flat=True))
+
+
+def relate_juror_and_profile(sender, **kwargs):
+    if kwargs['raw']:
+        return
+    instance = kwargs['instance']
+    try:
+        instance.user = Profile.objects.get(username=instance.email)
+        juror_added.send(None, juror=instance, created=False, password='')
+    except Profile.DoesNotExist:
+        title = u'{0} {1} {2}'.format(
+            instance.info_second_name,
+            instance.info_name,
+            instance.info_middle_name
+        )
+        profile = Profile(
+            username=instance.email,
+            title=title,
+            info_second_name=instance.info_second_name,
+            info_name=instance.info_name,
+            info_middle_name=instance.info_middle_name
+        )
+        password = Profile.objects.make_random_password()
+        profile.set_password(password)
+        profile.save()
+        instance.user_id = profile.id
+
+        instance.min_avatar.seek(0)
+        minified_image = Image.open(instance.min_avatar)
+        minified_image = image_crop_rectangle_center(minified_image)
+        minified_image.thumbnail((125, 125), Image.ANTIALIAS)
+        # reinitialize memory file
+        memory_file = StringIO()
+        minified_image.save(memory_file, 'jpeg')
+        memory_file.seek(0)
+
+        profile.min_avatar.save(
+            '{id}-min-avatar.jpg'.format(id=profile.id),
+            ContentFile(memory_file.read())
+        )
+        profile.save()
+        juror_added.send(None, juror=instance, created=True, password=password)
+
 
 def notify_juror_about_registration(sender, **kwargs):
     juror = kwargs['juror']

@@ -8,7 +8,6 @@ from cStringIO import StringIO
 from PIL import Image
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.files.base import ContentFile
 from django.db.utils import IntegrityError
 from django.db.models.aggregates import Avg
 from django.db.models.query_utils import Q
@@ -21,10 +20,8 @@ from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from django.views.generic import (
     View, CreateView, UpdateView, ListView, DetailView)
-from django.views.generic.edit import BaseUpdateView
 from django.contrib.auth import get_user_model
 
-from bumerang.apps.utils.functions import image_crop_rectangle_center
 from bumerang.apps.utils.views import (
     OwnerMixin, SortingMixin, GenericFormsetWithFKUpdateView)
 from bumerang.apps.accounts.views import notify_success, notify_error
@@ -38,8 +35,7 @@ from bumerang.apps.events.forms import (
     GeneralRuleForm, NewsPostForm, JurorForm, ParticipantVideoReviewForm,
     EventContactsUpdateForm, ParticipantForm, ParticipantVideoFormSet,
     SetWinnersForm, EventCreateForm)
-from signals import (
-    event_created, winners_public,  participant_reviewed, juror_added)
+from .signals import event_created, winners_public,  participant_reviewed
 
 
 Profile = get_user_model()
@@ -159,8 +155,6 @@ class EventCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.owner = self.request.user
-        if self.object.type == Event.FESTIVAL:
-            self.object.parent = None
         self.object.save()
         event_created.send(self, event=self.object)
         self.template_name = 'events/event_send_request_sended.html'
@@ -380,50 +374,11 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
+                if Juror.objects.filter(
+                        event=self.object, user__email=instance.email).exists():
+                    continue
                 instance.event = self.object
-                try:
-                    instance.user = Profile.objects.get(username=instance.email)
-                    try:
-                        instance.save()
-                    except IntegrityError:
-                        pass
-                    juror_added.send(
-                        self, juror=instance, created=False, password='')
-                except Profile.DoesNotExist:
-                    title = u'{0} {1} {2}'.format(
-                        instance.info_second_name,
-                        instance.info_name,
-                        instance.info_middle_name
-                    )
-                    profile = Profile(
-                        username=instance.email,
-                        title=title,
-                        info_second_name=instance.info_second_name,
-                        info_name=instance.info_name,
-                        info_middle_name=instance.info_middle_name
-                    )
-                    password = Profile.objects.make_random_password()
-                    profile.set_password(password)
-                    profile.save()
-                    instance.user_id = profile.id
-                    instance.save()
-
-                    instance.min_avatar.seek(0)
-                    minified_image = Image.open(instance.min_avatar)
-                    minified_image = image_crop_rectangle_center(minified_image)
-                    minified_image.thumbnail((125, 125), Image.ANTIALIAS)
-                    # reinitialize memory file
-                    memory_file = StringIO()
-                    minified_image.save(memory_file, 'jpeg')
-                    memory_file.seek(0)
-
-                    profile.min_avatar.save(
-                        '{id}-min-avatar.jpg'.format(id=profile.id),
-                        ContentFile(memory_file.read())
-                    )
-                    profile.save()
-                    juror_added.send(
-                        self, juror=instance, created=True, password=password)
+                instance.save()
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))
 

@@ -1,0 +1,50 @@
+{% extends 'admin/change_form.html' %}
+
+{% block after_related_objects %}
+{% if original.participant_set.exists %}
+<fieldset class="grp-module grp-tabular">
+    <h2 class="grp-collapse-handler">Список участников</h2>
+    <div class="grp-module grp-table">
+        <div class="grp-module grp-thead">
+          <div class="grp-tr">
+            <div class="grp-th">Заявка</div>
+            <div class="grp-th">Принята?</div>
+          </div>
+        </div>
+        <div class="grp-module grp-tbody has-original">
+        {% for participant in original.participant_set.all %}
+        <div class="grp-tr">
+            <div class="grp-td">
+                <a href="{{ participant.admin_url }}">{{ participant }}</a>
+            </div>
+            <div class="grp-td">
+                {% if participant.is_accepted %}да{% else %}нет{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</fieldset>
+  {% endif %}
+{% if original.participant_set.exists %}
+<fieldset class="grp-module grp-tabular">
+    <h2 class="grp-collapse-handler">Выбрать победителей</h2>
+    <div class="grp-module grp-table">
+        <div class="grp-module grp-thead">
+          <div class="grp-tr">
+            <div class="grp-th">Номинация</div>
+          </div>
+        </div>
+        <div class="grp-module grp-tbody has-original">
+        {% for nomination in original.nomination_set.all %}
+        <div class="grp-tr">
+            <div class="grp-td">
+                <a href="{{ nomination.admin_url }}">{{ nomination }}</a>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</fieldset>
+  {% endif %}
+{% endblock %}

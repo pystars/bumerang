@@ -3,26 +3,28 @@ import os
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.core.urlresolvers import reverse
+from django.db.models.signals import post_save, pre_save
 from django.utils.safestring import mark_safe
 from django.db.models.aggregates import Max
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from signals import (approve_event, winners_public, event_created,
+from .signals import (approve_event, winners_public, event_created,
     participant_reviewed, juror_added)
-from notifications import (notify_admins_about_event_request, notify_winners,
+from .notifications import (notify_admins_about_event_request, notify_winners,
     notify_event_owner_about_approve, notify_jurors_about_participant,
     notify_participant_about_review, notify_event_owner_about_participant,
-    notify_juror_about_registration)
-from bumerang.apps.utils.functions import get_path
-from bumerang.apps.utils.media_storage import media_storage
-from bumerang.apps.utils.models import TitleUnicode, FileModelMixin
-from bumerang.apps.video.models import Video
+    notify_juror_about_registration, relate_juror_and_profile)
+from ..utils.functions import get_path
+from ..utils.media_storage import media_storage
+from ..utils.models import TitleUnicode, FileModelMixin
+from ..video.models import Video
 
 
 nullable = dict(null=True, blank=True)
+
 
 def validate_score(value):
     if value < 1:
@@ -30,10 +32,18 @@ def validate_score(value):
     if value > 10:
         raise ValidationError(u'Оценка не может быть больше 10')
 
+
 def get_rules_path(instance, filename):
     ext = os.path.splitext(filename)[1]
     return u'event_rules/{0}правила_подачи_заявки_на_{1}{2}'.format(
         instance.pk, instance, ext)
+
+
+class AdminUrlMixin:
+
+    def admin_url(self):
+        return reverse("admin:{0}_{1}_change".format(
+            self._meta.app_label, self._meta.model_name), args=(self.pk,))
 
 
 class Event(FileModelMixin, models.Model):
@@ -45,7 +55,7 @@ class Event(FileModelMixin, models.Model):
     )
     parent = models.ForeignKey(
         'self', verbose_name=u'В рамках фестиваля', related_name='contest_set',
-        limit_choices_to={'type':FESTIVAL}, on_delete=models.SET_NULL,
+        limit_choices_to={'type': FESTIVAL}, on_delete=models.SET_NULL,
         **nullable)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='owned_events')
@@ -93,6 +103,11 @@ class Event(FileModelMixin, models.Model):
                 year_string += '&mdash;{0}'.format(self.end_date.year)
             title += ' {0}'.format(year_string)
         return mark_safe(title)
+
+    def save(self, *args, **kwargs):
+        if self.type == self.FESTIVAL:
+            self.parent = None
+        return super(Event, self).save(*args, **kwargs)
 
     def chain(self):
         return Event.objects.filter(
@@ -170,6 +185,10 @@ class Juror(FileModelMixin, models.Model):
         verbose_name_plural = u'Члены жюри'
         unique_together = (('event', 'user'),)
 
+    def __unicode__(self):
+        return u'{0} {1} {2}'.format(
+            self.info_second_name, self.info_name, self.info_middle_name)
+
 
 class GeneralRule(TitleUnicode, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Событие')
@@ -194,7 +213,7 @@ class NewsPost(TitleUnicode, models.Model):
         ordering = ('creation_date',)
 
 
-class Nomination(models.Model):
+class Nomination(AdminUrlMixin, models.Model):
     event = models.ForeignKey(Event, verbose_name=u'Фестиваль')
     title = models.CharField(u'Название номинации', max_length=255)
     description = models.CharField(u'Описание', max_length=255, blank=True)
@@ -222,10 +241,10 @@ class Nomination(models.Model):
         return self.title + age_postfix
 
 
-class Participant(models.Model):
+class Participant(AdminUrlMixin, models.Model):
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=u'Участник')
-    event = models.ForeignKey(Event, verbose_name=u'Событие')
+        settings.AUTH_USER_MODEL, verbose_name=u'Участник', editable=False)
+    event = models.ForeignKey(Event, verbose_name=u'Событие', editable=False)
     index_number = models.IntegerField(u'Номер заявки', editable=False)
     is_accepted = models.BooleanField(
         u'Заявка принята', default=False, db_index=True)
@@ -330,5 +349,7 @@ participant_reviewed.connect(notify_jurors_about_participant,
                              dispatch_uid='notify_jurors_about_participant')
 post_save.connect(notify_event_owner_about_participant, sender=Participant,
                   dispatch_uid='notify_event_owner_about_participant')
+pre_save.connect(relate_juror_and_profile, sender=Juror,
+                 dispatch_uid='relate_juror_and_profile')
 juror_added.connect(notify_juror_about_registration,
                     dispatch_uid='notify_juror_about_registration')
