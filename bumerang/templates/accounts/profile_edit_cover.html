@@ -42,6 +42,9 @@
                         <span class="f-input">
                             {{ form.cover }}
                         </span>
+                        <span class="f-input">
+                            {{ form.cover.help_text }}
+                        </span>
                     </label>
                     {% if form.cover.errors %}
                         <div class="f-err"><span>{{ form.cover.errors }}</span></div>
