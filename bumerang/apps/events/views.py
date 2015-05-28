@@ -378,6 +378,7 @@ class EventJurorsUpdateView(OwnerMixin, GenericFormsetWithFKUpdateView):
                         event=self.object, user__email=instance.email).exists():
                     continue
                 instance.event = self.object
+                # we have a signal which calls on pre_save for Juror in models
                 instance.save()
             return HttpResponseRedirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(formset=formset))

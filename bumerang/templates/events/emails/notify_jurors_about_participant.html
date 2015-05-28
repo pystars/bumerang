@@ -7,8 +7,8 @@
         <p style="margin: 4px 5px;">
             <b>Видео для выставления оценок:</b></p>
         <ul>
-            {% for video in videos %}
-                <li><a href="http://probumerang.tv{% url 'video-detail' video.video.pk %}?pv={{ video.pk }}">{{ video.video.title }}</a></li>
+            {% for participant_video in videos %}
+                <li><a href="http://probumerang.tv{% url 'video-detail' participant_video.video_id %}?pv={{ participant_video.pk }}">{{ participant_video.video.title }}</a></li>
             {% endfor %}
         </ul>
         <p style="margin: 4px 5px;">Для просмотра и выставления оценок видео перейдите по указанным

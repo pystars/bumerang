@@ -84,21 +84,23 @@ class VideoDetailView(VideoMixin, DetailView):
                     video_id=self.object.pk,
                     participant__event__end_date__gte=datetime.now()).get(
                     pk=int(self.request.GET['pv']))
-                current_score = ParticipantVideoScore.objects.get(
-                        owner=self.request.user,
-                        participant_video=ctx['participant_video']
-                    )
-                ctx['participant_video'].current_score = current_score
+                ctx['object'].avg_score = ParticipantVideoScore.objects.filter(
+                    participant_video=ctx['participant_video']).aggregate(
+                    Avg('score'))['score__avg']
+                ctx['participant_video'].current_score = \
+                    ParticipantVideoScore.objects.get(
+                    owner=self.request.user,
+                    participant_video=ctx['participant_video']
+                )
             except ParticipantVideoScore.DoesNotExist:
                 ctx['participant_video'].current_score = None
-            except ParticipantVideo.DoesNotExist, ValueError:
+            except (ParticipantVideo.DoesNotExist, ValueError):
                 pass
         return ctx
 
     def get_queryset(self):
         return super(VideoDetailView, self).get_queryset().filter(
-            status=self.model.READY).annotate(avg_score=Avg(
-            'participantvideo__participantvideoscore__score'))
+            status=self.model.READY)
 
     def get(self, request, **kwargs):
         response = super(VideoDetailView, self).get(request, **kwargs)

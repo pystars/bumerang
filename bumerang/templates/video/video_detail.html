@@ -51,24 +51,25 @@
                   </script>
             </div>
             <div class="b-movie__panel cleared">
-                <div class="b-vote">
-                    <div class="wrap">
-                        <ul class="star-rate">
-                            <li class="rating" title="Средняя оценка мэтров жюри">
-                                <i class="ico b-ico_star"><i></i></i>
-                                <span id="video-{{ object.id }}-score">
-                                    {{ object.avg_score|default_if_none:0|floatformat:'-1' }}</span>
-                            </li>
-                        </ul>
+                {% if participant_video %}
+                    <div class="b-vote">
+                        <div class="wrap">
+                            <ul class="star-rate">
+                                <li class="rating" title="Средняя оценка мэтров жюри">
+                                    <i class="ico b-ico_star"><i></i></i>
+                                    <span id="video-{{ participant_video.id }}-score">
+                                        {{ object.avg_score|default_if_none:0|floatformat:'-1' }}</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
                 <div class="viewed">
                     <i class="b-ico b-ico_eye2"><i></i></i>
                     {{ object.views_count }} {{ object.views_count|rupluralize:"просмотр,просмотра,просмотров" }}
                 </div>
             </div>
-
-            {% if request.user in participant_video.participant.event.jurors.all %}
+            {% if user in participant_video.participant.event.jurors.all %}
             <div>
                 <span class="dark-gray">Ваша оценка: </span>
                 <span class="dark-gray" id="your-{{ participant_video.id }}-score">{{ participant_video.current_score.score|default:'Не выставлена' }}</span>
