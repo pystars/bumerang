@@ -665,11 +665,6 @@ class ParticipantListView(SortingMixin, ListView):
 class ParticipantVideoRatingUpdate(UpdateView):
     model = ParticipantVideo
 
-    def get_queryset(self):
-        return super(ParticipantVideoRatingUpdate, self).get_queryset().filter(
-            participant__event__end_date__gte=datetime.now()
-        )
-
     def set_rating(self):
         kwargs = dict(owner=self.request.user, participant_video=self.object)
         if not ParticipantVideoScore.objects.filter(**kwargs).update(
