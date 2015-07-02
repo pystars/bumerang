@@ -230,6 +230,7 @@ def endpoint(request):
         file_uploaded.send(sender=None, message=message)
 
     elif data['TopicArn'].endswith('transcode_changing'):
+        print(message)
         transcode_onchange.send(sender=None, message=message)
 
     return HttpResponse('Done')
