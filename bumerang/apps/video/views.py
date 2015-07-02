@@ -210,7 +210,6 @@ def endpoint(request):
         data = json.loads(request.read())
     except ValueError:
         return HttpResponseBadRequest('Invalid JSON')
-    print(data)
     # handle SNS subscription
     if data['Type'] == 'SubscriptionConfirmation':
         subscribe_url = data['SubscribeURL']
@@ -230,7 +229,6 @@ def endpoint(request):
         file_uploaded.send(sender=None, message=message)
 
     elif data['TopicArn'].endswith('transcode_changing'):
-        print(message)
         transcode_onchange.send(sender=None, message=message)
 
     return HttpResponse('Done')
