@@ -210,7 +210,7 @@ def endpoint(request):
         data = json.loads(request.read())
     except ValueError:
         return HttpResponseBadRequest('Invalid JSON')
-
+    print(data)
     # handle SNS subscription
     if data['Type'] == 'SubscriptionConfirmation':
         subscribe_url = data['SubscribeURL']
