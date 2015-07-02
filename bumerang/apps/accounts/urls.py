@@ -78,9 +78,9 @@ urlpatterns = patterns('',
         login_required(ProfileAvatarEditView.as_view()),
         name='profile-edit-avatar'),
 
-    url(r'^edit-cover/$',
-        login_required(ProfileCoverEditView.as_view()),
-        name='profile-edit-cover'),
+    # url(r'^edit-cover/$',
+    #     login_required(ProfileCoverEditView.as_view()),
+    #     name='profile-edit-cover'),
 
     url(r'^edit-resume/$',
         login_required(ProfileUpdateView.as_view(
