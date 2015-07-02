@@ -869,7 +869,7 @@ body.bs .l-head__space .bs-wrapper {
     top: 100px;
     display: block;
     left: 20px;
-    right: 55%;
+    right: 70%;
     background: rgba(0,0,0,0.15);
     padding: 1em;
 }
@@ -877,7 +877,7 @@ body.bs .l-head__space .bs-wrapper {
 body.bs .l-head__space .bs-wrapper .bs-head {
     display: block;
     color: #fff;
-    font-size: 1.5em;
+    font-size: 1.25em;
 }
 
 body.bs .l-head__space .bs-wrapper .bs-link {
