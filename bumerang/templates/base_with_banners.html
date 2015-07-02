@@ -15,17 +15,12 @@
     {% endblock %}
     <header class="l-head">
         <div class="l-head__space">
-            <div class="bs-wrapper">
-                {% if profile.cover %}
-{#                    <span class="bs-head">{{ profile.title }}</span>#}
-{#                    {% if profile.cover_url %}<a href="{{ profile.cover_url }}" target="_blank" class="bs-link">#}
-{#                      {{ profile.cover_text }}#}
-{#                    </a>{% endif %}#}
-                {% elif header_banner %}
-                    <span class="bs-head">{{ header_banner.name }}</span>
-                    <a href="{{ header_banner.url }}" target="_blank" class="bs-link">
-                      {{ header_banner.text }}
-                    </a>
-                {% endif %}
-            </div>
+          {% if header_banner and not profile.cover %}
+              <div class="bs-wrapper">
+                <span class="bs-head">{{ header_banner.name }}</span>
+                <a href="{{ header_banner.url }}" target="_blank" class="bs-link">
+                  {{ header_banner.text }}
+                </a>
+              </div>
+          {% endif %}
 {% endblock %}
