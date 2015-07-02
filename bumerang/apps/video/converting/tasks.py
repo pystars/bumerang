@@ -68,7 +68,6 @@ class MakeScreenShots(Task):
             preview = Preview(owner=video)
             cmd = self.get_commandline(source_file.name, random.choice(
                 range(offset, offset+step)), size, result_file.name)
-            print(cmd)
             process = subprocess.call(cmd, shell=False)
             if process:
                 Video.objects.filter(pk=video_id).update(status=Video.ERROR)
