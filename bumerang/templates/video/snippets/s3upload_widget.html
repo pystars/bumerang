@@ -17,7 +17,7 @@ $(function() {
 $('#video-selector').on('change', function (evt/**Event*/) {
   // Retrieve file list
   var file = FileAPI.getFiles(evt)[0];
-  if (file.type.startsWith('video')) {
+  if (file.type.indexOf('video') == 0) {
     var el = evt.target;
     var url = $(this).attr('data-policy-url');
     var form = new FormData();
@@ -37,8 +37,8 @@ $('#video-selector').on('change', function (evt/**Event*/) {
             }
             finally {
               upload(file, data, el);
-              break;
             }
+            break;
         case 400:
           error(el, data);
         case 403:
