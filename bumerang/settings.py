@@ -40,7 +40,7 @@ class CommonSettings(Settings):
     MANAGERS = ADMINS
 
     SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
-    SESSION_SERIALIZER = 'apps.utils.serializers.SessionJSONSerializer'
+    SESSION_SERIALIZER = 'bumerang.apps.utils.serializers.SessionJSONSerializer'
 
     TIME_ZONE = 'Europe/Moscow'
     LANGUAGE_CODE = 'ru-RU'
