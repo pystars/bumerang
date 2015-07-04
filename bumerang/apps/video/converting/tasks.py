@@ -18,6 +18,12 @@ from .models import ConvertOptions
 class MakeScreenShots(Task):
     queue = 'celery'
 
+    def _error_handle(self, source_file, video):
+        from ..models import Video
+        video.status = Video.ERROR
+        video.save()
+        os.unlink(source_file.name)
+
     def run(self, video_id, **kwargs):
         """
         Converts the Video and creates the related files.
@@ -33,7 +39,6 @@ class MakeScreenShots(Task):
         logger.info("Starting screen shoots of video %s" % video.pk)
         for preview in video.preview_set.all():
             preview.delete()
-        options = ConvertOptions.objects.get(title='hq_file')
         source_file = NamedTemporaryFile(
             delete=False, suffix='.mp4', prefix='screen_shot_source')
         source_file.write(video.best_quality_file().read())
@@ -42,11 +47,12 @@ class MakeScreenShots(Task):
         try:
             file_params = media_info(source_file.name)
         except OSError:
-            self._error_handle(video)
+            self._error_handle(source_file, video)
             return "Stop screenshoot - bad source file"
         if not file_params.get('Video', None):
-            self._error_handle(video)
+            self._error_handle(source_file, video)
             return "Stop screenshoot - bad source file"
+        options = ConvertOptions.objects.get(title='hq_file')
         options.update(file_params)
         size = '{0}x{1}'.format(options.width, options.height)
         video.best_quality_file().open()

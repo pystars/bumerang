@@ -84,7 +84,8 @@ def _parse_inform_output(output, inform):
 def get_metadata(filename, **inform):
     inform = _prepare_inform(inform)
     cmd = ['mediainfo', '--Inform=file://%s' % STDIN_DEVICE, str(filename)]
-    proc = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False)
+    proc = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=False,
+                 close_fds=True)
     stdout, stderr = proc.communicate(input=_format_inform(inform))
     stdout, stderr = map(str.strip, [stdout, stderr])
 
