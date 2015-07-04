@@ -46,8 +46,9 @@ class MakeScreenShots(Task):
         source_file.close()
         try:
             file_params = media_info(source_file.name)
-        except OSError:
+        except OSError, e:
             self._error_handle(source_file, video)
+            print(e)
             return "Stop screenshoot - bad source file"
         if not file_params.get('Video', None):
             self._error_handle(source_file, video)
