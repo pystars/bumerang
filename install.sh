@@ -1,4 +1,6 @@
 #!/bin/bash -x
+/var/swap.1 swap swap defaults 0 0 # add swap to instance
+
 add-apt-repository -y ppa:stebbins/handbrake-snapshots
 echo """
 deb http://eu-west-1.ec2.archive.ubuntu.com/ubuntu/ precise multiverse

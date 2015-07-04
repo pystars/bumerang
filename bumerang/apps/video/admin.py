@@ -5,11 +5,19 @@ from django.contrib import admin
 
 from ..utils.admin import TitleSlugAdmin
 from .converting.mediainfo import video_duration
-from .models import Video, VideoCategory, VideoGenre
+from .models import Video, VideoCategory, VideoGenre, Preview
+from .forms import PreviewForm
 from .converting.tasks import MakeScreenShots
 
 
+class PreviewInline(admin.TabularInline):
+    model = Preview
+    extra = 1
+    form = PreviewForm
+
+
 class VideoAdmin(admin.ModelAdmin):
+    inlines = [PreviewInline]
     readonly_fields = ('created', 'duration', 'views_count', 'get_absolute_url',
                        'get_download_original_file', 'owner', 'owner_email')
     list_display = ('title', 'get_absolute_url', 'category', 'owner', 'status',

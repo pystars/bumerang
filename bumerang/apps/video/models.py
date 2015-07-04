@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from PIL import Image
 from django.conf import settings
 from django.db import models
 from django.core.urlresolvers import reverse
@@ -6,10 +7,10 @@ from django.db.models.deletion import ProtectedError
 from django.utils.timezone import now
 from djangoratings import RatingField
 
-from bumerang.apps.utils.functions import random_string
+from bumerang.apps.utils.functions import random_string, thumb_img
 from bumerang.apps.utils.models import TitleUnicode, nullable, FileModelMixin
 from bumerang.apps.utils.media_storage import media_storage
-from bumerang.apps.video.validators import is_video_file
+from bumerang.apps.video.validators import is_video_file, digital_name
 from utils import (original_upload_to, hq_upload_to, screenshot_upload_to,
                    thumbnail_upload_to, icon_upload_to)
 
@@ -201,7 +202,23 @@ class Video(models.Model, TitleUnicode):
 class Preview(FileModelMixin, models.Model):
     owner = models.ForeignKey(Video)
     image = models.ImageField(
-        upload_to=screenshot_upload_to, storage=media_storage)
+        upload_to=screenshot_upload_to, storage=media_storage,
+        help_text=u'Изображение оригинальных размеров',
+        validators=[digital_name]
+    )
     thumbnail = models.ImageField(
-        upload_to=thumbnail_upload_to, storage=media_storage)
-    icon = models.ImageField(upload_to=icon_upload_to, storage=media_storage)
+        upload_to=thumbnail_upload_to, storage=media_storage,
+        help_text=u'Изображение шириной 190 пикселей', blank=True
+    )
+    icon = models.ImageField(
+        upload_to=icon_upload_to, storage=media_storage,
+        help_text=u'Изображение шириной 60 пикселей', blank=True
+    )
+
+    def set_thumbnails(self, fp, screenshot_name=None):
+        img = Image.open(fp)
+        if screenshot_name is None:
+            screenshot_name = fp.name
+        self.image = thumb_img(img, name=screenshot_name)
+        self.thumbnail = thumb_img(img, 190, 123, name=screenshot_name)
+        self.icon = thumb_img(img, 60, name=screenshot_name)

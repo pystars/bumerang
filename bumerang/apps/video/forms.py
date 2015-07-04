@@ -62,3 +62,16 @@ class VideoUpdateAlbumForm(forms.Form):
 class GetS3UploadURLForm(forms.Form):
     content_type = forms.CharField()
     filename = forms.CharField()
+
+
+class PreviewForm(forms.ModelForm):
+    class Meta:
+        fields = ['image']
+
+    def save(self, commit=True):
+        instance = super(PreviewForm, self).save(commit=False)
+        if 'image' in self.changed_data:
+            instance.set_thumbnails(self.cleaned_data['image'])
+        if commit:
+            instance.save()
+        return instance
