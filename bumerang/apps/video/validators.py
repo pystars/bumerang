@@ -14,7 +14,7 @@ def is_video_file(field):
 
 def digital_name(value):
     try:
-        int(value.name.split('.')[0])
+        int(os.path.basename(unicode(value)).split('.')[0])
     except ValueError:
         raise ValidationError(u'Имя скриншота должно представлять собой '
                               u'секунду, на которой он сделан, например 6.jpg')
