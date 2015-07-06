@@ -87,16 +87,13 @@ class EventDetailView(DetailView):
     add_item_text = u"Добавить еще одну работу"
 
     def get_context_data(self, **kwargs):
-        context = super(EventDetailView, self).get_context_data(**kwargs)
+        kwargs['profile'] = self.object.owner
         if self.request.user.is_authenticated():
-            try:
-                context['participant'] = Participant.objects.filter(
-                    owner=self.request.user,
-                    event=context['object']
-                )[0]
-            except IndexError:
-                pass
-            context.update({
+            qs = Participant.objects.filter(
+                owner=self.request.user, event=self.object)
+            if qs.exists():
+                kwargs['participant'] = qs[0]
+            kwargs.update({
                 'participant_form': ParticipantForm(
                     prefix='accept', initial={'accepted': False}),
                 'formset': self.ModelFormSet(
@@ -104,7 +101,7 @@ class EventDetailView(DetailView):
                     queryset=ParticipantVideo.objects.none()),
                 'add_item_text': self.add_item_text,
             })
-        return context
+        return super(EventDetailView, self).get_context_data(**kwargs)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

@@ -66,10 +66,9 @@ class PhotoAlbumDetailView(DetailView):
     model = PhotoAlbum
 
     def get_context_data(self, **kwargs):
-        photos = self.object.photo_set.all()
-        ctx = super(PhotoAlbumDetailView, self).get_context_data(**kwargs)
-        ctx['photos'] = photos
-        return ctx
+        kwargs['photos'] = self.object.photo_set.all()
+        kwargs['profile'] = self.object.owner
+        return super(PhotoAlbumDetailView, self).get_context_data(**kwargs)
 
 
 class PhotoAlbumListView(PhotoMixin, ListView):
