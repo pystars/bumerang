@@ -45,8 +45,8 @@ class VideoAlbumCreateView(CreateView):
         return super(ModelFormMixin, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('album-video-add',
-            kwargs={'video_album_id': self.object.id})
+        return reverse(
+            'album-video-add', kwargs={'video_album_id': self.object.id})
 
 
 class VideoAlbumDetailView(DetailView):
@@ -58,4 +58,5 @@ class VideoAlbumDetailView(DetailView):
             videos = videos.filter(status=Video.READY)
         ctx = super(VideoAlbumDetailView, self).get_context_data(**kwargs)
         ctx['videos'] = videos
+        ctx['profile'] = self.object.owner
         return ctx
