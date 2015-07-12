@@ -246,8 +246,8 @@ class Nomination(AdminUrlMixin, models.Model):
 
 class Participant(AdminUrlMixin, models.Model):
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=u'Участник', editable=False)
-    event = models.ForeignKey(Event, verbose_name=u'Событие', editable=False)
+        settings.AUTH_USER_MODEL, verbose_name=u'Участник')
+    event = models.ForeignKey(Event, verbose_name=u'Событие')
     index_number = models.IntegerField(u'Номер заявки', editable=False)
     is_accepted = models.BooleanField(
         u'Заявка принята', default=False, db_index=True)
@@ -297,9 +297,6 @@ class ParticipantVideo(models.Model):
 
     def __unicode__(self):
         return u'{0}, {1} лет'.format(self.video, self.age)
-
-    def save(self, *args, **kwargs):
-        super(ParticipantVideo, self).save(*args, **kwargs)
 
     def clean_fields(self, exclude=None):
         super(ParticipantVideo, self).clean_fields(exclude)

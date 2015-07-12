@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import (
     Event, Juror, GeneralRule, NewsPost, Nomination, Participant,
     ParticipantVideo, VideoNomination)
-from .signals import approve_event, winners_public
+from .signals import approve_event, winners_public, participant_reviewed
 
 
 class JurorInlineAdmin(admin.StackedInline):
@@ -50,31 +50,37 @@ class EventAdmin(admin.ModelAdmin):
 
 class ParticipantVideoAdminInline(admin.TabularInline):
     model = ParticipantVideo
-    extra = 0
-    readonly_fields = ['video']
+    extra = 1
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        formfield = super(
+        if getattr(request, '_obj', None):
+            if db_field.name == 'video':
+                kwargs['queryset'] = request._obj.owner.video_set
+            elif db_field.name == 'nomination':
+                kwargs['queryset'] = request._obj.event.nomination_set
+        return super(
             ParticipantVideoAdminInline, self).formfield_for_foreignkey(
-            db_field, request=None, **kwargs)
-        if db_field.name == 'nomination':
-            formfield.queryset = request._obj.event.nomination_set
-        return formfield
-
-    def has_add_permission(self, request):
-        return False
+            db_field, request=request, **kwargs)
 
 
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = []
-    readonly_fields = ['owner', 'event', 'index_number']
+    list_display = ['__unicode__']
+    readonly_fields = ['index_number']
     inlines = [ParticipantVideoAdminInline]
 
     def get_object(self, request, object_id):
         # we save participant to request for providing it in inlines
         obj = super(ParticipantAdmin, self).get_object(request, object_id)
-        request._obj = obj
+        if obj is not None:
+            request._obj = obj
         return obj
+
+    def response_change(self, request, new_object):
+        response = super(
+            ParticipantAdmin, self).response_change(request, new_object)
+        if new_object.is_accepted and new_object.participantvideo_set.exists():
+            participant_reviewed.send(self.__class__, participant=new_object)
+        return response
 
 
 class VideoNominationInline(admin.TabularInline):
@@ -82,11 +88,11 @@ class VideoNominationInline(admin.TabularInline):
     extra = 0
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        formfield = super(VideoNominationInline, self).formfield_for_foreignkey(
-            db_field, request=None, **kwargs)
-        if db_field.name == 'participant_video':
-            formfield.queryset = request._obj.user_selected_participantvideo_set
-        return formfield
+        if db_field.name == 'participant_video' and getattr(
+                request, '_obj', None):
+            kwargs['queryset'] = request._obj.user_selected_participantvideo_set
+        return super(VideoNominationInline, self).formfield_for_foreignkey(
+            db_field, request=request, **kwargs)
 
 
 class NominationAdmin(admin.ModelAdmin):

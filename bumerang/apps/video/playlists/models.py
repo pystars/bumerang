@@ -10,7 +10,8 @@ from bumerang.apps.video.models import Video
 
 
 class Channel(models.Model, TitleUnicode):
-    title = models.CharField(u'Канал вещания', max_length=255,
+    title = models.CharField(
+        u'Канал вещания', max_length=255,
         help_text=u'Например "главная страница"')
     slug = models.SlugField(max_length=255)
 
@@ -20,12 +21,12 @@ class Channel(models.Model, TitleUnicode):
 
 
 class PlayListItem(models.Model, TitleUnicode):
-    video = models.ForeignKey(Video,
-        limit_choices_to={'is_in_broadcast_lists': True},
+    video = models.ForeignKey(
+        Video, limit_choices_to={'is_in_broadcast_lists': True},
         on_delete=models.PROTECT)
     playlist = models.ForeignKey('PlayList')
-    offset = models.IntegerField(u'Отсрочка воспроизведения', null=True,
-        help_text=u'в миллисекундах')
+    offset = models.IntegerField(
+        u'Отсрочка воспроизведения', null=True, help_text=u'в миллисекундах')
     sort_order = models.IntegerField(u'порядок сортировки', **nullable)
 
     class Meta:

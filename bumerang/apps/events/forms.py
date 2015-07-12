@@ -7,6 +7,7 @@ from django.forms.models import ModelForm, BaseModelFormSet
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.forms.widgets import (Textarea, TextInput, Select, Widget,
     SelectMultiple)
+from django.utils.translation import ungettext
 
 from bumerang.apps.events.models import (Event, Nomination, ParticipantVideo,
     GeneralRule, NewsPost, Juror, Participant, VideoNomination)

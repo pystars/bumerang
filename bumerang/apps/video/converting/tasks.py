@@ -83,11 +83,6 @@ class MakeScreenShots(Task):
             try:
                 preview_name = '{0}.jpg'.format(offset)
                 preview.set_thumbnails(result_file.name, preview_name)
-                # orig = Image.open(result_file.name)
-                # img = orig.copy()
-                # preview.image = thumb_img(img, name=preview_name)
-                # preview.thumbnail = thumb_img(img, 190, name=preview_name)
-                # preview.icon = thumb_img(img, 60, name=preview_name)
                 result_file.close()
                 preview.save()
             except IOError:
