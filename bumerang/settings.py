@@ -337,3 +337,56 @@ class BumerSettings(LocalSettingsMixin, S3StaticMixin, CommonSettings):
 
 class AdminSettings(LocalSettingsMixin, CommonSettings):
     pass
+
+
+class BumTVSettings(BumerSettings):
+    SITE_ID = 2
+    TEMPLATE_DIRS = [
+        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv'),
+    ]
+    ALLOWED_HOSTS = ['bumtv.ru']
+    INSTALLED_APPS = [
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.sites',
+        'sitetree',
+        'django.contrib.flatpages',
+        'django.contrib.staticfiles',
+        'grappelli',
+        'filebrowser',
+        'django.contrib.admin',
+        'django.contrib.admindocs',
+        # external
+        'tinymce',
+        'south',
+        'mptt',
+        # 'djcelery',
+        'storages',
+        # 'djkombu',
+        # 'kombu.transport.django',
+        'django_ses',
+        # 'feincms',
+        #'django_wysiwyg',
+        'django_extensions',
+        'django_coverage',
+        # 'debug_toolbar',
+        # we have two messages in project, so they must be in this order
+        # 'bumerang.apps.messages',
+        'django.contrib.messages',
+
+        # internal
+        'bumerang.apps.accounts',
+        # 'bumerang.apps.news',
+        # 'bumerang.apps.advices',
+        # 'bumerang.apps.bumerang_site',
+        'bumerang.apps.video',
+        # 'bumerang.apps.photo',
+        'bumerang.apps.video.albums',
+        'bumerang.apps.video.playlists',
+        # 'bumerang.apps.video.converting',
+        # 'bumerang.apps.photo.albums',
+        # 'bumerang.apps.utils',
+        # 'bumerang.apps.events',
+        # 'bumerang.apps.banners'
+    ]
