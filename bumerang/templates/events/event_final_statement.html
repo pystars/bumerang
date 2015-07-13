@@ -14,7 +14,7 @@
     <h2 align="center">{{ event.get_type_display }} {{ event }}</h2>
     {% for nomination in object.nomination_set.all %}
       <h3 align="right">Номинация: {{ nomination }}</h3>
-    <table cellpadding="2" cellspacing="0">
+    <table cellpadding="2" cellspacing="0" border="1">
         <thead>
             <tr>
                 <th>№</th>
