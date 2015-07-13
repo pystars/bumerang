@@ -13,7 +13,7 @@ from bumerang.apps.events.views import (
     ParticipantVideoRatingUpdate, EventNewsPostUpdateView,
     EventConditionsDetailView, SetWinnersView, EventWinnersListView,
     EventPublishWinners, ParticipantListCSVView, ParticipantConfirmView,
-    ParticipantPrintView)
+    ParticipantPrintView, EventFinalStatement)
 
 
 urlpatterns = patterns('',
@@ -47,6 +47,11 @@ urlpatterns = patterns('',
     url(r'^event(?P<pk>[\d]+)/scorecard\.xls$',
         login_required(EventScoreCardView.as_view()),
         name='event-scorecard'
+    ),
+
+    url(r'^event(?P<pk>[\d]+)/final-statement\.xls$',
+        login_required(EventFinalStatement.as_view()),
+        name='event-final-statement'
     ),
 
     url(r'^event(?P<event_pk>[\d]+)/press/$',

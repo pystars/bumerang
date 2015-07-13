@@ -768,3 +768,7 @@ class EventScoreCardView(DetailView):
     def render_to_response(self, context, **response_kwargs):
         return super(EventScoreCardView, self).render_to_response(
             context, mimetype="application/vnd.ms-excel")
+
+
+class EventFinalStatement(EventScoreCardView):
+    template_name_suffix = '_final_statement'

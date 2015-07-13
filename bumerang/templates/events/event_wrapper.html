@@ -54,7 +54,7 @@
                         <nav class="b-side-nav d-indent">
                             <ul>
                                 <h4>Список участников</h4>
-                                <li><a href="{% url 'participant-video-list-csv' event.id %}">Скачать</a></li>
+                                <li><a target="_blank" href="{% url 'participant-video-list-csv' event.id %}">Скачать</a></li>
                             </ul>
                             {% include 'snippets/round_frame.html' %}
                         </nav>

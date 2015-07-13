@@ -40,7 +40,7 @@
                 <td>{{ video.city }}</td>
                 <td>{{ video.manager|default_if_none:"не указан" }}<br/>{{ user.info_phone }}</td>
                 <td>{{ video.duration|default_if_none:0|to_hms }}</td>
-                <td></td>
+                <td>{{ participant_video.score|default_if_none:"нет оценок" }}</td>
             </tr>
             {% endwith %}
         {% endfor %}

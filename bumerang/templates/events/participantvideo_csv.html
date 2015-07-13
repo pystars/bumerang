@@ -10,30 +10,31 @@
         <thead>
             <tr>
                 <th>Номер заявки</th>
-                <th>Тип участника</th>
+{#                <th>Тип участника</th>#}
                 <th>Название студии/ФИО участника</th>
                 <th>Название фильма</th>
-                <th>Оценка метра</th>
+{#                <th>Оценка метра</th>#}
                 <th>Номинация</th>
                 <th>Хронометраж</th>
                 <th>Возраст</th>
-                <th>Категория видео</th>
-                <th>Жанр видео</th>
+{#                <th>Категория видео</th>#}
+{#                <th>Жанр видео</th>#}
                 <th>Авторы</th>
-                <th>Педагоги</th>
+{#                <th>Педагоги</th>#}
                 <th>Руководитель</th>
-                <th>Страна</th>
+{#                <th>Страна</th>#}
                 <th>Город</th>
                 <th>Год</th>
                 <th>Контактный телефон</th>
-                <th>Моб. тел</th>
+{#                <th>Моб. тел</th>#}
                 <th>E-mail</th>
-                <th>Фактический адрес</th>
+{#                <th>Фактический адрес</th>#}
                 <th>Почтовый адрес</th>
                 <th>Название организации</th>
-                <th>Правовая форма орг</th>
+{#                <th>Правовая форма орг</th>#}
                 <th>Описание фильма</th>
-                <th>Ссылка на видео</th>
+{#                <th>Оценка</th>#}
+{#                <th>Ссылка на видео</th>#}
             </tr>
         </thead>
         <tbody>
@@ -41,32 +42,33 @@
             {% with video=object.video user=object.user %}
             <tr>
                 <td>{{ object.participant.index_number }}</td>
-                <td>{{ object.video.owner.profile.get_type_display }}</td>
+{#                <td>{{ object.video.owner.profile.get_type_display }}</td>#}
                 <td>{{ object.video.owner.profile.title|default_if_none:"" }}</td>
                 <td>{{ object.video.title|default_if_none:"" }}</td>
-                <td>{{ object.average_score }}</td>
+{#                <td>{{ object.average_score }}</td>#}
                 <td>{{ object.nomination }}</td>
                 <td>{{ object.video.duration|default_if_none:0|to_hms }}</td>
                 <td>{{ object.participant.age }}</td>
-                <td>{{ object.video.category|default_if_none:"" }}</td>
-                <td>{{ object.video.genre|default_if_none:"" }}</td>
+{#                <td>{{ object.video.category|default_if_none:"" }}</td>#}
+{#                <td>{{ object.video.genre|default_if_none:"" }}</td>#}
                 <td>{{ object.video.authors|default_if_none:"" }}</td>
-                <td>{{ object.video.teachers|default_if_none:"" }}</td>
+{#                <td>{{ object.video.teachers|default_if_none:"" }}</td>#}
                 <td>{{ object.video.owner.info_second_name|default_if_none:"" }}
                     {{ object.video.owner.info_name|default_if_none:"" }}
                     {{ object.video.owner.info_middle_name|default_if_none:"" }}</td>
-                <td>{{ object.video.owner.country|default_if_none:"" }}</td>
+{#                <td>{{ object.video.owner.country|default_if_none:"" }}</td>#}
                 <td>{{ object.video.owner.city|default_if_none:"" }}</td>
                 <td>{{ object.video.year|default_if_none:"" }}</td>
                 <td>{{ object.video.owner.info_phone|default_if_none:"" }}</td>
-                <td>{{ object.video.owner.info_mobile_phone|default_if_none:"" }}</td>
+{#                <td>{{ object.video.owner.info_mobile_phone|default_if_none:"" }}</td>#}
                 <td>{{ object.video.owner.info_email|default_if_none:"" }}</td>
-                <td>{{ object.video.owner.info_address|default_if_none:"" }}</td>
+{#                <td>{{ object.video.owner.info_address|default_if_none:"" }}</td>#}
                 <td>{{ object.video.owner.info_postal_address|default_if_none:"" }}</td>
                 <td>{{ object.video.owner.info_organization|default_if_none:"" }}</td>
-                <td>{{ object.video.owner.info_organization_form|default_if_none:"" }}</td>
+{#                <td>{{ object.video.owner.info_organization_form|default_if_none:"" }}</td>#}
                 <td>{{ object.video.description }}</td>
-                <td>{{ request.HTTP_HOST }}{{ object.video.get_absolute_url }}</td>
+{#                <td></td>#}
+{#                <td>{{ request.HTTP_HOST }}{{ object.video.get_absolute_url }}</td>#}
             </tr>
             {% endwith %}
         {% endfor %}
