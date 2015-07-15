@@ -271,6 +271,10 @@ class ParticipantVideoReviewForm(ModelForm):
         super(ParticipantVideoReviewForm, self).__init__(*args, **kwargs)
         self.fields['nominations'].queryset = self.event.nomination_set.all()
 
+    def clean(self):
+        print(self.cleaned_data)
+        return self.cleaned_data
+
     def clean_nominations(self):
         print(self.cleaned_data)
         data = self.cleaned_data['nominations']
