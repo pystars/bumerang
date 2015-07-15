@@ -628,7 +628,8 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
             participant_reviewed.send(self, participant=self.object)
             return HttpResponseRedirect(self.get_success_url())
         notify_error(request, u'При сохранении произошла ошибка')
-        return self.render_to_response(self.get_context_data(formset=formset))
+        return self.render_to_response(self.get_context_data(
+            form=self.get_form(self.get_form_class()), formset=formset))
 
     def get_model_formset(self):
         return modelformset_factory(self.formset_model,
