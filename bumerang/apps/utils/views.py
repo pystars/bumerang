@@ -116,7 +116,7 @@ class GenericFormsetWithFKUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         object = self.get_object()
-        self.qs = self.formset_model.objects.filter(**{self.model_name:object})
+        self.qs = self.formset_model.objects.filter(**{self.model_name: object})
         ctx = {
             self.model_name: object,
             'formset': self.ModelFormSet(queryset=self.qs,

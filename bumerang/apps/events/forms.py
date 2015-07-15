@@ -264,12 +264,17 @@ class ParticipantVideoReviewForm(ModelForm):
         )
         widgets = {
             'nominations': SelectMultiple(
-                attrs={'class': 'medium-select', 'required': 'required'})
+                attrs={'class': 'medium-select'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(ParticipantVideoReviewForm, self).__init__(*args, **kwargs)
         self.fields['nominations'].queryset = self.event.nomination_set.all()
+
+    def clean_nominations(self):
+        data = self.cleaned_data['recipients']
+        print(data)
+        return data
 
 
 class ParticipantVideoFormSet(BaseModelFormSet):
