@@ -272,7 +272,7 @@ class ParticipantVideoReviewForm(ModelForm):
         self.fields['nominations'].queryset = self.event.nomination_set.all()
 
     def clean_nominations(self):
-        data = self.cleaned_data['recipients']
+        data = self.cleaned_data['nominations']
         print(data)
         return data
 
