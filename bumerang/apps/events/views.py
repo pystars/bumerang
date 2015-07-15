@@ -195,7 +195,7 @@ class EventFilmsListView(ListView):
         qs = ParticipantVideo.objects.filter(
             is_accepted=True, participant__in=self.event.participant_set.all())
         if self.nomination:
-            qs = qs.filter(nomination=self.nomination.pk)
+            qs = qs.filter(nominations=self.nomination.pk)
         qs = qs.annotate(average_score=Avg('participantvideoscore__score'))
         return qs
 

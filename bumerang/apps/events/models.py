@@ -298,6 +298,12 @@ class ParticipantVideo(models.Model):
     def __unicode__(self):
         return u'{0}, {1} лет'.format(self.video, self.age)
 
+    def save(self, *args, **kwargs):
+        super(ParticipantVideo, self).save(*args, **kwargs)
+        if not self.nominations.exists():
+            VideoNomination.objects.create(participant_video=self,
+                                           nomination=self.nomination)
+
     def clean_fields(self, exclude=None):
         super(ParticipantVideo, self).clean_fields(exclude)
         age_from = self.nomination.age_from or 0

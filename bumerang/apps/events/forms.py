@@ -264,7 +264,7 @@ class ParticipantVideoReviewForm(ModelForm):
         )
         widgets = {
             'nominations': SelectMultiple(
-                attrs={'class': 'medium-select'}),
+                attrs={'class': 'medium-select', 'required': 'required'})
         }
 
     def __init__(self, *args, **kwargs):
