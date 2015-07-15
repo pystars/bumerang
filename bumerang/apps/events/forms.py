@@ -274,7 +274,7 @@ class ParticipantVideoReviewForm(ModelForm):
     def clean(self):
         if self.cleaned_data.get('nominations', None) is None:
             raise forms.ValidationError(
-                {'nominations': "Обязательно укажите номинации"})
+                {'nominations': u"Обязательно укажите номинации"})
         return self.cleaned_data
 
 
