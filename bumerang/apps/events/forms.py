@@ -273,7 +273,7 @@ class ParticipantVideoReviewForm(ModelForm):
 
     def clean_nominations(self):
         data = self.cleaned_data['nominations']
-        print(data)
+        print('wtf:', data)
         return data
 
 
