@@ -272,11 +272,11 @@ class ParticipantVideoReviewForm(ModelForm):
         self.fields['nominations'].queryset = self.event.nomination_set.all()
 
     def clean(self):
-        print(self.cleaned_data)
+        print('1:', self.cleaned_data)
         return self.cleaned_data
 
     def clean_nominations(self):
-        print(self.cleaned_data)
+        print('2:', self.cleaned_data)
         data = self.cleaned_data['nominations']
         if not data:
             raise forms.ValidationError("Обязательно укажите номинации")
