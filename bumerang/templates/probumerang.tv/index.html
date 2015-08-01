@@ -1,0 +1,114 @@
+{% extends "base_with_banners.html" %}
+{% load sitetags %}
+
+{% block title %}Бумеранг PRO{% endblock %}
+{% block head_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/swfobject.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}uppod/uppod_api.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="b-main-box d-rounded d-rounded_r10 d-sh">
+        <section class="b-tv js-toggle2-container js-toggle2-container_tv">
+            <header class="b-tv__head">
+                <div class="b-now">
+                    <div class="b-plenka">
+                        <h2 class="b-plenka__i">
+                            <span class="b-plenka__title">Сейчас в эфире:</span>
+                            <a href="#">
+                                {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
+                            </a>
+                        </h2>
+                    </div>
+                    <p class="now-brief" id="now-brief">
+                        {{ current_item.video.description|truncatewords:18 }}
+                    </p>
+                </div>
+                <div class="b-close-lnk">
+                    <i class="b-ico b-ico_text js-toggle2-ico"><i></i></i>
+                    <span class="b-pseudolink js-toggle2-lnk"><span class="js-toggle2-text">Программа передач</span></span>
+                </div>
+            </header><!--b-tv__head-->
+            <div class="b-tv__body js-toggle2-block" style="display: none;"><div class="b-tv__body__i">
+                <div class="l-cols l-cols_tv"><div class="l-cols__i cleared">
+                    <section class="l-cols__section"><div class="l-cols__section__i">
+                        <article class="b-tv-programs">
+                            <header class="tp-head">
+                                <nav class="b-calend">
+                                    <h2 class="cal-head">
+                                        <span class="ch-day">{% now "d" %}</span>
+                                        <span class="ch-month">{% now "E" %}</span>
+                                    </h2>
+                                    {% if playlist %}
+                                    {% for year, month, day in next_days %}
+                                        <a href="{% url 'playlist-detail' playlist.channel.slug year month day %}"
+                                           class="cal-day{% if forloop.counter <= 3 %} cal-day{{ forloop.counter }}{% endif %}">
+                                            {{ day }}</a>
+                                    {% endfor %}
+                                    {% endif %}
+                                </nav>
+                                <h3 class="tp-day">{% now "l" %}</h3>
+                                <ul class="tp-ctrls">
+                                    <li class="tp-ctrl">
+                                        <span class="b-pseudolink"><span>Сейчас</span></span>
+                                        <time>{% now "G:i" %}</time>
+                                    </li>
+                                    <li class="tp-ctrl selected"><span class="selected">Весь день</span></li>
+                                </ul>
+                            </header>
+                            {% include 'snippets/playlist_items.html' %}
+                        </article>
+                    </div></section>
+                </div></div><!--l-cols-->
+            </div></div><!--b-tv__body-->
+        </section><!--b-tv-->
+        <div class="l-cols l-cols_movie"><div class="l-cols__i cleared">
+            <section class="l-cols__section"><div class="l-cols__section__i">
+                <section class="b-movie js-toggle2-container js-toggle2-container_movie">
+                  {% include 'snippets/stream.html' %}
+{#                        {% endwith %}#}
+{#                    {% else %}#}
+{#                        <video id="movie" width="700" height="380" preload controls style="background:url({{ STATIC_URL }}i/player.png); margin: 0 auto;">#}
+{#                            <img src="{{ STATIC_URL }}i/fake/video.jpg" width="700" height="380" />#}
+{#                        </video>#}
+{#                    {% endif %}#}
+                </section><!--b-movie-->
+            </div></section>
+            <aside class="l-cols__side"><div class="l-cols__side__i">
+                <section class="b-adv">
+                    <header>
+                        <div class="b-adv__close" title="Закрыть"><i class="b-ico b-ico_x"><i></i></i></div>
+                    </header>
+                    {% main_page_banner %}
+                </section>
+            </div></aside>
+        </div></div><!--l-cols-->
+    </div><!--b-main-box-->
+    <div class="l-cols l-cols_movies"><div class="l-cols__i cleared">
+        <section class="l-cols__col1"><div class="l-cols__col1__i">
+            <section class="b-announs b-announs_movie b-announs_movie_smaller js-toggle2-container">
+                <header class="announs-head">
+                    <h2>Новые работы участников</h2>
+                </header>
+                <div class="announs-items">
+                    {% for video in new_movies %}
+                        {% include 'video/snippets/video_widget.html' %}
+                    {% endfor %}
+                </div>
+            </section>
+        </div></section>
+        <section class="l-cols__col2"><div class="l-cols__col2__i">
+            <section class="b-announs b-announs_movie b-announs_movie_smaller">
+                <header class="announs-head">
+                    <h2>Популярное видео</h2>
+                </header>
+                <div class="announs-items">
+                    {% for video in top_viewed %}
+                        {% include 'video/snippets/video_widget.html' %}
+                    {% endfor %}
+                </div>
+            </section>
+        </div></section>
+    </div></div><!--l-cols-->
+{% endblock %}

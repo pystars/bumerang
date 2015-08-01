@@ -1,0 +1,255 @@
+{% extends "events/tabs_wrapper.html" %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block head_js %}
+    <script src="{{ STATIC_URL }}j/festivals.js" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+{% endblock %}
+
+{% block page_title %}
+    <h1>{{ object }}</h1>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/tabs_menu.html' with selected='event' %}
+
+    <dd class="selected hdr-festival-detail"><div class="b-tabs__tab-content">
+        <section class="b-profile">
+            <header class="b-profile__head cleared">
+                <div class="b-profile__pic">
+                    <div class="b-ava b-ava_big">
+                        {% if object.min_logo %}
+                            <img src="{{ object.min_logo.url }}" width="60" height="60" alt="Логотип" />
+                        {% else %}
+                            <img src="{{ STATIC_URL }}i/noava-studio-b.png" width="60" height="60" alt="Логотип" />
+                        {% endif %}
+
+                        <i class="b-ava__sh"></i>
+                    </div>
+
+                </div>
+                <div class="b-profile__txt">
+                    {% include "events/snippets/service_buttons.html" %}
+
+                    <ul class="b-opts">
+                        <li>
+                            <strong>
+                                Даты проведения
+                            </strong>
+                            <span>
+                                с {{ object.start_date }} по {{ object.end_date }}
+                            </span>
+                        </li>
+
+                        {% if object.is_accepting_requests %}
+                        <li>
+                            <strong>
+                                Прием заявок
+                            </strong>
+                            <span>
+                                до {{ object.requesting_till }}
+                            </span>
+                        </li>
+                        {% else %}
+                        <li>
+                            <strong>Прием заявок окончен</strong>
+                        </li>
+                        {% endif %}
+
+                        <li>
+                            <strong>
+                                Место проведения
+                            </strong>
+                            <span>
+                                {{ object.hold_place }}
+                            </span>
+                        </li>
+
+                        <li>
+                            <strong>
+                                Организатор
+                            </strong>
+                            <span>
+                                {% spaceless %}
+                                {% with owner=object.owner %}
+                                    <a href="{% url 'profile-detail' owner.id %}">{{ owner.title }}</a>
+                                    ( {{ owner.get_type_display|lower }} )
+                                {% endwith %}
+                                {% endspaceless %}
+                            </span>
+                        </li>
+                    </ul>
+
+                    {% if object.description %}
+                        <p class="smaller">
+                            {{ object.description|linebreaks }}
+                        </p>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="tab-button tabs">
+                <a href="#rules" class="b-button b-button_grey current">Общие положения</a>
+                {% if object.is_accepting_requests %}
+                    <a href="#request" class="b-button b-button_grey">Заявка</a>
+                {% endif %}
+                <a href="#juror" class="b-button b-button_grey">Жюри</a>
+                <a href="#contacts" class="b-button b-button_grey">Контакты</a>
+            </div>
+
+        </section>
+
+        <div class="tab-container">
+            <div class="b-hr"><hr /></div>
+
+            <div class="tab-block">
+                <section id="rules" class="current">
+                    {% if object.generalrule_set.exists %}
+                        {% for item in object.generalrule_set.all %}
+                            <h3 class="title{% if forloop.first %} first{% endif %}">{{ item.title }}</h3>
+                            <span>{{ item.description|linebreaksbr }}</span>
+                            {% if not forloop.last %}
+                                <div class="b-hr"><hr /></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h3 class="title">Раздел не заполнен</h3>
+
+                        {% if request.user == object.owner %}
+                            <div class="cleared">
+                                <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                <a class="form-event-service" href="{% url 'event-edit-rules' event.id %}">Заполнить раздел</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if object.rules_document %}
+                        <div class="b-hr"><hr /></div>
+                        <p>
+                            <a href="{{ MEDIA_URL }}{{ object.rules_document.name|urlencode }}" title="Общие положения - {{ object.get_rules_name }}">
+                                Скачать общие положения в виде документа</a>
+                        </p>
+                    {% endif %}
+                </section>
+
+                {% if object.is_accepting_requests %}
+                    <section id="request" class="hidden">
+                        {% with event=object %}
+                            {% if request.user.is_authenticated %}
+                                {% if object.nomination_set.exists %}
+                                    {% if not participant %}
+                                        <h3 class="title">
+                                            Подача заявки на {{ event.get_type_display|lower }} &laquo;{{ object }}&raquo;
+                                        </h3>
+                                        {% include "events/snippets/participant_form_snippet.html" %}
+                                    {% else %}
+                                        <h3 class="title">
+                                            Вы уже подавали заявку
+                                        </h3>
+                                        Вы можете
+                                        <a href="{% url 'participant-edit' participant.id %}">просмотреть или изменить</a>
+                                        поданную ранее заявку
+                                    {% endif %}
+                                {% else %}
+                                    <h3 class="title">Организатор события еще не создал ни одной номинации</h3>
+                                    {% if request.user == object.owner %}
+                                        <div class="cleared">
+                                        <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                        <a class="form-event-service" href="{% url 'event-edit-nominations' event.id %}">
+                                            Добавить номинации
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <h3 class="title">Вы не авторизованы</h3>
+                                <a href="{% url 'login' %}">Войдите</a>
+                                или
+                                <a href="{% url 'registration' %}">зарегистрируйтесь</a>
+                                чтобы отправить заявку
+                            {% endif %}
+                        {% endwith %}
+                    </section>
+                {% endif %}
+
+                <section id="juror" class="hidden">
+                    {% if object.juror_set.exists %}
+                        <h3 class="title">
+                            Члены жюри
+                        </h3>
+                        {% for item in object.juror_set.all %}
+                            <div class="b-resume__person cleared">
+                                <div class="rp__pic">
+                                    <div class="b-ava">
+                                        {% if item.min_avatar %}
+                                            <img src="{{ item.min_avatar.url }}" width="125" height="125" alt="" />
+                                        {% else %}
+                                            <img src="{{ STATIC_URL }}i/noava-b.jpg" width="125" height="125" alt="" />
+                                        {% endif %}
+                                        <i class="b-ava__sh"></i>
+                                    </div>
+                                </div>
+                                <div class="rp__txt">
+                                    <h4>{{ item.info_name }} {{ item.info_middle_name }} {{ item.info_second_name }}</h4>
+                                    <p>{{ item.description|linebreaksbr }}</p>
+                                </div>
+                            </div>
+                            {% if not forloop.last %}
+                            <div class="b-hr"><hr /></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <h3 class="title">Жюри еще не назначено</h3>
+                        {% if request.user == object.owner %}
+                            <div class="cleared">
+                                <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                <a class="form-event-service" href="{% url 'event-edit-jurors' event.id %}">
+                                    Назначить жюри
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </section>
+
+                <section id="contacts" class="hidden">
+
+                    {% if object.contacts_raw_text %}
+                        <h3 class="title">Контакты</h3>
+                        <p>
+                            {{ object.contacts_raw_text|striptags|linebreaks }}
+                        </p>
+                    {% else %}
+                        <h3 class="title">Контакты еще не заполнены</h3>
+
+                        {% if request.user == object.owner %}
+                            <div class="cleared">
+                                <img src="{{ STATIC_URL }}i/ico-plus.gif">
+                                <a class="form-event-service" href="{% url 'event-edit-contacts' event.id %}">
+                                    Заполнить контакты
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+            <div class="tab-button">
+                <div class="b-hr"><hr /></div>
+                <a href="#" class="b-button b-button_grey scroll-to-top">↑ Наверх</a>
+            </div>
+        </div>
+
+    </div></dd>
+
+    <script type="text/javascript">
+        $(function() {
+            $('form fieldset.field').formset({
+                prefix: 'participantvideo_set',
+                addText: '{{ add_item_text }}'
+            })
+        })
+    </script>
+{% endblock %}

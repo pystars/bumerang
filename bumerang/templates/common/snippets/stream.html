@@ -1,0 +1,67 @@
+                    <div id="movie" width="700" height="380" style="background:url({{ STATIC_URL }}img/player.png); margin: 0 auto;"></div>
+                    <div id="movie-description"></div>
+<script type="text/javascript">
+    set_schedule = function(id){
+        $("#playlistitem"+id).prevAll().addClass("tp-item_past").removeClass("tp-item_now tp-item_future");
+        $("#playlistitem"+id).nextAll().addClass("tp-item_future").removeClass("tp-item_now tp-item_past");
+        $("#playlistitem"+id).addClass("tp-item_now").removeClass("tp-item_future");
+    };
+    start_movie = function(playerID){
+        $.ajax({
+            url: "{% url 'current-playlist-item' "main" %}",
+            success: function(data){
+                if (uppodGet(playerID, "get[file]").replace("///", "/") != data['file']) {
+                    uppodSend(playerID, "file:"+data['file']);
+                    uppodSend(playerID, "comment:"+data['comment']);
+                    $("#movie-description").html(data['movie_description']);
+                    $(".b-plenka__i").find("a").text(data['comment']);
+                }
+                set_schedule(data['id']);
+                uppodSend(playerID, "seek:"+data['offset']);
+            }
+        });
+    };
+    $.ajax({
+          url: "{% url 'current-playlist-item' "main" %}",
+          success: function(data) {
+            var flashvars = {
+                "comment": data['comment'],
+                "st": "{{ STATIC_URL }}uppod/tv-styles.txt",
+                "file": data['file'],
+                "poster": "{{ STATIC_URL }}img/player.png",
+                "uid": "movie"
+            };
+            var params = {
+                bgcolor:"#ffffff",
+                allowFullScreen:"true",
+                allowScriptAccess:"always",
+                id:"movie",
+                wmode:"opaque"
+            };
+            new swfobject.embedSWF(
+                    "{{ STATIC_URL }}uppod/tv-player.swf",
+                    "movie",
+                    "700",
+                    "380",
+                    "9.0.115.0",
+                    false,
+                    flashvars,
+                    params);
+
+            function uppodEvent(playerID,event) {
+                switch(event){
+                    case "init":
+                        start_movie(playerID);
+                        break;
+                    case "play":
+                        start_movie(playerID);
+                        break;
+                    case "end":
+                        start_movie(playerID);
+                        break;
+                }
+            }
+          }
+        }
+    );
+</script>

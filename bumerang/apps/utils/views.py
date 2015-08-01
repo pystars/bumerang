@@ -5,8 +5,8 @@ from copy import copy
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import modelformset_factory
-from django.http import (HttpResponse, HttpResponseForbidden, Http404,
-    HttpResponseRedirect)
+from django.http import (
+    HttpResponse, HttpResponseForbidden, Http404, HttpResponseRedirect)
 from django.views.generic import UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import BaseFormView
@@ -58,8 +58,8 @@ class ObjectsDeleteView(AjaxView, OwnerMixin, BaseFormView,
 class XMLDetailView(DetailView):
     def render_to_response(self, context, **response_kwargs):
         response_kwargs['content_type'] = 'text/xml'
-        return super(XMLDetailView, self).render_to_response(context,
-            **response_kwargs)
+        return super(XMLDetailView, self).render_to_response(
+            context, **response_kwargs)
 
 
 class AjaxRatingView(AddRatingView):
@@ -73,10 +73,8 @@ class AjaxRatingView(AddRatingView):
         except ContentType.DoesNotExist:
             raise Http404('Invalid `model` or `app_label`.')
 
-
-        response = super(AjaxRatingView, self).__call__(request,
-            content_type.id,
-            object_id, field_name, score)
+        response = super(AjaxRatingView, self).__call__(
+            request, content_type.id, object_id, field_name, score)
 
         if response.status_code == 200:
             msg = {'error': False}
@@ -115,11 +113,11 @@ class GenericFormsetWithFKUpdateView(UpdateView):
         self.formset_prefix = self.formset_model.__name__.lower() + '_set'
 
     def get_context_data(self, **kwargs):
-        object = self.get_object()
-        self.qs = self.formset_model.objects.filter(**{self.model_name: object})
+        obj = self.get_object()
         ctx = {
-            self.model_name: object,
-            'formset': self.ModelFormSet(queryset=self.qs,
+            self.model_name: obj,
+            'formset': self.ModelFormSet(
+                queryset=getattr(obj, self.formset_prefix).all(),
                 prefix=self.formset_prefix),
             'add_item_text': self.add_item_text,
         }
@@ -129,19 +127,25 @@ class GenericFormsetWithFKUpdateView(UpdateView):
     def get_success_url(self):
         return self.request.path
 
+    def formset_invalid(self, formset):
+        return self.render_to_response(self.get_context_data(formset=formset))
+
+    def formset_valid(self, formset):
+        instances = formset.save(commit=False)
+        obj = self.get_object()
+        for instance in instances:
+            # the name of fk attribute must be same to lower case of fk model
+            setattr(instance, self.model_name, obj)
+            instance.save()
+        return HttpResponseRedirect(self.get_success_url())
+
     def post(self, request, *args, **kwargs):
         self.object = None
-        formset = self.ModelFormSet(request.POST, request.FILES,
-            prefix=self.formset_prefix)
+        formset = self.ModelFormSet(
+            request.POST, request.FILES, prefix=self.formset_prefix)
         if formset.is_valid():
-            instances = formset.save(commit=False)
-            object = self.get_object()
-            for instance in instances:
-                #the name of fk attribute must be same to lower case of fk model
-                setattr(instance, self.model_name, object)
-                instance.save()
-            return HttpResponseRedirect(self.get_success_url())
-        return self.render_to_response(self.get_context_data(formset=formset))
+            return self.formset_valid(formset)
+        return self.formset_invalid(formset)
 
 
 class SortingMixin(object):

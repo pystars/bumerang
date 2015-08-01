@@ -1,0 +1,62 @@
+{% extends "base_with_banners.html" %}
+{% load sitetags %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="l-cols l-cols_article"><div class="l-cols__i cleared">
+        <section class="l-cols__section"><div class="l-cols__section__i">
+            {% block left_column %}
+                <p>Левая колонка</p>
+            {% endblock %}
+        </div></section>
+        <aside class="l-cols__side"><div class="l-cols__side__i">
+            {% block right_menu %}
+                <nav class="b-side-nav d-indent">
+                    <form action="{% url 'users-list' %}">
+                        <h4><label for="id_users_search">Поиск по участникам</label></h4>
+                        <p><input id="id_users_search" name="q" type="text" value="{{ q }}"/>
+                        <button type="submit">Искать</button></p>
+                    </form>
+                    <ul>
+                        <h4>{% if current_type %}<a href="{% url 'users-list' %}">Все участники</a>{% else %}Все участники{% endif %}</h4>
+                        {% ifequal current_type 1 %}
+                            <li>Независимые участники</li>
+                        {% else %}
+                            <li><a href="{% url 'members-list' %}" title="Независимые участники">Независимые участники</a></li>
+                        {% endifequal %}
+                        {% ifequal current_type 2 %}
+                            <li>Школы</li>
+                        {% else %}
+                            <li><a href="{% url 'schools-list' %}" title="Школы">Школы</a></li>
+                        {% endifequal %}
+                        {% ifequal current_type 3 %}
+                            <li>Студии</li>
+                        {% else %}
+                            <li><a href="{% url 'studios-list' %}" title="Студии">Студии</a></li>
+                        {% endifequal %}
+                        {% ifequal current_type 4 %}
+                            <li>Госучреждения</li>
+                        {% else %}
+                            <li><a href="{% url 'government-agencies-list' %}" title="Госучреждения">Госучреждения</a></li>
+                        {% endifequal %}
+                    </ul>
+                    {% include 'snippets/round_frame.html' %}
+                </nav>
+            {% endblock %}
+            {% block right_column %}
+                <section class="b-adv b-adv2">
+                    <header>
+                        <div class="b-adv__title">Реклама</div>
+                    </header>
+                    {% cross_site_banners %}
+                </section>
+{#                <p class="b-side-text">#}
+{#                    Несомненный интерес представляет и тот факт, что тактогенез продольно занимает межпластовый овилин, в то же время поднимаясь в пределах горстов до абсолютных высот 250 м.#}
+{#                </p>#}
+            {% endblock %}
+        </div></aside>
+    </div></div><!--l-cols-->
+{% endblock %}

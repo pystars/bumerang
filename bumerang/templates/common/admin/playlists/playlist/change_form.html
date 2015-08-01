@@ -1,0 +1,131 @@
+{% extends "admin/change_form.html" %}
+{% load admin_static playlists_tags %}
+
+{% block extrastyle %}
+  <link href="{% static "css/jquery-ui.css" %}" rel="stylesheet" type="text/css" media="screen" />
+  <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet" type="text/css" media="screen" />
+  <link href="{% static "css/custom-admin.css" %}" rel="stylesheet" type="text/css" media="screen" />
+{% endblock %}
+
+{% block extrahead %}
+  <script src="{% static "js/jquery-2.1.4.min.js" %}" type="text/javascript"></script>
+  <script src="{% static "js/jquery-ui.js" %}" type="text/javascript"></script>
+  <script src="{% static "js/bootstrap.js" %}" type="text/javascript"></script>
+  <script src="{% static "js/playlist-admin.js" %}" type="text/javascript"></script>
+{% endblock %}
+
+{% block after_related_objects %}
+  <fieldset class="grp-module row">
+    <div class="col-xs-6">
+      <div class="blocks" data-playlist-items-edit-url="{% url 'playlistblock_items_edit' 0 %}">
+      <h4>Блоки</h4>
+      {% for block in original.playlistblock_set.all %}
+        <div class="playlistblock" data-id="{{ block.pk }}">
+          <h3>
+            <span class="sort_order" data-value="{{ forloop.counter0 }}">{{ forloop.counter }}.</span>
+            <span class="title">{{ block }}</span>
+            <span class="glyphicon glyphicon-remove"></span>
+            <span class="glyphicon glyphicon-edit"></span>
+          </h3>
+          <table class="table block-items-list">
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Длительность</th>
+                <th>Просмотр</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in block.playlistitem_set.all %}
+                <tr data-video-id="{{ item.video.pk }}" data-id="{{ item.pk }}">
+                  <td>{{ item.video }}</td>
+                  <td>{{ item.video.duration|milliseconds_to_hms }}</td>
+                  <td>{{ item.video.get_absolute_url|safe }}</td>
+                  <td><span class="glyphicon glyphicon-remove"></span></td>
+                </tr>
+              {% empty %}
+                <tr class="empty">
+                  <td colspan="4">Перетащите сюда видео справа</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr data-toggle="tooltip" data-placement="top"{% if not block.is_full %} class="warning" title="Блок не заполнен"{% endif %}>
+                <td></td>
+                <td colspan="3"><span class="duration" data-value="{{ block.duration }}">{{ block.duration|milliseconds_to_hms }}</span> из <span class="limit" data-value="{{ block.limit }}">{{ block.limit|minutes_to_hms }}</span></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      {% endfor %}
+      </div>
+      <div class="grp-row">
+        <button type="button" class="grp-button" data-toggle="modal" data-target="#playListBlockModal">
+          Добавить блок
+        </button>
+      </div>
+      <!-- Button trigger modal -->
+    </div>
+    <div class="col-xs-6">
+      <div id="video-search-form" data-action="{% url 'video-list-ajax' 0 %}">
+        <select name="category" id="id_category">
+          <option value="">Выбрать категорию видео</option>
+          {% for category in video_categories %}
+            <option value="{{ category.slug }}">{{ category }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <table id="video-list">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Длительность</th>
+            <th>Просмотр</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {# videos will load here via ajax #}
+        </tbody>
+      </table>
+    </div>
+  </fieldset>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<!-- Modal -->
+<div class="modal fade" id="playListBlockModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Добавление/редактирование тематического блока</h4>
+      </div>
+      <form class="form-horizontal" action="" id="block-form"{% if original %} data-playlistblocks-edit-url="{% url 'playlist_blocks_edit' original.pk %}"{% endif %}>
+      <div class="modal-body">
+        <input type="hidden" name="id" id="id_id">
+        <input type="hidden" name="sort_order" id="id_sort_order">
+        <div class="form-group">
+          <label for="id_title" class="col-sm-5 control-label">Название</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_title" name="title">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="id_limit" class="col-sm-5 control-label">Длительность в минутах</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_limit" name="limit">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-default" data-dismiss="modal">Отменить</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

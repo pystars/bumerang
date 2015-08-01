@@ -237,6 +237,11 @@ def endpoint(request):
 class VideoListView(VideoMixin, ListView):
     model = Video
     paginate_by = 25
+    default_filters = dict(
+        hq_file__isnull=False,
+        published_in_archive=True,
+        status=Video.READY
+    )
 
     def get_queryset(self):
         qs = super(VideoListView, self).get_queryset()
@@ -248,11 +253,7 @@ class VideoListView(VideoMixin, ListView):
             return qs.none()
         except KeyError:
             pass
-        qs = qs.filter(
-            hq_file__isnull=False,
-            published_in_archive=True,
-            status=Video.READY
-        )
+        qs = qs.filter(**self.default_filters)
         if self.request.GET.get('q', None):
             phrase = self.request.GET['q']
             qs = qs.filter(Q(title__icontains=phrase) |
@@ -263,44 +264,23 @@ class VideoListView(VideoMixin, ListView):
                            Q(teachers__icontains=phrase) |
                            Q(manager__icontains=phrase) |
                            Q(festivals__icontains=phrase))
-        qs = qs.annotate(avg_score=Avg(
-            'participantvideo__participantvideoscore__score'))
+        if not self.request.is_ajax():
+            qs = qs.annotate(avg_score=Avg(
+                'participantvideo__participantvideoscore__score'))
         return qs
 
 
-class VideoListAjaxView(DetailView):
-    model = Profile
-    response_class = HttpResponse
+class VideoListAjaxView(VideoListView):
+    paginate_by = 1000
+    default_filters = dict(
+        status=Video.READY,
+        is_in_broadcast_lists=True)
 
-    def render_to_response(self, context, **response_kwargs):
-        response_kwargs['content_type'] = 'application/json'
-        return self.response_class(context, **response_kwargs)
+    def get_context_data(self, **kwargs):
+        return {
+            "object_list": list(
+                self.object_list.values('id', 'duration', 'title'))
+        }
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        req_type = request.GET.get('type')
-
-        result = {}
-
-        if req_type == 'albums':
-
-            albums_fields = ['id', 'title', 'description', 'cover']
-            albums_qs = VideoAlbum.objects.filter(owner=self.object)
-            albums_list = albums_qs.values(*albums_fields)
-            result['albums_list'] = list(albums_list)
-
-        if req_type == 'videos' or req_type == 'videos_with_no_album':
-
-            videos_fields = ['id', 'title', 'description',
-                             'album', 'original_file']
-
-            filter = {'owner': self.object}
-            if req_type == 'videos_with_no_album':
-                filter['album'] = None
-
-            videos_qs = Video.objects.filter(**filter)
-
-            videos_list = videos_qs.values(*videos_fields)
-            result['videos_list'] = list(videos_list)
-
-        return self.render_to_response(json.dumps(result))
+    def render_to_response(self, context, **kwargs):
+        return HttpResponse(json.dumps(context), mimetype="application/json")

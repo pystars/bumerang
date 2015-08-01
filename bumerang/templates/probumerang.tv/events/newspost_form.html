@@ -1,0 +1,33 @@
+{% extends "events/event_edit_wrapper.html" %}
+{% load sitetree %}
+
+{% block title %}Редактирование {{ object }}{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block edit_form %}
+    <section class="b-form b-form_smaller b-form_left settings-edit-form">
+        <form name="editform" action="" method="post">
+            {% csrf_token %}
+
+            <h3 class="title">
+                {% sitetree_page_title from "event_edit_menu" %}
+            </h3>
+
+            <div class="b-hr"><hr /></div>
+
+            {% with field_class="" %}
+                {% include "events/snippets/form.html" %}
+            {% endwith %}
+
+            <footer class="b-form__footer">
+                <div class="wrap">
+                    <a href="#" class="b-button b-button_yellow button-submit">Сохранить</a>
+                </div>
+            </footer>
+        </form>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base_with_banners.html" %}
+{% load sitetags %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autogrow.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="l-cols l-cols_fests"><div class="l-cols__i cleared">
+        <section class="l-cols__section"><div class="l-cols__section__i">
+            {% block left_column %}
+                <p>Левая колонка</p>
+            {% endblock %}
+        </div></section>
+        <aside class="l-cols__side"><div class="l-cols__side__i">
+
+            {% block right_column %}
+                {% block right_menu %}
+                    {% if event.chain.exists %}
+                        <nav class="b-side-nav d-indent" style="margin-top: 60px;">
+                            <ul>
+                                <h4>Архив фестивалей</h4>
+                                {% for item in event.chain %}
+                                    <li>
+                                        {% if item != event %}
+                                            <a href="{% url 'event-detail' item.id %}" title="{{ item }}">{{ item }}</a>
+                                        {% else %}
+                                            {{ item }}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% include 'snippets/round_frame.html' %}
+                        </nav>
+                    {% endif %}
+                    {% if event.contests %}
+                        <nav class="b-side-nav d-indent">
+                            <ul>
+                                <h4>Конкурсы</h4>
+                                {% for item in event.contests %}
+                                    <li>
+                                        {% if item != event %}
+                                            <a href="{% url 'event-detail' item.id %}" title="{{ item }}">{{ item }}</a>
+                                        {% else %}
+                                            {{ item }}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% include 'snippets/round_frame.html' %}
+                        </nav>
+                    {% endif %}
+                    {% if event.owner == request.user %}
+                        <nav class="b-side-nav d-indent">
+                            <ul>
+                                <h4>Список участников</h4>
+                                <li><a target="_blank" href="{% url 'participant-video-list-csv' event.id %}">Скачать</a></li>
+                            </ul>
+                            {% include 'snippets/round_frame.html' %}
+                        </nav>
+                    {% endif %}
+                {% endblock %}
+
+                {% block right_adv %}
+                <section class="b-adv b-adv2">
+                    <header>
+                        <div class="b-adv__title">Реклама</div>
+                    </header>
+                    {% if event.banner %}
+                        {{ event.banner|safe }}
+                    {% else %}
+                        {% main_page_banner %}
+                    {% endif %}
+                </section>
+                {% endblock %}
+            {% endblock %}
+        </div></aside>
+    </div></div><!--l-cols-->
+{% endblock %}

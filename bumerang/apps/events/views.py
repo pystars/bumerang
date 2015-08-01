@@ -590,8 +590,8 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
         return context
 
     def get_queryset(self):
-    # Если текущий пользователь владелец события, то выбирутся
-    # все объекты, иначе ни одного
+        # Если текущий пользователь владелец события, то выбирутся
+        # все объекты, иначе ни одного
         return super(ParticipantReviewView, self).get_queryset().filter(
             event__owner=self.request.user
         )
@@ -602,9 +602,6 @@ class ParticipantReviewView(ParticipantMixin, GenericFormsetWithFKUpdateView):
             self.object.is_accepted = True
             self.object.save()
             for form in formset:
-#                if form in formset.deleted_forms:
-#                    ParticipantVideo.objects.get(pk=form.instance.id).delete()
-#                else:
                 instance = form.save(commit=False)
                 instance.save()
                 if 'nominations' in form.changed_data:

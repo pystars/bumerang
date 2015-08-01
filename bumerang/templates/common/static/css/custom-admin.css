@@ -1,0 +1,15 @@
+.row {margin-left: 0;}
+.ui-sortable {float: none;}
+.ui-widget-content {background: transparent !important;}
+.ui-accordion-content {width: 100%;}
+button {
+    width: auto;
+    height: auto;
+}
+#video-list tr>:last-child {
+    display: none;
+}
+.block-items-list tr,
+#video-list tr {
+    cursor: pointer;
+}

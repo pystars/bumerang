@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+{% load bootstrap3 thumbnail %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="device-width" content="width=device-width" />
+    <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <title>{% block head_title_base %}{% if SITE_NAME %}{{ SITE_NAME }} | {% endif %}{% block head_title %}
+    {% endblock %}{% endblock %}</title>
+    {% block viewport %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% endblock %}
+    <meta name="description" content="{% block meta_description %}{{ object.meta_description }}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}{{ object.meta_keywords }}{% endblock %}">
+    <meta name="author" content="{% block meta_author %}{% endblock %}">
+{#    {% bootstrap_css %}#}
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" media="screen"/>
+    {% block cdn_js %}
+    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.11.2.js"><\/script>')</script>
+    {% bootstrap_javascript %}
+    {% endblock cdn_js %}
+    {% block extra_head %}{% endblock %}
+    {% block extra_script %}{% endblock %}
+    <!-- scripts concatenated and minified via django-compressor -->
+    {% block js %}
+    {% endblock js %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" media="screen"/>
+{#    <script src="{{ STATIC_URL }}js/main.js"></script>#}
+    <!-- end scripts -->
+  </head>
+  <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}body{% endblock %}" itemscope itemtype="http://schema.org/WebPage">
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+  <![endif]-->
+  <!--Start Header-->
+  <div id="wrap" class="{% block wrapper_class %}{% endblock %}">
+    <div class="navbar-brand text-center"><img src="{{ STATIC_URL }}img/bumtv-logo.png" class="logo" alt=""></div>
+    <div class="navbar navbar-main">
+{#      <a class="navbar-brand" href="{% url 'home' %}">БУМТВ</a>#}
+
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Раскрыть навигацию</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav" itemscope itemtype="http://schema.org/SiteNavigationElement">
+              <li><!-- Семейные ценности -->
+                <a href="#">
+                  <span>
+                    О канале
+                  </span>
+                </a>
+              </li>
+              <li><!-- Сообщения -->
+                <a href="#">
+                  <span>Программа</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <span>Новости</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <span>Проекты</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <span>Контакты</span>
+                </a>
+              </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#"><strong>f</strong></a>
+            </li>
+            <li>
+              <a href="#"><strong>В</strong></a>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <!--End Header-->
+    {% block body_base %}
+    <!--Start Middle-->
+      <div class="container">
+        {% include "snippets/messages.html" %}
+        <!--Start Search Box-->
+{#        {% block breadcrumb %}{% endblock %}#}
+        {% block body_wrapper %}
+          <div class="content">
+            {% block body %}
+              {% block content %}{% endblock %}
+            {% endblock %}
+          </div>
+        {% endblock %}
+        <!--Start Filter Side Bar-->
+        <!--End Search Box-->
+      </div>
+      <!--End Middle-->
+    {% endblock %}
+  </div>
+  <!--Start Footer-->
+  <div id="footer" itemscope itemtype="http://schema.org/WPFooter">
+    <div class="container">
+      <p>
+        <small class="copyright">
+        © {% now "Y" %} интернет-канал &laquo;БУМ-TV&raquo;. Свидетельство о регистрации СМИ Эл № ФС 77-26539 от 15 марта 2015 года. Все права на любые материалы, опубликованные на сайте, защищены в соответствии в российским и международным законодательством об интеллектуальной собственности. Любое использование текстовых, фото, аудио и видеоматериалов возможно только с согласия правообладателя. Адрес электронной почты редакции info@bum.tv.
+          </small>
+      </p>
+    </div>
+  </div>
+  <!--End Footer-->
+  {% block extra_body_base %}
+      {% block extra_body %}{% endblock %}
+  {% endblock %}
+</body>
+</html>

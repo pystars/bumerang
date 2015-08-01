@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+{#<!-- LOADING -->#}
+{% load i18n l10n admin_urls %}
+
+<!-- COLTYPE/BODYCLASS-- >
+{% block bodyclass %}grp-delete-confirmation{% endblock %}
+{% block content-class %}{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    <ul class="grp-horizontal-list">
+        <li><a href="{% url 'admin:index' %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'admin:app_list' app_label=app_label %}">{% trans app_label|capfirst|escape %}</a></li>
+        <li><a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst|escape }}</a></li>
+        <li>Копирование списка воспроизведения</li>
+    </ul>
+{% endblock %}
+
+{% block javascripts %}
+  {{ block.super }}
+  {{ media }}
+    <script type="text/javascript" charset="utf-8">
+        (function($) {
+          $(document).ready(function() {
+          grappelli.initDateAndTimePicker();
+        })
+        })(grp.jQuery);
+  </script>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="g-d-c">
+        <div class="grp-group">
+            <h2>Скопировать список {{ playlist }}?</h2>
+            <p>Пожалуйста, выберите дату, на которую вы хотите скопировать выбранный список воспроизведения</p>
+        </div>
+        <form action="" method="post">{% csrf_token %}
+            <fieldset class="grp-module">
+              {{ adminform }}
+            </fieldset>
+            <div id="submit" class="grp-module grp-submit-row grp-fixed-footer">
+                <input type="hidden" name="action" value="copy_playlist" />
+                <input type="hidden" name="post" value="yes" />
+                <ul>
+                    <li class="grp-float-left"><a href="." class="grp-button grp-cancel-link">{% trans "Cancel" %}</a></li>
+                    <li><input type="submit" value="{% trans "Yes, I'm sure" %}" class="grp-button grp-default" /></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+{% endblock %}

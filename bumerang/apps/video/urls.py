@@ -28,7 +28,7 @@ urlpatterns = patterns(
         VideoListView.as_view(),
         name='video-list-category'),
     # AJAX video list
-    url(r'^ajax/(?P<pk>[\d]+)/$',
+    url(r'^ajax/(?P<category>[\w\-]+)/$',
         VideoListAjaxView.as_view(),
         name='video-list-ajax'),
 

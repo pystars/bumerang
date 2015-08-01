@@ -1,0 +1,94 @@
+{% extends "events/event_edit_wrapper.html" %}
+{% load sitetree formtags %}
+
+{% block title %}Рассмотрение заявок на {{ event }}{% endblock %}
+
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.formset.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/datepicker-ru.js"></script>
+{% endblock %}
+
+{% block page_title %}
+    <h1>{{ event }}</h1>
+{% endblock %}
+
+{% block tab %}
+    {% include 'events/snippets/edit_tabs_menu.html' with selected='requests' %}
+
+    <dd class="selected">
+        <div class="b-tabs__tab-content wide-form">
+
+            <div class="l-cols__i cleared">
+                <section class="l-cols__section">
+                    <div class="l-cols__section__i">
+                        <a target="_blank" class="form-profile-view" href="{% url 'event-final-statement' event.id %}">Итоговая ведомость</a>
+                        <a target="_blank" class="form-profile-view" href="{% url 'event-scorecard' event.id %}">Оценочная ведомость</a>
+                        <a class="form-profile-view" href="{% url 'event-detail' event.id %}">Просмотр события</a>
+
+                        <h3 class="title" style="margin-bottom: 0;">
+                            Заявки на участие в событии
+                        </h3>
+
+                        <section class="b-form b-form_smaller b-form_edit settings-edit-form">
+
+                            {% include 'snippets/sort_controls.html' %}
+
+                            <table class="participant-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>Номер заявки</th>
+                                        <th>Заявка рассмотрена</th>
+                                        <th>Участник</th>
+                                        <th>Действие</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for object in object_list %}
+                                        {% with profile=object.owner %}
+                                            <tr>
+                                                <td>{{ object.index_number }}</td>
+                                                <td>
+                                                    {% if object.is_accepted %}
+                                                        Да
+                                                    {% else %}
+                                                        Нет
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'profile-detail' profile.id %}">{{ profile.title }}</a>
+                                                    ({{ profile.get_type_display|lower }})
+                                                </td>
+                                                <td>
+                                                    <p>
+                                                      <a href="{% url 'participant-review' object.id %}">
+                                                        Рассмотреть</a>
+                                                    </p>
+                                                    <p>
+                                                      <a href="{% url 'participant-print' object.id %}" target="_blank">
+                                                        Распечатать</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        {% endwith %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </section>
+                        {% include 'paginator/paginator.html' %}
+
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </dd>
+{% endblock %}

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.forms.widgets import Textarea, TextInput
 
 from bumerang.apps.utils.forms import S3StorageFormMixin
 from .models import Video
@@ -9,12 +10,10 @@ class BaseVideoForm(S3StorageFormMixin, forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(BaseVideoForm, self).__init__(*args, **kwargs)
-        self.fields['album'].queryset = self.fields['album'].queryset.filter(
-            owner=user)
+        self.fields['album'].queryset = user.videoalbum_set.all()
         for name, field in self.fields.items():
-            if (field.widget.__class__ == forms.widgets.TextInput
-                or field.widget.__class__ == forms.widgets.Textarea):
-                if field.widget.attrs.has_key('class'):
+            if field.widget.__class__ in (Textarea, TextInput):
+                if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += ' wide'
                 else:
                     field.widget.attrs.update({'class': 'wide'})

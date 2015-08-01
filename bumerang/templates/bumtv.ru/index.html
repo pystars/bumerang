@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Бум ТВ{% endblock %}
+{% block extra_script %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/swfobject.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}uppod/uppod_api.js"></script>
+{% endblock %}
+
+{% block content %}
+  {% include 'snippets/stream.html' %}
+
+  <h2>Сейчас в эфире:</h2>
+  <a href="#">
+      {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
+  </a>
+  <p>
+      {{ current_item.video.description|truncatewords:18 }}
+  </p>
+
+{#<h2>Новости</h2>#}
+{#<h2>баннеры</h2>#}
+{#<h2>проекты</h2>#}
+
+<div class="jumbotron">
+  <h2>О канале</h2>
+<p>Премьера! Новый канал БУМ TV - канал сделанный руками детей для детей. Все что волнует и интересует современную молодежь в эфире с утра до вечера. Только лучшие проекты и программы студий со всей России.</p>
+<p>&laquo;БУМ TV&raquo; - ТЕЛЕКАНАЛ, КОТОРОМУ МОЖНО ДОВЕРЯТЬ!</p>
+<p>Родители могут не беспокоиться за безопасность ребенка, пока он смортит &laquo;БУМ TV&raquo;: никакой агрессивной информации, интересные программы, добрые, светлые, позитивные фильмы, развивающие проекты, развлекательные шоу.</p>
+
+</div>
+{% endblock %}

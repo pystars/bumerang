@@ -64,7 +64,8 @@ class CommonSettings(Settings):
         'wmv', 'ogm', 'mov', 'qt', 'mpg', 'mpeg', 'mp4v']
 
     STATICFILES_DIRS = [
-        os.path.join(PROJECT_ROOT, 'templates/static'),
+        os.path.join(PROJECT_ROOT, 'templates/probumerang.tv/static'),
+        os.path.join(PROJECT_ROOT, 'templates/common/static'),
     ]
 
     STATICFILES_FINDERS = [
@@ -112,18 +113,11 @@ class CommonSettings(Settings):
     KEEP_LOGGED_KEY = 'keep_me_logged'
     KEEP_LOGGED_DURATION = 30  # in days
 
-    # used this component:
-    # https://github.com/martinrusev/django-redis-sessions
-    #SESSION_ENGINE = 'redis_sessions.session'
-    #SESSION_REDIS_HOST = '10.0.0.10'
-    #SESSION_REDIS_PORT = 6379
-    #SESSION_REDIS_DB = 0
-    #SESSION_REDIS_PASSWORD = 'fr6kdrWqDlRu8kktHv4FzhlH4CgW3JPC'
-
     ROOT_URLCONF = 'bumerang.urls'
 
     TEMPLATE_DIRS = [
-        os.path.join(PROJECT_ROOT, 'templates'),
+        os.path.join(PROJECT_ROOT, 'templates/probumerang.tv'),
+        os.path.join(PROJECT_ROOT, 'templates/common'),
     ]
 
     AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -139,6 +133,7 @@ class CommonSettings(Settings):
         'django.contrib.flatpages',
         'django.contrib.staticfiles',
         'grappelli',
+        'grappelli.dashboard',
         'filebrowser',
         'django.contrib.admin',
         'django.contrib.admindocs',
@@ -339,10 +334,11 @@ class AdminSettings(LocalSettingsMixin, CommonSettings):
     pass
 
 
-class BumTVSettings(BumerSettings):
+class BumTVSettings(LocalSettingsMixin, CommonSettings):
     SITE_ID = 2
     TEMPLATE_DIRS = [
-        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv'),
+        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv.ru'),
+        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/common'),
     ]
     ALLOWED_HOSTS = ['bumtv.ru']
     INSTALLED_APPS = [
@@ -361,32 +357,23 @@ class BumTVSettings(BumerSettings):
         'tinymce',
         'south',
         'mptt',
-        # 'djcelery',
         'storages',
-        # 'djkombu',
-        # 'kombu.transport.django',
+        'bootstrap3',
+        'sorl.thumbnail',
         'django_ses',
-        # 'feincms',
-        #'django_wysiwyg',
         'django_extensions',
         'django_coverage',
-        # 'debug_toolbar',
-        # we have two messages in project, so they must be in this order
-        # 'bumerang.apps.messages',
         'django.contrib.messages',
 
         # internal
         'bumerang.apps.accounts',
-        # 'bumerang.apps.news',
-        # 'bumerang.apps.advices',
-        # 'bumerang.apps.bumerang_site',
         'bumerang.apps.video',
-        # 'bumerang.apps.photo',
         'bumerang.apps.video.albums',
         'bumerang.apps.video.playlists',
-        # 'bumerang.apps.video.converting',
-        # 'bumerang.apps.photo.albums',
-        # 'bumerang.apps.utils',
-        # 'bumerang.apps.events',
-        # 'bumerang.apps.banners'
+    ]
+
+    EMAIL_NOREPLY_ADDR = 'noreply@bumtv.ru'
+    STATICFILES_DIRS = [
+        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv.ru/static'),
+        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/common/static'),
     ]

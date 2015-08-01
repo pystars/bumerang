@@ -1,0 +1,52 @@
+body {
+    background: url('../img/bumtv-bg.png');
+}
+h1, h2, h3, h4, h5, h6, p {
+    color: #ffffff;
+}
+.navbar-main {
+    background: transparent;
+}
+.navbar-brand {
+    float: none;
+    height: auto;
+    padding: 1em;
+}
+#footer,
+.navbar-main .navbar-nav a,
+.navbar-toggle {
+    background: #1e3757;
+    opacity: 0.85;
+}
+.navbar-main .navbar-nav a span {
+    color: #ffffff;
+}
+.navbar-main .navbar-nav li {
+    margin-right: 10px;
+}
+.navbar-main .navbar-nav.navbar-right li {
+    margin-right: 0;
+    margin-left: 10px;
+}
+#footer {
+    padding: 4em 0 8em;
+}
+body .logo {
+    height: 150px;
+    display: inline-block;
+}
+@media (min-width: 1200px) {
+    .container {
+         width: 750px;
+    }
+}
+@media (min-width: 992px) {
+    .container {
+         width: 750px;
+    }
+}
+.container .jumbotron {
+    background: transparent;
+    padding-left: 0;
+    padding-right: 0;
+}
