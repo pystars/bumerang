@@ -335,6 +335,7 @@ class AdminSettings(LocalSettingsMixin, CommonSettings):
 
 
 class BumTVSettings(LocalSettingsMixin, CommonSettings):
+    ASSETS_ROOT = os.path.join(CommonSettings.PROJECT_ROOT, '../bumtv')
     SITE_ID = 2
     TEMPLATE_DIRS = [
         os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv.ru'),
@@ -376,6 +377,9 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
 
     EMAIL_NOREPLY_ADDR = 'noreply@bumtv.ru'
     STATICFILES_DIRS = [
-        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv.ru/static'),
-        os.path.join(BumerSettings.PROJECT_ROOT, 'templates/common/static'),
+        os.path.join(CommonSettings.PROJECT_ROOT, 'templates/bumtv.ru/static'),
+        os.path.join(CommonSettings.PROJECT_ROOT, 'templates/common/static'),
     ]
+
+    MEDIA_ROOT = os.path.join(ASSETS_ROOT, BumerSettings.MEDIA_URL[1:])
+    STATIC_ROOT = os.path.join(ASSETS_ROOT, BumerSettings.STATIC_URL[1:])
