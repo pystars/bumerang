@@ -1,8 +1,30 @@
 body {
     background: url('../img/bumtv-bg.png');
 }
+h1 {
+    font-size: 1.75em;
+}
+h2 {
+    font-size: 1.5em;
+}
+h1, h2 {
+    border-bottom: 2px solid #dddddd;
+    padding: .5em 0;
+}
+h3 {
+    font-size: 1.35em;
+}
+h4 {
+    font-size: 1.25em;
+}
+h5 {
+    font-size: 1.15em;
+}
+h6 {
+    font-size: 1.1em;
+}
 h1, h2, h3, h4, h5, h6, p {
-    color: #ffffff;
+    color: #dddddd;
 }
 .navbar-main {
     background: transparent;
@@ -18,8 +40,19 @@ h1, h2, h3, h4, h5, h6, p {
     background: #1e3757;
     opacity: 0.85;
 }
+.navbar-right {margin-right: 0 !important;}
+.navbar-nav>li>a {
+    padding: 10px;
+}
 .navbar-main .navbar-nav a span {
+    color: #dddddd;
+}
+.navbar-main .navbar-nav a:hover span {
     color: #ffffff;
+}
+.navbar-main .navbar-nav a:hover {
+    background: #1e3757;
+    opacity: 0.85;
 }
 .navbar-main .navbar-nav li {
     margin-right: 10px;
@@ -28,8 +61,29 @@ h1, h2, h3, h4, h5, h6, p {
     margin-right: 0;
     margin-left: 10px;
 }
+.nav.nav-tabs {
+    border: 0 none;
+}
+.nav.nav-tabs a {
+    text-transform: uppercase;
+    font-weight: bold;
+    border: 0 none !important;
+    padding: 10px 0;
+    text-decoration: none;
+    background-color: transparent;
+    color: #ffffff;
+}
+.nav.nav-tabs .active a {
+    background-color: red;
+    color: #ffffff;
+}
+.nav.nav-tabs a:hover {
+    /*background-color: #dddddd;*/
+    color: #dddddd;
+}
 #footer {
     padding: 4em 0 8em;
+    margin-top: 6em;
 }
 body .logo {
     height: 150px;
@@ -49,4 +103,50 @@ body .logo {
     background: transparent;
     padding-left: 0;
     padding-right: 0;
+}
+.content * {
+    color: #dddddd;
+}
+.media-list .media {
+    border-top: 1px solid #dddddd;
+    padding: 1em 0;
+}
+.media-list :first-child {
+    border-top: 0 none;
+}
+.content a {
+    text-decoration: underline;
+}
+.content a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+.schedule h1 {
+    border-bottom: 0 none;
+}
+.schedule h2 {
+    border-bottom: 0 none;
+    margin: 0;
+    padding: 1em;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    background: #4c6da9;
+}
+.schedule .media {
+    border-bottom: 2px solid transparent;
+    margin: 0;
+    padding: 0;
+}
+.schedule .media-left {
+    color: #34363a;
+    background: #9eb0ce;
+    padding: 1em;
+}
+.schedule .media-body {
+    border-left: 1px solid transparent;
+    padding: 1em;
+    background: #c2cade;
+}
+.schedule .media-body * {
+    color: #363636;
 }

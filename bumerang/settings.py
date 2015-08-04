@@ -367,9 +367,11 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
 
         # internal
         'bumerang.apps.accounts',
+        'bumerang.apps.banners',
         'bumerang.apps.video',
         'bumerang.apps.video.albums',
         'bumerang.apps.video.playlists',
+        'bumerang.apps.news',
     ]
 
     EMAIL_NOREPLY_ADDR = 'noreply@bumtv.ru'

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from models import HeadBanner, MainPageBanner, EventBanner, CrossSiteBanner
+from models import (
+    HeadBanner, MainPageBanner, EventBanner, CrossSiteBanner, BumTVBanner)
 
 
 class HeadBannerAdmin(admin.ModelAdmin):
@@ -37,8 +38,13 @@ class CrossSiteBannerAdmin(BannerAdminBase):
     list_editable = ['is_active', 'position']
 
 
+class BumTVBannerAdmin(BannerAdminBase):
+    list_display = BannerAdminBase.list_display + ['sort_order']
+    list_editable = ['is_active', 'sort_order']
+
 
 admin.site.register(HeadBanner, HeadBannerAdmin)
 admin.site.register(MainPageBanner, MainPageBannerAdmin)
 admin.site.register(EventBanner, EventBannerAdmin)
 admin.site.register(CrossSiteBanner, CrossSiteBannerAdmin)
+admin.site.register(BumTVBanner, BumTVBannerAdmin)

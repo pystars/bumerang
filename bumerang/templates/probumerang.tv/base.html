@@ -36,7 +36,7 @@
             <div></div>{% endblock %}
         </div>
         <div class="logo">
-            <a href="{% url 'BumerangIndexView' %}"><img src="{{ STATIC_URL }}i/bumerangtv-logo.png" alt="Бумеранг ТВ" width="383" height="61" /></a>
+            <a href="{% url 'home' %}"><img src="{{ STATIC_URL }}i/bumerangtv-logo.png" alt="Бумеранг ТВ" width="383" height="61" /></a>
         </div>
         <nav class="b-navigation d-rounded d-rounded_r10 d-sh">
             {% sitetree_menu from "main_menu" include "trunk" template "sitetree/topmenu.html" %}

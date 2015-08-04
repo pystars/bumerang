@@ -2,9 +2,7 @@
 from random import randint
 
 from django.db import models
-from django.utils.timezone import now
 
-from bumerang.apps.utils.functions import get_path
 from bumerang.apps.utils.models import FileModelMixin, nullable
 from bumerang.apps.utils.media_storage import media_storage
 
@@ -23,7 +21,7 @@ class BannerBase(FileModelMixin, models.Model):
     flash = models.FileField(
         u'flash-баннер', storage=media_storage, upload_to='bs',
         help_text=u'заполняется, если это flash-баннер', **nullable)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(u'Активен', default=True)
     create_date = models.DateTimeField(u'Дата создания', auto_now_add=True)
 
     class Meta:
@@ -109,3 +107,36 @@ class CrossSiteBanner(BannerBase):
     class Meta:
         verbose_name = u'Сквозной баннер'
         verbose_name_plural = u'Сквозные баннеры'
+
+
+class BumTVBanner(BannerBase):
+    sort_order = models.PositiveSmallIntegerField(
+        u'Порядок сортировки', **nullable)
+
+    class Meta:
+        verbose_name = u'Баннер 240x124'
+        verbose_name_plural = u'Баннеры 240x124'
+        ordering = ['-sort_order', '-id']
+
+    def __unicode__(self):
+        if self.image:
+            return u"""
+                <p>
+                    <a href="{0}">
+                        <img src="{1}" alt="{2}" width="240" height="124" />
+                    </a>
+                </p>
+                    """.format(self.url, self.image.url, self.alt)
+        return u"""
+          <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+           width="240" height="124">
+            <param name="movie" value="{0}" />
+            <!--[if !IE]>-->
+            <object type="application/x-shockwave-flash" data="{0}"
+             width="240" height="124">
+            <!--<![endif]-->
+            <!--[if !IE]>-->
+            </object>
+            <!--<![endif]-->
+          </object>
+                """.format(self.flash)

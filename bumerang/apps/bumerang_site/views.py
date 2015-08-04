@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from django.contrib.sites.models import get_current_site
 from django.views.generic.base import TemplateView
 from django.db.models.aggregates import Min
+from bumerang.apps.news.models import NewsItem
 
 from bumerang.apps.video.models import Video
 from bumerang.apps.video.playlists.models import PlayList, Channel
@@ -49,7 +50,10 @@ class BumerangIndexView(PlaylistMixin, TemplateView):
         top_viewed = Video.objects.filter(
             published_in_archive=True, status=Video.READY
         ).order_by('-views_count',)[:5]
+        last_news = NewsItem.objects.filter(
+            category__site=get_current_site(self.request))[:4]
         ctx.update(
+            last_news=last_news,
             new_movies=new_movies,
             top_viewed=top_viewed,
             playlist=playlist,

@@ -120,7 +120,7 @@ def login(request, template_name='registration/login.html',
             # Security check -- don't allow redirection to a different
             # host.
             elif netloc and netloc != request.get_host():
-                redirect_to = reverse('BumerangIndexView')
+                redirect_to = reverse('home')
 
             # Okay, security checks complete. Log the user in.
             auth_login(request, form.get_user())
@@ -161,10 +161,10 @@ class RegistrationFormView(CreateView):
             return super(RegistrationFormView, self).get(
                 request, *args, **kwargs)
         else:
-            return HttpResponseRedirect(reverse('BumerangIndexView'))
+            return HttpResponseRedirect(reverse('home'))
 
     def get_success_url(self):
-        return reverse('BumerangIndexView')
+        return reverse('home')
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -211,7 +211,7 @@ class RegisterEventRequestForm(FormView):
             return HttpResponseRedirect(reverse('registration'))
 
     def get_success_url(self):
-        return reverse('BumerangIndexView')
+        return reverse('home')
 
     def get_form(self, form_class):
         return form_class(self.request.POST, instance=Profile.objects.get(
@@ -241,7 +241,7 @@ class AccountActivationView(TemplateView):
                     Пройдите процедуру <a href="{0}">регистрации</a> заново.
                 '''.format(reverse('registration')))
 
-                return HttpResponseRedirect(reverse('BumerangIndexView'))
+                return HttpResponseRedirect(reverse('home'))
 
             user.is_active = True
             user.activation_code = ''
@@ -253,7 +253,7 @@ class AccountActivationView(TemplateView):
 
             send_activation_success(user.username)
 
-            return HttpResponseRedirect(reverse('BumerangIndexView'))
+            return HttpResponseRedirect(reverse('home'))
 
         except Profile.DoesNotExist:
             notify_error(self.request, message=u'''
@@ -262,7 +262,7 @@ class AccountActivationView(TemplateView):
                 либо срок действия ссылки истёк.
             ''')
 
-            return HttpResponseRedirect(reverse('BumerangIndexView'))
+            return HttpResponseRedirect(reverse('home'))
 
 
 class PasswordRecoveryView(FormView):
@@ -270,7 +270,7 @@ class PasswordRecoveryView(FormView):
     template_name = "accounts/password_recovery.html"
 
     def get_success_url(self):
-        return reverse('BumerangIndexView')
+        return reverse('home')
 
     def form_valid(self, form):
         receiver_email = form.cleaned_data['email']

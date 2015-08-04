@@ -1,24 +1,42 @@
 {% load playlists_tags %}
-<div class="tp-items">
-    {% if not playlist.playlistblock_set.exists %}
-        <p>
-            Трансляции не запланированы
-        </p>
-    {% else %}
-      {% for block in playlist.playlistblock_set.all %}
-        <h3>{{ block.title }}</h3>
-        {% for item in block.playlistitem_set.all %}
-            <p id="playlistitem-{{ item.block.cycle }}-{{ item.id }}" class="tp-item item_future {% cycle 'tp-item_odd' 'even' %}">
-                <time>{{ item.play_from|seconds_to_hms }}</time>
-                {{ item.video.title }}
-            </p>
-            {% if forloop.last %}
-                <p class="tp-item item_future {% cycle 'tp-item_odd' 'even' %}">
-                    <time>{{ item.play_till|seconds_to_hms }}</time>
-                    Конец эфира
-                </p>
-            {% endif %}
-        {% endfor %}
-      {% endfor %}
-    {% endif %}
-</div>
+{% if not playlist.playlistblock_set.exists %}
+    <p>
+        Трансляции не запланированы
+    </p>
+{% else %}
+  <div class="media-list">
+  {% for block in playlist.playlistblock_set.all %}
+    <div class="media">
+    <h3>{{ block.title }}</h3>
+    </div>
+    {% for item in block.playlistitem_set.all %}
+      <div class="media" id="playlistitem-{{ item.block.cycle }}-{{ item.id }}">
+        <div class="media-left media-middle">
+          {{ item.play_from|seconds_to_hm }}
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">
+            {{ item.video.title }}
+          </h4>
+          <small>
+            {{ item.video.category }}
+          </small>
+          <div>
+            {{ item.video.description }}
+          </div>
+        </div>
+{#        {% if forloop.last %}#}
+{#            <div class="media">#}
+{#              <div class="media-left">#}
+{#                {{ item.play_till|seconds_to_hms }}#}
+{#              </div>#}
+{#              <div class="media-body">#}
+{#                Конец эфира#}
+{#              </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+      </div>
+    {% endfor %}
+  {% endfor %}
+  </div>
+{% endif %}

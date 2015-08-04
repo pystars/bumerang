@@ -26,7 +26,8 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" media="screen"/>
     {% block cdn_js %}
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.11.2.js"><\/script>')</script>
-    {% bootstrap_javascript %}
+{#    {% bootstrap_javascript %}#}
+      <link rel="stylesheet" href="{{ STATIC_URL }}js/bootstrap.min.js" media="screen"/>
     {% endblock cdn_js %}
     {% block extra_head %}{% endblock %}
     {% block extra_script %}{% endblock %}
@@ -45,58 +46,60 @@
   <![endif]-->
   <!--Start Header-->
   <div id="wrap" class="{% block wrapper_class %}{% endblock %}">
-    <div class="navbar-brand text-center"><img src="{{ STATIC_URL }}img/bumtv-logo.png" class="logo" alt=""></div>
+    <div class="navbar-brand text-center"><a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/bumtv-logo.png" class="logo" alt=""></a></div>
     <div class="navbar navbar-main">
 {#      <a class="navbar-brand" href="{% url 'home' %}">БУМТВ</a>#}
 
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Раскрыть навигацию</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+        <div class="row">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Раскрыть навигацию</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav" itemscope itemtype="http://schema.org/SiteNavigationElement">
+                <li><!-- Семейные ценности -->
+                  <a href="/about/">
+                    <span>
+                      О канале
+                    </span>
+                  </a>
+                </li>
+                <li><!-- Сообщения -->
+                  <a href="{% url 'playlist-detail' 'main' %}">
+                    <span>Программа</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'news-list' %}">
+                    <span>Новости</span>
+                  </a>
+                </li>
+{#                <li>#}
+{#                  <a href="#">#}
+{#                    <span>Проекты</span>#}
+{#                  </a>#}
+{#                </li>#}
+                <li>
+                  <a href="/contacts/">
+                    <span>Контакты</span>
+                  </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a href="#"><strong>f</strong></a>
+              </li>
+              <li>
+                <a href="#"><strong>В</strong></a>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav" itemscope itemtype="http://schema.org/SiteNavigationElement">
-              <li><!-- Семейные ценности -->
-                <a href="#">
-                  <span>
-                    О канале
-                  </span>
-                </a>
-              </li>
-              <li><!-- Сообщения -->
-                <a href="#">
-                  <span>Программа</span>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <span>Новости</span>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <span>Проекты</span>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <span>Контакты</span>
-                </a>
-              </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#"><strong>f</strong></a>
-            </li>
-            <li>
-              <a href="#"><strong>В</strong></a>
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
       </div>
     </div>
     <!--End Header-->

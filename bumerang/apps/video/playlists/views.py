@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 
 from django.contrib.sites.models import get_current_site
@@ -64,19 +64,26 @@ class PlaylistDetailView(DateDetailView, PlaylistMixin):
     allow_future = True
     month_format = '%m'
 
-    def get_object(self, queryset=None):
-        super(PlaylistDetailView, self).get_object()
-        year = self.get_year()
-        month = self.get_month()
-        day = self.get_day()
-        date = _date_from_string(
-            year, self.get_year_format(),
-            month, self.get_month_format(),
-            day, self.get_day_format())
+    def get_date(self):
+        try:
+            year = self.get_year()
+            month = self.get_month()
+            day = self.get_day()
+            return _date_from_string(
+                year, self.get_year_format(),
+                month, self.get_month_format(),
+                day, self.get_day_format())
+        except Http404:
+            return date.today()
 
-        # Use a custom queryset if provided
-        qs = queryset or self.get_queryset()
-        return self.get_playlist_by_date(date)
+    def get_object(self, queryset=None):
+        return self.get_playlist_by_date(self.get_date())
+
+    def get_context_data(self, **kwargs):
+        today = date.today()
+        kwargs['seven_days'] = ((today + timedelta(days=i)) for i in range(7))
+        kwargs['current_date'] = self.get_date()
+        return super(PlaylistDetailView, self).get_context_data(**kwargs)
 
 
 class JSONCurrentPlaylistItemView(BaseDetailView, PlaylistMixin):

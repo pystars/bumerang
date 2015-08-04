@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="schedule">
+  <h1>ТЕЛЕПРОГРАММА</h1>
+  <ul class="nav nav-tabs nav-justified">
+    {% for day in seven_days %}
+      <li role="presentation" class="text-center{% if current_date == day %} active{% endif %}">
+        <a href="{% if forloop.first %}{% url 'playlist-detail' 'main' %}{% else %}{% url 'playlist-detail' 'main' day.year day.month day.day %}{% endif %}">
+          {% if forloop.first %}
+            сегодня
+          {% elif forloop.counter == 2 %}
+            завтра
+          {% else %}
+            {{ day|date:"j E" }}
+          {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  <h2>{{ playlist.rotate_from_date|date:"l, d E" }}</h2>
+  {% include 'snippets/playlist_items.html' %}
+</div>
+{% endblock %}

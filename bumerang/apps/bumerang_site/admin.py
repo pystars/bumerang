@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.flatpages.forms import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.flatpages.admin import FlatPageAdmin as FlatPageAdminOld
+from django.contrib.sites.models import get_current_site
 from tinymce.widgets import TinyMCE
 
 
@@ -21,6 +22,10 @@ class CustomFlatpageForm(FlatpageForm):
 
 class FlatPageAdmin(FlatPageAdminOld):
     form = CustomFlatpageForm
+
+    def get_queryset(self, request):
+        return super(FlatPageAdmin, self).get_queryset().filter(
+            site=get_current_site(request))
 
 
 # We have to unregister it, and then reregister

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bannerstags %}
 
 {% block title %}Бум ТВ{% endblock %}
 {% block extra_script %}
@@ -10,7 +11,7 @@
 {% block content %}
   {% include 'snippets/stream.html' %}
 
-  <h2>Сейчас в эфире:</h2>
+  <h3>Сейчас в эфире:</h3>
   <a href="#">
       {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
   </a>
@@ -18,15 +19,25 @@
       {{ current_item.video.description|truncatewords:18 }}
   </p>
 
+  <div class="row">
+    <div class="col-xs-12 col-sm-7">
+      <h2>Новости <a class="pull-right" href="{% url 'news-list' %}"><small>все новости</small></a></h2>
+        {% include 'snippets/news.html' with object_list=last_news %}
+    </div>
+    <div class="col-xs-12 col-sm-5">
+      {% bumtv_home_page_banners %}
+{#      <h2>Баннеры</h2>#}
+    </div>
+  </div>
 {#<h2>Новости</h2>#}
 {#<h2>баннеры</h2>#}
 {#<h2>проекты</h2>#}
 
-<div class="jumbotron">
+{#<div>#}
   <h2>О канале</h2>
 <p>Премьера! Новый канал БУМ TV - канал сделанный руками детей для детей. Все что волнует и интересует современную молодежь в эфире с утра до вечера. Только лучшие проекты и программы студий со всей России.</p>
 <p>&laquo;БУМ TV&raquo; - ТЕЛЕКАНАЛ, КОТОРОМУ МОЖНО ДОВЕРЯТЬ!</p>
 <p>Родители могут не беспокоиться за безопасность ребенка, пока он смортит &laquo;БУМ TV&raquo;: никакой агрессивной информации, интересные программы, добрые, светлые, позитивные фильмы, развивающие проекты, развлекательные шоу.</p>
 
-</div>
+{#</div>#}
 {% endblock %}
