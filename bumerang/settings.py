@@ -382,5 +382,5 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         os.path.join(CommonSettings.PROJECT_ROOT, 'templates/common/static'),
     ]
 
-    MEDIA_ROOT = os.path.join(ASSETS_ROOT, BumerSettings.MEDIA_URL[1:])
-    STATIC_ROOT = os.path.join(ASSETS_ROOT, BumerSettings.STATIC_URL[1:])
+    MEDIA_ROOT = os.path.join(ASSETS_ROOT, CommonSettings.MEDIA_URL[1:])
+    STATIC_ROOT = os.path.join(ASSETS_ROOT, CommonSettings.STATIC_URL[1:])
