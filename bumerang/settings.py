@@ -369,6 +369,7 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         # internal
         'bumerang.apps.accounts',
         'bumerang.apps.banners',
+        'bumerang.apps.events',
         'bumerang.apps.video',
         'bumerang.apps.video.albums',
         'bumerang.apps.video.playlists',
