@@ -27,7 +27,7 @@
     {% block cdn_js %}
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.11.2.js"><\/script>')</script>
 {#    {% bootstrap_javascript %}#}
-      <link rel="stylesheet" href="{{ STATIC_URL }}js/bootstrap.min.js" media="screen"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
     {% endblock cdn_js %}
     {% block extra_head %}{% endblock %}
     {% block extra_script %}{% endblock %}
