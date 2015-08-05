@@ -133,7 +133,7 @@ class CommonSettings(Settings):
         'django.contrib.flatpages',
         'django.contrib.staticfiles',
         'grappelli',
-        'grappelli.dashboard',
+        # 'grappelli.dashboard',
         'filebrowser',
         'django.contrib.admin',
         'django.contrib.admindocs',
