@@ -341,7 +341,7 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         os.path.join(BumerSettings.PROJECT_ROOT, 'templates/bumtv.ru'),
         os.path.join(BumerSettings.PROJECT_ROOT, 'templates/common'),
     ]
-    ALLOWED_HOSTS = ['bumtv.ru']
+    ALLOWED_HOSTS = ['bumtv.pro']
     INSTALLED_APPS = [
         'django.contrib.auth',
         'django.contrib.contenttypes',
@@ -376,7 +376,7 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         'bumerang.apps.news',
     ]
 
-    EMAIL_NOREPLY_ADDR = 'noreply@bumtv.ru'
+    EMAIL_NOREPLY_ADDR = 'noreply@bumtv.pro'
     STATICFILES_DIRS = [
         os.path.join(CommonSettings.PROJECT_ROOT, 'templates/bumtv.ru/static'),
         os.path.join(CommonSettings.PROJECT_ROOT, 'templates/common/static'),
