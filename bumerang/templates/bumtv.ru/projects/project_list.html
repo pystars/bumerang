@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Проекты</h1>
+  <div class="media-list">
+  {% for object in object_list %}
+    <div class="media">
+      <div class="media-left">
+        <img src="{{ object.image.url }}" alt="">
+      </div>
+      <div class="media-body">
+        <h2 class="media-heading"><a href="{{ object.get_absolute_url }}">{{ object }}</a></h2>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+{% endblock %}

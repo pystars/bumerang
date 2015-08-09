@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     url(r'^photo/', include('bumerang.apps.photo.urls')),
     url(r'^playlists/', include('bumerang.apps.video.playlists.urls')),
     url(r'^events/', include('bumerang.apps.events.urls')),
+    url(r'^projects/', include('bumerang.apps.projects.urls')),
 )
 
 if settings.DEBUG:

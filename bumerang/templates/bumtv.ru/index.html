@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% load bannerstags %}
 
 {% block title %}Бум ТВ{% endblock %}
@@ -16,7 +17,7 @@
       {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
   </a>
   <p>
-      {{ current_item.video.description|truncatewords:18 }}
+    {{ current_item.video.description|truncatewords:18 }}
   </p>
 
   <div class="row">
@@ -26,14 +27,19 @@
     </div>
     <div class="col-xs-12 col-sm-5">
       {% bumtv_home_page_banners %}
-{#      <h2>Баннеры</h2>#}
     </div>
   </div>
-{#<h2>Новости</h2>#}
-{#<h2>баннеры</h2>#}
-{#<h2>проекты</h2>#}
+<h2>Проекты</h2>
+  <div class="row">
+    {% for project in projects %}
+      <div class="col-xs-12 col-sm-4">
+        <a href="{{ project.get_absolute_url }}">
+          <img src="{{ project.image.url }}" alt="">
+        </a>
+      </div>
+    {% endfor %}
+  </div>
 
-{#<div>#}
   <h2>О канале</h2>
 <p>Премьера! Новый канал БУМ TV - канал сделанный руками детей для детей. Все что волнует и интересует современную молодежь в эфире с утра до вечера. Только лучшие проекты и программы студий со всей России.</p>
 <p>&laquo;БУМ TV&raquo; - ТЕЛЕКАНАЛ, КОТОРОМУ МОЖНО ДОВЕРЯТЬ!</p>

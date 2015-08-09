@@ -4,8 +4,9 @@ from datetime import date, timedelta
 from django.contrib.sites.models import get_current_site
 from django.views.generic.base import TemplateView
 from django.db.models.aggregates import Min
-from bumerang.apps.news.models import NewsItem
 
+from bumerang.apps.news.models import NewsItem
+from bumerang.apps.projects.models import Project
 from bumerang.apps.video.models import Video
 from bumerang.apps.video.playlists.models import PlayList, Channel
 from bumerang.apps.video.playlists.views import PlaylistMixin
@@ -13,12 +14,12 @@ from bumerang.apps.video.playlists.views import PlaylistMixin
 SCHEDULE_RANGE = 7
 
 
-class BumerangIndexView(PlaylistMixin, TemplateView):
+class HomeView(PlaylistMixin, TemplateView):
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
 
-        ctx = super(BumerangIndexView, self).get_context_data(**kwargs)
+        ctx = super(HomeView, self).get_context_data(**kwargs)
         channel = Channel.objects.get(
             slug='main',
             site=get_current_site(self.request)
@@ -53,6 +54,7 @@ class BumerangIndexView(PlaylistMixin, TemplateView):
         last_news = NewsItem.objects.filter(
             category__site=get_current_site(self.request))[:4]
         ctx.update(
+            projects=Project.objects.all(),
             last_news=last_news,
             new_movies=new_movies,
             top_viewed=top_viewed,

@@ -168,7 +168,8 @@ class CommonSettings(Settings):
         'bumerang.apps.photo.albums',
         'bumerang.apps.utils',
         'bumerang.apps.events',
-        'bumerang.apps.banners'
+        'bumerang.apps.banners',
+        'bumerang.apps.projects',
     ]
 
     LOGGING = {
@@ -374,6 +375,7 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         'bumerang.apps.video.albums',
         'bumerang.apps.video.playlists',
         'bumerang.apps.news',
+        'bumerang.apps.projects',
     ]
 
     EMAIL_NOREPLY_ADDR = 'noreply@bumtv.pro'

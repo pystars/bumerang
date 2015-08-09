@@ -210,9 +210,8 @@ class SortingMixin(object):
         return sort_params
 
     def get_context_data(self, **kwargs):
-        ctx = super(SortingMixin, self).get_context_data(**kwargs)
-        ctx['sort_params'] = self.get_sort_params()
-        return ctx
+        kwargs['sort_params'] = self.get_sort_params()
+        return super(SortingMixin, self).get_context_data(**kwargs)
 
     def get(self, request, *args, **kwargs):
         self.params = dict(request.REQUEST)

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ object.title }}</h1>
+  <div>{{ object.text|linebreaksbr }}</div>
+  <h2>Видео проекта</h2>
+  <div class="media-list">
+  {% for video in object.videos.all %}
+    <div class="media">
+      <div class="media-left">
+        <img src="{{ video.thumbnail }}" alt="">
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading">
+          <a href="http://probumerang.tv{% url 'video-detail' video.pk %}">{{ video }}</a>
+        </h3>
+        {{ video.description }}
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+{% endblock %}

@@ -652,9 +652,8 @@ class ParticipantListView(SortingMixin, ListView):
         return super(ParticipantListView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        ctx = super(ParticipantListView, self).get_context_data(**kwargs)
-        ctx['event'] = self.event
-        return ctx
+        kwargs['event'] = self.event
+        return super(ParticipantListView, self).get_context_data(**kwargs)
 
 
 class ParticipantVideoRatingUpdate(UpdateView):
