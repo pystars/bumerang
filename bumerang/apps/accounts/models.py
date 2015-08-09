@@ -104,6 +104,8 @@ class CustomUser(FileModelMixin, AbstractUser):
     views_count = models.IntegerField(
         u'Количество просмотров профиля', default=0, editable=False, **nullable)
 
+    sites = models.ManyToManyField('sites.Site', verbose_name=u'Сайты')
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')

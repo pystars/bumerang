@@ -279,7 +279,8 @@ class VideoListAjaxView(VideoListView):
     def get_context_data(self, **kwargs):
         return {
             "object_list": list(
-                self.object_list.values('id', 'duration', 'title'))
+                self.object_list.order_by('title').values(
+                    'id', 'duration', 'title'))
         }
 
     def render_to_response(self, context, **kwargs):
