@@ -368,6 +368,7 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         'django.contrib.messages',
 
         # internal
+        'bumerang.apps.bumerang_site',
         'bumerang.apps.accounts',
         'bumerang.apps.banners',
         'bumerang.apps.events',

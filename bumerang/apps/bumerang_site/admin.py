@@ -20,15 +20,14 @@ class CustomFlatpageForm(FlatpageForm):
                                         for i in self.fields['sites'].choices]
 
 
-class CustomFlatPageAdmin(FlatPageAdminOld):
+class FlatPageAdmin(FlatPageAdminOld):
     form = CustomFlatpageForm
 
     def get_queryset(self, request):
-        print(get_current_site(request))
-        return super(CustomFlatPageAdmin, self).get_queryset(request).filter(
+        return super(FlatPageAdmin, self).get_queryset(request).filter(
             sites=get_current_site(request))
 
 
 # We have to unregister it, and then reregister
 admin.site.unregister(FlatPage)
-admin.site.register(FlatPage, CustomFlatPageAdmin)
+admin.site.register(FlatPage, FlatPageAdmin)
