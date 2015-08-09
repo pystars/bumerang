@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
+# from datetime import timedelta
 
 from django.contrib.sites.models import get_current_site
 from django import forms
 from django.core.urlresolvers import reverse
-from django.forms.models import BaseInlineFormSet
+# from django.forms.models import BaseInlineFormSet
 from django.contrib import admin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -56,27 +56,31 @@ class PlayListAdmin(admin.ModelAdmin):
     # class Media:
     #     js = ["j/jquery-1.6.2.min.js", "j/jquery-ui.min.js", "j/admin.js"]
 
-    def save_formset(self, request, form, formset, change):
-        formset.save()
-        offset = 0
-        for item in form.instance.playlistitem_set.all():
-            if offset + item.video.duration < 86400000:
-                item.offset = offset
-                item.save()
-                offset += item.video.duration
-            else:
-                notadded_items_count = form.instance.playlistitem_set.filter(
-                    sort_order__gte=item.sort_order).count()
-                form.instance.playlistitem_set.filter(
-                    sort_order__gte=item.sort_order).delete()
-                messages.add_message(request, messages.ERROR,
-                    u'последние {0} элементов не были добавлены'.format(
-                        notadded_items_count))
-                break
+    # def save_formset(self, request, form, formset, change):
+    #     formset.save()
+    #     offset = 0
+    #     for item in form.instance.playlistitem_set.all():
+    #         if offset + item.video.duration < 86400000:
+    #             item.offset = offset
+    #             item.save()
+    #             offset += item.video.duration
+    #         else:
+    #             notadded_items_count = form.instance.playlistitem_set.filter(
+    #                 sort_order__gte=item.sort_order).count()
+    #             form.instance.playlistitem_set.filter(
+    #                 sort_order__gte=item.sort_order).delete()
+    #             messages.add_message(request, messages.ERROR,
+    #                 u'последние {0} элементов не были добавлены'.format(
+    #                     notadded_items_count))
+    #             break
+    #
+    #     form.instance.rotate_till = form.instance.rotate_from + timedelta(
+    #         milliseconds=offset)
+    #     form.instance.save()
 
-        form.instance.rotate_till = form.instance.rotate_from + timedelta(
-            milliseconds=offset)
-        form.instance.save()
+    def get_queryset(self, request):
+        return super(PlayListAdmin, self).get_queryset(request).filter(
+            channel__site=get_current_site(request))
 
     def copy_playlist(self, request, queryset):
 
@@ -140,7 +144,7 @@ class PlayListAdmin(admin.ModelAdmin):
              'media': self.media,
              'opts': opts},
             current_app=self.admin_site.name)
-    copy_playlist.short_description =u'Скопировать выделенный список'
+    copy_playlist.short_description = u'Скопировать выделенный список'
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
