@@ -24,7 +24,7 @@ class FlatPageAdmin(FlatPageAdminOld):
     form = CustomFlatpageForm
 
     def get_queryset(self, request):
-        return super(FlatPageAdmin, self).get_queryset().filter(
+        return super(FlatPageAdmin, self).get_queryset(request).filter(
             site=get_current_site(request))
 
 
