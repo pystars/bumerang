@@ -25,7 +25,7 @@ class FlatPageAdmin(FlatPageAdminOld):
 
     def get_queryset(self, request):
         return super(FlatPageAdmin, self).get_queryset(request).filter(
-            site=get_current_site(request))
+            sites=get_current_site(request))
 
 
 # We have to unregister it, and then reregister
