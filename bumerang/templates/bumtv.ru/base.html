@@ -46,10 +46,10 @@
   <![endif]-->
   <!--Start Header-->
   <div id="wrap" class="{% block wrapper_class %}{% endblock %}">
-    <div class="navbar-brand text-center"><a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/bumtv-logo.png" class="logo" alt=""></a></div>
+    <div class="navbar-brand text-center">
+      {% block logo %}<a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/bumtv-logo.png" class="logo" alt=""></a>{% endblock %}
+    </div>
     <div class="navbar navbar-main">
-{#      <a class="navbar-brand" href="{% url 'home' %}">БУМТВ</a>#}
-
       <div class="container">
         <div class="row">
           <div class="navbar-header">
