@@ -88,6 +88,10 @@ h1, h2, h3, h4, h5, h6, p {
 body .logo {
     height: 150px;
     display: inline-block;
+    opacity: 0.9;
+}
+body .logo:hover {
+    opacity: 1;
 }
 @media (min-width: 1200px) {
     .container {
