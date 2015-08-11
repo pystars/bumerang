@@ -157,6 +157,7 @@ class CommonSettings(Settings):
 
         # internal
         'bumerang.apps.accounts',
+        'bumerang.apps.flatblocks',
         'bumerang.apps.news',
         'bumerang.apps.advices',
         'bumerang.apps.bumerang_site',
@@ -369,6 +370,7 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         # internal
         'bumerang.apps.bumerang_site',
         'bumerang.apps.accounts',
+        'bumerang.apps.flatblocks',
         'bumerang.apps.banners',
         'bumerang.apps.events',
         'bumerang.apps.video',
