@@ -15,7 +15,7 @@ h3 {
     font-size: 1.35em;
 }
 h4 {
-    font-size: 1.25em;
+    font-size: 1em;
 }
 h5 {
     font-size: 1.15em;
@@ -114,6 +114,9 @@ body .logo {
 .media-list :first-child {
     border-top: 0 none;
 }
+.media-list .media-left {
+    padding-right: 2em;
+}
 .content a {
     text-decoration: underline;
 }
@@ -149,4 +152,24 @@ body .logo {
 }
 .schedule .media-body * {
     color: #363636;
+}
+.news-content p:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.news-content p img {
+    width: 300px;
+}
+.news-content p.odd img {
+    float: left;
+    margin: 0 2em 2em 0;
+}
+
+.news-content p.even img {
+    float: right;
+    margin: 0 0 2em 2em;
+}
+.news-content p:first-child {
+    margin-top: 1em;
 }

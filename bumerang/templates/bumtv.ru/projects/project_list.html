@@ -2,14 +2,16 @@
 
 {% block content %}
   <h1>Проекты</h1>
-  <div class="media-list">
+  <div class="media-list projects-list">
   {% for object in object_list %}
     <div class="media">
       <div class="media-left">
-        <img src="{{ object.image.url }}" alt="">
+        <img src="{{ object.image.url }}" alt="" width="220">
       </div>
       <div class="media-body">
-        <h2 class="media-heading"><a href="{{ object.get_absolute_url }}">{{ object }}</a></h2>
+        <h3 class="media-heading">
+          <a href="{{ object.get_absolute_url }}">{{ object }}</a>
+        </h3>
       </div>
     </div>
   {% endfor %}

@@ -1,19 +1,16 @@
-{% load thumbnail %}
 <ul class="media-list">
 {% for item in object_list %}
   <li class="media">
     {% if item.image %}
     <div class="media-left">
-      {% thumbnail item.image "100x100" as im %}
         <a href="{% url 'news-detail' item.category.slug item.slug %}">
-          <img class="media-object" src="{{ im.url }}" alt="">
+          <img class="media-object" src="{{ item.image.url }}" alt="" width="80" height="80">
         </a>
-      {% endthumbnail %}
     </div>
   {% endif %}
     <div class="media-body">
       <h4 class="media-heading"><a href="{% url 'news-detail' item.category.slug item.slug %}">{{ item.title }}</a></h4>
-      <p>{{ item.creation_date|date:'d E Y' }}</p>
+      <div><small>{{ item.creation_date|date:'d E Y' }}</small></div>
       <div>{{ item.preview_text|safe }}</div>
     </div>
   </li>

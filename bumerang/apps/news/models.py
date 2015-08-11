@@ -13,14 +13,14 @@ class NewsCategory(models.Model):
     slug = models.SlugField()
     sort_order = models.IntegerField(default=0, verbose_name=u'Позиция')
 
-    def __unicode__(self):
-        return self.title
-
     class Meta:
         verbose_name = u'Раздел новостей'
         verbose_name_plural = u'Разделы новостей'
         unique_together = ('slug', 'site')
         ordering = ('sort_order', 'id')
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
 
 
 class NewsItem(FileModelMixin, models.Model):
@@ -29,16 +29,31 @@ class NewsItem(FileModelMixin, models.Model):
     title = models.CharField(max_length=255, verbose_name=u'Заголовок')
     slug = models.SlugField()
     preview_text = models.TextField(verbose_name=u'Текст превью')
-    text = models.TextField(verbose_name=u'Текст')
+    text = models.TextField(verbose_name=u'Текст', **nullable)
     image = models.ImageField(
-        u'Изображение', storage=media_storage, upload_to='news',
-        help_text=u'Используется в списке новостей', **nullable)
+        u'Квадратное изображение 80x80 пикселей', storage=media_storage,
+        upload_to='news', help_text=u'Используется в списках', **nullable)
     creation_date = models.DateTimeField(default=now)
-
-    def __unicode__(self):
-        return self.title
 
     class Meta:
         verbose_name = u'Новость'
         verbose_name_plural = u'Новости'
         ordering = ('-creation_date',)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.title)
+
+
+class NewsBlock(FileModelMixin, models.Model):
+    owner = models.ForeignKey(NewsItem)
+    text = models.TextField(verbose_name=u'Текст', **nullable)
+    image = models.ImageField(
+        u'Изображение', storage=media_storage, upload_to='news', **nullable)
+
+    class Meta:
+        verbose_name = u'Блок'
+        verbose_name_plural = u'Блоки'
+        ordering = ['id']
+
+    def __unicode__(self):
+        return u'{0}'.format(self.text)

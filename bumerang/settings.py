@@ -361,7 +361,6 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         'mptt',
         'storages',
         'bootstrap3',
-        'sorl.thumbnail',
         'django_ses',
         'django_extensions',
         'django_coverage',

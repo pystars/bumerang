@@ -157,13 +157,11 @@ class PlayListAdmin(admin.ModelAdmin):
 
 
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'site']
+    list_display = ['title', 'slug']
 
     def get_queryset(self, request):
-        qs = super(ChannelAdmin, self).get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(site=get_current_site(request))
-        return qs
+        return super(ChannelAdmin, self).get_queryset(request).filter(
+            site=get_current_site(request))
 
 
 admin.site.register(Channel, ChannelAdmin)

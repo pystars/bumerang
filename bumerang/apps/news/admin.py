@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.sites.models import get_current_site
 from tinymce.widgets import TinyMCE
 
-from bumerang.apps.news.models import NewsCategory, NewsItem
+from bumerang.apps.news.models import NewsCategory, NewsItem, NewsBlock
 
 
 class NewsCategoryAdmin(admin.ModelAdmin):
@@ -25,7 +25,13 @@ class NewsItemForm(forms.ModelForm):
         }
 
 
+class NewsBlockInline(admin.TabularInline):
+    model = NewsBlock
+    extra = 1
+
+
 class NewsItemAdmin(admin.ModelAdmin):
+    inlines = [NewsBlockInline]
     form = NewsItemForm
     prepopulated_fields = {"slug": ("title",)}
 

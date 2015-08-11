@@ -34,7 +34,7 @@
     {% for project in projects %}
       <div class="col-xs-12 col-sm-4">
         <a href="{{ project.get_absolute_url }}">
-          <img src="{{ project.image.url }}" alt="">
+          <img src="{{ project.image.url }}" alt="" class="img-responsive">
         </a>
       </div>
     {% endfor %}

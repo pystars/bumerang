@@ -5,11 +5,23 @@
 {% block content %}
   {% autoescape off %} 
   <h1>{{ newsitem.title }} <small class="pull-right">{{ newsitem.creation_date|date:'d E Y' }}</small></h1>
-  <div>
-  {{ newsitem.preview_text|safe }}
-  {{ newsitem.text|safe }}
+  <div class="news-content">
+{#  {{ newsitem.preview_text|safe }}#}
+    {% if object.text %}
+      {{ object.text|safe }}
+    {% endif %}
+    {% for block in object.newsblock_set.all %}
+      <p class="{% cycle "odd" "even" %}">
+        {% if block.image %}
+          <img src="{{ block.image.url }}" alt="">
+        {% endif %}
+        {{ block.text|linebreaksbr }}
+      </p>
+    {% endfor %}
   </div>
-    <hr>
-  <p><a href="{% url 'news-list' %}" class="return-to-previous-page">&larr; Вернуться к списку новостей</a></p>
+  <hr>
+  <p>
+    <a href="{% url 'news-list' %}" class="return-to-previous-page">&larr; Вернуться к списку новостей</a>
+  </p>
   {% endautoescape %}
 {% endblock %}

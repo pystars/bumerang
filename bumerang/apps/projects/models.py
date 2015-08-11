@@ -11,6 +11,9 @@ class Project(FileModelMixin, models.Model):
     text = models.TextField(verbose_name=u'Описание проекта')
     image = models.ImageField(
         u'Изображение', storage=media_storage, upload_to='projects',
+        help_text=u'Пропорции изображения - 11x3, минимальная и желательная '
+                  u'ширина изображения - 220px. Обязательно соблюдайте эти '
+                  u'параметры, иначе верстка на главной странице поплывет',
         **nullable)
 
     videos = models.ManyToManyField(
