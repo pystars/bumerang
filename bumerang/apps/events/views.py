@@ -97,7 +97,7 @@ class EventDetailView(DetailView):
                 'participant_form': ParticipantForm(
                     prefix='accept', initial={'accepted': False}),
                 'formset': self.ModelFormSet(
-                    prefix='participant_videos',
+                    prefix='participantvideo_set',
                     queryset=ParticipantVideo.objects.none()),
                 'add_item_text': self.add_item_text,
             })
@@ -439,7 +439,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView, ContactsCheckMixin):
             'participant_form': ParticipantForm(
                 prefix='accept', initial={'accepted': False}),
             'formset': self.ModelFormSet(
-                prefix='participant_videos',
+                prefix='participantvideo_set',
                 queryset=self.formset_model.objects.none()
             ),
             'add_item_text': self.add_item_text,
@@ -466,7 +466,7 @@ class ParticipantCreateView(ParticipantMixin, CreateView, ContactsCheckMixin):
             raise Http404(u'Страница не найдена')
         self.object = None
         participant_form = ParticipantForm(request.POST, prefix='accept')
-        formset = self.ModelFormSet(request.POST, prefix='participant_videos')
+        formset = self.ModelFormSet(request.POST, prefix='participantvideo_set')
 
         if participant_form.is_valid():
             if (formset.is_valid() and

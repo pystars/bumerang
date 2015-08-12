@@ -186,7 +186,7 @@ class Video(models.Model, TitleUnicode):
             pass
 
     def is_protected(self):
-        return (self.participant_videos.exists()
+        return (self.participantvideo_set.exists()
                 or self.playlistitem_set.exists())
 
     def get_absolute_url(self):

@@ -78,7 +78,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     def response_change(self, request, new_object):
         response = super(
             ParticipantAdmin, self).response_change(request, new_object)
-        if new_object.is_accepted and new_object.participant_videos.exists():
+        if new_object.is_accepted and new_object.participantvideo_set.exists():
             participant_reviewed.send(self.__class__, participant=new_object)
         return response
 
