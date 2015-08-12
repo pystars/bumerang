@@ -72,6 +72,10 @@ class Video(models.Model, TitleUnicode):
     slug = models.SlugField(
         u'Метка (часть ссылки)', max_length=SLUG_LENGTH, editable=False,
         **nullable)
+    stream = models.CharField(
+        u'Ссылка на трансляцию', max_length=200,
+        help_text=u'Это должна быть только ссылка на поток вида rtmp://...',
+        **nullable)
     original_file = models.FileField(
         u"Оригинальное видео", validators=[is_video_file],
         upload_to=original_upload_to, storage=media_storage, **nullable)
@@ -89,7 +93,7 @@ class Video(models.Model, TitleUnicode):
 #        upload_to=lq_upload_to,storage=media_storage,
 #        validators=[is_video_file], **nullable)
     duration = models.IntegerField(
-        u'Длительность', default=0, editable=False, **nullable)
+        u'Длительность в миллисекундах', default=0, editable=False, **nullable)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=u"Владелец")
     album = models.ForeignKey(
@@ -162,7 +166,8 @@ class Video(models.Model, TitleUnicode):
                 return slug
 
     def rtmp_url(self):
-        return settings.RTMP_SERVER_FORMAT.format(self.best_quality_file().name)
+        return self.stream or settings.RTMP_SERVER_FORMAT.format(
+            self.hq_file.name)
 
     def delete(self, *args, **kwargs):
         try:
@@ -181,7 +186,7 @@ class Video(models.Model, TitleUnicode):
             pass
 
     def is_protected(self):
-        return (self.participantvideo_set.exists()
+        return (self.participant_videos.exists()
                 or self.playlistitem_set.exists())
 
     def get_absolute_url(self):

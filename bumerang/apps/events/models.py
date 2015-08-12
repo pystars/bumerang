@@ -241,7 +241,7 @@ class Nomination(AdminUrlMixin, models.Model):
         return self.title + age_postfix
 
     def approved(self):
-        return self.participantvideo_set.filter(is_accepted=True)
+        return self.participant_videos.filter(is_accepted=True)
 
 
 class Participant(AdminUrlMixin, models.Model):
@@ -284,7 +284,8 @@ class ParticipantVideo(models.Model):
         related_name='user_selected_participantvideo_set')
     nominations = models.ManyToManyField(
         Nomination, verbose_name=u'Номинации',
-        through='VideoNomination', blank=False)
+        through='VideoNomination', blank=False,
+        related_name='participant_videos')
     age = models.PositiveSmallIntegerField(
         u'Возраст автора', blank=False, help_text=u'(полных лет)')
     video = models.ForeignKey(

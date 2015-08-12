@@ -16,6 +16,7 @@
 
 {% block after_related_objects %}
   <fieldset class="grp-module row">
+  {% if original.pk %}
     <div class="col-xs-6">
       <div class="blocks" data-playlist-items-edit-url="{% url 'playlistblock_items_edit' 0 %}">
       <h4>Блоки</h4>
@@ -26,6 +27,7 @@
             <span class="title">{{ block }}</span>
             <span class="glyphicon glyphicon-remove"></span>
             <span class="glyphicon glyphicon-edit"></span>
+            <span class="glyphicon glyphicon-plus"></span>
           </h3>
           <table class="table block-items-list">
             <thead>
@@ -90,6 +92,11 @@
         </tbody>
       </table>
     </div>
+  {% else %}
+    <div class="col-xs-12">
+     Необходимо сохранить плейлист прежде чем можно будет добавлять в него блоки.
+    </div>
+  {% endif %}
   </fieldset>
 {% endblock %}
 
@@ -123,6 +130,39 @@
       <div class="modal-footer">
         <button type="reset" class="btn btn-default" data-dismiss="modal">Отменить</button>
         <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="videoStreamModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Добавление/редактирование тематического блока</h4>
+      </div>
+      <form class="form-horizontal" action="" id="video-stream-form"{% if original %} video-stream-add-url="{% url 'playlist_blocks_edit' original.pk %}"{% endif %}>
+      <div class="modal-body">
+        {{ stream_form }}
+{#        <input type="hidden" name="id" id="id_id">#}
+{#        <input type="hidden" name="sort_order" id="id_sort_order">#}
+{#        <div class="form-group">#}
+{#          <label for="id_title" class="col-sm-5 control-label">Название</label>#}
+{#          <div class="col-sm-7">#}
+{#            <input type="text" class="form-control" id="id_title" name="title">#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#          <label for="id_limit" class="col-sm-5 control-label">Длительность в минутах</label>#}
+{#          <div class="col-sm-7">#}
+{#            <input type="text" class="form-control" id="id_limit" name="limit">#}
+{#          </div>#}
+{#        </div>#}
+      </div>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-default" data-dismiss="modal">Отменить</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
       </div>
       </form>
     </div>

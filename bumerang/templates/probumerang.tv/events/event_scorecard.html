@@ -36,7 +36,7 @@
                 <td>{{ video }}</td>
                 <td>{{ video.year|default_if_none:"не указан" }}</td>
                 <td>{{ video.authors }}</td>
-                <td>{{ user.get_type_display }}{{ user }}</td>
+                <td>{{ user.get_type_display }} {{ user }}</td>
                 <td>{{ video.city }}</td>
                 <td>{{ video.manager|default_if_none:"не указан" }}<br/>{{ user.info_phone }}</td>
                 <td>{{ video.duration|default_if_none:0|to_hms }}</td>

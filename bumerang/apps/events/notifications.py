@@ -72,7 +72,7 @@ def notify_winners(sender, **kwargs):
 
 def notify_participant_about_review(sender, **kwargs):
     participant = kwargs['participant']
-    videos = participant.participantvideo_set.filter(is_accepted=True)
+    videos = participant.participant_videos.filter(is_accepted=True)
     ctx = {
         'header': u'Ваша заявка рассмотрена к участию в событии {0}'
                   u' были приняты следующие фильмы:'.format(participant.event),
@@ -101,7 +101,7 @@ def notify_event_owner_about_participant(sender, **kwargs):
 
 def notify_jurors_about_participant(sender, **kwargs):
     participant = kwargs['participant']
-    videos = participant.participantvideo_set.filter(is_accepted=True)
+    videos = participant.participant_videos.filter(is_accepted=True)
     ctx = {
         'header': u'Новые работы от участников для выставления оценок',
         'subject': u'Новые работы от участников для выставления оценок',

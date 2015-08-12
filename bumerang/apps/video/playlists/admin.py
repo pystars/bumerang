@@ -11,8 +11,9 @@ from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.admin.widgets import AdminDateWidget
 
-from models import PlayList, PlayListItem, Channel, PlayListBlock
-from bumerang.apps.video.models import Video, VideoCategory
+from .forms import StreamForm
+from .models import PlayList, PlayListItem, Channel, PlayListBlock
+from ..models import VideoCategory
 
 
 # class PlayListItemFormSet(BaseInlineFormSet):
@@ -150,10 +151,18 @@ class PlayListAdmin(admin.ModelAdmin):
         extra_context = extra_context or {}
         extra_context.update(
             video_categories=VideoCategory.objects.all(),
-            playlists_videos=Video.objects.filter(is_in_broadcast_lists=True)
+            stream_form=StreamForm(),
+            # playlists_videos=Video.objects.filter(is_in_broadcast_lists=True)
         )
         return super(PlayListAdmin, self).change_view(
             request, object_id, form_url, extra_context)
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == 'channel':
+            kwargs['queryset'] = Channel.objects.filter(
+                site=get_current_site(request))
+        return super(PlayListAdmin, self).formfield_for_foreignkey(
+            db_field, request=None, **kwargs)
 
 
 class ChannelAdmin(admin.ModelAdmin):

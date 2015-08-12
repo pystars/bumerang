@@ -70,7 +70,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for participant_video in object.participantvideo_set.all %}
+        {% for participant_video in object.participant_videos.all %}
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ participant_video.video.title }}</td>
