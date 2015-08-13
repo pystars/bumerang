@@ -11,8 +11,9 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import ModelFormMixin, UpdateView, BaseFormView, \
-    FormMixin, ProcessFormView
+from django.views.generic.edit import (
+    ModelFormMixin, UpdateView, BaseFormView, FormMixin, ProcessFormView,
+    BaseCreateView)
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -20,16 +21,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import mail_admins
 
 from bumerang.apps.utils.signals import file_uploaded
-from bumerang.apps.video.converting.signals import transcode_onchange
-from bumerang.apps.video.utils import original_upload_to
 from bumerang.apps.utils.s3 import create_upload_data
 from bumerang.apps.utils.views import AjaxView, OwnerMixin
+from bumerang.apps.video.converting.signals import transcode_onchange
+from bumerang.apps.video.utils import original_upload_to
 from albums.models import VideoAlbum
 from .models import Video, VideoCategory
 from bumerang.apps.events.models import ParticipantVideo, ParticipantVideoScore
-from forms import VideoForm, VideoUpdateAlbumForm, VideoCreateForm, \
-    GetS3UploadURLForm
-
+from forms import (
+    VideoForm, VideoUpdateAlbumForm, VideoCreateForm, GetS3UploadURLForm,
+    StreamForm)
 
 Profile = get_user_model()
 
@@ -285,3 +286,19 @@ class VideoListAjaxView(VideoListView):
 
     def render_to_response(self, context, **kwargs):
         return HttpResponse(json.dumps(context), mimetype="application/json")
+
+
+class StreamCreateAjaxView(BaseCreateView):
+    form_class = StreamForm
+
+    http_method_names = ['post']
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.owner = self.request.user
+        self.object.save()
+        return HttpResponse(json.dumps(
+            {'object': {'pk': self.object.pk,
+                        'title': self.object.title,
+                        'duration': self.object.duration}}),
+            mimetype="application/json")

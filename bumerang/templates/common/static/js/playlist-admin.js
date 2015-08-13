@@ -117,6 +117,7 @@ function set_block_data() {
           '<span class="title">' + this['title'] + '</span>' +
           '<span class="glyphicon glyphicon-remove"></span>' +
           '<span class="glyphicon glyphicon-edit"></span>' +
+          '<span class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#videoStreamModal"></span>' +
         '</h3>' +
         '<table class="block-items-list">' +
           '<thead>' +
@@ -202,7 +203,6 @@ function collect_items_data(array) {
   return initial_data.concat(added)
 }
 
-
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
 
@@ -223,7 +223,7 @@ $(function() {
           build_playlistitem_formset_data(collect_items_data(el.parent().children())),
           set_items)
     }
-  }
+  };
 
   // we can sort items in block
   $(".block-items-list tbody").sortable(items_sortable_options);
@@ -372,5 +372,37 @@ $(function() {
           set_items
       );
     }
+  });
+  $("#video-stream-form").submit(function(e) {
+    e.preventDefault();
+  });
+  $("#videoStreamModal").on('shown.bs.modal', function(e){
+    var block = $(e.relatedTarget).parents(".playlistblock").get(0);
+    $("#video-stream-form").submit(function(e) {
+      e.preventDefault();
+      $.post(
+          $(this).attr("action"),
+          $(this).serialize(),
+          function(data) {
+            var row = $(
+                '<tr data-id="" data-video-id="' + data['object']['pk'] + '">' +
+                  '<td>' + data['object']['title'] + '</td>' +
+                  '<td>' + seconds_to_hms(parseInt(data['object']['duration'] / 1000)) + '</td>' +
+                  '<td></td>' +
+                  '<td><span class="glyphicon glyphicon-remove"></span></td>' +
+                '</tr>');
+            $(block).find('.block-items-list tbody').append(row)
+            $(block).find(".empty").remove();
+            $.post(
+                playlist_items_edit_url_rule.replace("0", $(block).attr('data-id')),
+                build_playlistitem_formset_data(collect_items_data($(block).find('tbody').children())),
+                set_items);
+            $("#videoStreamModal").modal('hide');
+          }
+      );
+    });
+  });
+  $("#videoStreamModal").on('hide.bs.modal', function(){
+    $(this).find('form').get(0).reset()
   });
 });

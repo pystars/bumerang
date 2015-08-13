@@ -2,16 +2,17 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from bumerang.apps.utils.views import (XMLDetailView, ObjectsDeleteView,
-    AjaxRatingView)
-from bumerang.apps.video.albums.views import VideoAlbumDetailView
-from bumerang.apps.video.views import VideoListAjaxView, VideoGetS3UploadURLView
+from bumerang.apps.utils.views import (
+    XMLDetailView, ObjectsDeleteView, AjaxRatingView)
+from .albums.models import VideoAlbum
+from .albums.views import (
+    VideoAlbumCreateView, VideoSetCoverView, VideoAlbumUpdateView,
+    VideoAlbumDetailView)
+from .views import (
+    VideoListView, VideoCreateView, VideoDetailView, VideoUpdateView,
+    VideoMoveView, endpoint, StreamCreateAjaxView, VideoListAjaxView,
+    VideoGetS3UploadURLView)
 from .models import Video
-from albums.models import VideoAlbum
-from .views import (VideoListView, VideoCreateView, VideoDetailView,
-    VideoUpdateView, VideoMoveView, endpoint)
-from albums.views import (VideoAlbumCreateView, VideoSetCoverView,
-    VideoAlbumUpdateView)
 
 
 urlpatterns = patterns(
@@ -27,6 +28,11 @@ urlpatterns = patterns(
     url(r'^~(?P<category>[\w\-]+)/$',
         VideoListView.as_view(),
         name='video-list-category'),
+
+    url(r'^ajax/stream-add/$',
+        login_required(StreamCreateAjaxView.as_view()),
+        name='stream-create'),
+
     # AJAX video list
     url(r'^ajax/(?P<category>[\w\-]+)/$',
         VideoListAjaxView.as_view(),

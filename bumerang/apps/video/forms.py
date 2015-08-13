@@ -74,3 +74,19 @@ class PreviewForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class StreamForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ['title', 'stream', 'duration', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super(StreamForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = True
+
+    def clean_duration(self):
+        if self.cleaned_data['duration'] < 1000:
+            self.cleaned_data['duration'] *= 1000
+        return self.cleaned_data

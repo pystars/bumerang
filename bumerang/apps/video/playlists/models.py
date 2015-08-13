@@ -125,9 +125,7 @@ class PlayListBlock(models.Model, TitleUnicode):
 
 
 class PlayListItem(models.Model, TitleUnicode):
-    video = models.ForeignKey(
-        Video, limit_choices_to={'is_in_broadcast_lists': True},
-        on_delete=models.PROTECT)
+    video = models.ForeignKey(Video, on_delete=models.PROTECT)
     block = models.ForeignKey(PlayListBlock)
     offset = models.IntegerField(
         u'Отсрочка воспроизведения', null=True, help_text=u'в миллисекундах')

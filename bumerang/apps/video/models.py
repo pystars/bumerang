@@ -93,7 +93,7 @@ class Video(models.Model, TitleUnicode):
 #        upload_to=lq_upload_to,storage=media_storage,
 #        validators=[is_video_file], **nullable)
     duration = models.IntegerField(
-        u'Длительность в миллисекундах', default=0, editable=False, **nullable)
+        u'Длительность в миллисекундах', default=0, **nullable)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=u"Владелец")
     album = models.ForeignKey(

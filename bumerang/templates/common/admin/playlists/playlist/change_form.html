@@ -1,5 +1,5 @@
 {% extends "admin/change_form.html" %}
-{% load admin_static playlists_tags %}
+{% load admin_static playlists_tags bootstrap3 %}
 
 {% block extrastyle %}
   <link href="{% static "css/jquery-ui.css" %}" rel="stylesheet" type="text/css" media="screen" />
@@ -27,7 +27,7 @@
             <span class="title">{{ block }}</span>
             <span class="glyphicon glyphicon-remove"></span>
             <span class="glyphicon glyphicon-edit"></span>
-            <span class="glyphicon glyphicon-plus"></span>
+            <span class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#videoStreamModal"></span>
           </h3>
           <table class="table block-items-list">
             <thead>
@@ -43,7 +43,7 @@
                 <tr data-video-id="{{ item.video.pk }}" data-id="{{ item.pk }}">
                   <td>{{ item.video }}</td>
                   <td>{{ item.video.duration|milliseconds_to_hms }}</td>
-                  <td>{{ item.video.get_absolute_url|safe }}</td>
+                  <td>{% if not item.video.stream %}{{ item.video.get_absolute_url|safe }}{% else %}трансляция{% endif %}</td>
                   <td><span class="glyphicon glyphicon-remove"></span></td>
                 </tr>
               {% empty %}
@@ -140,25 +140,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Добавление/редактирование тематического блока</h4>
+        <h4 class="modal-title" id="myModalLabel">Добавление трансляции</h4>
       </div>
-      <form class="form-horizontal" action="" id="video-stream-form"{% if original %} video-stream-add-url="{% url 'playlist_blocks_edit' original.pk %}"{% endif %}>
+      <form method="post" class="form-horizontal" action="{% url 'stream-create' %}" id="video-stream-form">{% csrf_token %}
       <div class="modal-body">
-        {{ stream_form }}
-{#        <input type="hidden" name="id" id="id_id">#}
-{#        <input type="hidden" name="sort_order" id="id_sort_order">#}
-{#        <div class="form-group">#}
-{#          <label for="id_title" class="col-sm-5 control-label">Название</label>#}
-{#          <div class="col-sm-7">#}
-{#            <input type="text" class="form-control" id="id_title" name="title">#}
-{#          </div>#}
-{#        </div>#}
-{#        <div class="form-group">#}
-{#          <label for="id_limit" class="col-sm-5 control-label">Длительность в минутах</label>#}
-{#          <div class="col-sm-7">#}
-{#            <input type="text" class="form-control" id="id_limit" name="limit">#}
-{#          </div>#}
-{#        </div>#}
+        <div class="col-xs-12">
+          {% bootstrap_form stream_form %}
+        </div>
+        <div class="clearfix"></div>
       </div>
       <div class="modal-footer">
         <button type="reset" class="btn btn-default" data-dismiss="modal">Отменить</button>

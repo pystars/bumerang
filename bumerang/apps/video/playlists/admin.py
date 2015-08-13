@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.admin.widgets import AdminDateWidget
 
-from .forms import StreamForm
+from bumerang.apps.video.forms import StreamForm
 from .models import PlayList, PlayListItem, Channel, PlayListBlock
 from ..models import VideoCategory
 
