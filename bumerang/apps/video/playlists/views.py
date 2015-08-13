@@ -105,9 +105,9 @@ class JSONCurrentPlaylistItemView(BaseDetailView, PlaylistMixin):
         block = None
         blocks = playlist.blocks()
         for block in blocks:
-            if skip + block.limit * 60 > self.offset:
+            if skip + block.limit * 3600 > self.offset:
                 break
-            skip += block.limit * 60
+            skip += block.limit * 3600
         if block is not None:
             # if we found a block which plays now
             qs = list(block.playlistitem_set.filter(
