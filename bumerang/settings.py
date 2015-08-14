@@ -143,6 +143,7 @@ class CommonSettings(Settings):
         'mptt',
         'djcelery',
         'storages',
+        'bootstrap3',
         # 'djkombu',
         'kombu.transport.django',
         'django_ses',
