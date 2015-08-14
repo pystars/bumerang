@@ -44,7 +44,12 @@
           {% if item.video.category %}
             <small>{{ item.video.category }}</small>
           {% endif %}
-          <div>{{ item.video.description }}</div>
+          <div>
+            {{ item.video.description|linebreaksbr }}
+            {% if item.video.project_set.exists %}
+              <a class="pull-right" href="{{ item.video.project_set.0.get_absolute_url }}">Подробнее</a>
+            {% endif %}
+          </div>
         </div>
       </div>
 {#    {% endfor %}#}
