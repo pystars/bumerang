@@ -336,7 +336,7 @@ $(function() {
               '<tr data-video-id="' + this['id'] + '" data-id="">' +
                 '<td>' + this['title'] + '</td>' +
                 '<td>' + seconds_to_hms(parseInt(this['duration'] / 1000)) + '</td>' +
-                '<td><a href="/video/' + this['id'] + '/">посмотреть</a></td>' +
+                '<td><a target="_blank" href="http://probumerang.tv/video/' + this['id'] + '/">посмотреть</a></td>' +
                 '<td><span class="glyphicon glyphicon-remove"></span></td>' +
               '</tr>'
             ))

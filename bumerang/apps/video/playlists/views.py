@@ -1,49 +1,27 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta, date
 import json
+from datetime import timedelta, date
 
 from django.contrib.sites.models import get_current_site
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
-from django.utils.timezone import now, localtime
 from django.template.loader import render_to_string
+from django.views.generic import View, TemplateView
 from django.views.generic.dates import (
-    DateDetailView, _date_from_string, DateMixin)
-from django.views.generic.detail import BaseDetailView
+    DateDetailView, _date_from_string, DateMixin, YearMixin, DayMixin,
+    MonthMixin)
 
 from bumerang.apps.utils.views import GenericFormsetWithFKUpdateView, AjaxView
 from bumerang.apps.video.playlists.forms import (
     PlayListBlockForm, PlayListItemForm)
-from models import PlayList, PlayListItem, PlayListBlock, Channel
+from .models import PlayList, PlayListItem, PlayListBlock, Channel
+from .utils import Schedule, CurrentItem
 
 
 class PlaylistMixin(DateMixin):
-
     date_field = 'rotate_from_date'
     channel = None
-    #
-    # def get_playlist_by_date(self, queryset, date):
-    #     lookup = {'rotate_from_date__lte': date}
-    #     lookup.update(channel__slug=self.get_channel(),
-    #                   channel__site=get_current_site(self.request))
-    #     last = list(queryset.filter(**lookup).order_by('-rotate_from_date')[:1])
-    #     if last:
-    #         playlist = last[0]
-    #     else:
-    #         raise Http404(u'нет плейлиста для указанных даты и канала')
-    #     playlist.rotate_from_date = date
-    #     return playlist
-
-    def get_playlist_by_date(self, date):
-        channel = self.get_channel()
-        last = list(channel.playlist_set.filter(
-            rotate_from_date__lte=date).order_by('-rotate_from_date')[:1])
-        if last:
-            playlist = last[0]
-            playlist.rotate_from_date = date
-            return playlist
-        raise Http404(u'нет плейлиста для указанных даты и канала')
 
     def get_channel(self):
         channel = self.channel
@@ -59,10 +37,12 @@ class PlaylistMixin(DateMixin):
             Channel, slug=channel, site=get_current_site(self.request))
 
 
-class PlaylistDetailView(DateDetailView, PlaylistMixin):
+class ScheduleView(
+        YearMixin, MonthMixin, DayMixin, PlaylistMixin, TemplateView):
     model = PlayList
     allow_future = True
     month_format = '%m'
+    template_name = 'playlists/playlist_detail.html'
 
     def get_date(self):
         try:
@@ -76,92 +56,39 @@ class PlaylistDetailView(DateDetailView, PlaylistMixin):
         except Http404:
             return date.today()
 
-    def get_object(self, queryset=None):
-        return self.get_playlist_by_date(self.get_date())
-
     def get_context_data(self, **kwargs):
         today = date.today()
+        schedule = Schedule(self.get_channel(), self.get_date())
         kwargs['seven_days'] = ((today + timedelta(days=i)) for i in range(7))
+        kwargs['playlist'] = schedule.playlist
         kwargs['current_date'] = self.get_date()
-        return super(PlaylistDetailView, self).get_context_data(**kwargs)
+        kwargs['schedule'] = schedule
+        return super(ScheduleView, self).get_context_data(**kwargs)
 
 
-class JSONCurrentPlaylistItemView(BaseDetailView, PlaylistMixin):
-    model = PlayListItem
-
-    def __init__(self, **kwargs):
-        super(JSONCurrentPlaylistItemView, self).__init__(**kwargs)
-        self.now = localtime(now())
-        self.offset = None
-
-    def get_object(self, queryset=None):
-        today = datetime.today()
-        playlist = self.get_playlist_by_date(today)
-        day_offset = (
-            self.now.hour * 3600 + self.now.minute * 60 + self.now.second)
-        self.offset = (self.now.hour % playlist.duration * 3600 +
-                       self.now.minute * 60 + self.now.second)
-        skip = 0
-        block = None
-        blocks = playlist.blocks()
-        for block in blocks:
-            if skip + block.limit * 3600 > self.offset:
-                break
-            skip += block.limit * 3600
-        if block is not None:
-            # if we found a block which plays now
-            qs = list(block.playlistitem_set.filter(
-                offset__lte=self.offset * 1000
-                ).order_by('-sort_order')[:1])
-            if qs:
-                item = qs[0]
-                item.playlist = playlist
-                return item
-            try:
-                # if here are no items in current block anymore check next block
-                block = next(blocks)
-                qs = list(block.playlistitem_set.all()[:1])
-                if qs:
-                    item = qs[0]
-                    item.playlist = playlist
-                    item.delay = block.offset() * 60 - self.offset
-                    return item
-            except StopIteration:
-                pass
-        # if here are no blocks anymore for today
-        playlist = self.get_playlist_by_date(today + timedelta(days=1))
-        try:
-            item = playlist.get_first_item()
-            if item:
-                item.playlist = playlist
-                item.delay = 24 * 60 * 60 - day_offset
-                return item
-        except PlayListItem.DoesNotExist:
-            pass
-        raise Http404(u'окончание программы')
-
+class JSONCurrentPlaylistItemView(View, PlaylistMixin):
     def get_context_data(self, **kwargs):
-        playlistitem = self.get_object()
-        result = dict(
-            id=playlistitem.id,
-            comment=playlistitem.video.title,
-            movie_description=render_to_string(
-                'snippets/video_description.html',
-                {'object': playlistitem.video}),
-            file=playlistitem.video.rtmp_url()
-        )
-        if getattr(playlistitem, 'delay', None) is None:
-            result['offset'] = int(
-                (self.offset - playlistitem.block.offset() * 60
-                 ) - playlistitem.offset / 1000)
+        controller = CurrentItem(self.get_channel())
+        item = controller.get_current_item()
+        result = {
+            'countdown': controller.get_countdown(),
+        }
+        if item:
+            result['item'] = {
+                'id': item.id,
+                'comment': item.video.title,
+                'cycle': controller.get_current_cycle(),
+                'movie_description': render_to_string(
+                    'snippets/video_description.html',
+                    {'object': item.video}),
+                'file': item.video.rtmp_url(),
+                'offset': controller.offset_in_block - item.offset / 1000
+            }
         return result
 
-    def render_to_response(self, context):
-        return HttpResponse(json.dumps(context), mimetype="application/json")
-
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        return self.render_to_response(context)
+        return HttpResponse(
+            json.dumps(self.get_context_data()), mimetype="application/json")
 
 
 class PlayListBlocksEditView(AjaxView, GenericFormsetWithFKUpdateView):

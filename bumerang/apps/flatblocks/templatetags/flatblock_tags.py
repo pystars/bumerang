@@ -180,7 +180,6 @@ class FlatBlockNode(template.Node):
             real_template = self.template_name
         # Eventually we want to pass the whole context to the template so that
         # users have the maximum of flexibility of what to do in there.
-        print(context['request'])
         if self.with_template:
             new_ctx = template.Context({})
             new_ctx.update(context)

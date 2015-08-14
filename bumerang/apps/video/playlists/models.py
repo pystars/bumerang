@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta, datetime
-
-from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Max, Sum
-from django.utils.timezone import now, UTC
+from django.utils.timezone import now
 
 from bumerang.apps.utils.models import TitleUnicode, nullable
 from bumerang.apps.video.models import Video
@@ -75,13 +72,6 @@ class PlayList(models.Model):
                 block.cycle = cycle
                 yield block
 
-    def get_first_item(self):
-        items = list(PlayListItem.objects.filter(
-            block__in=self.playlistblock_set.all())[:1])
-        if items:
-            return items[0]
-        return None
-
 
 class PlayListBlock(models.Model, TitleUnicode):
     cycle = 0
@@ -108,7 +98,7 @@ class PlayListBlock(models.Model, TitleUnicode):
 
     def offset(self):
         # in minutes
-        return self.cycle * self.playlist.duration + self.block_offset()
+        return self.cycle * self.playlist.duration * 60 + self.block_offset()
 
     @property
     def rotate_from(self):
@@ -143,11 +133,9 @@ class PlayListItem(models.Model, TitleUnicode):
     def play_from(self):
         # in seconds from begin of date
         return self.block.offset() * 60 + self.offset / 1000
-        # return self.block.rotate_from + timedelta(milliseconds=self.offset)
 
     def play_till(self):
         return self.play_from() + self.video.duration / 1000
-        # return self.play_from() + timedelta(milliseconds=self.video.duration)
 
     @property
     def title(self):

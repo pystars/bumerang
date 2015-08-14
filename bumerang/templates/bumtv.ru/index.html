@@ -13,15 +13,25 @@
 
 {% block content %}
   {% include 'snippets/stream.html' %}
-
-  <h3>Сейчас в эфире:</h3>
-  <a href="#">
-      {% if current_item %}{{ current_item.title }}{% else %}ничего нет{% endif %}
-  </a>
-  <p>
-    {{ current_item.video.description|truncatewords:18 }}
-  </p>
-
+  <div class="media" id="current-playing">
+    <div class="media-left">
+      <span class="glyphicon glyphicon-bullhorn"></span>
+    </div>
+    <div class="media-body">
+      <h3 class="media-heading">
+        <span class="title">Сейчас в эфире</span>
+        <span class="glyphicon glyphicon-play arrow"></span>
+      </h3>
+      <div id="now-playing-title">
+        ничего нет
+      </div>
+      <div id="now-playing-description"></div>
+  {#    <p>#}
+  {#      {{ current_item.video.description|truncatewords:18 }}#}
+  {#    </p>#}
+    </div>
+  </div>
+  <div class="clearfix"></div>
   <div class="row">
     <div class="col-xs-12 col-sm-7">
       <h2>Новости <a class="pull-right" href="{% url 'news-list' %}"><small>все новости</small></a></h2>

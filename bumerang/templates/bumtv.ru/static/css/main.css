@@ -178,3 +178,27 @@ body .logo:hover {
     margin-top: 1em;
 }
 .bs {text-align: right;}
+
+#current-playing .media-left {
+    background: #1e3757;
+    padding: 1.5em;
+}
+#current-playing .media-left span {
+    font-size: 2em;
+}
+#current-playing .media-body {
+    padding-left: 2em;
+}
+#current-playing .media-body .media-heading span {
+    padding: 0.3em;
+    font-size: 0.8em;
+}
+#current-playing .media-body .media-heading .title {
+    background: #1e3757;
+}
+#current-playing .media-body .media-heading .arrow {
+    background: red;
+}
+#current-playing #now-playing-title {
+    font-size: 1.5em;
+}

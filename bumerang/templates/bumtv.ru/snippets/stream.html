@@ -1,0 +1,70 @@
+<div id="movie" width="700" height="380" style="background:url({{ STATIC_URL }}img/player.png); margin: 0 auto;"></div>
+<script type="text/javascript">
+  function uppodEvent(playerID,event) {
+      switch(event){
+          case "init":
+              start_movie(playerID);
+              break;
+          case "play":
+              start_movie(playerID);
+              break;
+          case "end":
+              start_movie(playerID);
+              break;
+      }
+  }
+
+  (function($) {
+    start_movie = function(playerID){
+        $.ajax({
+            url: "{% url 'current-playlist-item' "main" %}",
+            success: function(data){
+              if (data['item']) {
+                if (uppodGet(playerID, "get[file]").replace("///", "/") != data['item']['file']) {
+                  uppodSend(playerID, "file:" + data['item']['file']);
+                  uppodSend(playerID, "comment:" + data['item']['comment']);
+                  $("#now-playing-description").html(data['item']['movie_description']);
+                  $("#now-playing-title").text(data['item']['comment']);
+                } else {
+                  $("#now-playing-title").text('ничего нет');
+                  $("#now-playing-description").html('');
+                }
+                if (data['item']['offset']) {
+                  uppodSend(playerID, "seek:" + data['item']['offset']);
+                }
+              }
+              setInterval(function(){start_movie(playerID)}, data['countdown'] * 1000);
+            }
+        });
+    };
+    $.ajax({
+          url: "{% url 'current-playlist-item' "main" %}",
+          success: function(data) {
+            var flashvars = {
+                "comment": data['item']['comment'],
+                "st": "{{ STATIC_URL }}uppod/tv-styles.txt",
+                "file": data['item']['file'],
+                "poster": "{{ STATIC_URL }}img/player.png",
+                "uid": "movie"
+            };
+            var params = {
+                bgcolor:"#ffffff",
+                allowFullScreen:"true",
+                allowScriptAccess:"always",
+                id:"movie",
+                wmode:"opaque"
+            };
+            new swfobject.embedSWF(
+                    "{{ STATIC_URL }}uppod/tv-player.swf",
+                    "movie",
+                    "700",
+                    "380",
+                    "9.0.115.0",
+                    false,
+                    flashvars,
+                    params);
+          }
+        }
+    );
+  })(jQuery);
+</script>

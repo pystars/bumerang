@@ -5,38 +5,49 @@
     </p>
 {% else %}
   <div class="media-list">
-  {% for block in playlist.playlistblock_set.all %}
-    <div class="media">
-    <h3>{{ block.title }}</h3>
-    </div>
-    {% for item in block.playlistitem_set.all %}
+{#  {% for block in playlist.playlistblock_set.all %}#}
+{#    <div class="media">#}
+{#    <h3>{{ block.title }}</h3>#}
+{#    </div>#}
+{#    {% for item in block.playlistitem_set.all %}#}
+{#      <div class="media" id="playlistitem-{{ item.block.cycle }}-{{ item.id }}">#}
+{#        <div class="media-left media-middle">#}
+{#          {{ item.play_from|seconds_to_hm }}#}
+{#        </div>#}
+{#        <div class="media-body">#}
+{#          <h4 class="media-heading">#}
+{#            {{ item.video.title }}#}
+{#          </h4>#}
+{#          <small>#}
+{#            {{ item.video.category }}#}
+{#          </small>#}
+{#          <div>#}
+{#            {{ item.video.description }}#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    {% endfor %}#}
+{#  {% endfor %}#}
+  {% for item in schedule.items %}
+    {% ifchanged item.block %}
+      <div class="media">
+        <h3>{{ item.block.title }}</h3>
+      </div>
+    {% endifchanged %}
+{#    {% for item in block.playlistitem_set.all %}#}
       <div class="media" id="playlistitem-{{ item.block.cycle }}-{{ item.id }}">
         <div class="media-left media-middle">
           {{ item.play_from|seconds_to_hm }}
         </div>
         <div class="media-body">
-          <h4 class="media-heading">
-            {{ item.video.title }}
-          </h4>
-          <small>
-            {{ item.video.category }}
-          </small>
-          <div>
-            {{ item.video.description }}
-          </div>
+          <h4 class="media-heading">{{ item.video.title }}</h4>
+          {% if item.video.category %}
+            <small>{{ item.video.category }}</small>
+          {% endif %}
+          <div>{{ item.video.description }}</div>
         </div>
-{#        {% if forloop.last %}#}
-{#            <div class="media">#}
-{#              <div class="media-left">#}
-{#                {{ item.play_till|seconds_to_hms }}#}
-{#              </div>#}
-{#              <div class="media-body">#}
-{#                Конец эфира#}
-{#              </div>#}
-{#            </div>#}
-{#        {% endif %}#}
       </div>
-    {% endfor %}
+{#    {% endfor %}#}
   {% endfor %}
   </div>
 {% endif %}
