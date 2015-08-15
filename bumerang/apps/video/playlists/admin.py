@@ -162,7 +162,7 @@ class PlayListAdmin(admin.ModelAdmin):
             kwargs['queryset'] = Channel.objects.filter(
                 site=get_current_site(request))
         return super(PlayListAdmin, self).formfield_for_foreignkey(
-            db_field, request=None, **kwargs)
+            db_field, request, **kwargs)
 
 
 class ChannelAdmin(admin.ModelAdmin):
