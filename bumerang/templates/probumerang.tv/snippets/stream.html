@@ -12,11 +12,11 @@
           url: "{% url 'current-playlist-item' "main" %}",
           success: function(data){
             if (data['item']) {
+              $("#movie-description").html(data['item']['movie_description']);
+              $(".b-plenka__i").find("a").text(data['item']['comment']);
               if (uppodGet(playerID, "get[file]").replace("///", "/") != data['item']['file']) {
                 uppodSend(playerID, "file:" + data['item']['file']);
                 uppodSend(playerID, "comment:" + data['item']['comment']);
-                $("#movie-description").html(data['item']['movie_description']);
-                $(".b-plenka__i").find("a").text(data['item']['comment']);
               }
               set_schedule(data['item']['cycle'], data['item']['id']);
               if (data['item']['offset']) {
