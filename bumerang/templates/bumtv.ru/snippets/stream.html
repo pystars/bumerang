@@ -20,18 +20,18 @@
             url: "{% url 'current-playlist-item' "main" %}",
             success: function(data){
               if (data['item']) {
+                $("#now-playing-description").html(data['item']['movie_description']);
+                $("#now-playing-title").text(data['item']['comment']);
                 if (uppodGet(playerID, "get[file]").replace("///", "/") != data['item']['file']) {
                   uppodSend(playerID, "file:" + data['item']['file']);
                   uppodSend(playerID, "comment:" + data['item']['comment']);
-                  $("#now-playing-description").html(data['item']['movie_description']);
-                  $("#now-playing-title").text(data['item']['comment']);
-                } else {
-                  $("#now-playing-title").text('ничего нет');
-                  $("#now-playing-description").html('');
                 }
                 if (data['item']['offset']) {
                   uppodSend(playerID, "seek:" + data['item']['offset']);
                 }
+              } else {
+                $("#now-playing-title").text('ничего нет');
+                $("#now-playing-description").html('');
               }
               setInterval(function(){start_movie(playerID)}, data['countdown'] * 1000);
             }
