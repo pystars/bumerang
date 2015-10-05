@@ -87,15 +87,18 @@ class MakeScreenShots(Task):
                 preview.save()
             except IOError:
                 result_file.close()
-                logger.error('error during imagining {0}'.format(
+                self._error_handle(source_file, video)
+                logger.error('Error during imagining {0}'.format(
                     result_file.name))
+                return "Error"
         logger.info("Screened {0} ({1})".format(video, source_file.name))
         os.unlink(source_file.name)
         Video.objects.filter(pk=video_id).update(status=Video.READY)
         return "Ready"
 
     def get_commandline(self, path, offset, size, output):
-        return ['ffmpeg', '-y', '-itsoffset', '-{0}'.format(offset), '-i', path,
+        return [
+            'ffmpeg', '-y', '-itsoffset', '-{0}'.format(offset), '-i', path,
             '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
             '-s', size, output]
 

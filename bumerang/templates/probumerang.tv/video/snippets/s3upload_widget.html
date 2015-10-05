@@ -17,7 +17,17 @@ $(function() {
 $('#video-selector').on('change', function (evt/**Event*/) {
   // Retrieve file list
   var file = FileAPI.getFiles(evt)[0];
-  if (file.type.indexOf('video') == 0) {
+  var supported_formats = [
+    'video/3gpp',
+    'video/avi',
+    'video/msvideo',
+    'video/x-msvideo',
+    'video/xmpg2',
+    'video/x-flv',
+    'video/mp4',
+    'video/x-m4v',
+    'video/mp2t'];
+  if ($.inArray(file.type, supported_formats) != -1) {
     var el = evt.target;
     var url = $(this).attr('data-policy-url');
     var form = new FormData();
@@ -54,7 +64,7 @@ $('#video-selector').on('change', function (evt/**Event*/) {
     $('#popup-upload').hide();
     $('#tint').hide();
     show_notification('error',
-        'Неверный формат видеофайла'
+        'оддерживаются только видео в форматах 3GP, AVI, FLV, MP4 и MPEG-2'
     );
     return false;
   }
