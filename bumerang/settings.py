@@ -288,12 +288,14 @@ class CommonSettings(Settings):
     PREVIEWS_COUNT = 5
 
     EMAIL_NOREPLY_ADDR = 'noreply@probumerang.tv'
-    EMAIL_BACKEND = 'django_ses.SESBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'email-smtp.eu-west-1.amazonaws.com'
+    EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = EMAIL_NOREPLY_ADDR
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
-    AWS_SES_REGION_NAME = 'eu-west-1'
-    AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
+    # AWS_SES_REGION_NAME = 'eu-west-1'
+    # AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
 
     BROKER_POOL_LIMIT = 1
     CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
