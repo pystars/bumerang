@@ -146,7 +146,6 @@ class CommonSettings(Settings):
         'bootstrap3',
         # 'djkombu',
         'kombu.transport.django',
-        'django_ses',
         'feincms',
         #'django_wysiwyg',
         'django_extensions',
@@ -294,9 +293,6 @@ class CommonSettings(Settings):
     DEFAULT_FROM_EMAIL = EMAIL_NOREPLY_ADDR
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
-    # AWS_SES_REGION_NAME = 'eu-west-1'
-    # AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
-
     BROKER_POOL_LIMIT = 1
     CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
     CELERY_RESULT_BACKEND = "database"
@@ -365,7 +361,6 @@ class BumTVSettings(LocalSettingsMixin, CommonSettings):
         'mptt',
         'storages',
         'bootstrap3',
-        'django_ses',
         'django_extensions',
         'django_coverage',
         'django.contrib.messages',

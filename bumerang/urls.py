@@ -14,7 +14,6 @@ site = FileBrowserSite(name='filebrowser', storage=media_storage)
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^admin/django-ses/', include('django_ses.urls')),
     url(r'^admin/filebrowser/', include(site.urls)),
     (r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
