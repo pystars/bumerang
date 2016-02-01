@@ -292,8 +292,8 @@ class CommonSettings(Settings):
     DEFAULT_FROM_EMAIL = EMAIL_NOREPLY_ADDR
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
-    AWS_SES_REGION_NAME = 'us-east-1'
-    AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
+    AWS_SES_REGION_NAME = 'eu-west-1'
+    AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
 
     BROKER_POOL_LIMIT = 1
     CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
