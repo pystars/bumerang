@@ -12,6 +12,7 @@ from bumerang.apps.video.utils import hq_upload_to
 from bumerang.apps.utils.media_storage import media_storage
 from .models import EncodeJob
 
+
 class Transcoder(object):
     def __init__(self, pipeline_id, region=None, access_key_id=None,
                  secret_access_key=None):

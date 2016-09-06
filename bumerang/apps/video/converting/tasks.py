@@ -62,41 +62,43 @@ class MakeScreenShots(Task):
             offset = 10
         else:
             offset = 1
-        screenable_duration = duration - offset * 2
-        previews_count = settings.PREVIEWS_COUNT
-        if screenable_duration < 1:
-            previews_count = screenable_duration = 1
-        elif screenable_duration < previews_count:
-            previews_count = screenable_duration
-        step = screenable_duration / previews_count
-        for offset in (offset+step for i in xrange(previews_count)):
-            result_file = NamedTemporaryFile(
-                suffix='.jpg', prefix='screen_shot')
-            preview = Preview(owner=video)
-            cmd = self.get_commandline(source_file.name, random.choice(
-                range(offset, offset+step)), size, result_file.name)
-            process = subprocess.call(cmd, shell=False)
-            if process:
-                Video.objects.filter(pk=video_id).update(status=Video.ERROR)
-                logger.error("Some error during ffmpeging %s" % video.pk)
-                return "Stop making screen shoots - video is deleted"
-            try:
-                preview_name = '{0}.jpg'.format(offset)
-                preview.set_thumbnails(result_file.name, preview_name)
-                result_file.close()
-                preview.save()
-            except IOError:
-                result_file.close()
-                self._error_handle(source_file, video)
-                logger.error('Error during imagining {0}'.format(
-                    result_file.name))
-                return "Error"
+        # screenable_duration = duration - offset * 2
+        # previews_count = settings.PREVIEWS_COUNT
+        # if screenable_duration < 1:
+        #     previews_count = screenable_duration = 1
+        # elif screenable_duration < previews_count:
+        #     previews_count = screenable_duration
+        # step = screenable_duration / previews_count
+        # for offset in (offset + step for i in xrange(previews_count)):
+        # offset = offset + step
+        result_file = NamedTemporaryFile(
+            suffix='.jpg', prefix='screen_shot')
+        preview = Preview(owner=video)
+        cmd = self.get_commandline(
+            source_file.name, offset, size, result_file.name)
+        process = subprocess.call(cmd, shell=False)
+        if process:
+            Video.objects.filter(pk=video_id).update(status=Video.ERROR)
+            logger.error("Some error during ffmpeging %s" % video.pk)
+            return "Stop making screen shoots - video is deleted"
+        try:
+            preview_name = '{0}.jpg'.format(offset)
+            preview.set_thumbnails(result_file.name, preview_name)
+            result_file.close()
+            preview.save()
+        except IOError:
+            result_file.close()
+            self._error_handle(source_file, video)
+            logger.error('Error during imagining {0}'.format(
+                result_file.name))
+            return "Error"
         logger.info("Screened {0} ({1})".format(video, source_file.name))
         os.unlink(source_file.name)
         Video.objects.filter(pk=video_id).update(status=Video.READY)
         return "Ready"
 
-    def get_commandline(self, path, offset, size, output):
+    @staticmethod
+    def get_commandline(path, offset, size, output):
         return [
             'ffmpeg', '-y', '-itsoffset', '-{0}'.format(offset), '-i', path,
             '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
