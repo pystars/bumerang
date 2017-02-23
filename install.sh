@@ -60,8 +60,8 @@ ln -s /home/ubuntu/bumerang/bumerang_admin.ini /etc/uwsgi/bumerang_admin.ini
 service nginx restart
 uwsgi --emperor /etc/uwsgi
 # on converter we need add this
-ln -s /home/ubuntu/bumerang/celery.sh /etc/init.d/celeryd
-ln -s /home/ubuntu/bumerang/celeryd.cnf /etc/default/celeryd
+ln -s /var/www/projects/bumerang/celery.sh /etc/init.d/celeryd
+ln -s /var/www/projects/bumerang/celeryd.cnf /etc/default/celeryd
 #FOR RABBITMQ
 echo """
 deb http://www.rabbitmq.com/debian/ testing main

@@ -19,7 +19,7 @@ class PreviewInline(admin.TabularInline):
 class VideoAdmin(admin.ModelAdmin):
     inlines = [PreviewInline]
     readonly_fields = ('created', 'duration', 'views_count', 'get_absolute_url',
-                       'get_download_original_file', 'owner', 'owner_email')
+                       'get_download_original_file', 'owner_email')
     list_display = ('title', 'get_absolute_url', 'category', 'owner', 'status',
                     'created', 'published_in_archive', 'is_in_broadcast_lists',
                     'owner_email')
@@ -79,6 +79,11 @@ class VideoAdmin(admin.ModelAdmin):
             else:
                 obj.status = Video.ERROR
         obj.save()
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return self.readonly_fields + ('owner',)
+        return self.readonly_fields
 
 #TODO: repair mass deleting
 #    def delete_selected(self, request, queryset):
