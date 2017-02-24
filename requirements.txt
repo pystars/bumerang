@@ -25,7 +25,7 @@ feincms
 -e git+https://github.com/clincher/django-ratings.git#egg=django-ratings
 django-bootstrap3
 
-celery
-django-kombu
-django-celery
+celery==2.5.5
+kombu==3.0.37
+django-celery==2.5.5
 python-dateutil
