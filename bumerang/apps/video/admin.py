@@ -25,6 +25,11 @@ class VideoAdmin(admin.ModelAdmin):
                     'owner_email')
     list_editable = ('category', 'published_in_archive',
                      'is_in_broadcast_lists')
+
+    search_fields = ('title',)
+
+    list_filter = ('published_in_archive', 'is_in_broadcast_lists', 'status')
+
     fieldsets = (
         (None, {'fields': (
             ('published_in_archive', 'is_in_broadcast_lists'),
