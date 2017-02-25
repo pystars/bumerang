@@ -28,7 +28,8 @@ class VideoAdmin(admin.ModelAdmin):
 
     search_fields = ('title',)
 
-    list_filter = ('published_in_archive', 'is_in_broadcast_lists', 'status')
+    list_filter = (
+        'published_in_archive', 'is_in_broadcast_lists', 'status', 'owner')
 
     fieldsets = (
         (None, {'fields': (
