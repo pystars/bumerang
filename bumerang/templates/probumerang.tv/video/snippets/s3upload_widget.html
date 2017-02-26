@@ -47,6 +47,7 @@ $('#video-selector').on('change', function (evt/**Event*/) {
             }
             finally {
               upload(file, data, el);
+              $("#video-upload-form").attr("uploaded", true);
             }
             break;
         case 400:
@@ -68,6 +69,13 @@ $('#video-selector').on('change', function (evt/**Event*/) {
     );
     return false;
   }
+});
+$("#video-upload-form").submit(function(e){
+    if (!$(this).attr("uploaded")) {
+        e.preventDefault();
+        alert("Пожалуйста, загрузите видео (самое первое поле)");
+        return false;
+    }
 });
 });
 </script>

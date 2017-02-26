@@ -31,8 +31,9 @@
                         </h3>
                     </header>
                     <section class="b-form b-form_album b-form_edit b-form_smaller">
-                        <form id="video-upload-form" name="editform" action="" method="post" enctype="multipart/form-data">
+                        <form id="video-upload-form" name="editform" action="" method="post" enctype="multipart/form-data"{% if form.instance.original_file %} uploaded="true"{% endif %}>
                             {% csrf_token %}
+
                             <div class="b-form__fields">
                             {% if form.instance.pk %}
                             {% include 'video/snippets/s3upload_widget.html' with obj=form.instance %}
