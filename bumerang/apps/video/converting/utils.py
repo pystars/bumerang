@@ -60,6 +60,8 @@ def encode_video(video, key=None):
     encoder = Transcoder(settings.AWS_ELASTICTRANCODER_PIPELINE)
     if key is None and video.original_file:
         key = video.original_file.name
+    print key
+    print hq_upload_to(video, None)
     encoder.encode(
         {'Key': key},
         [{'Key': hq_upload_to(video, None),
