@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import date
+
 from PIL import Image
 from django.conf import settings
 from django.db import models
@@ -13,6 +15,9 @@ from bumerang.apps.utils.media_storage import media_storage
 from bumerang.apps.video.validators import is_video_file, digital_name
 from utils import (original_upload_to, hq_upload_to, screenshot_upload_to,
                    thumbnail_upload_to, icon_upload_to)
+
+def current_year():
+    return date.today().year
 
 
 class VideoCategory(models.Model, TitleUnicode):
@@ -101,14 +106,14 @@ class Video(models.Model, TitleUnicode):
     category = models.ForeignKey(
         VideoCategory, verbose_name=u'Категория', **nullable)
     description = models.TextField(u'Описание', **nullable)
-    year = models.IntegerField(u'Год', default=2012, **nullable)
+    year = models.IntegerField(u'Год', default=current_year, null=True)
     genre = models.ForeignKey(VideoGenre, verbose_name=u'Жанр', **nullable)
-    country = models.CharField(u'Страна', max_length=255, **nullable)
-    city = models.CharField(u'Город', max_length=255, **nullable)
-    authors = models.CharField(u'Авторы', max_length=255, **nullable)
+    country = models.CharField(u'Страна', max_length=255, null=True)
+    city = models.CharField(u'Город', max_length=255, null=True)
+    authors = models.CharField(u'Авторы', max_length=255, null=True)
     agency = models.CharField(u'учреждение', max_length=255, **nullable)
-    teachers = models.CharField(u'Педагоги', max_length=255, **nullable)
-    manager = models.CharField(u'Руководитель', max_length=255, **nullable)
+    teachers = models.CharField(u'Педагоги', max_length=255, null=True)
+    manager = models.CharField(u'Руководитель', max_length=255, null=True)
     festivals = models.TextField(u'Фестивали', **nullable)
     access = models.IntegerField(
         u'Кому доступно видео', choices=ACCESS_FLAGS_CHOICES,

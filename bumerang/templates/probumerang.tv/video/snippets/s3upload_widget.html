@@ -29,6 +29,8 @@ $('#video-selector').on('change', function (evt/**Event*/) {
     'video/mp2t'];
   if ($.inArray(file.type, supported_formats) != -1) {
     var el = evt.target;
+    $(".b-button[type=submit]").prop("disabled", true);
+    $(".b-button[type=submit]").text("Пожалуйста, дождитесь загрузки видео");
     var url = $(this).attr('data-policy-url');
     var form = new FormData();
     form.append('content_type', file.type);
@@ -47,6 +49,7 @@ $('#video-selector').on('change', function (evt/**Event*/) {
             }
             finally {
               upload(file, data, el);
+              $(".b-button[type=submit]").prop("disabled", false);
             }
             break;
         case 400:
