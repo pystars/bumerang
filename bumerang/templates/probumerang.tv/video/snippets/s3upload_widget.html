@@ -50,6 +50,7 @@ $('#video-selector').on('change', function (evt/**Event*/) {
             finally {
               upload(file, data, el);
               $(".b-button[type=submit]").prop("disabled", false);
+              $(".b-button[type=submit]").text("Сохранить");
             }
             break;
         case 400:
