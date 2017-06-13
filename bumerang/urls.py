@@ -15,7 +15,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^admin/filebrowser/', include(site.urls)),
-    url(r'^feedback/', include('apps.feedback.urls')),
+    url(r'^feedback/', include('bumerang.apps.feedback.urls')),
     (r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     (r'^tinymce/', include('tinymce.urls')),
