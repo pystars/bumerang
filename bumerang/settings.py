@@ -171,6 +171,7 @@ class CommonSettings(Settings):
         'bumerang.apps.events',
         'bumerang.apps.banners',
         'bumerang.apps.projects',
+        'bumerang.apps.feedback',
     ]
 
     LOGGING = {
@@ -319,6 +320,13 @@ class CommonSettings(Settings):
     AWS_REGION = 'eu-west-1'
     AWS_ELASTICTRANCODER_PIPELINE = '1427109159070-ilf72r'
     AWS_ELASTICTRANCODER_PRESET = '1427669312824-2btj6i'
+
+    FEEDBACK_CHOICES = (
+        ('bug', 'Ошибка'),
+        ('propose', 'Предложение о сотрудничестве'),
+        ('question', 'Вопрос администрации')
+    )
+    ALLOW_ANONYMOUS_FEEDBACK = True
 
 try:
     from bumerang.local_settings import *

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Leave some feedback{% endblock %}
+
+{% block breadcrumbs_tail %}Обратная связь{% endblock %}
+
+{% block body %}
+  <section>
+    <h1>Напишите нам</h1>
+    {% include 'project_theme/_form.html' with button_text="Отправить" %}
+  </section>
+{% endblock %}
