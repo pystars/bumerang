@@ -117,11 +117,13 @@ class EventUpdateForm(WideTextareaMixin, TemplatedForm):
             'requesting_till': date_widget,
         }
 
+
 class EventContactsUpdateForm(EditFormsMixin, TemplatedForm):
-    contacts_raw_text = forms.CharField(label=u'Контакты',
-        required=True, widget=Textarea)
+    contacts_raw_text = forms.CharField(
+        label=u'Контакты', required=True, widget=Textarea)
 
     class Meta:
+        model = Event
         fields = (
             'contacts_raw_text',
         )
