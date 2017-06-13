@@ -75,9 +75,11 @@ class ConvertOptions(models.Model):
         if video['Width'] < self.width:
             self.width = video['Width']
         self.height = int(self.width * video['Height'] / float(video['Width']))
-        vbitrate = (video['BitRate_Maximum'] or video['BitRate']) / 1000
-        if self.vbitrate > vbitrate:
-            self.vbitrate = vbitrate
+        vbitrate = (video['BitRate_Maximum'] or video['BitRate'])
+        if vbitrate is not None:
+            vbitrate /= 1000
+            if self.vbitrate > vbitrate:
+                self.vbitrate = vbitrate
         if float(self.frame_rate) > video['FrameRate']:
             self.frame_rate = str(video['FrameRate'])
         if audio:
