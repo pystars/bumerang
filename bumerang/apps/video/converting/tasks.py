@@ -71,8 +71,7 @@ class MakeScreenShots(Task):
         # step = screenable_duration / previews_count
         # for offset in (offset + step for i in xrange(previews_count)):
         # offset = offset + step
-        result_file = NamedTemporaryFile(
-            suffix='.jpg', prefix='screen_shot')
+        result_file = NamedTemporaryFile(suffix='.jpg', prefix='screen_shot')
         preview = Preview(owner=video)
         cmd = self.get_commandline(
             source_file.name, offset, size, result_file.name)
@@ -107,7 +106,7 @@ class MakeScreenShots(Task):
     @staticmethod
     def get_commandline(path, offset, size, output):
         return [
-            'ffmpeg', '-y', '-itsoffset', '-{0}'.format(offset), '-i', path,
+            '/usr/local/bin/ffmpeg', '-y', '-itsoffset', '-{0}'.format(offset), '-i', path,
             '-vframes', '1', '-an', '-vcodec', 'mjpeg', '-f', 'rawvideo',
             '-s', size, output]
 
