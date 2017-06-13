@@ -76,7 +76,14 @@ class MakeScreenShots(Task):
         preview = Preview(owner=video)
         cmd = self.get_commandline(
             source_file.name, offset, size, result_file.name)
-        process = subprocess.call(cmd, shell=False)
+        try:
+            process = subprocess.call(cmd, shell=False)
+        except OSError, e:
+            # self._error_handle(source_file, video)
+            print(e)
+            print source_file.name
+            print result_file.name
+            return "Stop screenshoot - No such file or directory"
         if process:
             Video.objects.filter(pk=video_id).update(status=Video.ERROR)
             logger.error("Some error during ffmpeging %s" % video.pk)
