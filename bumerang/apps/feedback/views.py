@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib import messages
 from django.views.generic import CreateView
 
@@ -17,7 +18,7 @@ class FeedbackCreateView(CreateView):
         if self.request.user.is_authenticated():
             feedback.user = self.request.user
         feedback.save()
-        messages.success(self.request, "Мы получили ваше сообщение.")
+        messages.success(self.request, u"Мы получили ваше сообщение.")
         return super(FeedbackCreateView, self).form_valid(form)
 
     def get_success_url(self):
