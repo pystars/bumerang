@@ -6,42 +6,44 @@
 {% block breadcrumbs_tail %}Обратная связь{% endblock %}
 
 {% block content %}
-<section class="b-form b-form_smaller b-form_edit l-cols__section">
-    <div class="l-cols__section__i">
-        <h1>Напишите нам</h1>
-        <form name="editform" action="" method="post">
-            {% csrf_token %}
-            <div class="b-form__fields">
-                {% for item in form %}
-                    <fieldset>
-                        <div class="b-form__field">
-                            <label>
-                                <span class="f-title">
-                                    <span>{{ item.label }}</span>
-                                </span>
-                                {% if item|widget_type in 'TextInput DateInput' %}
-                                    <span class="f-input">
-                                {% endif %}{% if item|widget_type == 'Textarea' %}
-                                    <span class="f-textarea">
-                                {% endif %}{% if item|widget_type == 'Select' %}
-                                    <span class="f-select">
+<div class="cleared">
+    <section class="b-form b-form_smaller b-form_edit l-cols__section">
+        <div class="l-cols__section__i">
+            <h1>Напишите нам</h1>
+            <form name="editform" action="" method="post">
+                {% csrf_token %}
+                <div class="b-form__fields">
+                    {% for item in form %}
+                        <fieldset>
+                            <div class="b-form__field">
+                                <label>
+                                    <span class="f-title">
+                                        <span>{{ item.label }}</span>
+                                    </span>
+                                    {% if item|widget_type in 'TextInput DateInput' %}
+                                        <span class="f-input">
+                                    {% endif %}{% if item|widget_type == 'Textarea' %}
+                                        <span class="f-textarea">
+                                    {% endif %}{% if item|widget_type == 'Select' %}
+                                        <span class="f-select">
+                                    {% endif %}
+                                        {{ item }}
+                                    </span>
+                                </label>
+                                {% if item.errors %}
+                                    <div class="f-err"><span>{{ item.errors }}</span></div>
                                 {% endif %}
-                                    {{ item }}
-                                </span>
-                            </label>
-                            {% if item.errors %}
-                                <div class="f-err"><span>{{ item.errors }}</span></div>
-                            {% endif %}
-                        </div>
-                    </fieldset>
-                {% endfor %}
-            </div>
-            <footer class="b-form__footer">
-                <div class="wrap">
-                    <button type="submit" class="b-button b-button_yellow button-submit">Сохранить</button>
+                            </div>
+                        </fieldset>
+                    {% endfor %}
                 </div>
-            </footer>
-        </form>
-    </div>
-</section>
+                <footer class="b-form__footer">
+                    <div class="wrap">
+                        <button type="submit" class="b-button b-button_yellow button-submit">Сохранить</button>
+                    </div>
+                </footer>
+            </form>
+        </div>
+    </section>
+</div>
 {% endblock %}
