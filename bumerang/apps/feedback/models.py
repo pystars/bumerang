@@ -26,10 +26,13 @@ class BaseFeedback(models.Model):
         url = reverse(url_pattern, args=(self.id,))
         mail_managers(
             u'Новое сообщение с сайта probumerang.tv',
-            u'Смотрите раздел feedback в админ-панели probumerang.tv',
+            u'{0}\r\n'
+            u'Смотрите раздел feedback в админ-панели probumerang.tv'.format(
+                self.message),
             fail_silently=True,
-            html_message=u'<a href="http://probumerang.tv{0}">'
-                         u'Посмотреть сообщение</a>'.format(url)
+            html_message=u'{0}\r\n'
+                         u'<a href="http://probumerang.tv{1}">'
+                         u'Посмотреть сообщение</a>'.format(self.message, url)
         )
 
 
