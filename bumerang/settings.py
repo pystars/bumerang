@@ -37,7 +37,9 @@ class CommonSettings(Settings):
         ('Bolshakov', 'va.bolshakov@gmail.com'),
     ]
 
-    MANAGERS = ADMINS
+    MANAGERS = ADMINS + [
+        ('Muratov', 'va@bolshakov.me')
+    ]
 
     SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
     SESSION_SERIALIZER = 'bumerang.apps.utils.serializers.SessionJSONSerializer'

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.core.mail import mail_managers
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -17,6 +18,18 @@ class BaseFeedback(models.Model):
 
     def __unicode__(self):
         return self.message
+
+    def save(self, *args, **kwargs):
+        super(BaseFeedback, self).save(*args, **kwargs)
+        url_pattern = 'admin:{0}_{1}_change'.format(
+            self._meta.app_label, self._meta.model_name)
+        url = reverse(url_pattern, args=(self.id,))
+        mail_managers(
+            u'Новое сообщение с сайта probumerang.tv',
+            u'Смотрите раздел feedback в админ-панели probumerang.tv',
+            fail_silently=True,
+            html_message=u'<a href="{0}">Посмотреть сообщение</a>'.format(url)
+        )
 
 
 class Feedback(BaseFeedback):
