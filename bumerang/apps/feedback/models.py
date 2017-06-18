@@ -28,7 +28,8 @@ class BaseFeedback(models.Model):
             u'Новое сообщение с сайта probumerang.tv',
             u'Смотрите раздел feedback в админ-панели probumerang.tv',
             fail_silently=True,
-            html_message=u'<a href="{0}">Посмотреть сообщение</a>'.format(url)
+            html_message=u'<a href="http://probumerang.tv{0}">'
+                         u'Посмотреть сообщение</a>'.format(url)
         )
 
 
