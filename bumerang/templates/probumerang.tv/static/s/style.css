@@ -176,6 +176,7 @@ a:hover, .b-pseudolink:hover, a.b-pseudolink:hover, a.pseudo-hover {
 }
 */
 
+input[type="email"],
 input[type="text"],
 input[type="password"],
 textarea {
@@ -193,6 +194,7 @@ textarea {
 	color:#000;
 }
 
+input[type="email"],
 input[type="text"],
 input[type="password"],
 textarea {
@@ -203,6 +205,7 @@ textarea {
 	padding-top:4px;
 }
 
+*+html input[type="email"],
 *+html input[type="text"],
 *+html input[type="password"],
 *+html textarea {
@@ -211,6 +214,7 @@ textarea {
 	border-color:#959286 #cac9c2 #eeedeb #cac9c2;
 }
 
+input[type="email"].medium,
 input[type="text"].medium,
 input[type="password"].medium,
 textarea.medium {
@@ -218,6 +222,7 @@ textarea.medium {
 	min-width:270px !important;
 }
 
+input[type="email"].short,
 input[type="text"].short,
 input[type="password"].short {
 	width:200px;
@@ -229,12 +234,14 @@ textarea.short {
     min-width:200px !important;
 }
 
+input[type="email"].wide,
 input[type="text"].wide,
 input[type="password"].wide,
 textarea.wide {
 	width:98%;
 }
 
+*+html input[type="email"].wide,
 *+html input[type="text"].wide,
 *+html input[type="password"].wide,
 *+html textarea.wide {
@@ -253,6 +260,7 @@ textarea.half {
 	width:50%;
 }
 
+*+html input[type="email"].half,
 *+html input[type="text"].half,
 *+html input[type="password"].half,
 *+html textarea.half {
@@ -260,6 +268,7 @@ textarea.half {
 }
 
 
+*+html input[type="email"].medium,
 *+html input[type="text"].medium,
 *+html input[type="password"].medium,
 *+html textarea.medium {
@@ -557,6 +566,7 @@ th {
 
 .d-rounded,
 .d-sh,
+input[type="email"],
 input[type="text"],
 input[type="password"],
 textarea
@@ -2280,6 +2290,7 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 .b-form {
 }
 
+.b-form__field input[type="email"],
 .b-form__field input[type="text"],
 .b-form__field input[type="password"],
 .b-form__field textarea {
@@ -2627,6 +2638,7 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 }
 
 .b-form_left .b-form__field .f-textarea textarea,
+.b-form_left .b-form__field .f-input input[type="email"],
 .b-form_left .b-form__field .f-input input[type="text"],
 .b-form_left .b-form__footer .b-button {
 		margin-left:-5px !important;
@@ -2692,6 +2704,7 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 	/*height:3.5em;*/
 }
 
+.b-form_smaller .b-form__field input[type="email"],
 .b-form_smaller .b-form__field input[type="text"],
 .b-form_smaller .b-form__field input[type="password"],
 .b-form_smaller .b-form__field textarea,
@@ -2894,6 +2907,7 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 	margin-left:10.5em;
 }
 
+.b-form_edit .b-form__field input[type="email"],
 .b-form_edit .b-form__field input[type="text"],
 .b-form_edit .b-form__field textarea {min-width:auto;}
 
@@ -2990,11 +3004,14 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 
 .b-tabs .b-form__message {position:relative;right:-22px;margin-left:-31px;}
 
+.b-form__field input[type="email"] {min-width:240px;}
 .b-form__field input[type="text"] {min-width:240px;}
 .b-form__field textarea {min-width:240px;}
 
 /* special participant field styles */
+.participant-field .b-form__field input[type="email"],
 .participant-field .b-form__field input[type="text"],
+.request-field .b-form__field input[type="email"],
 .request-field .b-form__field input[type="text"] {
     min-width: 0;
 }
@@ -4926,6 +4943,7 @@ body.bs .l-head__space .bs-wrapper .bs-link {
 	padding-top:2px;
 }
 
+.b-form_edit_login-pass input[type="email"],
 .b-form_edit_login-pass input[type="text"],
 .b-form_edit_login-pass input[type="password"] {
 	font-size:1em;
@@ -5602,6 +5620,7 @@ select.medium-select {
     background-color: #eee;
 }
 
+input[type="email"].mini,
 input[type="text"].mini,
 input[type="password"].mini {
     width:80px;
