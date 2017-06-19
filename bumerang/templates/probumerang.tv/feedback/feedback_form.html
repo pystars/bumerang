@@ -20,7 +20,7 @@
                                     <span class="f-title">
                                         <span>{{ item.label }}</span>
                                     </span>
-                                    {% if item|widget_type in 'TextInput DateInput' %}
+                                    {% if item|widget_type in 'TextInput DateInput EmailInput' %}
                                         <span class="f-input">
                                     {% endif %}{% if item|widget_type == 'Textarea' %}
                                         <span class="f-textarea">
@@ -39,7 +39,7 @@
                 </div>
                 <footer class="b-form__footer">
                     <div class="wrap">
-                        <button type="submit" class="b-button b-button_yellow button-submit">Сохранить</button>
+                        <button type="submit" class="b-button b-button_yellow button-submit">Отправить</button>
                     </div>
                 </footer>
             </form>
