@@ -38,7 +38,7 @@ class CommonSettings(Settings):
     ]
 
     MANAGERS = ADMINS + [
-        ('Muratov', 'asmpost@mail.ru')
+        ('Admin', 'admin@probumerang.tv')
     ]
 
     SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
