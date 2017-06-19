@@ -3,7 +3,7 @@ from itertools import chain
 from django.conf import settings
 from django.template import Library, Node
 
-from ..models import AnonymousFeedback, Feedback
+from ..models import Feedback
 
 
 register = Library()

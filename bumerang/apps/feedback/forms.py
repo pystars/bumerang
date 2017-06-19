@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import AnonymousFeedback, Feedback
+from .models import Feedback
 
 
 class FeedbackForm(forms.ModelForm):
