@@ -33,6 +33,6 @@ class Feedback(models.Model):
         """.format(self.name, self.subject, self.message)
         mail = EmailMessage(
             '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, self.subject),
-            message, self.email, [a[1] for a in settings.MANAGERS],
+            message, settings.SERVER_EMAIL, [a[1] for a in settings.MANAGERS],
             headers={'Reply-To': self.email})
         mail.send(fail_silently=False)
