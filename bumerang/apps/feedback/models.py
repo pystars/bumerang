@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 class Feedback(models.Model):
     subject = models.CharField(max_length=100, verbose_name=_('Subject'))
     name = models.CharField(max_length=100, verbose_name=_('Name'))
-    email = models.EmailField(verbose_name=_('E-mail'))
+    email = models.EmailField(verbose_name=_('Email'))
     message = models.TextField(verbose_name=_('Message'))
     time = models.DateTimeField(auto_now_add=True, verbose_name=_('Time'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'),
