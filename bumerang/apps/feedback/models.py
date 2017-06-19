@@ -1,51 +1,38 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.core.mail import mail_managers
-from django.core.urlresolvers import reverse
+from django.core.mail import EmailMessage
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-class BaseFeedback(models.Model):
-    type = models.CharField(choices=settings.FEEDBACK_CHOICES, max_length=100,
-                            verbose_name=_('Type'))
+class Feedback(models.Model):
+    subject = models.CharField(max_length=100, verbose_name=_('Subject'))
+    name = models.CharField(max_length=100, verbose_name=_('Name'))
+    email = models.EmailField(verbose_name=_('E-mail'))
     message = models.TextField(verbose_name=_('Message'))
     time = models.DateTimeField(auto_now_add=True, verbose_name=_('Time'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'),
+                             null=True, blank=True, default=None)
 
     class Meta:
-        abstract = True
         ordering = ['-time']
 
     def __unicode__(self):
         return self.message
 
     def save(self, *args, **kwargs):
-        super(BaseFeedback, self).save(*args, **kwargs)
-        url_pattern = 'admin:{0}_{1}_change'.format(
-            self._meta.app_label, self._meta.model_name)
-        url = reverse(url_pattern, args=(self.id,))
-        mail_managers(
-            u'Новое сообщение с сайта probumerang.tv',
-            u'{0}\r\n'
-            u'Смотрите раздел feedback в админ-панели probumerang.tv'.format(
-                self.message),
-            fail_silently=True,
-            html_message=u'{0}\r\n'
-                         u'<a href="http://probumerang.tv{1}">'
-                         u'Посмотреть сообщение</a>'.format(self.message, url)
-        )
-
-
-class Feedback(BaseFeedback):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'))
-
-    def get_absolute_url(self):
-        return reverse('admin:view-feedback', args=[self.id])
-
-
-class AnonymousFeedback(BaseFeedback):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'),
-                             null=True, blank=True, default=None)
-
-    def get_absolute_url(self):
-        return reverse('admin:view-anon-feedback', args=[self.id])
+        super(Feedback, self).save(*args, **kwargs)
+        message = u"""
+        От {0}
+        
+        Тема:
+        {1}
+        
+        Сообщение:
+        {2}
+        """.format(self.name, self.subject, self.message)
+        mail = EmailMessage(
+            '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, self.subject),
+            message, self.email, [a[1] for a in settings.MANAGERS],
+            headers={'Reply-To': 'another@example.com'})
+        mail.send(fail_silently=True)

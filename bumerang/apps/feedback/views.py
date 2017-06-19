@@ -2,16 +2,13 @@
 from django.contrib import messages
 from django.views.generic import CreateView
 
-from .forms import AnonymousFeedbackForm, FeedbackForm
+from .forms import FeedbackForm
 
 
 class FeedbackCreateView(CreateView):
     template_name = 'feedback/feedback_form.html'
 
-    def get_form_class(self):
-        if self.request.user.is_authenticated():
-            return FeedbackForm
-        return AnonymousFeedbackForm
+    form_class = FeedbackForm
 
     def form_valid(self, form):
         feedback = form.save(commit=False)

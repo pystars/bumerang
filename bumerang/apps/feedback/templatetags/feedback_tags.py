@@ -20,8 +20,6 @@ def get_feedback(parser, token):
 class FeedbackNode(Node):
     def render(self, context):
         feedback = [Feedback.objects.all()]
-        if getattr(settings, 'ALLOW_ANONYMOUS_FEEDBACK', False):
-            feedback.append(AnonymousFeedback.objects.all())
         # Flatten list of querysets and sort feedback by date.
         feedback = sorted(list(chain.from_iterable(feedback)),
                           key=lambda instance: instance.time, reverse=True)
